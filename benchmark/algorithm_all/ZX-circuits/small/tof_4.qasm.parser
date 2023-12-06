@@ -1,0 +1,137 @@
+7 136
+h 5
+h 5
+h 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 2
+t 5
+cx 1 2
+t 1
+s 2
+s 2
+s 2
+t 2
+cx 1 2
+h 5
+h 5
+h 6
+h 6
+h 6
+cx 5 6
+s 6
+s 6
+s 6
+t 6
+cx 3 6
+t 6
+cx 5 6
+s 6
+s 6
+s 6
+t 6
+cx 3 6
+t 5
+t 6
+cx 3 5
+t 3
+s 5
+s 5
+s 5
+t 5
+cx 3 5
+h 6
+h 6
+h 7
+h 7
+h 7
+cx 6 7
+s 7
+s 7
+s 7
+t 7
+cx 4 7
+t 7
+cx 6 7
+s 7
+s 7
+s 7
+t 7
+cx 4 7
+t 6
+t 7
+cx 4 6
+t 4
+s 6
+s 6
+s 6
+t 6
+cx 4 6
+h 7
+h 7
+h 6
+h 6
+h 6
+cx 5 6
+s 6
+s 6
+s 6
+t 6
+cx 3 6
+t 6
+cx 5 6
+s 6
+s 6
+s 6
+t 6
+cx 3 6
+t 5
+t 6
+cx 3 5
+t 3
+s 5
+s 5
+s 5
+t 5
+cx 3 5
+h 6
+h 6
+h 5
+h 5
+h 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 2
+t 5
+cx 1 2
+t 1
+s 2
+s 2
+s 2
+t 2
+cx 1 2
+h 5
+h 5
+m

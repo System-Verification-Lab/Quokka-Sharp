@@ -1,0 +1,82 @@
+6 81
+h 1
+h 2
+h 3
+cx 3 5
+h 4
+s 4
+s 4
+h 4
+cx 3 4
+h 4
+cx 2 4
+s 4
+s 4
+s 4
+t 4
+cx 1 4
+t 4
+cx 2 4
+s 4
+s 4
+s 4
+t 4
+cx 1 4
+t 2
+t 4
+cx 1 2
+h 4
+t 1
+s 2
+s 2
+s 2
+t 2
+cx 1 2
+h 1
+s 1
+s 1
+h 1
+h 2
+s 2
+s 2
+h 2
+h 4
+cx 2 4
+s 4
+s 4
+s 4
+t 4
+cx 1 4
+t 4
+cx 2 4
+s 4
+s 4
+s 4
+t 4
+cx 1 4
+t 2
+t 4
+cx 1 2
+h 4
+t 1
+s 2
+s 2
+s 2
+t 2
+cx 1 2
+h 1
+s 1
+s 1
+h 1
+h 2
+s 2
+s 2
+h 2
+h 4
+s 4
+s 4
+h 4
+h 1
+h 2
+h 3
+m
