@@ -1,0 +1,43 @@
+4 42
+h 1
+s 1
+s 1
+h 1
+h 2
+s 2
+s 2
+h 2
+h 4
+cx 3 4
+t 1
+t 2
+t 3
+s 4
+s 4
+s 4
+t 4
+cx 1 2
+cx 3 4
+cx 4 1
+cx 2 3
+cx 1 2
+cx 3 4
+s 1
+s 1
+s 1
+t 1
+s 2
+s 2
+s 2
+t 2
+s 3
+s 3
+s 3
+t 3
+t 4
+cx 1 2
+cx 3 4
+s 4
+cx 4 1
+h 4
+m

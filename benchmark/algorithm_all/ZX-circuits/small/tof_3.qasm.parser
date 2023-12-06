@@ -1,0 +1,83 @@
+5 82
+h 5
+h 5
+h 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 2
+t 5
+cx 1 2
+t 1
+s 2
+s 2
+s 2
+t 2
+cx 1 2
+h 5
+h 5
+h 4
+h 4
+h 4
+cx 5 4
+s 4
+s 4
+s 4
+t 4
+cx 3 4
+t 4
+cx 5 4
+s 4
+s 4
+s 4
+t 4
+cx 3 4
+t 5
+t 4
+cx 3 5
+t 3
+s 5
+s 5
+s 5
+t 5
+cx 3 5
+h 4
+h 4
+h 5
+h 5
+h 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 5
+cx 2 5
+s 5
+s 5
+s 5
+t 5
+cx 1 5
+t 2
+t 5
+cx 1 2
+t 1
+s 2
+s 2
+s 2
+t 2
+cx 1 2
+h 5
+h 5
+m
