@@ -6,7 +6,7 @@ def generate_random_qasm_circuit(n, m, t_prob):
     
     # Generate random gate list
     gates = ['s', 'h', 'cx', 't']
-    cx_prob = 0.1
+    cx_prob = 0.2
     s_prob = (1 - cx_prob - t_prob) / 2
     h_prob = s_prob
     weight = [s_prob, h_prob, cx_prob, t_prob]
