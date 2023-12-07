@@ -7,14 +7,13 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import time
 import threading
-
-QuiZX_PATH = "/Users/meij/quizx/quizx/target/debug/measure_test"
+from settings import *
 
 class RunWithTimeout(object):
     def __init__(self, function, args):
         self.function = function
         self.args = args
-        self.answer = 10000.0
+        self.answer = TIMEOUT * 1000.0
 
     def worker(self):
         self.answer = self.function(self.args)
@@ -33,7 +32,7 @@ def CircuitList(folder):
 def QC2SAT(qasm_file):
     prep_start = time.time()   
     circ_info = os.popen('python3 qc2cnf.py ' + qasm_file).read()
-    # print(circ_info)
+    print(circ_info)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
     return t_prep
@@ -42,8 +41,8 @@ def GPMC(filename):
     filepath = filename.split('/')
     l = len(filepath)
     filepath2 = filepath[l-3] + "/" + filepath[l-2] + "/" + filepath[l-1]
-    gpmc_path = os.getcwd() + '/tools/GPMC/bin/gpmc'
-    wmc_file = os.getcwd() + '/tools/GPMC/example/'+ filepath2
+    gpmc_path = GPMC_PATH + '/bin/gpmc'
+    wmc_file = GPMC_PATH + '/example/'+ filepath2
     result = os.popen(gpmc_path + " -mode=1 " + wmc_file).read()
     gpmc_time_str = re.findall(r"Real.time.*s",result)[0]
     gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
@@ -65,7 +64,7 @@ def GPMCRun(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
         for qasm_file in circuitlist:
             pre_time = QC2SAT(qasm_file)
             pgpmc = RunWithTimeout(GPMC,qasm_file)
-            gpmc_time = pgpmc.run(10)
+            gpmc_time = pgpmc.run(TIMEOUT)
             if gpmc_time == 10000: pre_time = 0
             gpmc_time_list.append(gpmc_time + pre_time)
         gpmc_list_all.append(gpmc_time_list)
@@ -83,6 +82,7 @@ def ZX(filename):
     result = os.popen(QuiZX_PATH + " " + filename).read()
     zx_time_str = re.findall(r"tall.*$",result)[0]
     zx_time = re.findall(r"[-+]?(?:\d*\.*\d+)", zx_time_str)[0]
+    print(filename)
     print(result)
     if "ms" in zx_time_str:
         return float(zx_time)
@@ -100,7 +100,7 @@ def ZXRun(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
         zx_time_list = []
         for qasm_file in circuitlist:
             pzx = RunWithTimeout(ZX, qasm_file)
-            zx_time = pzx.run(10)
+            zx_time = pzx.run(TIMEOUT)
             zx_time_list.append(zx_time)
         zx_list_all.append(zx_time_list)
     n = len(zx_list_all)
@@ -128,10 +128,10 @@ def QubitScalePlot(figname, n_start, n_end, n_step, ProbT, RepeatedTime):
     ax.plot([*range(n_start, n_end + 1, n_step)], zxtimelist_40, label='DEPTH = 40, ZX', marker = '^', color = 'green')  
     ax.plot([*range(n_start, n_end + 1, n_step)], wmctimelist_50, label='DEPTH = 50, WMC', marker = 'o', color = 'blue')    
     ax.plot([*range(n_start, n_end + 1, n_step)], zxtimelist_50, label='DEPTH = 50, ZX', marker = '^', color = 'blue')   
-    plt.xticks(range(n_start, n_step + 1, 10))
+    plt.xticks(range(n_start, n_end + 1, 10))
     plt.xlabel('#QUBITS')
     plt.ylabel('time (ms)')
-    plt.yscale("log")
+    # plt.yscale("log")
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width*0.9, box.height * 0.9])
     ax.legend(loc='upper center', bbox_to_anchor=(0.43, 1.2), ncol=3, fancybox=True, shadow=True)
@@ -177,7 +177,7 @@ def GPMCScatter(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
         for qasm_file in circuitlist:
             pre_time = QC2SAT(qasm_file)
             pgpmc = RunWithTimeout(GPMC,qasm_file)
-            gpmc_time = pgpmc.run(10)
+            gpmc_time = pgpmc.run(TIMEOUT)
             if gpmc_time == 10000: pre_time = 0
             gpmc_time_list = np.append(gpmc_time_list, gpmc_time)
             x_list = np.append(x_list, x)
@@ -205,33 +205,3 @@ def DataPointWMC(n, m, ProbT):
 def DataPointZX(n, m, ProbT):
     qasm_file = DataPoint(n, m, ProbT)
     ZX(qasm_file)
-
-def main():
-    ''' Increasing qubit counts with depth 30, 40, 50
-    The arguments are: 
-    name of the figure, the beginning qubit counts, the end qubit counts, the increasing step, the probability of T gates, the repeated times of running
-    '''
-    # QubitScalePlot("qubitscale_6", 30, 140, 5, 0.05, 10)
-
-    ''' Increasing depth with qubit 50, 60, 70
-    The arguments are: 
-    name of the figure, the beginning depth, the end depth, the increasing step, the probability of T gates, the repeated times of running
-    '''    
-    # GateScalePlot("gatescale_6", 5, 80, 5, 0.05, 10)
-    
-    ''' 
-    Data point of running a single case using GPMC.
-    The arguments are:
-    qubit count, depth, the probability of T-gate
-    '''
-    DataPointWMC(50, 50, 0.05)
-    
-    ''' 
-    Data point of running a single case using QuiZX.
-    The arguments are:
-    qubit count, depth, the probability of T-gate
-    '''
-    DataPointZX(50, 50, 0.05)
-    
-if __name__ == "__main__":
-    main() 

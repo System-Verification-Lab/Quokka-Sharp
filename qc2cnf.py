@@ -4,6 +4,7 @@ from InitConst import init
 from cliffordT import H2CNF,CNOT2CNF,S2CNF,T2CNF
 from measure import M2CNF
 from qasm_parser import qasm_parser
+from settings import GPMC_PATH
 
 
 def main(filename):
@@ -38,7 +39,7 @@ def main(filename):
             M2CNF(tab,cnf)
     filepath = filename.split('/')
     l = len(filepath)
-    wmc_folder = './tools/GPMC/example/' + filepath[l-3] + "/" + filepath[l-2]
+    wmc_folder = GPMC_PATH + '/example/' + filepath[l-3] + "/" + filepath[l-2]
     if os.path.isdir(wmc_folder) == False:
         # shutil.rmtree(folder)
         os.mkdir(wmc_folder)
