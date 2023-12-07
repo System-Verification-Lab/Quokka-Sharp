@@ -2,15 +2,14 @@
 
 # Install GPMC
 
-Follow instructions in https://git.trs.css.i.nagoya-u.ac.jp/k-hasimt/GPMC to install GPMC 
-
 In the GPMC directory replace the file "GPMC/core/Main.cc" by the one provide here.
+Follow instructions in https://git.trs.css.i.nagoya-u.ac.jp/k-hasimt/GPMC to install GPMC 
 
 # Install QuiZX
 
-Follow instructions in https://github.com/Quantomatic/quizx/blob/stabrank-v1/README.md to install QuiZX
- 
 Add measure_test.rs here to quizx/quizx/src/bin/ in the QuiZX directory.
+
+Follow instructions in https://github.com/Quantomatic/quizx/blob/stabrank-v1/README.md to install QuiZX
 
 After installing above tools,
 please change paths of the tools in settings.py to your installation paths
@@ -18,6 +17,7 @@ please change paths of the tools in settings.py to your installation paths
 QuiZX_PATH = "/Users/meij/quizx/quizx/target/debug/measure_test"
 GPMC_PATH = "/Users/meij/Desktop/qc2cnf/tools/GPMC"
 ``` 
+Note that QuiZX_PATH should be the path of executable file of measure_test and GPMC_PATH should be the path of the project GPMC.
 
 ## Usage
 Set the timeout in settings.py, and the unit is second here.
