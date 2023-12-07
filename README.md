@@ -14,8 +14,8 @@ Follow instructions in https://github.com/Quantomatic/quizx/blob/stabrank-v1/REA
 After installing above tools,
 please change paths of the tools in settings.py to your installation paths
 ```
-QuiZX_PATH = "/Users/meij/quizx/quizx/target/debug/measure_test"
-GPMC_PATH = "/Users/meij/Desktop/qc2cnf/tools/GPMC"
+QuiZX_PATH = your path + "/quizx/quizx/target/debug/measure_test"
+GPMC_PATH = your path + "/GPMC"
 ``` 
 Note that QuiZX_PATH should be the path of executable file of measure_test and GPMC_PATH should be the path of the project GPMC.
 
