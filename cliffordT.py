@@ -1,141 +1,99 @@
 def H2CNF(tab,cnf,t,k):
     n = tab.n; x = tab.x; z = tab.z; r = tab.r
-    r[t+1] = cnf.add_var()
-    # for l in range(n):
-    #     x[t+1][l] = cnf.add_var()
-    #     z[t+1][l] = cnf.add_var()
-    for j in range(n):
-        if(j == k):        
-            cnf.add_clause([(-1)*r[t], (-1)*r[t+1], (-1)*x[t][j], (-1)*z[t][j],0])
-            cnf.add_clause([(-1)*r[t], r[t+1], x[t][j],0])
-            cnf.add_clause([(-1)*r[t], r[t+1], z[t][j],0])
-            cnf.add_clause([r[t], (-1)*r[t+1], x[t][j],0])
-            cnf.add_clause([r[t], (-1)*r[t+1], z[t][j],0])
-            cnf.add_clause([r[t], r[t+1], (-1) * x[t][j], (-1)*z[t][j], 0])
+
+    rp = cnf.add_var()
+    cnf.add_clause([-r, -rp, -x[k], -z[k],0])
+    cnf.add_clause([-r, rp, x[k],0])
+    cnf.add_clause([-r, rp, z[k],0])
+    cnf.add_clause([r, -rp, x[k],0])
+    cnf.add_clause([r, -rp, z[k],0])
+    cnf.add_clause([r, rp, (-1) * x[k], -z[k], 0])
+    r = rp
+    x[k], z[k] = z[k], x[k] # swap
             
-            # cnf.add_weight(r[t+1], -1)
-            # cnf.add_weight((-1) * r[t+1], 1)
-            
-            z[t+1][j] = x[t][j]
-            x[t+1][j] = z[t][j]
-            # cnf.add_clause([(-1)*x[t][j], z[t+1][j],0])
-            # cnf.add_clause([x[t][j], (-1)*z[t+1][j],0])
-            # cnf.add_clause([(-1)*x[t+1][j], z[t][j],0])
-            # cnf.add_clause([x[t+1][j], (-1)*z[t][j],0])
-        else:
-            x[t+1][j] = x[t][j]
-            z[t+1][j] = z[t][j]
-            # cnf.add_clause([(-1)*x[t+1][j], x[t][j],0])
-            # cnf.add_clause([x[t+1][j], (-1)*x[t][j],0])
-            
-            # cnf.add_clause([(-1)*z[t+1][j], z[t][j],0])
-            # cnf.add_clause([z[t+1][j], (-1)*z[t][j],0])
 
 def S2CNF(tab,cnf,t,k):
     n = tab.n; x = tab.x; z = tab.z; r = tab.r
-    r[t+1] = cnf.add_var()
-    cnf.add_clause([(-1)*r[t], (-1)*r[t+1], (-1)*x[t][k], (-1)*z[t][k],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], x[t][k],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], z[t][k],0])
-    cnf.add_clause([r[t], (-1)*r[t+1], x[t][k],0])
-    cnf.add_clause([r[t], (-1)*r[t+1], z[t][k],0])
-    cnf.add_clause([r[t], r[t+1], (-1) * x[t][k], (-1)*z[t][k], 0])
 
-    # cnf.add_weight(r[t+1], -1)
-    # cnf.add_weight((-1) * r[t+1], 1)
+    rp = cnf.add_var()
+    cnf.add_clause([-r, -rp, -x[k], -z[k],0])
+    cnf.add_clause([-r, rp, x[k],0])
+    cnf.add_clause([-r, rp, z[k],0])
+    cnf.add_clause([r, -rp, x[k],0])
+    cnf.add_clause([r, -rp, z[k],0])
+    cnf.add_clause([r, rp, (-1) * x[k], -z[k], 0])
+    r = rp
+    # cnf.add_weight(rp, -1)
+    # cnf.add_weight((-1) * rp, 1)
 
-    for j in range(n):
-        if(j == k):
-            z[t+1][j] = cnf.add_var() 
-            cnf.add_clause([(-1)*x[t][j], (-1)*z[t][j], (-1)*z[t+1][j],0])
-            cnf.add_clause([x[t][j], z[t][j], (-1)*z[t+1][j],0])
-            cnf.add_clause([(-1)*x[t][j], z[t][j], z[t+1][j],0])
-            cnf.add_clause([x[t][j], (-1)*z[t][j], z[t+1][j],0])
-        
-        else:
-            z[t+1][j] = z[t][j]
-            # cnf.add_clause([(-1)*z[t+1][j], z[t][j],0])
-            # cnf.add_clause([z[t+1][j], (-1)*z[t][j],0])
-        
-        x[t+1][j] = x[t][j]
-        # cnf.add_clause([(-1)*x[t+1][j], x[t][j],0])
-        # cnf.add_clause([x[t+1][j], (-1)*x[t][j],0])
+    zp = cnf.add_var() 
+    cnf.add_clause([-x[k], -z[k], -zp,0])
+    cnf.add_clause([x[k], z[k], -zp,0])
+    cnf.add_clause([-x[k], z[k], zp,0])
+    cnf.add_clause([x[k], -z[k], zp,0])
+    z[k] = zp
 
-def T2CNF(tab,cnf,t,j):
+
+def T2CNF(tab,cnf,t,k):
     n = tab.n; x = tab.x; z = tab.z; r = tab.r; u = tab.u
     
-    r[t+1] = cnf.add_var()
-    z[t+1][j] = cnf.add_var()
-    cnf.add_clause([(-1)*r[t], (-1)*r[t+1], (-1)*x[t][j], (-1)*z[t][j], z[t+1][j],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], x[t][j],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], z[t][j],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], (-1)*z[t+1][j],0])
-    cnf.add_clause([r[t], (-1)*r[t+1], x[t][j],0])
-    cnf.add_clause([r[t], (-1)*r[t+1], z[t][j],0])
-    cnf.add_clause([r[t], (-1)*r[t+1], (-1)*z[t+1][j],0])
-    cnf.add_clause([r[t], r[t+1], (-1)*x[t][j], (-1)*z[t][j], z[t+1][j], 0])
+    zp = cnf.add_var()
 
-    # cnf.add_weight(r[t+1], -1)
-    # cnf.add_weight((-1) * r[t+1], 1)
+    rp = cnf.add_var()
+    cnf.add_clause([-r, -rp, -x[k], -z[k], zp,0])
+    cnf.add_clause([-r, rp, x[k],0])
+    cnf.add_clause([-r, rp, z[k],0])
+    cnf.add_clause([-r, rp, -zp,0])
+    cnf.add_clause([r, -rp, x[k],0])
+    cnf.add_clause([r, -rp, z[k],0])
+    cnf.add_clause([r, -rp, -zp,0])
+    cnf.add_clause([r, rp, -x[k], -z[k], zp, 0])
+    r = rp
 
-    for l in range(n):
-        if(l == j):
-            cnf.add_clause([x[t][l],(-1)*z[t+1][l],z[t][l],0])
-            cnf.add_clause([x[t][l],z[t+1][l],(-1)*z[t][l],0])
-            u[t] = x[t][l]
-            u[t] = cnf.add_var()
-            cnf.add_clause([(-1)*u[t], x[t][l],0])
-            cnf.add_clause([u[t], (-1)*x[t][l],0])
-            cnf.add_weight(u[t], 0.707106781186548)
-            # 0.7071067
-            cnf.add_weight((-1) * u[t], 1)
-        else:
-            z[t+1][l] = z[t][l]
-            # cnf.add_clause([(-1)*z[t+1][l], z[t][l],0])
-            # cnf.add_clause([z[t+1][l], (-1)*z[t][l],0])
-        x[t+1][l] = x[t][l]
-        # cnf.add_clause([(-1)*x[t+1][l], x[t][l],0])
-        # cnf.add_clause([x[t+1][l], (-1)*x[t][l],0])
+    cnf.add_clause([x[k],-zp,z[k],0])
+    cnf.add_clause([x[k],zp,-z[k],0])
+    # u = x[k]                               # this was a useless assignment?
+    u = cnf.add_var()
+    cnf.add_clause([-u, x[k],0])            # TODO: note that we can actually eliminate u and assign a weight to x[k] instead...
+    cnf.add_clause([u, -x[k],0])
+    cnf.add_weight(u, 0.707106781186548)    # TODO: is this enough significance?
+                                            # TODO: Perhaps sanity check robustness of WMC by varying significance..
+    # 0.7071067
+    cnf.add_weight((-1) * u, 1)
+
+    z[k] = zp
+
 
 def CNOT2CNF(tab,cnf,t,j,k):
     n = tab.n; x = tab.x; z = tab.z; r = tab.r
-    r[t+1] = cnf.add_var()
-    
-    cnf.add_clause([(-1)*r[t] , (-1)*r[t+1], (-1)*x[t][j], (-1)*x[t][k], z[t][j], (-1) * z[t][k],0])
-    cnf.add_clause([(-1)*r[t], (-1)*r[t+1], (-1)*x[t][j], x[t][k], (-1) * z[t][j], (-1) * z[t][k],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], x[t][j],0])
-    cnf.add_clause([(-1)*r[t], r[t+1], (-1) * x[t][k], (-1) * z[t][j], 0])
-    cnf.add_clause([(-1)*r[t], r[t+1], x[t][k], z[t][j], 0])
-    cnf.add_clause([(-1)*r[t], r[t+1], z[t][k], 0])
-    cnf.add_clause([r[t], (-1)*r[t+1], x[t][j], 0])
-    cnf.add_clause([r[t], (-1)*r[t+1], (-1) * x[t][k], (-1) * z[t][j], 0])
-    cnf.add_clause([r[t], (-1)*r[t+1], x[t][k], z[t][j], 0])
-    cnf.add_clause([r[t], (-1)*r[t+1], z[t][k], 0])
-    cnf.add_clause([r[t], r[t+1], (-1)*x[t][j], (-1)*x[t][k], z[t][j], (-1) * z[t][k],0])
-    cnf.add_clause([r[t], r[t+1], (-1)*x[t][j], x[t][k], (-1) * z[t][j], (-1) * z[t][k],0])
 
-    # cnf.add_weight(r[t+1], -1)
-    # cnf.add_weight((-1) * r[t+1], 1)
-       
-    x[t+1][k] = cnf.add_var()
-    z[t+1][j] = cnf.add_var()
-    
-    cnf.add_clause([(-1) * x[t][j], (-1) * x[t][k], (-1) * x[t+1][k], 0])
-    cnf.add_clause([(-1) * x[t][j], x[t][k], x[t+1][k], 0])
-    cnf.add_clause([x[t][j], (-1) * x[t][k], x[t+1][k], 0])
-    cnf.add_clause([x[t][j], x[t][k], (-1) * x[t+1][k], 0])
-    
-    cnf.add_clause([(-1) * z[t][j], (-1) * z[t][k], (-1) * z[t+1][j], 0])
-    cnf.add_clause([(-1) * z[t][j], z[t][k], z[t+1][j], 0])
-    cnf.add_clause([z[t][j], (-1) * z[t][k], z[t+1][j], 0])
-    cnf.add_clause([z[t][j], z[t][k], (-1) * z[t+1][j], 0])
+    rp = cnf.add_var()
+    cnf.add_clause([-r , -rp, -x[k], -x[k], z[k], (-1) * z[k],0])
+    cnf.add_clause([-r, -rp, -x[k], x[k], (-1) * z[k], (-1) * z[k],0])
+    cnf.add_clause([-r, rp, x[k],0])
+    cnf.add_clause([-r, rp, (-1) * x[k], (-1) * z[k], 0])
+    cnf.add_clause([-r, rp, x[k], z[k], 0])
+    cnf.add_clause([-r, rp, z[k], 0])
+    cnf.add_clause([r, -rp, x[k], 0])
+    cnf.add_clause([r, -rp, (-1) * x[k], (-1) * z[k], 0])
+    cnf.add_clause([r, -rp, x[k], z[k], 0])
+    cnf.add_clause([r, -rp, z[k], 0])
+    cnf.add_clause([r, rp, -x[k], -x[k], z[k], (-1) * z[k],0])
+    cnf.add_clause([r, rp, -x[k], x[k], (-1) * z[k], (-1) * z[k],0])
+    # cnf.add_weight(rp, -1)
+    # cnf.add_weight((-1) * rp, 1)
+    r = rp
 
-    for l in range(n):
-        if (l != k):
-            x[t+1][l] = x[t][l]
-            # cnf.add_clause([(-1)*x[t][l], x[t+1][l],0])
-            # cnf.add_clause([x[t][l], (-1)*x[t+1][l],0])
-        if (l != j):
-            z[t+1][l] = z[t][l]
-            # cnf.add_clause([(-1)*z[t][l], z[t+1][l],0])
-            # cnf.add_clause([z[t][l], (-1)*z[t+1][l],0])
+    xp = cnf.add_var()
+    zp = cnf.add_var()   
+    cnf.add_clause([(-1) * x[k], (-1) * x[k], (-1) * xp, 0])
+    cnf.add_clause([(-1) * x[k], x[k], xp, 0])
+    cnf.add_clause([x[k], (-1) * x[k], xp, 0])
+    cnf.add_clause([x[k], x[k], (-1) * xp, 0])
+    
+    cnf.add_clause([(-1) * z[k], (-1) * z[k], (-1) * zp, 0])
+    cnf.add_clause([(-1) * z[k], z[k], zp, 0])
+    cnf.add_clause([z[k], (-1) * z[k], zp, 0])
+    cnf.add_clause([z[k], z[k], (-1) * zp, 0])
+    z[k] = zp
+    x[k] = xp
