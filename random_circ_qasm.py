@@ -1,4 +1,4 @@
-import random, os, shutil
+import random, os, shutil, math
 
 def generate_random_qasm_circuit(n, m, t_prob):
     circuit_lines = []
@@ -6,48 +6,55 @@ def generate_random_qasm_circuit(n, m, t_prob):
     
     # Generate random gate list
     gates = ['s', 'h', 'cx', 't']
+    gates2 = ['s', 'h', 't']
     cx_prob = 0.2
     s_prob = (1 - cx_prob - t_prob) / 2
     h_prob = s_prob
     weight = [s_prob, h_prob, cx_prob, t_prob]
-    
-    # for _ in range(m):
-    #     gate = random.choices(gates, weight)
-    #     circuit_list.append(gate[0])
-        
-    # for gate in circuit_list:
-    #     if gate == 'cx':
-    #         control = random.randint(0, n-1)
-    #         target = random.choice([i for i in range(n) if i != control])
-    #         circuit_lines.append(f'cx q[{control}],q[{target}];')
-    #     else:
-    #         qubit = random.randint(0, n-1)
-    #         circuit_lines.append(f'{gate} q[{qubit}];')
+    weight2 = [h_prob/(1-cx_prob), s_prob//(1-cx_prob),t_prob/(1-cx_prob)]
+
+    cw = [weight[0], weight[0]+weight[1], weight[0]+weight[1]+weight[2], 1]
+
     for _ in range(m):
         qubit = [0] * n
+        extra = 0
         for i in range(n):
             if qubit[i] == 0: 
-                gate = random.choices(gates, weight)
-                gate = gate[0]
+                p = random.random()
+                if p < cw[0]:
+                    gate = 's'
+                elif p < cw[1]:
+                    gate = 'h'
+                elif p < cw[2]:
+                    gate = 'cx'
+                else:
+                    gate = 't'
+                # gate = random.choices(gates, weight, k = 1)
+                # gate = gate[0]
                 if gate == 'cx':
-                    control = i
-                    try:
-                        target = random.choice([j for j in range(n) if j != control and qubit[j] == 0])                  
-                        qubit[target] = 1; qubit[control] = 1
+                    if n != i + extra + 1:
+                        while 1:
+                            target = random.randint(i+1, n-1)
+                            if qubit[target] == 0:
+                                break
+                        # target = random.choice([j for j in range(n) if j != i and qubit[j] == 0])                  
+                        qubit[target] = 1
                         p = random.uniform(0,1)
                         if p > 0.5:
-                            circuit_lines.append(f'cx q[{control}],q[{target}];')
+                            circuit_lines.append(f'cx q[{i}],q[{target}];')
                         else: 
-                            circuit_lines.append(f'cx q[{target}],q[{control}];')
-                    except:
-                        gate = random.choices(['h','s','t'], [h_prob/(1-cx_prob), s_prob/(1-cx_prob) ,t_prob/(1-cx_prob)])
-                        gate = gate[0]
+                            circuit_lines.append(f'cx q[{target}],q[{i}];')
+                        extra = extra + 1
+                    else:
+                        gate = random.choices(gates2, weight2, k = 1)[0]
                         circuit_lines.append(f'{gate} q[{i}];')
                         qubit[i] = 1
                 else:
                     circuit_lines.append(f'{gate} q[{i}];')
-                    qubit[i] = 1
-            else: continue
+                qubit[i] = 1
+            else:
+                extra = extra - 1
+
     return circuit_lines
 
         
