@@ -10,13 +10,13 @@
 def init(tab,cnf):
     n = tab.n; x = tab.x; z = tab.z; r = tab.r
     for i in range(n):
-        x[0][i] = cnf.add_var()
-        z[0][i] = cnf.add_var()       
-        cnf.add_clause([(-1) * x[0][i],0])
-    r[0] = cnf.add_var()
-    cnf.add_clause([(-1) * r[0],0])
-    cnf.add_weight(r[0], -1)
-    cnf.add_weight((-1) * r[0], 1)
+        x[i] = cnf.add_var()
+        z[i] = cnf.add_var()       
+        cnf.add_clause([(-1) * x[i],0])
+    r = cnf.add_var()
+    cnf.add_clause([(-1) * r,0])
+    cnf.add_weight(r, -1)
+    cnf.add_weight((-1) * r, 1)
 
 # def init(tab,cnf):
 #     n = tab.n; x = tab.x; z = tab.z; d = tab.d; r = tab.r

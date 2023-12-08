@@ -2,10 +2,10 @@ class Tableau:
     def __init__(self,n,m):
         self.n = n
         self.m = m
-        self.x = [[0] * n for _ in range(m+1)]
-        self.z = [[0] * n for _ in range(m+1)]
-        self.r = [0] * (m+1)
-        self.u = [0] * (m+1)
+        self.x = [0] * n
+        self.z = [0] * n
+        self.r = 0
+        self.u = 0
         self.clause = 0
         self.var = 0
 
