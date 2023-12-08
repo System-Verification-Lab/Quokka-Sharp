@@ -7,9 +7,10 @@ from qasm_parser import qasm_parser
 from settings import GPMC_PATH
 
 
-def main(filename):
-    circuit = qasm_parser(filename)
+def main(qasm_file, cnf_file):
+    circuit = qasm_parser(qasm_file)
     qclist = circuit.circ
+
 
     n = circuit.n
     m = circuit.m
@@ -37,20 +38,22 @@ def main(filename):
             T2CNF(tab,cnf,t,k)
         if gate == 'm':
             M2CNF(tab,cnf)
-    filepath = filename.split('/')
-    l = len(filepath)
-    wmc_folder = GPMC_PATH + '/example/' + filepath[l-3] + "/" + filepath[l-2]
-    if os.path.isdir(wmc_folder) == False:
-        # shutil.rmtree(folder)
-        os.mkdir(wmc_folder)
-    with open(wmc_folder + "/" + filepath[l-1], 'w') as the_file:
+
+    print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
+
+    with open(cnf_file, 'w') as the_file:
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
         for item in cnf.weight_list:
             the_file.writelines(item)
         for item in cnf.cons_list:
             the_file.writelines(item)
-    print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
     # print([circuit.n, circuit.m])
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    if len(sys.argv) < 2:
+        exit(1)
+    if len(sys.argv) < 3:
+        out = sys.argv[1] + ".cnf"
+    else:
+        out = sys.argv[2]
+    main(sys.argv[1], out)

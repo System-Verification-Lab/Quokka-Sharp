@@ -122,3 +122,14 @@ def DataPoint(n, m, Tprob):
     filename = f"q{n}g{m}.qasm"
     WriteFile(folder, filename, circuit_content)
     return folder + '/' + filename
+
+
+def main():
+    print("")
+    random_circuit = generate_random_qasm_circuit(10000, 30, .2)
+    circuit_content = '\n'.join(random_circuit)
+    WriteFile(".", "random.qasm", circuit_content)
+
+    
+if __name__ == "__main__":
+    main() 
