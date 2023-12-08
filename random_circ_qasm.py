@@ -40,7 +40,7 @@ def generate_random_qasm_circuit(n, m, t_prob):
                         else: 
                             circuit_lines.append(f'cx q[{target}],q[{control}];')
                     except:
-                        gate = random.choices(['h','s','t'], [h_prob/0.9, s_prob/0.9 ,t_prob/0.9])
+                        gate = random.choices(['h','s','t'], [h_prob/(1-cx_prob), s_prob/(1-cx_prob) ,t_prob/(1-cx_prob)])
                         gate = gate[0]
                         circuit_lines.append(f'{gate} q[{i}];')
                         qubit[i] = 1
