@@ -5,7 +5,6 @@ class Tableau:
         self.x = [0] * n
         self.z = [0] * n
         self.r = 0
-        self.u = 0
         self.clause = 0
         self.var = 0
 
