@@ -1,4 +1,3 @@
-from random_circ_qasm import *
 import numpy as np
 import os
 import glob
@@ -8,6 +7,7 @@ import matplotlib.ticker as mtick
 import time
 import threading
 from settings import *
+from Tableau import *
 
 class RunWithTimeout(object):
     def __init__(self, function, args):

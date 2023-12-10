@@ -131,25 +131,25 @@ def DataPoint(n, m, Tprob):
     return folder + '/' + filename
 
 
-def main(filename, n, d, r):
-    print("")
-    random_circuit = generate_random_qasm_circuit(n, d, r)
-    circuit_content = '\n'.join(random_circuit)
-    WriteFile(".", filename, circuit_content)
+# def main(filename, n, d, r):
+#     print("")
+#     random_circuit = generate_random_qasm_circuit(n, d, r)
+#     circuit_content = '\n'.join(random_circuit)
+#     WriteFile(".", filename, circuit_content)
 
     
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        exit(1)
+# if __name__ == "__main__":
+#     if len(sys.argv) < 2:
+#         exit(1)
 
-    qubits = 1000
-    depth  = 30
-    Trate  = .2
+#     qubits = 1000
+#     depth  = 30
+#     Trate  = .2
     
-    if len(sys.argv) > 2:
-        qubits = int(sys.argv[2])
-    elif len(sys.argv) > 3:
-        qubits = int(sys.argv[3])
-    elif len(sys.argv) > 4:
-        qubits = float(sys.argv[4])
-    main(sys.argv[1], qubits, depth, Trate) 
+#     if len(sys.argv) > 2:
+#         qubits = int(sys.argv[2])
+#     elif len(sys.argv) > 3:
+#         qubits = int(sys.argv[3])
+#     elif len(sys.argv) > 4:
+#         qubits = float(sys.argv[4])
+#     main(sys.argv[1], qubits, depth, Trate) 
