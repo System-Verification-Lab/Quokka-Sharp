@@ -21,14 +21,16 @@ class CNF:
         self.var += 1
         return self.var
     
-    def add_clause(self,cons):
+    def add_clause(self, cons):
         self.clause += 1
-        l = len(cons)
-        for i in range(l):
+        for i in range(len(cons)):
             self.cons_list.write(str(cons[i]))
-            if(i != l - 1):
-                self.cons_list.write(" ")
-        self.cons_list.write("\n")
+            self.cons_list.write(" ")
+        self.cons_list.write("0\n")
     
-    def add_weight(self,var,weight):
-        self.weight_list.write("c p weight " + str(var) + " " + str(weight) + " 0" + "\n")
+    def add_weight(self, var, weight):
+        self.weight_list.write("c p weight ")
+        self.weight_list.write(str(var))
+        self.weight_list.write(" ")
+        self.weight_list.write(str(weight))
+        self.weight_list.write(" 0\n")
