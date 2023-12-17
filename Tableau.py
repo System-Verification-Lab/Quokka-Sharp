@@ -1,3 +1,5 @@
+import io
+
 class Tableau:
     def __init__(self,n,m):
         self.n = n
@@ -12,28 +14,21 @@ class CNF:
     def __init__(self):
         self.var = 0
         self.clause = 0
-        self.cons_list = []
-        self.weight_list = []
+        self.cons_list = io.StringIO()
+        self.weight_list = io.StringIO()
     
     def add_var(self):
         self.var += 1
         return self.var
     
-    def ToString(self,s):
-        str1 = ""
-        l = len(s)
-        for i in range(l):
-            str1 += str(s[i])
-            if(i != l - 1):
-                str1 += " "
-        str1 += "\n" 
-        return str1
-    
     def add_clause(self,cons):
         self.clause += 1
-        constr = self.ToString(cons)       
-        self.cons_list.append(constr)
+        l = len(cons)
+        for i in range(l):
+            self.cons_list.write(str(cons[i]))
+            if(i != l - 1):
+                self.cons_list.write(" ")
+        self.cons_list.write("\n")
     
     def add_weight(self,var,weight):
-        weightstr = "c p weight " + str(var) + " " + str(weight) + " 0" + "\n"
-        self.weight_list.append(weightstr)
+        self.weight_list.write("c p weight " + str(var) + " " + str(weight) + " 0" + "\n")
