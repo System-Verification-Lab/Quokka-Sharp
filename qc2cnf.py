@@ -43,10 +43,8 @@ def main(qasm_file, cnf_file):
 
     with open(cnf_file, 'w') as the_file:
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
-        for item in cnf.weight_list:
-            the_file.writelines(item)
-        for item in cnf.cons_list:
-            the_file.writelines(item)
+        the_file.write(cnf.weight_list.getvalue())
+        the_file.write(cnf.cons_list.getvalue())
     # print([circuit.n, circuit.m])
 
 if __name__ == "__main__":
