@@ -67,13 +67,13 @@ def qasm_parser(filename):
     with open(filename,"r") as qasm:
         for line in qasm:
             qasm_list.append(line.rsplit())
+    qasm_list = qasm_list[2:]
 
-    gates = ['h','s','cx', 'ccx', 't','z','x','tdg']
+    gates = ['h','s','cx', 'ccx', 't','z','x','tdg', 'rx', 'rz']
 
     circuit = Circuit()
-
+    
     for line in qasm_list:
-        
         if len(line) == 0:
             continue
 
@@ -89,9 +89,9 @@ def qasm_parser(filename):
 
         elif(line[0] == 'barrier' or line[0] == '//' or line[0] == 'measure'):
             continue
-
-        if(any(item in gates for item in line)):
-            gate = line[0]             
+                
+        if(any(item in gates for item in line[0])):
+            gate = line[0]
             if gate == 'cx':
                 if(line[1].count('[') == 1):
                     qubitc = get_num(line[1])
@@ -129,16 +129,22 @@ def qasm_parser(filename):
                 qubit = get_num(line[1])
                 circuit.add_hst(gate,qubit)
 
-    circuit.mea()
     
+    circuit.mea()
+    print(circuit.circ)
     return circuit
-    # with open(filename + '.parser', 'w') as file:
-    #     file.writelines(str(circuit.n)+" "+str(circuit.m)+'\n')
-    #     for item in circuit.circ:
-    #         file.writelines(item+'\n')
-    # path_list = filename.split('/')
-    # filename_list1 = path_list[len(path_list) - 1].split('.')
-    # filename_list2 = filename_list1[0].split('_')
-    # tcount = filename_list2[len(filename_list2) - 2]
-    # # print(tcount)
-    # print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
+
+
+if __name__ == "__main__":
+    qasm_parser("test.qasm")
+
+#     # with open(filename + '.parser', 'w') as file:
+#     #     file.writelines(str(circuit.n)+" "+str(circuit.m)+'\n')
+#     #     for item in circuit.circ:
+#     #         file.writelines(item+'\n')
+#     # path_list = filename.split('/')
+#     # filename_list1 = path_list[len(path_list) - 1].split('.')
+#     # filename_list2 = filename_list1[0].split('_')
+#     # tcount = filename_list2[len(filename_list2) - 2]
+#     # # print(tcount)
+#     # print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
