@@ -231,7 +231,7 @@ def main():
     print("# "+ str(Fx))
     print("# "+ str(Fz))
     print("# "+ str(Fu))
-    print("def RX2CNF(tab, cnf, t, k, theta, cos_theta, sin_theta):")
+    print("def RX2CNF(tab, cnf, t, k, cos_theta, sin_theta):")
     print("    r = tab.r")
     print("    x = tab.x")
     print("    z = tab.z")
