@@ -113,7 +113,7 @@ def CNOT2CNF(tab, cnf, _, c, t):
 # Equivalent(X, x[k])
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
-def RZ2CNF(tab, cnf, t, k, theta):
+def RZ2CNF(tab, cnf, t, k, cos_theta, sin_theta):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -144,7 +144,7 @@ def RZ2CNF(tab, cnf, t, k, theta):
     cnf.add_clause([-Z, -u1,  z[k]])
     cnf.add_clause([-u1,  z[k], -z[k]])
     cnf.add_clause([-Z,  u1, -x[k], -z[k]])
-    cnf.add_weight(u1, cos(theta))
+    cnf.add_weight(u1, cos_theta)
 
     u2 = cnf.add_var()
     cnf.add_clause([ Z,  u2, -z[k]])
@@ -155,7 +155,7 @@ def RZ2CNF(tab, cnf, t, k, theta):
     cnf.add_clause([-u2,  z[k], -z[k]])
     cnf.add_clause([-Z, -u2, -z[k]])
     cnf.add_clause([-Z,  u2, -x[k],  z[k]])
-    cnf.add_weight(u2, sin(theta))
+    cnf.add_weight(u2, sin_theta)
     tab.x[k] = X
     tab.z[k] = Z
     tab.r = R
@@ -164,7 +164,7 @@ def RZ2CNF(tab, cnf, t, k, theta):
 # Equivalent(Z, z[k])
 # z[k] | (Equivalent(X, x[k]))
 # Equivalent(u, x[k])
-def RX2CNF(tab, cnf, t, k, theta):
+def RX2CNF(tab, cnf, t, k, cos_theta, sin_theta):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -195,7 +195,7 @@ def RX2CNF(tab, cnf, t, k, theta):
     cnf.add_clause([-X, -u1,  z[k]])
     cnf.add_clause([-u1, -x[k],  z[k]])
     cnf.add_clause([-X,  u1, -x[k], -z[k]])
-    cnf.add_weight(u1, cos(theta))
+    cnf.add_weight(u1, cos_theta)
 
     u2 = cnf.add_var()
     cnf.add_clause([ X,  u2, -x[k]])
@@ -206,7 +206,7 @@ def RX2CNF(tab, cnf, t, k, theta):
     cnf.add_clause([-X, -u2,  z[k]])
     cnf.add_clause([-X, -u2, -x[k]])
     cnf.add_clause([-X,  u2,  x[k], -z[k]])
-    cnf.add_weight(u2, sin(theta))
+    cnf.add_weight(u2, sin_theta)
     tab.x[k] = X
     tab.z[k] = Z
     tab.r = R

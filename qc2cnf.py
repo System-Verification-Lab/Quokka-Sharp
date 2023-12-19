@@ -8,18 +8,21 @@ from settings import GPMC_PATH
 import math, re
 
 def get_cos_sin(str):
-    theta_str = re.findall(r"\[([-+]?[A-Za-z0-9_*.]+)\]", str)[0]
-    if 'pi' in theta_str:
-        theta = theta_str.split('*')
-        theta = float(theta[0]) * math.pi
-    else:
-        theta = float(theta_str)
-    res_cos = math.cos(theta)
-    if abs(res_cos) < 1e-15:
-        res_cos = 0
-    res_sin = math.sin(theta)
-    if abs(res_sin) < 1e-15:
-        res_sin = 0
+    print(str)
+    # theta_str = re.findall(r"\[([-+]?[A-Za-z0-9_*.]+)\]", str)[0]
+    # if 'pi' in theta_str:
+    #     theta = theta_str.split('*')
+    #     theta = float(theta[0]) * math.pi
+    # else:
+    #     theta = float(theta_str)
+    # res_cos = math.cos(theta)
+    # if abs(res_cos) < 1e-15:
+    #     res_cos = 0
+    # res_sin = math.sin(theta)
+    # if abs(res_sin) < 1e-15:
+    #     res_sin = 0
+    res_cos = 0
+    res_sin = 0
     return [res_cos, res_sin]
 
 def main(qasm_file, cnf_file):
