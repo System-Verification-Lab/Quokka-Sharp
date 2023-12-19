@@ -12,9 +12,9 @@ def init(tab, cnf):
     for i in range(tab.n):
         x[i] = cnf.add_var()
         z[i] = cnf.add_var()       
-        cnf.add_clause([-x[i],0])
+        cnf.add_clause([-x[i]])
     tab.r = cnf.add_var()
-    cnf.add_clause([-tab.r,0])
+    cnf.add_clause([-tab.r])
     # cnf.add_weight( tab.r, -1)
     # cnf.add_weight(-tab.r, 1)
 
