@@ -8,6 +8,7 @@ import time
 import threading
 from settings import *
 from Tableau import *
+from random_circ_qasm import *
 
 class RunWithTimeout(object):
     def __init__(self, function, args):
@@ -43,14 +44,15 @@ def GPMC(filename):
     filepath2 = filepath[l-3] + "/" + filepath[l-2] + "/" + filepath[l-1]
     gpmc_path = GPMC_PATH + '/bin/gpmc'
     wmc_file = GPMC_PATH + '/example/'+ filepath2
+    print(wmc_file)
     result = os.popen(gpmc_path + " -mode=1 " + wmc_file).read()
-    gpmc_time_str = re.findall(r"Real.time.*s",result)[0]
-    gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
-    gpmc_ans = (float(re.findall(r"exact.*",result)[0].split(' ')[3]) + 1)/2
-    print(filepath2)
-    print("The resulting probability by GPMC is " + str(gpmc_ans))
-    print("The running time of GPMC is " + str(gpmc_time) + "ms")
-    return gpmc_time
+    # gpmc_time_str = re.findall(r"Real.time.*s",result)[0]
+    # gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
+    # gpmc_ans = (float(re.findall(r"exact.*",result)[0].split(' ')[3]) + 1)/2
+    # print(filepath2)
+    # print("The resulting probability by GPMC is " + str(gpmc_ans))
+    # print("The running time of GPMC is " + str(gpmc_time) + "ms")
+    # return gpmc_time
 
 def GPMCRun(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
     gpmc_list_all = []
@@ -80,14 +82,15 @@ def GPMCRun(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
 
 def ZX(filename):
     result = os.popen(QuiZX_PATH + " " + filename).read()
-    zx_time_str = re.findall(r"tall.*$",result)[0]
-    zx_time = re.findall(r"[-+]?(?:\d*\.*\d+)", zx_time_str)[0]
-    print(filename)
     print(result)
-    if "ms" in zx_time_str:
-        return float(zx_time)
-    else:
-        return float(zx_time) * 1000
+    # zx_time_str = re.findall(r"tall.*$",result)[0]
+    # zx_time = re.findall(r"[-+]?(?:\d*\.*\d+)", zx_time_str)[0]
+    # print(filename)
+    # print(result)
+    # if "ms" in zx_time_str:
+    #     return float(zx_time)
+    # else:
+    #     return float(zx_time) * 1000
 
 def ZXRun(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
     zx_list_all = []
