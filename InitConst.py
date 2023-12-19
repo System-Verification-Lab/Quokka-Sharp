@@ -15,8 +15,8 @@ def init(tab, cnf):
         cnf.add_clause([-x[i],0])
     tab.r = cnf.add_var()
     cnf.add_clause([-tab.r,0])
-    cnf.add_weight( tab.r, -1)
-    cnf.add_weight(-tab.r, 1)
+    # cnf.add_weight( tab.r, -1)
+    # cnf.add_weight(-tab.r, 1)
 
 # def init(tab,cnf):
 #     n = tab.n; x = tab.x; z = tab.z; d = tab.d; r = tab.r

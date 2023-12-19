@@ -53,7 +53,7 @@ def GPMC(filename):
     gpmc_time_str = re.findall(r"Real.time.*s",result)[0]
     gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
     gpmc_ans = (float(re.findall(r"exact.*",result)[0].split(' ')[3]) + 1)/2
-    print(filepath2)
+    print(result)
     print("The resulting probability by GPMC is " + str(gpmc_ans))
     print("The running time of GPMC is " + str(gpmc_time) + "ms")
     return gpmc_time
