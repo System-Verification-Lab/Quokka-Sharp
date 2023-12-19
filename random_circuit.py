@@ -31,8 +31,13 @@ def CircuitList(folder):
     return circuit_list
 
 def QC2SAT(qasm_file):
+    
+    filepath = qasm_file.split('/')
+    l = len(filepath)
+    filepath2 = filepath[l-3] + "/" + filepath[l-2] + "/" + filepath[l-1]
+    wmc_file = GPMC_PATH + '/example/'+ filepath2
     prep_start = time.time()   
-    circ_info = os.popen('python3 qc2cnf.py ' + qasm_file).read()
+    circ_info = os.popen('python3 qc2cnf.py ' + qasm_file + ' ' + wmc_file).read()
     print(circ_info)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
@@ -44,15 +49,14 @@ def GPMC(filename):
     filepath2 = filepath[l-3] + "/" + filepath[l-2] + "/" + filepath[l-1]
     gpmc_path = GPMC_PATH + '/bin/gpmc'
     wmc_file = GPMC_PATH + '/example/'+ filepath2
-    print(wmc_file)
     result = os.popen(gpmc_path + " -mode=1 " + wmc_file).read()
-    # gpmc_time_str = re.findall(r"Real.time.*s",result)[0]
-    # gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
-    # gpmc_ans = (float(re.findall(r"exact.*",result)[0].split(' ')[3]) + 1)/2
-    # print(filepath2)
-    # print("The resulting probability by GPMC is " + str(gpmc_ans))
-    # print("The running time of GPMC is " + str(gpmc_time) + "ms")
-    # return gpmc_time
+    gpmc_time_str = re.findall(r"Real.time.*s",result)[0]
+    gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
+    gpmc_ans = (float(re.findall(r"exact.*",result)[0].split(' ')[3]) + 1)/2
+    print(filepath2)
+    print("The resulting probability by GPMC is " + str(gpmc_ans))
+    print("The running time of GPMC is " + str(gpmc_time) + "ms")
+    return gpmc_time
 
 def GPMCRun(qubit, gate, step, ProbT, Qubit_or_Gate, RepeatedTimes):
     gpmc_list_all = []
