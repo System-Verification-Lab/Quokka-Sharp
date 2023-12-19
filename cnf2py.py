@@ -52,6 +52,9 @@ def new_m(self):
 
 def main():
 
+    print("from math import sin, cos")
+    print()
+
     # H:
     F = Equivalent(R, r ^ (x[k] & z[k]) )
     F.__str__ = MethodType(new_m, F)
@@ -199,12 +202,14 @@ def main():
     print()   
     print("    u1 = cnf.add_var()")
     to_py(	   str(Cu1))
-    print("    cnf.add_weight(u1, cos_theta)")
+    print("    cnf.add_weight( u1, cos_theta)")
+    print("    cnf.add_weight(-u1, 1)")
     print()   
 
     print("    u2 = cnf.add_var()")
     to_py(	   str(Cu2))
-    print("    cnf.add_weight(u2, sin_theta)")  
+    print("    cnf.add_weight( u2, sin_theta)")
+    print("    cnf.add_weight(-u2, 1)")
 
     print("    tab.x[k] = X")
     print("    tab.z[k] = Z")
@@ -247,12 +252,14 @@ def main():
     print()   
     print("    u1 = cnf.add_var()")
     to_py(	   str(Cu1))
-    print("    cnf.add_weight(u1, cos_theta)")
+    print("    cnf.add_weight( u1, cos_theta)")
+    print("    cnf.add_weight(-u1, 1)")
     print()   
 
     print("    u2 = cnf.add_var()")
     to_py(	   str(Cu2))
-    print("    cnf.add_weight(u2, sin_theta)")
+    print("    cnf.add_weight( u2, sin_theta)")
+    print("    cnf.add_weight(-u2, 1)")
 
     print("    tab.x[k] = X")
     print("    tab.z[k] = Z")
