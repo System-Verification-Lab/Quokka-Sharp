@@ -212,7 +212,7 @@ def main():
     print()
 
     #RX
-    Fr = Equivalent(R, r ^ (z[k] & x[k] & X))
+    Fr = Equivalent(R, r ^ (z[k] & ~x[k] & X))
     Cr = to_cnf(Fr)
 
     Fx = Equivalent(Z, z[k])
@@ -221,10 +221,10 @@ def main():
     Fz = z[k] | Equivalent(X, x[k])
     Cz = to_cnf(Fz)
 
-    Fu1 = Equivalent(u1, z[k] & (((x[k] & X)) | (~x[k] & ~X)))
+    Fu1 = Equivalent(u1, z[k] & ((x[k] & X) | (~x[k] & ~X)))
     Cu1 = to_cnf(Fu1)
 
-    Fu2 = Equivalent(u2, z[k] & (((~x[k] & X)) | (x[k] & ~X)))
+    Fu2 = Equivalent(u2, z[k] & ((~x[k] & X) | (x[k] & ~X)))
     Cu2 = to_cnf(Fu2)
 
     print("# "+ str(Fr))
