@@ -38,7 +38,7 @@ def main():
         ProbT = float(input("The probability of T gates = "))     
         DataPointZX(n, m, ProbT)
     elif mode == 4:
-        file = "/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/datapoint/test.qasm"
+        file = "/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/datapoint/foo.qasm"
         QC2SAT(file)
         GPMC(file)
         ZX(file)
