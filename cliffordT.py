@@ -161,7 +161,7 @@ def RZ2CNF(tab, cnf, t, k, cos_theta, sin_theta):
     tab.z[k] = Z
     tab.r = R
 
-# Equivalent(R, r ^ (X & x[k] & z[k]))
+# Equivalent(R, r ^ (X & z[k] & ~x[k]))
 # Equivalent(Z, z[k])
 # z[k] | (Equivalent(X, x[k]))
 # Equivalent(u, x[k])
@@ -173,13 +173,13 @@ def RX2CNF(tab, cnf, t, k, cos_theta, sin_theta):
     Z = cnf.add_var()
     X = cnf.add_var()
     cnf.add_clause([ R,  X, -r])
-    cnf.add_clause([ R, -r,  x[k]])
     cnf.add_clause([ R, -r,  z[k]])
     cnf.add_clause([-R,  X,  r])
-    cnf.add_clause([-R,  r,  x[k]])
     cnf.add_clause([-R,  r,  z[k]])
-    cnf.add_clause([ R, -X,  r, -x[k], -z[k]])
-    cnf.add_clause([-R, -X, -r, -x[k], -z[k]])
+    cnf.add_clause([ R, -r, -x[k]])
+    cnf.add_clause([-R,  r, -x[k]])
+    cnf.add_clause([ R, -X,  r,  x[k], -z[k]])
+    cnf.add_clause([-R, -X, -r,  x[k], -z[k]])
 
     cnf.add_clause([ Z, -z[k]])
     cnf.add_clause([-Z,  z[k]])
