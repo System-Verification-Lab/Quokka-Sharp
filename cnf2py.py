@@ -9,6 +9,8 @@ t = 1
 k = 2
 
 u    = symbols('u')
+u1    = symbols('u1')
+u2    = symbols('u2')
 r    = symbols('r')
 R    = symbols('R')
 
@@ -161,7 +163,102 @@ def main():
     print("    tab.r = R")
     print()
 
+    #RZ
+    Fr = Equivalent(R, r ^ (x[k] & z[k] & ~Z))
+    Cr = to_cnf(Fr)
 
+    Fx = Equivalent(X, x[k])
+    Cx = to_cnf(Fx)
+
+    Fz = x[k] | Equivalent(Z, z[k])
+    Cz = to_cnf(Fz)
+
+    Fu1 = Equivalent(u1, x[k] & ((z[k] & Z)) | (~z[k] & ~Z))
+    Cu1 = to_cnf(Fu1)
+
+    Fu2 = Equivalent(u2, x[k] & ((~z[k] & Z)) | (z[k] & ~Z))
+    Cu2 = to_cnf(Fu2)
+
+    print("# "+ str(Fr))
+    print("# "+ str(Fx))
+    print("# "+ str(Fz))
+    print("# "+ str(Fu))
+    print("def RZ2CNF(tab, cnf, t, k, cos_theta, sin_theta):")
+    print("    r = tab.r")
+    print("    x = tab.x")
+    print("    z = tab.z")
+    print("    R = cnf.add_var()")
+    print("    Z = cnf.add_var()")
+    print("    X = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    to_py(	   str(Cx))
+    print()
+    to_py(	   str(Cz))
+
+    print()   
+    print("    u1 = cnf.add_var()")
+    to_py(	   str(Cu1))
+    print("    cnf.add_weight(u1, cos_theta)")
+    print()   
+
+    print("    u2 = cnf.add_var()")
+    to_py(	   str(Cu2))
+    print("    cnf.add_weight(u2, sin_theta)")  
+
+    print("    tab.x[k] = X")
+    print("    tab.z[k] = Z")
+    print("    tab.r = R")
+    print()
+
+    #RX
+    Fr = Equivalent(R, r ^ (z[k] & x[k] & X))
+    Cr = to_cnf(Fr)
+
+    Fx = Equivalent(Z, z[k])
+    Cx = to_cnf(Fx)
+
+    Fz = z[k] | Equivalent(X, x[k])
+    Cz = to_cnf(Fz)
+
+    Fu1 = Equivalent(u1, z[k] & ((x[k] & X)) | (~x[k] & ~X))
+    Cu1 = to_cnf(Fu1)
+
+    Fu2 = Equivalent(u2, z[k] & ((~x[k] & X)) | (x[k] & ~X))
+    Cu2 = to_cnf(Fu2)
+
+    print("# "+ str(Fr))
+    print("# "+ str(Fx))
+    print("# "+ str(Fz))
+    print("# "+ str(Fu))
+    print("def RX2CNF(tab, cnf, t, k, theta, cos_theta, sin_theta):")
+    print("    r = tab.r")
+    print("    x = tab.x")
+    print("    z = tab.z")
+    print("    R = cnf.add_var()")
+    print("    Z = cnf.add_var()")
+    print("    X = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    to_py(	   str(Cx))
+    print()
+    to_py(	   str(Cz))
+
+    print()   
+    print("    u1 = cnf.add_var()")
+    to_py(	   str(Cu1))
+    print("    cnf.add_weight(u1, cos_theta)")
+    print()   
+
+    print("    u2 = cnf.add_var()")
+    to_py(	   str(Cu2))
+    print("    cnf.add_weight(u2, sin_theta)")
+
+    print("    tab.x[k] = X")
+    print("    tab.z[k] = Z")
+    print("    tab.r = R")
+    print()
+  
 
 
 if __name__ == "__main__":

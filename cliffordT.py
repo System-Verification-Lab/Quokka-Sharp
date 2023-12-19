@@ -1,3 +1,4 @@
+from math import sin, cos
 # Equivalent(R, r ^ (x[k] & z[k]))
 def H2CNF(tab, cnf, _, k):
     r = tab.r
@@ -108,3 +109,104 @@ def CNOT2CNF(tab, cnf, _, c, t):
     tab.z[c] = Z
     tab.r = R
 
+# Equivalent(R, r ^ (x[k] & z[k] & ~Z))
+# Equivalent(X, x[k])
+# x[k] | (Equivalent(Z, z[k]))
+# Equivalent(u, x[k])
+def RZ2CNF(tab, cnf, t, k, theta):
+    r = tab.r
+    x = tab.x
+    z = tab.z
+    R = cnf.add_var()
+    Z = cnf.add_var()
+    X = cnf.add_var()
+    cnf.add_clause([ R, -r,  x[k]])
+    cnf.add_clause([ R, -r,  z[k]])
+    cnf.add_clause([-R,  r,  x[k]])
+    cnf.add_clause([-R,  r,  z[k]])
+    cnf.add_clause([ R, -Z, -r])
+    cnf.add_clause([-R, -Z,  r])
+    cnf.add_clause([ R,  Z,  r, -x[k], -z[k]])
+    cnf.add_clause([-R,  Z, -r, -x[k], -z[k]])
+
+    cnf.add_clause([ X, -x[k]])
+    cnf.add_clause([-X,  x[k]])
+
+    cnf.add_clause([ Z,  x[k], -z[k]])
+    cnf.add_clause([-Z,  x[k],  z[k]])
+
+    u1 = cnf.add_var()
+    cnf.add_clause([ Z,  u1,  z[k]])
+    cnf.add_clause([ Z, -Z, -u1])
+    cnf.add_clause([ Z, -u1, -z[k]])
+    cnf.add_clause([-Z, -u1,  x[k]])
+    cnf.add_clause([-u1,  x[k], -z[k]])
+    cnf.add_clause([-Z, -u1,  z[k]])
+    cnf.add_clause([-u1,  z[k], -z[k]])
+    cnf.add_clause([-Z,  u1, -x[k], -z[k]])
+    cnf.add_weight(u1, cos(theta))
+
+    u2 = cnf.add_var()
+    cnf.add_clause([ Z,  u2, -z[k]])
+    cnf.add_clause([ Z, -u2,  z[k]])
+    cnf.add_clause([-u2,  x[k],  z[k]])
+    cnf.add_clause([ Z, -Z, -u2])
+    cnf.add_clause([-Z, -u2,  x[k]])
+    cnf.add_clause([-u2,  z[k], -z[k]])
+    cnf.add_clause([-Z, -u2, -z[k]])
+    cnf.add_clause([-Z,  u2, -x[k],  z[k]])
+    cnf.add_weight(u2, sin(theta))
+    tab.x[k] = X
+    tab.z[k] = Z
+    tab.r = R
+
+# Equivalent(R, r ^ (X & x[k] & z[k]))
+# Equivalent(Z, z[k])
+# z[k] | (Equivalent(X, x[k]))
+# Equivalent(u, x[k])
+def RX2CNF(tab, cnf, t, k, theta):
+    r = tab.r
+    x = tab.x
+    z = tab.z
+    R = cnf.add_var()
+    Z = cnf.add_var()
+    X = cnf.add_var()
+    cnf.add_clause([ R,  X, -r])
+    cnf.add_clause([ R, -r,  x[k]])
+    cnf.add_clause([ R, -r,  z[k]])
+    cnf.add_clause([-R,  X,  r])
+    cnf.add_clause([-R,  r,  x[k]])
+    cnf.add_clause([-R,  r,  z[k]])
+    cnf.add_clause([ R, -X,  r, -x[k], -z[k]])
+    cnf.add_clause([-R, -X, -r, -x[k], -z[k]])
+
+    cnf.add_clause([ Z, -z[k]])
+    cnf.add_clause([-Z,  z[k]])
+
+    cnf.add_clause([ X, -x[k],  z[k]])
+    cnf.add_clause([-X,  x[k],  z[k]])
+
+    u1 = cnf.add_var()
+    cnf.add_clause([ X,  u1,  x[k]])
+    cnf.add_clause([ X, -X, -u1])
+    cnf.add_clause([ X, -u1, -x[k]])
+    cnf.add_clause([-X, -u1,  x[k]])
+    cnf.add_clause([-u1,  x[k], -x[k]])
+    cnf.add_clause([-X, -u1,  z[k]])
+    cnf.add_clause([-u1, -x[k],  z[k]])
+    cnf.add_clause([-X,  u1, -x[k], -z[k]])
+    cnf.add_weight(u1, cos(theta))
+
+    u2 = cnf.add_var()
+    cnf.add_clause([ X,  u2, -x[k]])
+    cnf.add_clause([ X, -u2,  x[k]])
+    cnf.add_clause([-u2,  x[k],  z[k]])
+    cnf.add_clause([ X, -X, -u2])
+    cnf.add_clause([-u2,  x[k], -x[k]])
+    cnf.add_clause([-X, -u2,  z[k]])
+    cnf.add_clause([-X, -u2, -x[k]])
+    cnf.add_clause([-X,  u2,  x[k], -z[k]])
+    cnf.add_weight(u2, sin(theta))
+    tab.x[k] = X
+    tab.z[k] = Z
+    tab.r = R
