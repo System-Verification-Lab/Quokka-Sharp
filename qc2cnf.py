@@ -8,7 +8,6 @@ from settings import GPMC_PATH
 import math, re
 
 def get_cos_sin(str):
-    print(str)
     theta_str = re.findall(r"\(([-+]?[A-Za-z0-9_*.]+)\)", str)[0]
     if 'pi' in theta_str:
         theta = theta_str.split('*')

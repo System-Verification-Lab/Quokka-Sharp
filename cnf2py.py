@@ -173,10 +173,10 @@ def main():
     Fz = x[k] | Equivalent(Z, z[k])
     Cz = to_cnf(Fz)
 
-    Fu1 = Equivalent(u1, x[k] & ((z[k] & Z)) | (~z[k] & ~Z))
+    Fu1 = Equivalent(u1, x[k] & (((z[k] & Z)) | (~z[k] & ~Z)))
     Cu1 = to_cnf(Fu1)
 
-    Fu2 = Equivalent(u2, x[k] & ((~z[k] & Z)) | (z[k] & ~Z))
+    Fu2 = Equivalent(u2, x[k] & (((~z[k] & Z)) | (z[k] & ~Z)))
     Cu2 = to_cnf(Fu2)
 
     print("# "+ str(Fr))
@@ -221,10 +221,10 @@ def main():
     Fz = z[k] | Equivalent(X, x[k])
     Cz = to_cnf(Fz)
 
-    Fu1 = Equivalent(u1, z[k] & ((x[k] & X)) | (~x[k] & ~X))
+    Fu1 = Equivalent(u1, z[k] & (((x[k] & X)) | (~x[k] & ~X)))
     Cu1 = to_cnf(Fu1)
 
-    Fu2 = Equivalent(u2, z[k] & ((~x[k] & X)) | (x[k] & ~X))
+    Fu2 = Equivalent(u2, z[k] & (((~x[k] & X)) | (x[k] & ~X)))
     Cu2 = to_cnf(Fu2)
 
     print("# "+ str(Fr))
