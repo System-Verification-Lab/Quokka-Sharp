@@ -134,10 +134,6 @@ def qasm_parser(filename):
     print(circuit.circ)
     return circuit
 
-
-if __name__ == "__main__":
-    qasm_parser("test.qasm")
-
 #     # with open(filename + '.parser', 'w') as file:
 #     #     file.writelines(str(circuit.n)+" "+str(circuit.m)+'\n')
 #     #     for item in circuit.circ:
