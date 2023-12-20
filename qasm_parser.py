@@ -6,7 +6,7 @@ class Circuit:
         self.cxgate = 0
         self.circ = []
     
-    def add_hst(self,gate,qubit):
+    def add_single(self,gate,qubit):
         self.m += 1
         if(gate == 't'): self.tgate += 1
         self.circ.append([gate, qubit])
@@ -17,33 +17,33 @@ class Circuit:
         self.circ.append(['cx', qubitc, qubitr])
      
     def add_z(self,qubit):
-        self.add_hst('s',qubit)
-        self.add_hst('s',qubit)
-     
+        self.add_single('s',qubit)
+        self.add_single('s',qubit)
+    
     def add_x(self,qubit):
-        self.add_hst('h',qubit)
+        self.add_single('h',qubit)
         self.add_z(qubit)
-        self.add_hst('h',qubit)
+        self.add_single('h',qubit)
 
     def add_tdg(self,qubit):
         self.add_z(qubit)
-        self.add_hst('s',qubit)
-        self.add_hst('t',qubit)
+        self.add_single('s',qubit)
+        self.add_single('t',qubit)
     
     def add_ccx(self,qubitc1,qubitc2,qubitr):
-        self.add_hst('h',qubitr)
+        self.add_single('h',qubitr)
         self.add_cx(qubitc2,qubitr)
         self.add_tdg(qubitr)
         self.add_cx(qubitc1,qubitr)
-        self.add_hst('t',qubitr)
+        self.add_single('t',qubitr)
         self.add_cx(qubitc2,qubitr)
         self.add_tdg(qubitr)
         self.add_cx(qubitc1,qubitr)
-        self.add_hst('t',qubitc2)
-        self.add_hst('t',qubitr)
+        self.add_single('t',qubitc2)
+        self.add_single('t',qubitr)
         self.add_cx(qubitc1,qubitc2)
-        self.add_hst('h',qubitr)
-        self.add_hst('t',qubitc1)
+        self.add_single('h',qubitr)
+        self.add_single('t',qubitc1)
         self.add_tdg(qubitc2)
         self.add_cx(qubitc1,qubitc2)
         
@@ -127,7 +127,12 @@ def qasm_parser(filename):
                 circuit.add_ccx(qubitc1,qubitc2,qubitr)
             else: 
                 qubit = get_num(line[1])
-                circuit.add_hst(gate,qubit)
+                if gate == "rz(0.5*pi)":
+                    circuit.add_single('s',qubit)
+                elif gate == 'rz(-0.5*pi)':
+                    circuit.add_single('sdg',qubit)             
+                else:
+                    circuit.add_single(gate,qubit)
 
     
     circuit.mea()

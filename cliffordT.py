@@ -1,4 +1,3 @@
-from math import sin, cos
 
 # Equivalent(R, r ^ (x[k] & z[k]))
 def H2CNF(tab, cnf, _, k):
@@ -29,6 +28,29 @@ def S2CNF(tab, cnf, _, k):
     cnf.add_clause([-R,  r,  z[k]])
     cnf.add_clause([ R,  r, -x[k], -z[k]])
     cnf.add_clause([-R, -r, -x[k], -z[k]])
+
+    Z = cnf.add_var()
+    cnf.add_clause([ Z,  x[k], -z[k]])
+    cnf.add_clause([ Z, -x[k],  z[k]])
+    cnf.add_clause([-Z,  x[k],  z[k]])
+    cnf.add_clause([-Z, -x[k], -z[k]])
+
+    tab.z[k] = Z
+    tab.r = R
+
+# Equivalent(R, r ^ (x[k] & ~z[k]))
+# Equivalent(Z, x[k] ^ z[k])
+def Sdg2CNF(tab, cnf, _, k):
+    r = tab.r
+    x = tab.x
+    z = tab.z
+    R = cnf.add_var()
+    cnf.add_clause([ R, -r,  x[k]])
+    cnf.add_clause([-R,  r,  x[k]])
+    cnf.add_clause([ R, -r, -z[k]])
+    cnf.add_clause([-R,  r, -z[k]])
+    cnf.add_clause([ R,  r, -x[k],  z[k]])
+    cnf.add_clause([-R, -r, -x[k],  z[k]])
 
     Z = cnf.add_var()
     cnf.add_clause([ Z,  x[k], -z[k]])
