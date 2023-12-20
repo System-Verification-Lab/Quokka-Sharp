@@ -52,7 +52,6 @@ def new_m(self):
 
 def main():
 
-    print("from math import sin, cos")
     print()
 
     # H:
@@ -95,6 +94,30 @@ def main():
     print("    tab.r = R")
     print()
 
+    #Sdg
+    Fr = Equivalent(R, (r ^ x[k] & ~z[k]))
+    Cr = to_cnf(Fr)
+
+    Fz = Equivalent(Z, x[k] ^ z[k])
+    Cz = to_cnf(Fz)
+
+    print("# "+ str(Fr))
+    print("# "+ str(Fz))
+    print("def Sdg2CNF(tab, cnf, _, k):")
+    print("    r = tab.r")
+    print("    x = tab.x")
+    print("    z = tab.z")
+    print("    R = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    print("    Z = cnf.add_var()")
+    to_py(	   str(Cz))
+    print()
+    print("    tab.z[k] = Z")
+    print("    tab.r = R")
+    print()    
+    
+    
     #T
     Fr = Equivalent(R, r ^ (x[k] & z[k] & ~Z))
     Cr = to_cnf(Fr)
