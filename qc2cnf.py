@@ -24,6 +24,7 @@ def get_cos_sin(str):
 
 def main(qasm_file, cnf_file):
     circuit = qasm_parser(qasm_file)
+    print(circuit)
     qclist = circuit.circ
 
 
@@ -48,6 +49,9 @@ def main(qasm_file, cnf_file):
         if gate == 's':
             k = int(element[1]) - 1
             S2CNF(tab,cnf,t,k)
+        if gate == 'sdg':
+            k = int(element[1]) - 1
+            Sdg2CNF(tab,cnf,t,k)            
         if gate == 't':
             k = int(element[1]) - 1
             T2CNF(tab,cnf,t,k)
