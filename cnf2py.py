@@ -2,7 +2,6 @@ import sys, io
 from sympy.logic.boolalg import *
 from sympy.logic import simplify_logic
 from sympy import symbols
-from types import MethodType
 
 c = 0
 t = 1
@@ -46,17 +45,12 @@ def to_py(s):
                 print(", ", end="")
         print("])")
 
-
-def new_m(self):
-    print("as")
-
 def main():
 
     print()
 
     # H:
     F = Equivalent(R, r ^ (x[k] & z[k]) )
-    F.__str__ = MethodType(new_m, F)
 
     C = to_cnf(F)
     print("# "+ str(F))
