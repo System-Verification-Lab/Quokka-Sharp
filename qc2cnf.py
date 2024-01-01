@@ -36,35 +36,37 @@ def main(qasm_file, cnf_file):
 
     init(tab,cnf)
 
-    for t in range(tab.m):
+    for t in range(m):
         element = qclist[t]
         gate = element[0]
         if gate == 'h':
             k = element[1] - 1
             H2CNF(tab,cnf,t,k)
-        if gate == 'cx':
+        elif gate == 'cx':
             j = element[1] - 1 
             k = element[2] - 1
             CNOT2CNF(tab,cnf,t,j,k)
-        if gate == 's':
+        elif gate == 's':
             k = int(element[1]) - 1
             S2CNF(tab,cnf,t,k)
-        if gate == 'sdg':
+        elif gate == 'sdg':
             k = int(element[1]) - 1
             Sdg2CNF(tab,cnf,t,k)            
-        if gate == 't':
+        elif gate == 't':
             k = int(element[1]) - 1
             T2CNF(tab,cnf,t,k)
-        if 'rx' in gate:
+        elif 'rx' in gate:
             [res_cos, res_sin] = get_cos_sin(element[0])
             k = int(element[1]) - 1
             RX2CNF(tab,cnf,t,k, res_cos, res_sin)
-        if 'rz' in gate:
+        elif 'rz' in gate:
             [res_cos, res_sin] = get_cos_sin(element[0])
             k = int(element[1]) - 1
             RZ2CNF(tab,cnf,t,k, res_cos, res_sin)
-        if gate == 'm':
+        elif gate == 'm':
             M2CNF(tab,cnf)
+        else:
+            sys.exit('Unknwon gate')
 
     print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
 
