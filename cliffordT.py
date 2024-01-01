@@ -62,7 +62,6 @@ def Sdg2CNF(tab, cnf, _, k):
     tab.r = R
 
 # Equivalent(R, r ^ (x[k] & z[k] & ~Z))
-# Equivalent(X, x[k])
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
 def T2CNF(tab, cnf, t, k):
@@ -81,9 +80,6 @@ def T2CNF(tab, cnf, t, k):
     cnf.add_clause([ R,  Z,  r, -x[k], -z[k]])
     cnf.add_clause([-R,  Z, -r, -x[k], -z[k]])
 
-    cnf.add_clause([ X, -x[k]])
-    cnf.add_clause([-X,  x[k]])
-
     cnf.add_clause([ Z,  x[k], -z[k]])
     cnf.add_clause([-Z,  x[k],  z[k]])
 
@@ -92,7 +88,6 @@ def T2CNF(tab, cnf, t, k):
     cnf.add_clause([-u,  x[k]])
     cnf.add_weight(u, 0.707106781186548)
 
-    tab.x[k] = X
     tab.z[k] = Z
     tab.r = R
 
