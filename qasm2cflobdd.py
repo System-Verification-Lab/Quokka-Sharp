@@ -42,6 +42,15 @@ def main(file, seed):
         if gate == 'h':
             k = int(element[1]) - 1
             b.write("qc.h({0})\n".format(k))
+        elif gate == 'x':
+            k = int(element[1]) - 1
+            b.write("qc.x({0})\n".format(k))
+        elif gate == 'y':
+            k = int(element[1]) - 1
+            b.write("qc.y({0})\n".format(k))
+        elif gate == 'z':
+            k = int(element[1]) - 1
+            b.write("qc.z({0})\n".format(k))
         elif gate == 'cx':
             j = int(element[1]) - 1
             k = int(element[2]) - 1
@@ -67,7 +76,7 @@ def main(file, seed):
         elif gate == 'm':
             b = b
         else:
-            sys.exit('Unknwon gate')
+            sys.exit('Unknown gate: '+ element[0])
 
     print_footer(b, n, file)
 
