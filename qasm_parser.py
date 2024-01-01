@@ -17,13 +17,13 @@ class Circuit:
         self.circ.append(['cx', qubitc, qubitr])
      
     def add_z(self,qubit):
-        self.add_single('s',qubit)
-        self.add_single('s',qubit)
+        self.add_single('z',qubit)
     
+    def add_y(self,qubit):
+        self.add_single('y',qubit)
+
     def add_x(self,qubit):
-        self.add_single('h',qubit)
-        self.add_z(qubit)
-        self.add_single('h',qubit)
+        self.add_single('x',qubit)
 
     def add_tdg(self,qubit):
         self.add_z(qubit)
@@ -69,7 +69,7 @@ def qasm_parser(filename):
             qasm_list.append(line.rsplit())
     qasm_list = qasm_list[2:]
 
-    gates = ['h','s','cx', 'ccx', 't','z','x','tdg', 'rx', 'rz']
+    gates = ['h','s','cx', 'ccx', 't','z','y','x','tdg', 'rx', 'rz']
 
     circuit = Circuit()
     
@@ -106,6 +106,10 @@ def qasm_parser(filename):
                 qubit = get_num(line[1])
                 circuit.add_z(qubit)
                         
+            elif gate == 'y':
+                qubit = get_num(line[1])
+                circuit.add_y(qubit) 
+
             elif gate == 'x':
                 qubit = get_num(line[1])
                 circuit.add_x(qubit) 
