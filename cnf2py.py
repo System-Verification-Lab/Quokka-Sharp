@@ -116,9 +116,6 @@ def main():
     Fr = Equivalent(R, r ^ (x[k] & z[k] & ~Z))
     Cr = to_cnf(Fr)
 
-    Fx = Equivalent(X, x[k])
-    Cx = to_cnf(Fx)
-
     Fz = x[k] | Equivalent(Z, z[k])
     Cz = to_cnf(Fz)
 
@@ -126,7 +123,6 @@ def main():
     Cu = to_cnf(Fu)
 
     print("# "+ str(Fr))
-    print("# "+ str(Fx))
     print("# "+ str(Fz))
     print("# "+ str(Fu))
     print("def T2CNF(tab, cnf, t, k):")
@@ -138,8 +134,6 @@ def main():
     print("    X = cnf.add_var()")
     to_py(	   str(Cr))
     print()
-    to_py(	   str(Cx))
-    print()
     to_py(	   str(Cz))
 
     print()   
@@ -148,7 +142,6 @@ def main():
     print("    cnf.add_weight(u, 0.707106781186548)")
     print()   
 
-    print("    tab.x[k] = X")
     print("    tab.z[k] = Z")
     print("    tab.r = R")
     print()
