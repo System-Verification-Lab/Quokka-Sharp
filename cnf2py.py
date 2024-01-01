@@ -88,6 +88,49 @@ def main():
     print("    tab.r = R")
     print()
 
+    # X:
+    Fr = Equivalent(R, (r ^ z[k]))
+    Cr = to_cnf(Fr)
+
+    print("# "+ str(Fr))
+    print("def X2CNF(tab, cnf, _, k):")
+    print("    r = tab.r")
+    print("    z = tab.z")
+    print("    R = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    print("    tab.r = R")
+    print()
+
+    # Y:
+    Fr = Equivalent(R, (r ^ x[k] ^ z[k]))
+    Cr = to_cnf(Fr)
+
+    print("# "+ str(Fr))
+    print("def Y2CNF(tab, cnf, _, k):")
+    print("    r = tab.r")
+    print("    x = tab.x")
+    print("    z = tab.z")
+    print("    R = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    print("    tab.r = R")
+    print()
+
+    # Z:
+    Fr = Equivalent(R, (r ^ x[k]))
+    Cr = to_cnf(Fr)
+
+    print("# "+ str(Fr))
+    print("def Z2CNF(tab, cnf, _, k):")
+    print("    r = tab.r")
+    print("    x = tab.x")
+    print("    R = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    print("    tab.r = R")
+    print()
+
     #Sdg
     Fr = Equivalent(R, (r ^ x[k] & ~z[k]))
     Cr = to_cnf(Fr)
