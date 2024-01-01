@@ -3,7 +3,7 @@ from random_circuit import *
 def main():
     print("Please enter the mode of running the programs.\n Enter 0 for getting figure of qubit count scalability \n Enter 1 for getting figure of depth scalability \n Enter 2 for running a single case using WMC \n Enter 3 for running a single case using ZX")
     # mode = int(input("Mode = "))
-    mode = 4
+    mode = 5
     if mode == 0:
         print("You are running increasing qubit counts with depth being 30, 40, 50")
         figname = input("The name of the figure :")
@@ -38,9 +38,9 @@ def main():
         ProbT = float(input("The probability of T gates = "))     
         DataPointZX(n, m, ProbT)
     elif mode == 4:
-        file = "/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/datapoint/foo.qasm"
-        QC2SAT(file)
-        GPMC(file)
-        ZX(file)
+        Quizxbench("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/quizx_q100d100")
+    elif mode == 5:
+        RunFolder("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/algorithm/test")
+
 if __name__ == "__main__":
     main() 
