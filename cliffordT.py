@@ -38,6 +38,47 @@ def S2CNF(tab, cnf, _, k):
     tab.z[k] = Z
     tab.r = R
 
+# Equivalent(R, r ^ z[k])
+def X2CNF(tab, cnf, _, k):
+    r = tab.r
+    z = tab.z
+    R = cnf.add_var()
+    cnf.add_clause([ R,  r, -z[k]])
+    cnf.add_clause([ R, -r,  z[k]])
+    cnf.add_clause([-R,  r,  z[k]])
+    cnf.add_clause([-R, -r, -z[k]])
+
+    tab.r = R
+
+# Equivalent(R, r ^ x[k] ^ z[k])
+def Y2CNF(tab, cnf, _, k):
+    r = tab.r
+    x = tab.x
+    z = tab.z
+    R = cnf.add_var()
+    cnf.add_clause([ R,  r,  x[k], -z[k]])
+    cnf.add_clause([ R,  r, -x[k],  z[k]])
+    cnf.add_clause([ R, -r,  x[k],  z[k]])
+    cnf.add_clause([-R,  r,  x[k],  z[k]])
+    cnf.add_clause([ R, -r, -x[k], -z[k]])
+    cnf.add_clause([-R,  r, -x[k], -z[k]])
+    cnf.add_clause([-R, -r,  x[k], -z[k]])
+    cnf.add_clause([-R, -r, -x[k],  z[k]])
+
+    tab.r = R
+
+# Equivalent(R, r ^ x[k])
+def Z2CNF(tab, cnf, _, k):
+    r = tab.r
+    x = tab.x
+    R = cnf.add_var()
+    cnf.add_clause([ R,  r, -x[k]])
+    cnf.add_clause([ R, -r,  x[k]])
+    cnf.add_clause([-R,  r,  x[k]])
+    cnf.add_clause([-R, -r, -x[k]])
+
+    tab.r = R
+
 # Equivalent(R, r ^ (x[k] & ~z[k]))
 # Equivalent(Z, x[k] ^ z[k])
 def Sdg2CNF(tab, cnf, _, k):
