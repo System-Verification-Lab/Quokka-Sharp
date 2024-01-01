@@ -136,7 +136,6 @@ def qasm_parser(filename):
 
     
     circuit.mea()
-    print(circuit.circ)
     return circuit
 
 #     # with open(filename + '.parser', 'w') as file:
