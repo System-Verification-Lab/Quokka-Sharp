@@ -26,9 +26,8 @@ class Circuit:
         self.add_single('x',qubit)
 
     def add_tdg(self,qubit):
-        self.add_z(qubit)
-        self.add_single('s',qubit)
-        self.add_single('t',qubit)
+        self.tgate += 1
+        self.add_single('tdg',qubit)
     
     def add_ccx(self,qubitc1,qubitc2,qubitr):
         self.add_single('h',qubitr)
