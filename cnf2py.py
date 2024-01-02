@@ -174,7 +174,6 @@ def main():
     print("    z = tab.z")
     print("    R = cnf.add_var()")
     print("    Z = cnf.add_var()")
-    print("    X = cnf.add_var()")
     to_py(	   str(Cr))
     print()
     to_py(	   str(Cz))
