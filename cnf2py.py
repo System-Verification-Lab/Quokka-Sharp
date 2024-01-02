@@ -255,9 +255,6 @@ def main():
     Fr = Equivalent(R, r ^ (x[k] & z[k] & ~Z))
     Cr = to_cnf(Fr)
 
-    Fx = Equivalent(X, x[k])
-    Cx = to_cnf(Fx)
-
     Fz = x[k] | Equivalent(Z, z[k])
     Cz = to_cnf(Fz)
 
@@ -268,7 +265,6 @@ def main():
     Cu2 = to_cnf(Fu2)
 
     print("# "+ str(Fr))
-    print("# "+ str(Fx))
     print("# "+ str(Fz))
     print("# "+ str(Fu))
     print("def RZ2CNF(tab, cnf, t, k, cos_theta, sin_theta):")
@@ -277,10 +273,7 @@ def main():
     print("    z = tab.z")
     print("    R = cnf.add_var()")
     print("    Z = cnf.add_var()")
-    print("    X = cnf.add_var()")
     to_py(	   str(Cr))
-    print()
-    to_py(	   str(Cx))
     print()
     to_py(	   str(Cz))
 
@@ -296,7 +289,6 @@ def main():
     print("    cnf.add_weight( u2, sin_theta)")
     print("    cnf.add_weight(-u2, 1)")
 
-    print("    tab.x[k] = X")
     print("    tab.z[k] = Z")
     print("    tab.r = R")
     print()
@@ -305,11 +297,8 @@ def main():
     Fr = Equivalent(R, r ^ (z[k] & ~x[k] & X))
     Cr = to_cnf(Fr)
 
-    Fx = Equivalent(Z, z[k])
+    Fx = z[k] | Equivalent(X, x[k])
     Cx = to_cnf(Fx)
-
-    Fz = z[k] | Equivalent(X, x[k])
-    Cz = to_cnf(Fz)
 
     Fu1 = Equivalent(u1, z[k] & ((x[k] & X) | (~x[k] & ~X)))
     Cu1 = to_cnf(Fu1)
@@ -319,20 +308,16 @@ def main():
 
     print("# "+ str(Fr))
     print("# "+ str(Fx))
-    print("# "+ str(Fz))
     print("# "+ str(Fu))
     print("def RX2CNF(tab, cnf, t, k, cos_theta, sin_theta):")
     print("    r = tab.r")
     print("    x = tab.x")
     print("    z = tab.z")
     print("    R = cnf.add_var()")
-    print("    Z = cnf.add_var()")
     print("    X = cnf.add_var()")
     to_py(	   str(Cr))
     print()
     to_py(	   str(Cx))
-    print()
-    to_py(	   str(Cz))
 
     print()   
     print("    u1 = cnf.add_var()")
@@ -347,7 +332,6 @@ def main():
     print("    cnf.add_weight(-u2, 1)")
 
     print("    tab.x[k] = X")
-    print("    tab.z[k] = Z")
     print("    tab.r = R")
     print()
   
