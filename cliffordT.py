@@ -131,6 +131,35 @@ def T2CNF(tab, cnf, t, k):
     tab.z[k] = Z
     tab.r = R
 
+# Equivalent(R, r ^ (Z & x[k] & ~z[k]))
+# x[k] | (Equivalent(Z, z[k]))
+# Equivalent(u, x[k])
+def Tdg2CNF(tab, cnf, t, k):
+    r = tab.r
+    x = tab.x
+    z = tab.z
+    R = cnf.add_var()
+    Z = cnf.add_var()
+    cnf.add_clause([ R,  Z, -r])
+    cnf.add_clause([ R, -r,  x[k]])
+    cnf.add_clause([-R,  Z,  r])
+    cnf.add_clause([-R,  r,  x[k]])
+    cnf.add_clause([ R, -r, -z[k]])
+    cnf.add_clause([-R,  r, -z[k]])
+    cnf.add_clause([ R, -Z,  r, -x[k],  z[k]])
+    cnf.add_clause([-R, -Z, -r, -x[k],  z[k]])
+
+    cnf.add_clause([ Z,  x[k], -z[k]])
+    cnf.add_clause([-Z,  x[k],  z[k]])
+
+    u = cnf.add_var()
+    cnf.add_clause([ u, -x[k]])
+    cnf.add_clause([-u,  x[k]])
+    cnf.add_weight(u, 0.707106781186548)
+
+    tab.z[k] = Z
+    tab.r = R
+
 # Equivalent(R, r ^ (x[c] & z[t] & (z[c] ^ ~x[t])))
 # Equivalent(X, x[c] ^ x[t])
 # Equivalent(Z, z[c] ^ z[t])
