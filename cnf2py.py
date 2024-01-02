@@ -188,6 +188,39 @@ def main():
     print("    tab.r = R")
     print()
 
+    #Tdag
+    Fr = Equivalent(R, r ^ (x[k] & ~z[k] & Z))
+    Cr = to_cnf(Fr)
+
+    Fz = x[k] | Equivalent(Z, z[k])
+    Cz = to_cnf(Fz)
+
+    Fu = Equivalent(u, x[k])
+    Cu = to_cnf(Fu)
+
+    print("# "+ str(Fr))
+    print("# "+ str(Fz))
+    print("# "+ str(Fu))
+    print("def Tdg2CNF(tab, cnf, t, k):")
+    print("    r = tab.r")
+    print("    x = tab.x")
+    print("    z = tab.z")
+    print("    R = cnf.add_var()")
+    print("    Z = cnf.add_var()")
+    to_py(	   str(Cr))
+    print()
+    to_py(	   str(Cz))
+
+    print()   
+    print("    u = cnf.add_var()")
+    to_py(	   str(Cu))
+    print("    cnf.add_weight(u, 0.707106781186548)")
+    print()   
+
+    print("    tab.z[k] = Z")
+    print("    tab.r = R")
+    print()
+
     #CNOT
     Fr = Equivalent(R, r ^ (x[c] & z[t] & (~x[t] ^ z[c])))
     Cr = to_cnf(Fr)

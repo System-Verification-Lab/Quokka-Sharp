@@ -57,6 +57,9 @@ def main(qasm_file, cnf_file):
         elif gate == 's':
             k = int(element[1]) - 1
             S2CNF(tab,cnf,t,k)
+        elif gate == 'tdg':
+            k = int(element[1]) - 1
+            Tdg2CNF(tab,cnf,t,k)
         elif gate == 'sdg':
             k = int(element[1]) - 1
             Sdg2CNF(tab,cnf,t,k)
