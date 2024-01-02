@@ -111,7 +111,6 @@ def T2CNF(tab, cnf, t, k):
     z = tab.z
     R = cnf.add_var()
     Z = cnf.add_var()
-    X = cnf.add_var()
     cnf.add_clause([ R, -r,  x[k]])
     cnf.add_clause([ R, -r,  z[k]])
     cnf.add_clause([-R,  r,  x[k]])
