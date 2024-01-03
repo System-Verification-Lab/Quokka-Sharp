@@ -7,13 +7,38 @@ from qasm_parser import qasm_parser
 from settings import GPMC_PATH
 import math, re
 
+
+def convert_to_float(frac_str):
+    try:
+        return float(frac_str)
+    except:
+        num, denom = frac_str.split('/')
+        piflag = 0
+        denom = float(denom)
+        if num == "pi":
+            piflag = 1
+            num = 1
+        elif "pi" in num:
+            piflag = 1
+            num = num.replace("pi",'')
+            num = num.replace("*",'')
+            num = float(num)
+        if piflag == 1:
+            return num / denom * math.pi
+        else:
+            return num / denom
+
 def get_cos_sin(str):
-    theta_str = re.findall(r"\(([-+]?[A-Za-z0-9_*.]+)\)", str)[0]
-    if 'pi' in theta_str:
-        theta = theta_str.split('*')
-        theta = float(theta[0]) * math.pi
+    angle = re.findall(r"\((.*?)\)",str)[0]
+    if "/" in str:
+        theta = convert_to_float(angle)
     else:
-        theta = float(theta_str)
+        theta_str = angle
+        if 'pi' in theta_str:
+            theta = theta_str.split('*')
+            theta = float(theta[0]) * math.pi
+        else:
+            theta = float(theta_str)
     res_cos = math.cos(theta)
     if abs(res_cos) < 1e-15:
         res_cos = 0

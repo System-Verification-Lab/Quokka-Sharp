@@ -130,10 +130,12 @@ def qasm_parser(filename):
                 circuit.add_ccx(qubitc1,qubitc2,qubitr)
             else: 
                 qubit = get_num(line[1])
-                if gate == "rz(0.5*pi)":
+                if gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
                     circuit.add_single('s',qubit)
-                elif gate == 'rz(-0.5*pi)':
-                    circuit.add_single('sdg',qubit)             
+                elif gate == 'rz(-0.5*pi)' or gate == "rz(-pi/2)":
+                    circuit.add_single('sdg',qubit)
+                elif gate == 'rz(pi)' or gate == 'rz(-pi)':
+                    circuit.add_z(qubit)
                 else:
                     circuit.add_single(gate,qubit)
 

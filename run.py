@@ -40,7 +40,7 @@ def main():
     elif mode == 4:
         Quizxbench("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/quizx_q100d100")
     elif mode == 5:
-        RunFolder("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/test")
+        RunFolder("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/algorithm/test")
 
 if __name__ == "__main__":
     main() 
