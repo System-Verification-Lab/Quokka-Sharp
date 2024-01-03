@@ -82,7 +82,7 @@ def ZX(filename):
         result, err = p.communicate(timeout=TIMEOUT)
         print(result)
         result = str(result)
-        # print(err)
+        print(err)
         zx_time_str = re.findall(r"tall.*$",result)[0]
         zx_time = re.findall(r"[-+]?(?:\d*\.*\d+)", zx_time_str)[0]
         print(zx_time_str)
