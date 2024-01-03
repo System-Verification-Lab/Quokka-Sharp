@@ -141,13 +141,13 @@ def qasm_parser(filename):
     circuit.mea()
     return circuit
 
-#     # with open(filename + '.parser', 'w') as file:
-#     #     file.writelines(str(circuit.n)+" "+str(circuit.m)+'\n')
-#     #     for item in circuit.circ:
-#     #         file.writelines(item+'\n')
-#     # path_list = filename.split('/')
-#     # filename_list1 = path_list[len(path_list) - 1].split('.')
-#     # filename_list2 = filename_list1[0].split('_')
-#     # tcount = filename_list2[len(filename_list2) - 2]
-#     # # print(tcount)
-#     # print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
+    # with open(filename + '.parser', 'w') as file:
+    #     file.writelines(str(circuit.n)+" "+str(circuit.m)+'\n')
+    #     for item in circuit.circ:
+    #         file.writelines(item+'\n')
+    # path_list = filename.split('/')
+    # filename_list1 = path_list[len(path_list) - 1].split('.')
+    # filename_list2 = filename_list1[0].split('_')
+    # tcount = filename_list2[len(filename_list2) - 2]
+    # # print(tcount)
+    # print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
