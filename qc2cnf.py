@@ -9,6 +9,10 @@ import math, re
 
 
 def convert_to_float(frac_str):
+    sign = 0
+    if "-" in frac_str:
+        sign = 1
+        frac_str = frac_str.replace("-",'')
     try:
         return float(frac_str)
     except:
@@ -24,9 +28,9 @@ def convert_to_float(frac_str):
             num = num.replace("*",'')
             num = float(num)
         if piflag == 1:
-            return num / denom * math.pi
+            return math.pow(-1,sign) * num / denom * math.pi
         else:
-            return num / denom
+            return math.pow(-1,sign) * num / denom
 
 def get_cos_sin(str):
     angle = re.findall(r"\((.*?)\)",str)[0]
