@@ -194,6 +194,8 @@ def main(qasm_file, cnf_file):
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
         the_file.write(cnf.weight_list.getvalue())
         the_file.write(cnf.cons_list.getvalue())
+    
+    return [tab.x, tab.z]
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
