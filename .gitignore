@@ -1,3 +1,5 @@
 __pycache__
 *.swp
 **/.DS_Store
+*.cnf
+*.quasimodo*
