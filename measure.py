@@ -1,11 +1,11 @@
-def M2CNF(tab, cnf, k):
+def M2CNF(tab, cnf):
     n = tab.n; x = tab.x; z = tab.z; r = tab.r
 
     cnf.add_weight( r, -1)
     cnf.add_weight(-r,  1)
     for i in range(n):
         cnf.add_clause([-x[i]])
-        if i == k:
+        if i == 0:
             cnf.add_clause([z[i]])
         else:
             cnf.add_clause([-z[i]])

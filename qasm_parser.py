@@ -146,7 +146,7 @@ def qasm_parser(filename):
             gate = line[0]
             raise Exception(str(gate) + " undefined.")
     
-    # circuit.mea()
+    circuit.mea()
     return circuit
 
     # with open(filename + '.parser', 'w') as file:
