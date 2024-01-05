@@ -59,7 +59,7 @@ def main(qasm_file, cnf_file):
     n = circuit.n
     m = circuit.m
 
-    tab = Tableau(n,m)
+    tab = Tableau(n)
     cnf = CNF()
 
     init(tab,cnf)
@@ -105,8 +105,6 @@ def main(qasm_file, cnf_file):
             RZ2CNF(tab,cnf,k, res_cos, res_sin)
         elif gate == 'm':
             M2CNF(tab,cnf)
-        else:
-            sys.exit('Unknown gate: '+ element[0])
 
     print("N: "+ str(circuit.n) + " Clifford: " + str(circuit.m - circuit.tgate) + " T: " + str(circuit.tgate))
 
