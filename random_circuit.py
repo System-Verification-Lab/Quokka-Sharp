@@ -66,7 +66,7 @@ def GPMC(filename):
         if "e-" in gpmc_ans_str == 2: # deal with exact: -8.72889813224858e-09
             gpmc_ans_str = '0'
         print(gpmc_ans_str)
-        gpmc_ans = (float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_ans_str)[0])) / math.pow(2,10)
+        gpmc_ans = (float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_ans_str)[0]))
         print("The resulting probability by GPMC is " + str(gpmc_ans))
         print("The running time of GPMC is " + str(gpmc_time) + "ms")
         return gpmc_time
