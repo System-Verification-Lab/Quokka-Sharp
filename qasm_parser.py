@@ -86,10 +86,12 @@ def qasm_parser(filename):
                 globals()[qreg][i] = i + circuit.n + 1
             circuit.n += num
 
-        elif(line[0] == 'barrier' or line[0] == '//' or line[0] == 'measure'):
+        elif(line[0] == 'barrier' or line[0] == 'measure'):
+            raise Exception("Syntax error:" + line[0])
+            
+        elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include' or line[0] == 'creg':
             continue
-                
-        if(any(item in gates for item in line[0])):
+        elif(any(item in gates for item in line[0])):
             gate = line[0]
             if gate == 'cx':
                 if(line[1].count('[') == 1):
@@ -128,19 +130,23 @@ def qasm_parser(filename):
                     qubitc2 = get_num(qubits[1]) 
                     qubitr = get_num(qubits[2])                
                 circuit.add_ccx(qubitc1,qubitc2,qubitr)
-            else: 
+            elif gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
                 qubit = get_num(line[1])
-                if gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
-                    circuit.add_single('s',qubit)
-                elif gate == 'rz(-0.5*pi)' or gate == "rz(-pi/2)":
-                    circuit.add_single('sdg',qubit)
-                elif gate == 'rz(pi)' or gate == 'rz(-pi)':
-                    circuit.add_z(qubit)
-                else:
-                    circuit.add_single(gate,qubit)
-
+                circuit.add_single('s',qubit)
+            elif gate == 'rz(-0.5*pi)' or gate == "rz(-pi/2)":
+                qubit = get_num(line[1])
+                circuit.add_single('sdg',qubit)
+            elif gate == 'rz(pi)' or gate == 'rz(-pi)':
+                qubit = get_num(line[1])
+                circuit.add_z(qubit)
+            elif gate == 'h' or gate == 's' or gate == 't':
+                qubit = get_num(line[1])
+                circuit.add_single(gate,qubit)
+        else:
+            gate = line[0]
+            raise Exception(str(gate) + " undefined.")
     
-    circuit.mea()
+    # circuit.mea()
     return circuit
 
     # with open(filename + '.parser', 'w') as file:
