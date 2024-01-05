@@ -186,7 +186,10 @@ def main(qasm_file, cnf_file):
                 
         else:
             raise Exception(str(line[0]) + " undefined.")
-        
+    
+    cnf.add_weight(tab.r, -1)
+    cnf.add_weight(-tab.r,  1)
+    
     with open(cnf_file, 'w') as the_file:
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
         the_file.write(cnf.weight_list.getvalue())
