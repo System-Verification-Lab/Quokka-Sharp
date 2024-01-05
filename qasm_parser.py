@@ -139,7 +139,7 @@ def qasm_parser(filename):
             elif gate == 'rz(pi)' or gate == 'rz(-pi)':
                 qubit = get_num(line[1])
                 circuit.add_z(qubit)
-            elif gate == 'h' or gate == 's' or gate == 't':
+            else:
                 qubit = get_num(line[1])
                 circuit.add_single(gate,qubit)
         else:
