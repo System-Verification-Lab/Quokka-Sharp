@@ -62,17 +62,24 @@ def main(file, seed):
             k = int(element[1]) - 1
             b.write("qc.z({0})\n".format(k))
             b.write("qc.s({0})\n".format(k))
+        elif gate == 'tdg':
+            k = int(element[1]) - 1
+            b.write("qc.t({0})\n".format(k))
+            b.write("qc.z({0})\n".format(k))
+            b.write("qc.s({0})\n".format(k))
         elif gate == 't':
             k = int(element[1]) - 1
             b.write("qc.t({0})\n".format(k))
-        # elif 'rx' in gate:
-        #     t = element[0]
-        #     k = int(element[1]) - 1
-        #     b.write("qc.rx({0}, {1})\n".format(k, theta))
-        # elif 'rz' in gate:
-        #     t = element[0]
-        #     k = int(element[1]) - 1
-        #     b.write("qc.rz({0}, {1})\n".format(k, theta))
+        elif 'rx' in gate:
+            theta = element[0].split("(")[1].rstrip(")")
+            k = int(element[1]) - 1
+            b.write("qc.h({0})\n".format(k))
+            b.write("qc.p({0}, {1})\n".format(k, theta))
+            b.write("qc.h({0})\n".format(k))
+        elif 'rz' in gate:
+            theta = element[0].split("(")[1].rstrip(")")
+            k = int(element[1]) - 1
+            b.write("qc.p({0}, {1})\n".format(k, theta))
         elif gate == 'm':
             b = b
         else:
