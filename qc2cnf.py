@@ -69,40 +69,40 @@ def main(qasm_file, cnf_file):
         gate = element[0]
         if gate == 'h':
             k = int(element[1]) - 1
-            H2CNF(tab,cnf,t,k)
+            H2CNF(tab,cnf,k)
         elif gate == 'x':
             k = int(element[1]) - 1
-            X2CNF(tab,cnf,t,k)
+            X2CNF(tab,cnf,k)
         elif gate == 'y':
             k = int(element[1]) - 1
-            Y2CNF(tab,cnf,t,k)
+            Y2CNF(tab,cnf,k)
         elif gate == 'z':
             k = int(element[1]) - 1
-            Z2CNF(tab,cnf,t,k)
+            Z2CNF(tab,cnf,k)
         elif gate == 'cx':
             j = int(element[1]) - 1
             k = int(element[2]) - 1
-            CNOT2CNF(tab,cnf,t,j,k)
+            CNOT2CNF(tab,cnf,j,k)
         elif gate == 's':
             k = int(element[1]) - 1
-            S2CNF(tab,cnf,t,k)
+            S2CNF(tab,cnf,k)
         elif gate == 'tdg':
             k = int(element[1]) - 1
-            Tdg2CNF(tab,cnf,t,k)
+            Tdg2CNF(tab,cnf,k)
         elif gate == 'sdg':
             k = int(element[1]) - 1
-            Sdg2CNF(tab,cnf,t,k)
+            Sdg2CNF(tab,cnf,k)
         elif gate == 't':
             k = int(element[1]) - 1
-            T2CNF(tab,cnf,t,k)
+            T2CNF(tab,cnf,k)
         elif 'rx' in gate:
             [res_cos, res_sin] = get_cos_sin(element[0])
             k = int(element[1]) - 1
-            RX2CNF(tab,cnf,t,k, res_cos, res_sin)
+            RX2CNF(tab,cnf,k, res_cos, res_sin)
         elif 'rz' in gate:
             [res_cos, res_sin] = get_cos_sin(element[0])
             k = int(element[1]) - 1
-            RZ2CNF(tab,cnf,t,k, res_cos, res_sin)
+            RZ2CNF(tab,cnf,k, res_cos, res_sin)
         elif gate == 'm':
             M2CNF(tab,cnf)
         else:
