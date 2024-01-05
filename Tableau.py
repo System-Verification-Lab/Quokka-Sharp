@@ -1,9 +1,8 @@
 import io
 
 class Tableau:
-    def __init__(self,n,m):
+    def __init__(self,n):
         self.n = n
-        self.m = m
         self.x = [0] * n
         self.z = [0] * n
         self.r = 0
