@@ -1,6 +1,6 @@
 
 # Equivalent(R, r ^ (x[k] & z[k]))
-def H2CNF(tab, cnf, _, k):
+def H2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -17,7 +17,7 @@ def H2CNF(tab, cnf, _, k):
 
 # Equivalent(R, r ^ (x[k] & z[k]))
 # Equivalent(Z, x[k] ^ z[k])
-def S2CNF(tab, cnf, _, k):
+def S2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -39,7 +39,7 @@ def S2CNF(tab, cnf, _, k):
     tab.r = R
 
 # Equivalent(R, r ^ z[k])
-def X2CNF(tab, cnf, _, k):
+def X2CNF(tab, cnf, k):
     r = tab.r
     z = tab.z
     R = cnf.add_var()
@@ -51,7 +51,7 @@ def X2CNF(tab, cnf, _, k):
     tab.r = R
 
 # Equivalent(R, r ^ x[k] ^ z[k])
-def Y2CNF(tab, cnf, _, k):
+def Y2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -68,7 +68,7 @@ def Y2CNF(tab, cnf, _, k):
     tab.r = R
 
 # Equivalent(R, r ^ x[k])
-def Z2CNF(tab, cnf, _, k):
+def Z2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     R = cnf.add_var()
@@ -81,7 +81,7 @@ def Z2CNF(tab, cnf, _, k):
 
 # Equivalent(R, r ^ (x[k] & ~z[k]))
 # Equivalent(Z, x[k] ^ z[k])
-def Sdg2CNF(tab, cnf, _, k):
+def Sdg2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -105,7 +105,7 @@ def Sdg2CNF(tab, cnf, _, k):
 # Equivalent(R, r ^ (x[k] & z[k] & ~Z))
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
-def T2CNF(tab, cnf, t, k):
+def T2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -134,7 +134,7 @@ def T2CNF(tab, cnf, t, k):
 # Equivalent(R, r ^ (Z & x[k] & ~z[k]))
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
-def Tdg2CNF(tab, cnf, t, k):
+def Tdg2CNF(tab, cnf, k):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -163,7 +163,7 @@ def Tdg2CNF(tab, cnf, t, k):
 # Equivalent(R, r ^ (x[c] & z[t] & (z[c] ^ ~x[t])))
 # Equivalent(X, x[c] ^ x[t])
 # Equivalent(Z, z[c] ^ z[t])
-def CNOT2CNF(tab, cnf, _, c, t):
+def CNOT2CNF(tab, cnf, c, t):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -199,7 +199,7 @@ def CNOT2CNF(tab, cnf, _, c, t):
 # Equivalent(R, r ^ (x[k] & z[k] & ~Z))
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
-def RZ2CNF(tab, cnf, t, k, cos_theta, sin_theta):
+def RZ2CNF(tab, cnf, k, cos_theta, sin_theta):
     r = tab.r
     x = tab.x
     z = tab.z
@@ -244,7 +244,7 @@ def RZ2CNF(tab, cnf, t, k, cos_theta, sin_theta):
 # Equivalent(R, r ^ (X & z[k] & ~x[k]))
 # z[k] | (Equivalent(X, x[k]))
 # Equivalent(u, x[k])
-def RX2CNF(tab, cnf, t, k, cos_theta, sin_theta):
+def RX2CNF(tab, cnf, k, cos_theta, sin_theta):
     r = tab.r
     x = tab.x
     z = tab.z

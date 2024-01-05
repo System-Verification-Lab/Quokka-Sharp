@@ -41,6 +41,9 @@ def main():
         Quizxbench("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/quizx_q100d100")
     elif mode == 5:
         RunFolder("/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/algorithm/test")
-
+    elif mode == 6:
+        file = "/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/algorithm/test/test.qasm"
+        QC2SAT(file)
+        GPMC(file)
 if __name__ == "__main__":
     main() 
