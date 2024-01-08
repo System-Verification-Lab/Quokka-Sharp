@@ -6,7 +6,8 @@ def print_header(b):
     b.write('''
 import quasimodo
 import time
-
+from math import pi
+            
 start = time.time()
 ''')
 
