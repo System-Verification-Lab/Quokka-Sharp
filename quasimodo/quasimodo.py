@@ -1,4 +1,4 @@
-import pyquasimodo
+from pyquasimodo import *
 
 """
     model_str : str -> {"CFLOBDD", "BDD", "WBDD"}
