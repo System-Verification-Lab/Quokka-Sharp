@@ -2,6 +2,7 @@ import re, math, sys
 from cliffordT import *
 from Tableau import Tableau, CNF
 from InitConst import init
+from measure import M2CNF
 
 class Circuit:
     def __init__(self):
@@ -67,7 +68,7 @@ def main(qasm_file, cnf_file):
         for line in qasm:
             qasm_list.append(line.rsplit())
     qasm_list = qasm_list[2:]
-       
+
     gates = ['h','s','cx', 'ccx', 't','z','y','x','tdg', 'rx', 'rz']
 
     circuit = Circuit()
@@ -84,7 +85,7 @@ def main(qasm_file, cnf_file):
             num = int(line[1][idx1+1:idx2])
             globals()[qreg] = [0] * num
             for i in range(0, num):
-                globals()[qreg][i] = i + circuit.n + 1
+                globals()[qreg][i] = i + circuit.n
             circuit.n += num
             
         elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include' or line[0] == 'creg':
@@ -111,19 +112,19 @@ def main(qasm_file, cnf_file):
                 circuit.m += 1
             if gate == 'h':
                 k = get_num(line[1])
-                H2CNF(tab,cnf,k)
+                # H2CNF(tab,cnf,k)
             elif gate == 's' or gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
                 k = get_num(line[1])
-                S2CNF(tab,cnf,k)
+                # S2CNF(tab,cnf,k)
             elif gate == 'x':
                 k = get_num(line[1])
-                X2CNF(tab,cnf,k)
+                # X2CNF(tab,cnf,k)
             elif gate == 'y':
                 k = get_num(line[1])
-                Y2CNF(tab,cnf,k)
+                # Y2CNF(tab,cnf,k)
             elif gate == 'z' or gate == 'rz(pi)' or gate == 'rz(-pi)':
                 k = get_num(line[1])
-                Z2CNF(tab,cnf,k)
+                # Z2CNF(tab,cnf,k)
             elif gate == 'cx':
                 circuit.cxgate += 1
                 if(line[1].count('[') == 1):
@@ -153,7 +154,7 @@ def main(qasm_file, cnf_file):
             elif "rz" in gate:
                 [res_cos, res_sin] = get_cos_sin(gate)
                 k = get_num(line[1])
-                RZ2CNF(tab,cnf,k, res_cos, res_sin)
+                # RZ2CNF(tab,cnf,k, res_cos, res_sin)
             elif gate == "ccx":
                 if(line[1].count('[') == 1):
                     qubitc1 = get_num(line[1])
@@ -187,16 +188,15 @@ def main(qasm_file, cnf_file):
         else:
             raise Exception(str(line[0]) + " undefined.")
     
-    cnf.add_weight(tab.r, -1)
-    cnf.add_weight(-tab.r,  1)
+    M2CNF(tab,cnf)
     
     with open(cnf_file, 'w') as the_file:
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
         the_file.write(cnf.weight_list.getvalue())
         the_file.write(cnf.cons_list.getvalue())
     
-    return [tab.x, tab.z]
-
+    print([circuit.n, circuit.m])
+    
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         exit(1)

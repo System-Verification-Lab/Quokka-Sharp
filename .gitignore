@@ -3,3 +3,6 @@ __pycache__
 **/.DS_Store
 *.cnf
 *.quasimodo*
+test.qasm
+test.qasm.cnf
+test.qasm.cnf
