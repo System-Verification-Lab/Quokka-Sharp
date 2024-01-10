@@ -44,6 +44,6 @@ def main():
     elif mode == 6:
         file = "/Users/meij/Desktop/NewEncoding/cliffordtmc/benchmark/random/test/test.qasm"
         QC2SAT(file)
-        GPMC(file)
+        # GPMC(file)
 if __name__ == "__main__":
     main() 

@@ -41,11 +41,13 @@ def QC2SAT(qasm_file):
         shutil.rmtree(GPMC_PATH + '/example/' + folder)
     os.mkdir(GPMC_PATH + '/example/' + folder)
     wmc_file = GPMC_PATH + '/example/'+ folder + '/' + filename
+    print(wmc_file)
     prep_start = time.time()
-    circ_info = os.popen('python3 qc2cnf.py ' + qasm_file + ' ' + wmc_file).read()
+    circ_info = os.popen('python3 qasm2cnf.py ' + qasm_file + ' ' + wmc_file).read()
     print(circ_info)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
+    print(t_prep)
     return t_prep
 
 def GPMC(filename):
