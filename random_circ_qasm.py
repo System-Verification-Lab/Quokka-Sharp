@@ -1,6 +1,15 @@
 import random, os, shutil, sys
 
-def generate_random_qasm_circuit(n, m, t_prob):
+seeds = [7347,7945, 1788, 5178,3923,130, 
+         1077, 1815, 7455, 801,4916, 5959, 3741, 
+         596, 9770, 8351, 9936, 1482, 7252, 3152, 2201, 
+         551, 4748, 6911, 4221, 6421, 485, 9791, 572, 
+         7642, 2592, 9420, 5852, 9092, 6528, 4826, 3497, 
+         3132, 4321, 2274, 3988, 6254, 271, 8196, 
+         9335, 1582, 9784, 7887, 4842, 1308]
+
+def generate_random_qasm_circuit(n, m, t_prob, SEED):
+    random.seed(SEED)
     circuit_lines = []
     circuit_lines.append(f'qreg q[{n}];')  # Declare qubits
     
@@ -131,11 +140,15 @@ def DataPoint(n, m, Tprob):
     return folder + '/' + filename
 
 
-def main(filename, n, d, r):
-    print("")
-    random_circuit = generate_random_qasm_circuit(n, d, r)
-    circuit_content = '\n'.join(random_circuit)
-    WriteFile(".", filename, circuit_content)
+def main(folder, n, d, r):
+    folder = os.getcwd() + "/benchmark/random/" + folder
+    if not os.path.isdir(folder):
+        os.mkdir(folder)
+    for SEED in seeds:
+        random_circuit = generate_random_qasm_circuit(n, d, r, SEED)
+        circuit_content = '\n'.join(random_circuit)
+        filename = f"q{n}d{d}seed{SEED}.qasm"
+        WriteFile(folder, filename, circuit_content)
 
     
 if __name__ == "__main__":
@@ -149,7 +162,12 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         qubits = int(sys.argv[2])
     elif len(sys.argv) > 3:
-        qubits = int(sys.argv[3])
-    elif len(sys.argv) > 4:
-        qubits = float(sys.argv[4])
-    main(sys.argv[1], qubits, depth, Trate) 
+        qubits = int(sys.argv[2])
+        depth = int(sys.argv[3])
+        Trate = float(sys.argv[4])
+    # elif len(sys.argv) > 4:
+    #     qubits = float(sys.argv[2])
+    #     depth = int(sys.argv[3])
+    #     Trate = float(sys.argv[4])
+    main(sys.argv[1], int(sys.argv[2]),int(sys.argv[3]), float(sys.argv[4])) 
+    
