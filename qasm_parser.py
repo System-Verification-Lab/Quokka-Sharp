@@ -1,53 +1,47 @@
 class Circuit:
-    def __init__(self):
+    def __init__(self, translate_ccx):
         self.n = 0
-        self.m = 0
         self.tgate = 0
         self.cxgate = 0
         self.circ = []
+        self.translate_ccx = translate_ccx
+
+    def depth(self):
+        return len(self.circ)
     
     def add_single(self,gate,qubit):
-        self.m += 1
         if(gate == 't'): self.tgate += 1
         self.circ.append([gate, qubit])
 
     def add_cx(self,qubitc,qubitr):
-        self.m += 1
         self.cxgate += 1
         self.circ.append(['cx', qubitc, qubitr])
-     
-    def add_z(self,qubit):
-        self.add_single('z',qubit)
-    
-    def add_y(self,qubit):
-        self.add_single('y',qubit)
-
-    def add_x(self,qubit):
-        self.add_single('x',qubit)
 
     def add_tdg(self,qubit):
         self.tgate += 1
         self.add_single('tdg',qubit)
     
     def add_ccx(self,qubitc1,qubitc2,qubitr):
-        self.add_single('h',qubitr)
-        self.add_cx(qubitc2,qubitr)
-        self.add_tdg(qubitr)
-        self.add_cx(qubitc1,qubitr)
-        self.add_single('t',qubitr)
-        self.add_cx(qubitc2,qubitr)
-        self.add_tdg(qubitr)
-        self.add_cx(qubitc1,qubitr)
-        self.add_single('t',qubitc2)
-        self.add_single('t',qubitr)
-        self.add_cx(qubitc1,qubitc2)
-        self.add_single('h',qubitr)
-        self.add_single('t',qubitc1)
-        self.add_tdg(qubitc2)
-        self.add_cx(qubitc1,qubitc2)
+        if self.translate_ccx:
+            self.add_single('h',qubitr)
+            self.add_cx(qubitc2,qubitr)
+            self.add_tdg(qubitr)
+            self.add_cx(qubitc1,qubitr)
+            self.add_single('t',qubitr)
+            self.add_cx(qubitc2,qubitr)
+            self.add_tdg(qubitr)
+            self.add_cx(qubitc1,qubitr)
+            self.add_single('t',qubitc2)
+            self.add_single('t',qubitr)
+            self.add_cx(qubitc1,qubitc2)
+            self.add_single('h',qubitr)
+            self.add_single('t',qubitc1)
+            self.add_tdg(qubitc2)
+            self.add_cx(qubitc1,qubitc2)
+        else:
+            self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
         
     def mea(self):
-        self.m += 1        
         self.circ.append('m')   
 
 def get_num(s):
@@ -60,7 +54,7 @@ def get_num(s):
             num = num + s[i]
     return globals()[qreg][int(num)]
 
-def qasm_parser(filename):
+def qasm_parser(filename, translate_ccx):
     qasm_list = []
     
     with open(filename,"r") as qasm:
@@ -70,7 +64,7 @@ def qasm_parser(filename):
 
     gates = ['h','s','cx', 'ccx', 't','z','y','x','tdg', 'rx', 'rz']
 
-    circuit = Circuit()
+    circuit = Circuit(translate_ccx)
     
     for line in qasm_list:
         if len(line) == 0:
@@ -105,15 +99,15 @@ def qasm_parser(filename):
                 
             elif gate == 'z':
                 qubit = get_num(line[1])
-                circuit.add_z(qubit)
+                circuit.add_single('z',qubit)
                         
             elif gate == 'y':
                 qubit = get_num(line[1])
-                circuit.add_y(qubit) 
+                circuit.add_single('y',qubit) 
 
             elif gate == 'x':
                 qubit = get_num(line[1])
-                circuit.add_x(qubit) 
+                circuit.add_single('x', qubit) 
                 
             elif gate == 'tdg':
                 qubit = get_num(line[1])
@@ -138,7 +132,7 @@ def qasm_parser(filename):
                 circuit.add_single('sdg',qubit)
             elif gate == 'rz(pi)' or gate == 'rz(-pi)':
                 qubit = get_num(line[1])
-                circuit.add_z(qubit)
+                circuit.add_single('z',qubit)
             else:
                 qubit = get_num(line[1])
                 circuit.add_single(gate,qubit)
