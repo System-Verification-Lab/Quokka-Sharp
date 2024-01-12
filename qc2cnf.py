@@ -52,7 +52,7 @@ def get_cos_sin(str):
     return [res_cos, res_sin]
 
 def main(qasm_file, cnf_file):
-    circuit = qasm_parser(qasm_file)
+    circuit = qasm_parser(qasm_file, True)
     qclist = circuit.circ
 
 
