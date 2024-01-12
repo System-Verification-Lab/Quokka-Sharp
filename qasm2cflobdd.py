@@ -1,22 +1,33 @@
 import sys, io
+import argparse
 from qasm_parser import qasm_parser
 
 
-def print_header(b):
+def print_header(b, orig_name):
     b.write('''
 import quasimodo
 import time
+import argparse
 from math import pi
-            
+
+parser = argparse.ArgumentParser(description='Execute CFLOBDD python binding code for {0}.')
+parser.add_argument('-s', '--seed', default=1)
+parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
+args = parser.parse_args()
+
 start = time.time()
-''')
+'''.format(orig_name))
 
 def print_footer(b, n, orig_name):
     b.write('''
 b = dict()
-b[0] = 0
-# for i in range(0, {0}):
-#     b[i] = 0
+if args.measurement == 'firstzero' or args.measurement == None:
+    b[0] = 0
+elif args.measurement == 'allzero':
+    for i in range(0, {0}):
+        b[i] = 0
+else:
+    parser.exit(args.measurement)
 p = qc.prob(b)
 
 end = time.time()
@@ -24,18 +35,18 @@ end = time.time()
 print ('{1},', {2},' time: ', (end - start), " prob: ", p)
 '''.format(n, orig_name, n))
 
-def main(file, seed):
-    circuit = qasm_parser(file)
+def main(file):
+    circuit = qasm_parser(file, False)
     # print(circuit)
     gates = circuit.circ
     n = circuit.n
-    m = circuit.m
+    m = circuit.depth()
 
     # GHZ
     b = io.StringIO()
 
-    print_header(b)
-    b.write("qc = quasimodo.QuantumCircuit(\"CFLOBDD\", {0}, {1})\n".format(n, seed))
+    print_header(b, file)
+    b.write("qc = quasimodo.QuantumCircuit(\"CFLOBDD\", {0}, args.seed)\n".format(n))
 
     for t in range(m):
         element = gates[t]
@@ -56,6 +67,11 @@ def main(file, seed):
             j = int(element[1]) - 1
             k = int(element[2]) - 1
             b.write("qc.cx({0}, {1})\n".format(j, k))
+        elif gate == 'ccx':
+            j = int(element[1]) - 1
+            k = int(element[2]) - 1
+            l = int(element[3]) - 1
+            b.write("qc.ccx({0}, {1}, {2})\n".format(j, k, l))
         elif gate == 's':
             k = int(element[1]) - 1
             b.write("qc.s({0})\n".format(k))
@@ -92,9 +108,8 @@ def main(file, seed):
     with open(py_file, 'w') as the_file:
         the_file.write(b.getvalue())
 
-
-
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        exit('provide two arguments')
-    main(sys.argv[1], int(sys.argv[2]))
+    parser = argparse.ArgumentParser(description='Generate CFLOBDD python binding code.')
+    parser.add_argument('filename')
+    args = parser.parse_args()
+    main(args.filename)
