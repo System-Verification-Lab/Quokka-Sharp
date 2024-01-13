@@ -1,7 +1,8 @@
 import sys, io
 import argparse
+import math
 from qasm_parser import qasm_parser
-
+from qasm2cnf import convert_to_float
 
 def print_header(b, orig_name):
     b.write('''
@@ -89,12 +90,14 @@ def main(file):
             b.write("qc.t({0})\n".format(k))
         elif 'rx' in gate:
             theta = element[0].split("(")[1].rstrip(")")
+            theta = convert_to_float(theta) / math.pi
             k = int(element[1]) - 1
             b.write("qc.h({0})\n".format(k))
             b.write("qc.p({0}, {1})\n".format(k, theta))
             b.write("qc.h({0})\n".format(k))
         elif 'rz' in gate:
             theta = element[0].split("(")[1].rstrip(")")
+            theta = convert_to_float(theta) / math.pi
             k = int(element[1]) - 1
             b.write("qc.p({0}, {1})\n".format(k, theta))
         elif gate == 'm':
