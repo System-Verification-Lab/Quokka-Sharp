@@ -62,7 +62,7 @@ def get_num(s):
     num = re.findall(r"\[([0-9]*)\]",s)[0]
     return globals()[qreg][int(num)]
 
-def main(qasm_file, cnf_file):
+def main(qasm_file, cnf_file, multi_or_single):
     qasm_list = []
     with open(qasm_file,"r") as qasm:
         for line in qasm:
@@ -73,10 +73,13 @@ def main(qasm_file, cnf_file):
 
     circuit = Circuit()
     
-    gate_line = 0
+    gate_line = -1
     
     for line in qasm_list:
+        gate_line += 1
         if len(line) == 0:
+            continue
+        elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include' or line[0] == 'creg':
             continue
         elif any(item in ["qreg"] for item in line):
             idx1 = line[1].find('[')
@@ -87,14 +90,9 @@ def main(qasm_file, cnf_file):
             for i in range(0, num):
                 globals()[qreg][i] = i + circuit.n
             circuit.n += num
-            
-        elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include' or line[0] == 'creg':
-            continue
         else:
             break
-        gate_line += 1
-    
-    print(gate_line)
+
     qasm_list = qasm_list[gate_line:]
     
     tab = Tableau(circuit.n)
@@ -106,25 +104,27 @@ def main(qasm_file, cnf_file):
             continue
         if(line[0] == 'barrier' or line[0] == 'measure'):
             raise Exception("Syntax error:" + line[0])
+        elif line[0] == '//' or line[0] == 'creg':
+            continue
         elif(any(item in gates for item in line[0])): 
             gate = line[0]
             if gate != "ccx":
                 circuit.m += 1
             if gate == 'h':
                 k = get_num(line[1])
-                # H2CNF(tab,cnf,k)
+                H2CNF(tab,cnf,k)
             elif gate == 's' or gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
                 k = get_num(line[1])
-                # S2CNF(tab,cnf,k)
+                S2CNF(tab,cnf,k)
             elif gate == 'x':
                 k = get_num(line[1])
-                # X2CNF(tab,cnf,k)
+                X2CNF(tab,cnf,k)
             elif gate == 'y':
                 k = get_num(line[1])
-                # Y2CNF(tab,cnf,k)
+                Y2CNF(tab,cnf,k)
             elif gate == 'z' or gate == 'rz(pi)' or gate == 'rz(-pi)':
                 k = get_num(line[1])
-                # Z2CNF(tab,cnf,k)
+                Z2CNF(tab,cnf,k)
             elif gate == 'cx':
                 circuit.cxgate += 1
                 if(line[1].count('[') == 1):
@@ -148,13 +148,15 @@ def main(qasm_file, cnf_file):
                 k = get_num(line[1])
                 T2CNF(tab,cnf,k)
             elif "rx" in gate:
+                circuit.rgate += 1
                 [res_cos, res_sin] = get_cos_sin(gate)
                 k = get_num(line[1])
                 RX2CNF(tab,cnf,k, res_cos, res_sin)
             elif "rz" in gate:
+                circuit.rgate += 1
                 [res_cos, res_sin] = get_cos_sin(gate)
                 k = get_num(line[1])
-                # RZ2CNF(tab,cnf,k, res_cos, res_sin)
+                RZ2CNF(tab,cnf,k, res_cos, res_sin)
             elif gate == "ccx":
                 if(line[1].count('[') == 1):
                     qubitc1 = get_num(line[1])
@@ -167,11 +169,11 @@ def main(qasm_file, cnf_file):
                     qubitr = get_num(qubits[2]) 
                 H2CNF(tab,cnf,qubitr)
                 CNOT2CNF(tab,cnf,qubitc2,qubitr)
-                T2CNF(tab,cnf,qubitr)
+                Tdg2CNF(tab,cnf,qubitr)
                 CNOT2CNF(tab,cnf,qubitc1,qubitr)
                 T2CNF(tab,cnf,qubitr)
                 CNOT2CNF(tab,cnf,qubitc2,qubitr)
-                T2CNF(tab,cnf,qubitr)
+                Tdg2CNF(tab,cnf,qubitr)
                 CNOT2CNF(tab,cnf,qubitc1,qubitr)
                 T2CNF(tab,cnf,qubitc2)
                 T2CNF(tab,cnf,qubitr)
@@ -181,21 +183,21 @@ def main(qasm_file, cnf_file):
                 Tdg2CNF(tab,cnf,qubitc2)
                 CNOT2CNF(tab,cnf,qubitc1,qubitc2)
                 circuit.m += 15
-                circuit.tgate += 6
-                circuit.rgate += 1
+                circuit.tgate += 4
+                circuit.rgate += 3
                 circuit.cxgate += 6
                 
         else:
             raise Exception(str(line[0]) + " undefined.")
     
-    M2CNF(tab,cnf)
+    M2CNF(tab, cnf, multi_or_single)
     
     with open(cnf_file, 'w') as the_file:
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
         the_file.write(cnf.weight_list.getvalue())
         the_file.write(cnf.cons_list.getvalue())
     
-    print([circuit.n, circuit.m])
+    print([circuit.n, circuit.m, circuit.tgate, circuit.rgate])
     
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -204,4 +206,4 @@ if __name__ == "__main__":
         out = sys.argv[1] + ".cnf"
     else:
         out = sys.argv[2]
-    main(sys.argv[1], out)
+    main(sys.argv[1], out, sys.argv[3])
