@@ -20,7 +20,11 @@ def convert_to_float(frac_str):
     try:
         return float(frac_str)
     except:
-        num, denom = frac_str.split('/')
+        try:
+            num, denom = frac_str.split('/')
+        except:
+            num = frac_str.split('/')[0]
+            denom = 1
         piflag = 0
         denom = float(denom)
         if num == "pi":
