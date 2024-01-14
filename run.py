@@ -49,9 +49,10 @@ def GPMC(filename):
         if "e-" in gpmc_ans_str == 2: # deal with exact: -8.72889813224858e-09
             gpmc_ans_str = '0'
         print(gpmc_ans_str)
+        mem_str = re.findall(r"Memory.used.*", str(result))[0]
         gpmc_ans = (float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_ans_str)[0]))
         print("The resulting probability by GPMC is " + str(gpmc_ans/2 + 1/2))
-        print("The running time of GPMC is " + str(gpmc_time) + "ms")
+        print("The running time of GPMC is " + str(gpmc_time) + "ms" + " " + mem_str)
         return gpmc_time
     except TimeoutExpired:
         p.kill() 
@@ -66,7 +67,7 @@ def ZX(filename, multi_or_single):
     try:
         result, err = p.communicate(timeout=TIMEOUT)
         result = str(result)
-        # print(result)
+        print(result, err)
         result_str = re.findall(r"re\(P\).*$",result)[0]
         print(result_str)
         zx_time_str = re.findall(r"tall.*$",result)[0]
