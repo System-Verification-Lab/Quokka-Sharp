@@ -1,6 +1,35 @@
-import re, sys
+import re, sys, math
+
+def convert_to_float(frac_str):
+    sign = 0
+    if "-" in frac_str:
+        sign = 1
+        frac_str = frac_str.replace("-",'')
+    try:
+        return float(frac_str)
+    except:
+        try:
+            num, denom = frac_str.split('/')
+        except:
+            num = frac_str.split('/')[0]
+            denom = 1
+        piflag = 0
+        denom = float(denom)
+        if num == "pi":
+            piflag = 1
+            num = 1
+        elif "pi" in num:
+            piflag = 1
+            num = num.replace("pi",'')
+            num = num.replace("*",'')
+            num = float(num)
+        if piflag == 1:
+            return math.pow(-1,sign) * num / denom * math.pi
+        else:
+            return math.pow(-1,sign) * num / denom
 
 def cu1(line, qasm_list):
+    print(line)
     angle = re.findall(r"\((.*?)\)",line)[0]
     qubits = re.findall(r"[a-z]*\[[0-9]*\]",line)
     qasm_list.append("rz(" + angle +") " + qubits[1] + ";\n")
@@ -29,12 +58,26 @@ def p(line, qasm_list):
     qasm_list.append("rz(" + angle +") " + qubit + ";\n")
     
 def u2(line, qasm_list):
-    angle1 = re.findall(r"\((.*?),(.*?)\)",line)[0][0]
-    angle2 = re.findall(r"\((.*?),(.*?)\)",line)[0][1]
+    angles = re.findall(r"\((.*?),(.*?)\)",line)[0]
+    angle1 = angles[0]
+    angle2 = angles[1]
     qubit = re.findall(r"[a-z]*\[[0-9]*\]",line)[0]
     qasm_list.append("rz(" + angle1 + ") " + qubit + ";\n")
     ry("ry(0.5*pi) " + qubit + ";", qasm_list)
     qasm_list.append("rz(" + angle2 + ") " + qubit + ";\n")
+    qasm_list.append("rx(" + angle1 + ") " + qubit + ";\n")
+
+def u3(line, qasm_list):
+    angles = re.findall(r"\((.*?),(.*?)\)",line)[0]
+    angle1 = str(convert_to_float(angles[0]) + math.pi)
+    angle2 = str(convert_to_float(angles[1]) + math.pi)
+    angle3 = angles[2]
+    qubit = re.findall(r"[a-z]*\[[0-9]*\]",line)[0]
+    qasm_list.append("rz(" + angle2 + ") " + qubit + ";\n")
+    qasm_list.append("rx(" + str(math.pi/2) + ") " + qubit + ";\n")
+    qasm_list.append("rz(" + angle1 + ") " + qubit + ";\n")
+    qasm_list.append("rx(" + str(math.pi/2) + ") " + qubit + ";\n")
+    qasm_list.append("rz(" + angle3 + ") " + qubit + ";\n")    
 
 def rzz(line, qasm_list):
     angle = re.findall(r"\((.*?)\)",line)[0]
@@ -111,6 +154,8 @@ def trans(filename):
                 swap(line, qasm_list)
             elif "cz" in line:
                 cz(line, qasm_list)
+            elif "u3" in line:
+                u3(line,qasm_list)
             elif "barrier" in line or "measure" in line:
                 print(line)
             else: 
