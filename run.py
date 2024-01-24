@@ -10,6 +10,20 @@ import math
 from settings import *
 from settings import GPMC_PATH
 from subprocess import Popen, PIPE, TimeoutExpired
+from queue import Queue, Empty
+from resource import getrusage, RUSAGE_SELF
+
+def memory_monitor(command_queue: Queue, poll_interval=1):
+    old_max = 0
+    while True:
+        try:
+            command_queue.get(timeout=poll_interval)
+            return max_rss
+        except Empty:
+            max_rss = getrusage(RUSAGE_SELF).ru_maxrss
+            if max_rss > old_max:
+                old_max = max_rss
+                # print(datetime.now(), 'max RSS', max_rss / 1024 / 1024, "MB")
 
 def CircuitList(folder):
     circuit_list = glob.glob(folder + "/*")
