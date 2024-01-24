@@ -1,12 +1,5 @@
 import random, os, shutil, sys
 
-seeds = [7347,7945, 1788, 5178,3923,130, 
-         1077, 1815, 7455, 801,4916, 5959, 3741, 
-         596, 9770, 8351, 9936, 1482, 7252, 3152, 2201, 
-         551, 4748, 6911, 4221, 6421, 485, 9791, 572, 
-         7642, 2592, 9420, 5852, 9092, 6528, 4826, 3497, 
-         3132, 4321, 2274, 3988, 6254, 271, 8196, 
-         9335, 1582, 9784, 7887, 4842, 1308]
 
 def generate_random_qasm_circuit(n, m, t_prob, SEED):
     random.seed(SEED)
@@ -16,7 +9,7 @@ def generate_random_qasm_circuit(n, m, t_prob, SEED):
     # Generate random gate list
     gates = ['s', 'h', 'cx', 't']
     gates2 = ['s', 'h', 't']
-    cx_prob = 0.2
+    cx_prob = 0.25
     s_prob = (1 - cx_prob - t_prob) / 2
     h_prob = s_prob
     weight = [s_prob, h_prob, cx_prob, t_prob]
@@ -140,15 +133,14 @@ def DataPoint(n, m, Tprob):
     return folder + '/' + filename
 
 
-def main(folder, n, d, r):
+def main(folder, n, d, r, SEED):
     folder = os.getcwd() + "/benchmark/random/" + folder
     if not os.path.isdir(folder):
         os.mkdir(folder)
-    for SEED in seeds:
-        random_circuit = generate_random_qasm_circuit(n, d, r, SEED)
-        circuit_content = '\n'.join(random_circuit)
-        filename = f"q{n}d{d}seed{SEED}.qasm"
-        WriteFile(folder, filename, circuit_content)
+    random_circuit = generate_random_qasm_circuit(n, d, r, SEED)
+    circuit_content = '\n'.join(random_circuit)
+    filename = f"q{n}d{d}seed{SEED}.qasm"
+    WriteFile(folder, filename, circuit_content)
 
     
 if __name__ == "__main__":
@@ -157,7 +149,7 @@ if __name__ == "__main__":
 
     qubits = 1000
     depth  = 30
-    Trate  = .2
+    Trate  = .25
     
     if len(sys.argv) > 2:
         qubits = int(sys.argv[2])
@@ -169,5 +161,5 @@ if __name__ == "__main__":
     #     qubits = float(sys.argv[2])
     #     depth = int(sys.argv[3])
     #     Trate = float(sys.argv[4])
-    main(sys.argv[1], int(sys.argv[2]),int(sys.argv[3]), float(sys.argv[4])) 
+    main(sys.argv[1], int(sys.argv[2]),int(sys.argv[3]), float(sys.argv[4]),int(sys.argv[5])) 
     
