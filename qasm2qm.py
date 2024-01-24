@@ -113,7 +113,7 @@ def interpreter_quasimodo(args):
     if args.measurement == 'firstzero' or args.measurement == None:
         b[0] = 0
     elif args.measurement == 'allzero':
-        for i in range(0, {0}):
+        for i in range(0, n):
             b[i] = 0
     else:
         parser.exit(args.measurement)
