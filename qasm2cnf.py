@@ -1,8 +1,8 @@
 import re, math, sys
-from cliffordT import *
-from Tableau import Tableau, CNF
-from InitConst import init
-from measure import M2CNF
+from encoding.cliffordT import *
+from encoding.Tableau import Tableau, CNF
+from encoding.InitConst import init
+from encoding.measure import M2CNF
 
 class Circuit:
     def __init__(self):
