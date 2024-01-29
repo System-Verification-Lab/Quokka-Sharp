@@ -1,8 +1,8 @@
 import sys
-from encoding.Tableau import Tableau, CNF
-from encoding.InitConst import init
-from encoding.cliffordT import *
-from encoding.measure import M2CNF
+from Tableau import Tableau, CNF
+from InitConst import init
+from cliffordT import *
+from measure import M2CNF
 from qasm_parser import qasm_parser
 from settings import GPMC_PATH
 import math, re
