@@ -149,7 +149,7 @@ def qasm_parser(filename, n, translate_ccx, reverse):
     
     return circuit
 
-def eq_parser(file1, file2, n):
+def eq_parser(file1, file2):
     circuit1 = qasm_parser(file1, 0, False, False)
     circuit2 = qasm_parser(file2, circuit1.n, False, True)
     circuit3 = ADD(circuit1, circuit2, circuit2.n)
