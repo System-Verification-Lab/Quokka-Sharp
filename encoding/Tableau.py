@@ -6,8 +6,8 @@ class Tableau:
         self.x = [0] * n
         self.z = [0] * n
         self.r = 0
-        self.clause = 0
-        self.var = 0
+        # self.clause = 0
+        # self.var = 0
 
 class CNF:
     def __init__(self):
