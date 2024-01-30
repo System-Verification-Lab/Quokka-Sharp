@@ -1,5 +1,4 @@
-from random_circ_qasm import *
-import os
+import os, sys, shutil
 import glob
 import re
 import time
