@@ -148,37 +148,59 @@ def cz(line, qasm_list):
     qasm_list.append("cx " + qubits[0] + ", " + qubits[1] + ";\n")
     qasm_list.append("h " + qubits[1] + ";\n")
 
+def sx(line, qasm_list):
+    qubit = re.findall(r"[a-z]*\[[0-9]*\]",line)[0]
+    qasm_list.append("rx(0.5*pi) " + qubit + ";\n")
+
+def checkgate(gate, gates):
+    for item in gates:
+        if item == gate:
+            return True
+    return False
+
 def trans(filename):
     qasm_list = []
+    gates = ['h','s','cx', 'ccx', 't','z','y','x','tdg','sdg']
     with open(filename,"r") as qasm_old:
         for line in qasm_old:
-            if "cp" in line or "cu1" in line:
-                cu1(line, qasm_list)
-            elif "p(" in line or "u1" in line:
-                p(line, qasm_list)
-            elif "u3" in line:
-                u3(line,qasm_list)
-            elif "u(" in line:
-                u(line, qasm_list)
-            elif "ry" in line:
-                ry(line, qasm_list)
-            elif "u2" in line:
-                u2(line, qasm_list)
-            elif "rzz" in line:
-                rzz(line, qasm_list)
-            elif "rccx" in line :
-                rccx(line, qasm_list)
-            elif "cswap" in line:
-                cswap(line, qasm_list)
-            elif "swap" in line:
-                swap(line, qasm_list)
-            elif "cz" in line:
-                cz(line, qasm_list)
-            elif "barrier" in line or "measure" in line:
-                print(line)
-            else: 
+            linelist  = line.rsplit()
+            # if "cp" in line or "cu1" in line:
+            #     cu1(line, qasm_list)
+            # elif "p(" in line or "u1" in line:
+            #     p(line, qasm_list)
+            # elif "u3" in line:
+            #     u3(line,qasm_list)
+            # elif "u(" in line:
+            #     u(line, qasm_list)
+            # elif "ry" in line:
+            #     ry(line, qasm_list)
+            # elif "u2" in line:
+            #     u2(line, qasm_list)
+            # elif "rzz" in line:
+            #     rzz(line, qasm_list)
+            # elif "rccx" in line :
+            #     rccx(line, qasm_list)
+            # elif "cswap" in line:
+            #     cswap(line, qasm_list)
+            # elif "swap" in line:
+            #     swap(line, qasm_list)
+            # elif "cz" in line:
+            #     cz(line, qasm_list)
+            if "rz" in line or "rx" in line:
                 qasm_list.append(line)
-            
+            elif len(linelist) > 0 and linelist[0] == 'sx':
+                sx(line, qasm_list)
+            elif "//" in line or "barrier" in line or "measure" in line or "creg" in line:
+                # print(line)
+                continue
+            elif len(linelist)>0 and checkgate(linelist[0],gates): 
+                # print(line)
+                qasm_list.append(line)
+            elif "OPENQASM" in line or "include" in line or "qreg" in line:
+                qasm_list.append(line)
+            else:
+                if (len(line.strip()) != 0):
+                    print("Not Defined: " + line)
 
     with open(filename, 'w') as file:
         for item in qasm_list:
