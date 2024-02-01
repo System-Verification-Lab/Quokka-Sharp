@@ -1,6 +1,6 @@
 import random, sys
 
-def gatemiss(file, SEED):
+def gatemiss(file, to_file, SEED):
     qasm_list = []
     
     with open(file,"r") as qasm:
@@ -12,6 +12,7 @@ def gatemiss(file, SEED):
     gates = ['h','s','cx', 'ccx', 't','z','y','x','tdg', 'rx', 'rz']
     idx = 0
     for line in qasm_list:
+        line = line.split()
         if any(item in gates for item in line[0]):
             break
         else:
@@ -21,7 +22,7 @@ def gatemiss(file, SEED):
     del_idx = random.randint(0, len(gatelist) - 1)
     print("delete ", gatelist[del_idx])
     del gatelist[del_idx]
-    with open(file + '.gm.qasm', 'w') as file:
+    with open(to_file + '.gm.qasm', 'w') as file:
         for i in range(0, idx):
             file.writelines(qasm_list[i] + '\n')
         for i in range(0, len(gatelist)):
@@ -31,4 +32,4 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         exit(1)
     else:
-       gatemiss(sys.argv[1], sys.argv[2])
+       gatemiss(sys.argv[1], sys.argv[2],  sys.argv[3])

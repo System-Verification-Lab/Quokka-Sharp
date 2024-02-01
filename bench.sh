@@ -4,13 +4,14 @@
 #export PYTHONPATH=$HOME/Projects/Quasimodo/python_pkg:$PYTHON_PATH # for libquasimodo.so
 #export DYLD_LIBRARY_PATH=$HOME/Projects/Quasimodo/python_pkg:$DYLD_LIBRARY_PATH #for python package
 
-echo GPMC:
-python qc2cnf.py $1
-gpmc -mode=1 $1.cnf | grep "CPU\|log10"
-
-echo
-echo Quasimodo:
-python qasm2cflobdd.py $1 1
-python $1.quasimodo.py
-
-echo
+for file in ./benchmark/algorithm/eq_bench/origin/*.qasm
+do
+    base_name=$(basename ${file})
+    base_name="${base_name%%.*}"
+    echo "$base_name"
+    echo GPMC:
+    gtimeout 300 python3 check_eq.py "$file" ./benchmark/algorithm/eq_bench/gm/"$base_name".qasm.gm.qasm
+    echo QCEC:
+    gtimeout 30 python3 qcec.py "$file" ./benchmark/algorithm/eq_bench/gm/"$base_name".qasm.gm.qasm
+    echo
+done
