@@ -197,6 +197,44 @@ def CNOT2CNF(tab, cnf, c, t):
     tab.z[c] = Z
     tab.r = R
 
+# Equivalent(R, r ^ (x[c] & z[t] & (x[t] ^ ~z[c])) ^ ((x[c] ^ x[t]) & (z[c] ^ z[t]) & (x[t] ^ ~z[c])))
+# Equivalent(X, x[c] ^ x[t])
+# Equivalent(Z, z[c] ^ z[t])
+def CZ2CNF(tab, cnf, c, t):
+    r = tab.r
+    x = tab.x
+    z = tab.z
+    R = cnf.add_var()
+    Z = cnf.add_var()
+    X = cnf.add_var()
+    cnf.add_clause([ R, -r,  x[t]])
+    cnf.add_clause([ R, -r,  z[c]])
+    cnf.add_clause([-R,  r,  x[t]])
+    cnf.add_clause([-R,  r,  z[c]])
+    cnf.add_clause([ R, -r,  x[c], -z[t]])
+    cnf.add_clause([ R, -r, -x[c],  z[t]])
+    cnf.add_clause([-R,  r,  x[c], -z[t]])
+    cnf.add_clause([-R,  r, -x[c],  z[t]])
+    cnf.add_clause([ R,  r,  x[c], -x[t], -z[c],  z[t]])
+    cnf.add_clause([ R,  r, -x[c], -x[t], -z[c], -z[t]])
+    cnf.add_clause([-R, -r,  x[c], -x[t], -z[c],  z[t]])
+    cnf.add_clause([-R, -r, -x[c], -x[t], -z[c], -z[t]])
+
+    cnf.add_clause([ X,  x[c], -x[t]])
+    cnf.add_clause([ X, -x[c],  x[t]])
+    cnf.add_clause([-X,  x[c],  x[t]])
+    cnf.add_clause([-X, -x[c], -x[t]])
+
+    cnf.add_clause([ Z,  z[c], -z[t]])
+    cnf.add_clause([ Z, -z[c],  z[t]])
+    cnf.add_clause([-Z,  z[c],  z[t]])
+    cnf.add_clause([-Z, -z[c], -z[t]])
+    tab.x[c] = tab.x[t]
+    tab.x[t] = X
+    tab.z[t] = tab.z[c]
+    tab.z[c] = Z
+    tab.r = R
+
 # Equivalent(R, r ^ (x[k] & z[k] & ~Z))
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
