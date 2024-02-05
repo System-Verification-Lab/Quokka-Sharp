@@ -10,8 +10,8 @@ do
     base_name="${base_name%.*}"
     echo "$base_name"
     echo GPMC:
-    gtimeout 300 python3 check_eq.py "$file" ./benchmark/algorithm/eq_bench/opt/"$base_name".qasm.opt.qasm
+    gtimeout 10 python3 check_eq.py "$file" ./benchmark/algorithm/eq_bench/opt/"$base_name".qasm.opt.qasm
     echo QCEC:
-    gtimeout 300 python3 qcec.py "$file" ./benchmark/algorithm/eq_bench/opt/"$base_name".qasm.opt.qasm
+    gtimeout 10 python3 qcec.py "$file" ./benchmark/algorithm/eq_bench/opt/"$base_name".qasm.opt.qasm
     echo
 done
