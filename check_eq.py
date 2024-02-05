@@ -49,6 +49,7 @@ def GPMC(cnf_file):
     gpmc_ans = float(gpmc_ans_str)
     if abs(gpmc_ans) < 0.00000001:
         gpmc_ans = 0
+    print(cnf_file, gpmc_ans)
     return gpmc_ans
 
 def checker(i, Z_or_X, cnf_file):
@@ -75,20 +76,20 @@ def main():
         argu.append((i, False, "./cnf/checkerX" + str(i) + ".cnf"))
 
     start = time.time()
-    with Pool(8) as pool:
-        for res in pool.starmap(checker, argu):
-            if res == False:
-                result = res
-                pool.terminate()
-                break
+    # with Pool(8) as pool:
+    #     for res in pool.starmap(checker, argu):
+    #         if res == False:
+    #             result = res
+    #             pool.terminate()
+    #             break
     
-    # for i in range(tab.n):
-    #     if not checker(i, True, "./cnf/checkerZ" + str(i) + ".cnf"):
-    #         result = False
-    #         break
-    #     if not checker(i, False, "./cnf/checkerX" + str(i) + ".cnf"):
-    #         result = False
-    #         break
+    for i in range(tab.n):
+        if not checker(i, True, "./cnf/checkerZ" + str(i) + ".cnf"):
+            result = False
+            break
+        if not checker(i, False, "./cnf/checkerX" + str(i) + ".cnf"):
+            result = False
+            break
         
     end = time.time()
 
