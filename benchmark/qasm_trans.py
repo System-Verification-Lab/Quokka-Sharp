@@ -185,6 +185,7 @@ def trans(filename):
             elif "swap" in line:
                 swap(line, qasm_list)
             elif "cz" in line:
+                print("cz!!!")
                 cz(line, qasm_list)
             elif "rz" in line or "rx" in line:
                 qasm_list.append(line)
@@ -202,9 +203,9 @@ def trans(filename):
                 if (len(line.strip()) != 0):
                     print("Not Defined: " + line)
 
-    with open(filename, 'w') as file:
-        for item in qasm_list:
-            file.writelines(item)
+    # with open(filename, 'w') as file:
+    #     for item in qasm_list:
+    #         file.writelines(item)
             
 if __name__ == "__main__":
     trans(sys.argv[1])
