@@ -43,8 +43,13 @@ def get_cos_sin(str):
     else:
         theta_str = angle
         if 'pi' in theta_str:
-            theta = theta_str.split('*')
-            theta = float(theta[0]) * math.pi
+            const_list = re.findall(r"[-+]?(?:\d*\.*\d+)", theta_str)
+            if len(const_list) == 1:
+                const = const_list[0]
+            elif len(const_list) == 0:
+                const = 1
+            else: raise Exception("Angle Not Support")
+            theta = float(const) * math.pi
         else:
             theta = float(theta_str)
     res_cos = math.cos(theta)
@@ -82,6 +87,10 @@ def qc2cnf(qasm_file1, qasm_file2):
             j = int(element[1]) - 1
             k = int(element[2]) - 1
             CNOT2CNF(tab,cnf,j,k)
+        elif gate == 'cz':
+            j = int(element[1]) - 1
+            k = int(element[2]) - 1
+            CZ2CNF(tab,cnf,j,k)
         elif gate == 's':
             k = int(element[1]) - 1
             S2CNF(tab,cnf,k)

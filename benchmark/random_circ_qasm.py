@@ -9,7 +9,7 @@ def generate_random_qasm_circuit(n, m, t_prob, SEED):
     # Generate random gate list
     gates = ['s', 'h', 'cx', 't']
     gates2 = ['s', 'h', 't']
-    cx_prob = 0.25
+    cx_prob = 0.2
     s_prob = (1 - cx_prob - t_prob) / 2
     h_prob = s_prob
     weight = [s_prob, h_prob, cx_prob, t_prob]
@@ -134,7 +134,7 @@ def DataPoint(n, m, Tprob):
 
 
 def main(folder, n, d, r, SEED):
-    folder = os.getcwd() + "/benchmark/random/" + folder
+    # folder = os.getcwd() + "/benchmark/random/" + folder
     if not os.path.isdir(folder):
         os.mkdir(folder)
     random_circuit = generate_random_qasm_circuit(n, d, r, SEED)
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
     qubits = 1000
     depth  = 30
-    Trate  = .25
+    Trate  = .1
     
     if len(sys.argv) > 2:
         qubits = int(sys.argv[2])
