@@ -13,9 +13,9 @@ class Circuit:
         if(gate == 't'): self.tgate += 1
         self.circ.append([gate, qubit])
 
-    def add_cx(self,qubitc,qubitr):
-        self.cxgate += 1
-        self.circ.append(['cx', qubitc, qubitr])
+    def add_double(self,gate, qubitc,qubitr):
+        # self.cxgate += 1
+        self.circ.append([gate, qubitc, qubitr])
 
     def add_tdg(self,qubit):
         self.tgate += 1
@@ -24,20 +24,20 @@ class Circuit:
     def add_ccx(self,qubitc1,qubitc2,qubitr):
         if self.translate_ccx:
             self.add_single('h',qubitr)
-            self.add_cx(qubitc2,qubitr)
+            self.add_double('cx',qubitc2,qubitr)
             self.add_tdg(qubitr)
-            self.add_cx(qubitc1,qubitr)
+            self.add_double('cx',qubitc1,qubitr)
             self.add_single('t',qubitr)
-            self.add_cx(qubitc2,qubitr)
+            self.add_double('cx',qubitc2,qubitr)
             self.add_tdg(qubitr)
-            self.add_cx(qubitc1,qubitr)
+            self.add_double('cx',qubitc1,qubitr)
             self.add_single('t',qubitc2)
             self.add_single('t',qubitr)
-            self.add_cx(qubitc1,qubitc2)
+            self.add_double('cx',qubitc1,qubitc2)
             self.add_single('h',qubitr)
             self.add_single('t',qubitc1)
             self.add_tdg(qubitc2)
-            self.add_cx(qubitc1,qubitc2)
+            self.add_double('cx',qubitc1,qubitc2)
         else:
             self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
         
@@ -87,7 +87,7 @@ def qasm_parser(filename, n, translate_ccx, reverse):
             continue
         elif(any(item in gates for item in line[0])):
             gate = line[0]
-            if gate == 'cx':
+            if gate == 'cx' or gate == 'cz':
                 if(line[1].count('[') == 1):
                     qubitc = get_num(line[1])
                     qubitr = get_num(line[2])
@@ -95,7 +95,7 @@ def qasm_parser(filename, n, translate_ccx, reverse):
                     qubits = line[1].split(',')
                     qubitc = get_num(qubits[0])
                     qubitr = get_num(qubits[1]) 
-                circuit.add_cx(qubitc,qubitr)
+                circuit.add_double(gate, qubitc,qubitr)
                 
             elif gate == 'z':
                 qubit = get_num(line[1])
