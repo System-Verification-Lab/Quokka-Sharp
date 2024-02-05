@@ -87,10 +87,12 @@ def qc2cnf(qasm_file1, qasm_file2):
             j = int(element[1]) - 1
             k = int(element[2]) - 1
             CNOT2CNF(tab,cnf,j,k)
-        elif gate == 'cz':
-            j = int(element[1]) - 1
-            k = int(element[2]) - 1
-            CZ2CNF(tab,cnf,j,k)
+        # elif gate == 'cz':
+        #     print(element)
+        #     j = int(element[1]) - 1
+        #     k = int(element[2]) - 1
+        #     CNOT2CNF(tab,cnf,j,k)
+        #     CNOT2CNF(tab,cnf,k,j)
         elif gate == 's':
             k = int(element[1]) - 1
             S2CNF(tab,cnf,k)

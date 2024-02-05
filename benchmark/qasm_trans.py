@@ -203,9 +203,9 @@ def trans(filename):
                 if (len(line.strip()) != 0):
                     print("Not Defined: " + line)
 
-    # with open(filename, 'w') as file:
-    #     for item in qasm_list:
-    #         file.writelines(item)
+    with open(filename, 'w') as file:
+        for item in qasm_list:
+            file.writelines(item)
             
 if __name__ == "__main__":
     trans(sys.argv[1])
