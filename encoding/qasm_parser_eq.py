@@ -56,7 +56,7 @@ class Circuit:
         
 def ADD(circuit1, circuit2):
         circuit3 = Circuit(False)
-        circuit3.n = circuit1.n + circuit2.n
+        circuit3.n = circuit1.n
         circuit3.tgate = circuit1.tgate + circuit2.tgate
         circuit3.cxgate = circuit1.cxgate + circuit2.cxgate
         circuit3.circ = circuit1.circ + circuit2.circ
@@ -127,9 +127,10 @@ def qasm_parser(filename, translate_ccx, dagger):
                     qubits = line[1].split(',')
                     qubitc = get_num(qubits[0])
                     qubitr = get_num(qubits[1]) 
-                circuit.add_single('h',qubitr) 
-                circuit.add_double('cx',qubitc,qubitr) 
-                circuit.add_single('h',qubitr) 
+                # circuit.add_single('h',qubitr) 
+                # circuit.add_double('cx',qubitc,qubitr) 
+                # circuit.add_single('h',qubitr) 
+                circuit.add_double('cz',qubitc,qubitr)
             elif gate == 'z' or gate == 'y' or gate == 'x' or gate == 'h':
                 qubit = get_num(line[1])
                 circuit.add_single(gate, qubit)
