@@ -3,14 +3,21 @@ from encoding.qc2cnf_eq import qc2cnf
 from settings import GPMC_PATH
 import time
 from multiprocessing import Pool
+from subprocess import PIPE, Popen
 from queue import Queue
 from memory import ReturnValueThread, memory_monitor
+from multiprocessing.pool import ThreadPool
+
 
 global qasmfile1, qasmfile2
 global tab, cnf, tab_init
 qasmfile1 = sys.argv[1]
 qasmfile2 = sys.argv[2]
+encode_start = time.time()
 tab, cnf, tab_init = qc2cnf(qasmfile1, qasmfile2)
+encode_end = time.time()
+encode_time = encode_end - encode_start
+
 
 def EC2CNF(tab, cnf, Z_or_X, idx, init):
     x = tab.x; z = tab.z; r = tab.r; n = tab.n
@@ -42,14 +49,14 @@ def write_cnf(cnf, cnf_file):
 
 def GPMC(cnf_file):
     gpmc_path = GPMC_PATH + '/bin/gpmc'
-    result = os.popen(gpmc_path + " -mode=1 " + cnf_file).read()
-    gpmc_time_str = re.findall(r"Real.time.*s", str(result))[0]
-    gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]), 6)
-    gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\n",result)[0]
+    proc = Popen([gpmc_path, "-mode=1", cnf_file],
+                    stdout= PIPE, stderr=PIPE)
+    result, error = proc.communicate()
+    result = str(result)
+    gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
     gpmc_ans = float(gpmc_ans_str)
     if abs(gpmc_ans) < 0.00000001:
         gpmc_ans = 0
-    print(cnf_file, gpmc_ans)
     return gpmc_ans
 
 def checker(i, Z_or_X, cnf_file):
@@ -82,20 +89,26 @@ def main():
     #             result = res
     #             pool.terminate()
     #             break
-    
-    for i in range(tab.n):
-        if not checker(i, True, "./cnf/checkerZ" + str(i) + ".cnf"):
-            result = False
-            break
-        if not checker(i, False, "./cnf/checkerX" + str(i) + ".cnf"):
-            result = False
-            break
+
+    with ThreadPool(8) as pool:
+        for res in pool.starmap(checker, argu):
+            if res == False:
+                result = False
+                pool.terminate()
+  
+    # for i in range(tab.n):
+    #     if not checker(i, True, "./cnf/checkerZ" + str(i) + ".cnf"):
+    #         result = False
+    #         break
+    #     if not checker(i, False, "./cnf/checkerX" + str(i) + ".cnf"):
+    #         result = False
+    #         break
         
     end = time.time()
 
     queue.put('stop')
     max_rss = monitor_thread.join()
-    print(  ' time:', (end - start),
+    print(  ' time:', (end - start) + encode_time,
             ' result:', result,
             ' Max RSS:', max_rss / 1024 / 1024, "MB")
     
