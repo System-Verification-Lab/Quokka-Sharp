@@ -38,8 +38,12 @@ def convert_to_float(frac_str):
 
 def get_cos_sin(str):
     angle = re.findall(r"\((.*?)\)",str)[0]
-    if "/" in str:
+    if "/" in angle:
         theta = convert_to_float(angle)
+    elif "*pi" in angle:
+        idx = angle.index("*")
+        const = angle[0:idx]
+        theta = float(const) * math.pi
     else:
         theta_str = angle
         if 'pi' in theta_str:
@@ -48,7 +52,7 @@ def get_cos_sin(str):
                 const = const_list[0]
             elif len(const_list) == 0:
                 const = 1
-            else: raise Exception("Angle Not Support")
+            else: raise Exception("Angle " + theta_str + " Not Support")
             theta = float(const) * math.pi
         else:
             theta = float(theta_str)
@@ -61,7 +65,7 @@ def get_cos_sin(str):
     return [res_cos, res_sin]
 
 def qc2cnf(qasm_file1, qasm_file2):
-    circuit = eq_parser(qasm_file1, qasm_file2)
+    circuit, N, G1, G2 = eq_parser(qasm_file1, qasm_file2)
     qclist = circuit.circ
     n = circuit.n
     tab = Tableau(n)
@@ -87,12 +91,10 @@ def qc2cnf(qasm_file1, qasm_file2):
             j = int(element[1]) - 1
             k = int(element[2]) - 1
             CNOT2CNF(tab,cnf,j,k)
-        # elif gate == 'cz':
-        #     print(element)
-        #     j = int(element[1]) - 1
-        #     k = int(element[2]) - 1
-        #     CNOT2CNF(tab,cnf,j,k)
-        #     CNOT2CNF(tab,cnf,k,j)
+        elif gate == 'cz':
+            j = int(element[1]) - 1
+            k = int(element[2]) - 1
+            CZ2CNF(tab,cnf,j,k)
         elif gate == 's':
             k = int(element[1]) - 1
             S2CNF(tab,cnf,k)
@@ -118,4 +120,4 @@ def qc2cnf(qasm_file1, qasm_file2):
                 res_sin = (-1) * res_sin
             RZ2CNF(tab,cnf,k, res_cos, res_sin)
 
-    return tab, cnf, tab_init
+    return tab, cnf, tab_init, N, G1, G2
