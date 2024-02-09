@@ -1,8 +1,7 @@
 #!/bin/bash
 
-for file in ./algorithm/eq_bench/origin/*
+for file in ./random/qubitscale/origin/*
 do
-    base_name=$(basename ${file})
     echo "$base_name"
-    python3 zxopt.py "$file" ./algorithm/eq_bench/opt/"$base_name".opt.qasm
+    python3 zxopt.py "$file" ./benchmark/random/qubitscale/opt/"$file".opt.qasm
 done

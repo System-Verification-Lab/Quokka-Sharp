@@ -185,7 +185,7 @@ def trans(filename):
             elif "swap" in line:
                 swap(line, qasm_list)
             elif "cz" in line:
-                print("cz!!!")
+                
                 cz(line, qasm_list)
             elif "rz" in line or "rx" in line:
                 qasm_list.append(line)
