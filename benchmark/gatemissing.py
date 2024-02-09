@@ -22,7 +22,7 @@ def gatemiss(file, to_file, SEED):
     del_idx = random.randint(0, len(gatelist) - 1)
     print("delete ", gatelist[del_idx])
     del gatelist[del_idx]
-    with open(to_file + '.gm.qasm', 'w') as file:
+    with open(to_file, 'w') as file:
         for i in range(0, idx):
             file.writelines(qasm_list[i] + '\n')
         for i in range(0, len(gatelist)):

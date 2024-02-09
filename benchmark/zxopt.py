@@ -8,5 +8,5 @@ c_opt = c_opt.to_basic_gates()
 qasm = io.StringIO()
 # print(c.to_qasm())
 qasm.write(c_opt.to_qasm())
-with open(sys.argv[2], 'w') as the_file:
+with open(sys.argv[1], 'w') as the_file:
     the_file.write(qasm.getvalue())
