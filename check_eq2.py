@@ -14,7 +14,7 @@ global tab, cnf, tab_init
 qasmfile1 = sys.argv[1]
 qasmfile2 = sys.argv[2]
 encode_start = time.time()
-tab, cnf, tab_init = qc2cnf(qasmfile1, qasmfile2)
+tab, cnf, tab_init, QUBIT, G1, G2 = qc2cnf(qasmfile1, qasmfile2)
 encode_end = time.time()
 encode_time = encode_end - encode_start
 
@@ -70,9 +70,6 @@ def checker(i, Z_or_X, cnf_file):
     proc = GPMC(cnf_file)
     return proc
 
-def killall(proclist):
-    for p in proclist:
-        p.kill()
 
 def main():
     queue = Queue()
@@ -97,16 +94,20 @@ def main():
             argu = argulist[i]
             p = checker(argu[0], argu[1], argu[2])
             proclist.append(p)
-        
         if len(proclist) == 0:
             break
-        
-        for p in proclist:
-            res = p.communicate()
-            print(p.pid)
-            result = get_result(res[0])       
-            if result == False:
-                print("*****")
+        procdict = {proc.pid: proc for proc in proclist}
+        watched_pids = set(proc.pid for proc in proclist)
+        while True:
+            pid, _ = os.wait()
+            if pid in watched_pids:
+                res = procdict[pid].communicate()
+                result = get_result(res[0])
+                if result == False:
+                    break
+                else:
+                    watched_pids.remove(pid)
+            if len(watched_pids) == 0:
                 break
 
         if result == False:
@@ -121,9 +122,10 @@ def main():
 
     queue.put('stop')
     max_rss = monitor_thread.join()
-    print(  ' time:', (end - start) + encode_time,
-            ' result:', result,
-            ' Max RSS:', max_rss / 1024 / 1024, "MB")
+    print(  ' {"time":', (end - start) + encode_time,
+            ', "result":' + ' "' + str(result) + '"',
+            ', "MaxRSS":', max_rss / 1024 / 1024,
+            ', "N":', QUBIT, ', "G1":', G1, ', "G2":', G2, "}")
     
 if __name__ == '__main__':    
     main()
