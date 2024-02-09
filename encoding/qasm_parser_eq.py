@@ -199,7 +199,4 @@ def eq_parser(file1, file2):
     circuit1 = qasm_parser(file1, False, False)
     circuit2 = qasm_parser(file2, False, True)
     circuit3 = ADD(circuit1, circuit2)
-    return circuit3
-
-if __name__ == '__main__':
-    eq_parser("test.qasm", "test.qasm.opt.qasm")
+    return circuit3, circuit1.n, len(circuit1.circ), len(circuit2.circ)

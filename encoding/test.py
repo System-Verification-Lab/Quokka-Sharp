@@ -1,26 +1,48 @@
-import sys, io
-from sympy.logic.boolalg import *
-from sympy.logic import simplify_logic
-from sympy import symbols
+# import sys, io
+# from sympy.logic.boolalg import *
+# from sympy.logic import simplify_logic
+# from sympy import symbols
 
+# r0    = symbols('r0')
+# r3    = symbols('r3')
+# x01    = symbols('x01')
+# x02    = symbols('x02')
+# z01    = symbols('z01')
+# z02    = symbols('z02')
 
-c = 0
-t = 1
-k = 2
+# expr1 = r0 ^ (x01 & x02 & (z01 ^ z02))
+# expr2 = r0 ^ (x02 & z02) ^ (x01 & x02 & (z02 ^ z01 ^ True)) ^ ((z02 ^ x01) & x02)
+# expr3 = (z01 | z02) & (~z01 | ~z02)
+# expr4 = z01 ^ z02
+# print(expr1.equals(expr2))
+# import math
+# xlist = [1, 2, 3]
+# print([x+1 for  x in xlist])
+# import re
 
-u    = symbols('u')
-u1    = symbols('u1')
-u2    = symbols('u2')
-r    = symbols('r')
-R    = symbols('R')
+# def shift(line):
+#     line = re.split('\(|\)', line)
+#     line[1] = 1.2
+#     line = str(line[0]) + "(" + str(line[1]) + ")" + str(line[2])
+#     return line
 
-x = [0,0,0]
-z = [0,0,0]
-x[k] = symbols("x[k]")
-x[c] = symbols("x[c]")
-x[t] = symbols("x[t]")
-z[k] = symbols("z[k]")
-z[c] = symbols("z[c]")
-z[t] = symbols("z[t]")
-Fr = Equivalent(R, r ^ (x[c] & z[t] & (x[t] ^ ~z[c])) ^ ((x[c] ^ x[t]) & (z[c] ^ z[t]) & (x[t] ^ ~z[c])))
-print(to_cnf(Fr))
+# string = "rx(pi) q[0];"
+# print(shift(string))
+
+# Python3 code to demonstrate
+# convert dictionary string to dictionary
+# using json.loads()
+import json
+
+# initializing string
+test_string = '  {"time": 0.2932717800140381 , "result": "False" , "MaxRSS": 16.296875 }'
+
+# printing original string
+print("The original string : " + str(test_string))
+
+# using json.loads()
+# convert dictionary string to dictionary
+res = json.loads(test_string)
+
+# print result
+print("The converted dictionary : " + str(res["time"]))
