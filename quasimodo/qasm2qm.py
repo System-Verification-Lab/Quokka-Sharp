@@ -148,7 +148,7 @@ def main(args):
 import sys, io
 import argparse
 import math
-from qasm_parser import qasm_parser
+from encoding.qasm_parser import qasm_parser
 from qasm2cnf import convert_to_float
 
 if __name__ == "__main__":
