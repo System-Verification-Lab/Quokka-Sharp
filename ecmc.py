@@ -144,5 +144,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ECMC: The quantum circuit Equivalence Checker based on Model Counting from the Quokka-Sharp (Quokka#) package')
     parser.add_argument('qasmfile1')
     parser.add_argument('qasmfile2')
+    parser.add_argument('-t', '--timeout', type=int, help="timeout in seconds") #TODO
     args = parser.parse_args()
     main(args.qasmfile1, args.qasmfile2)

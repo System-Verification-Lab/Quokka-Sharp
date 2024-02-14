@@ -8,7 +8,6 @@ import time
 from encoding.qasm_parser import qasm_parser
 from encoding.qasm2cnf import qasm2cnf
 from experiment.memory import ReturnValueThread, memory_monitor
-from settings import *
 from queue import Queue
 from time import sleep
 
@@ -72,5 +71,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='QCMC: The Quantum Circuit simulator based on Model Counting from the Quokka-Sharp (Quokka#) package')
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
+    parser.add_argument('-t', '--timeout', type=int, help="timeout in seconds") #TODO
     args = parser.parse_args()
     main(args.filename, args.measurement == 'allzero')
