@@ -124,7 +124,6 @@ def qasm2cnf(circuit : Circuit) -> CNF:
         else:
             raise Exception(str(gate) + " undefined."+ str(element))
 
-    cnf.finalize()
     return cnf
 
 if __name__ == "__main__":
