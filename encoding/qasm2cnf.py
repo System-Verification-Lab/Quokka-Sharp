@@ -3,7 +3,6 @@ from encoding.cnf import Variables, CNF
 from encoding.cliffordt2cnf import *
 from encoding.measure import M2CNF
 from encoding.qasm_parser import qasm_parser, Circuit
-from settings import GPMC_PATH
 import math, re
 
 
