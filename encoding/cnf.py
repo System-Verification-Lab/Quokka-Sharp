@@ -16,6 +16,23 @@ class Variables:
             x[i] = cnf.add_var()
             z[i] = cnf.add_var()
         self.r = cnf.add_var()
+        self.cnf = cnf
+
+    def projectAllZero(self, prepend=False):
+        for i in range(self.n):
+            self.cnf.add_clause([-self.x[i]], prepend)
+        self.cnf.add_clause([-self.r], prepend)
+
+    def projectZXi(self, Z_or_X, idx, prepend=False):
+        x = self.x; z = self.z
+        if not Z_or_X:
+            z = self.x; x = self.z
+        for i in range(self.n):
+            self.cnf.add_clause([-x[i]], prepend)
+            if i == idx:
+                self.cnf.add_clause([z[i]], prepend)
+            else:
+                self.cnf.add_clause([-z[i]], prepend)
 
 class CNF:
     def __init__(self, n):
@@ -25,44 +42,41 @@ class CNF:
         # self.cons_list = io.StringIO()
         self.cons_list = []
         self.weight_list = io.StringIO()
-        self.tab = Variables(n)                       # variables at timnestep m (end of circuit)
-        self.tab.init(self)
-        self.tab_init = copy.deepcopy(self.tab)     # variables at timnestep 0
+        self.vars = Variables(n)                    # variables at timestep m (end of circuit)
+        self.vars.init(self)
+        self.vars_init = copy.deepcopy(self.vars)   # variables at timestep 0
+
+    def finalize(self):
+        r = self.vars.r
+        self.add_weight( r, -1)
+        self.add_weight(-r,  1)
 
     def leftProjectAllZero(self):
-        x = self.tab_init.x; z = self.tab_init.z
-        for i in range(self.tab_init.n):
-            self.add_clause([-x[i]])
-        self.add_clause([-self.tab_init.r])
+        self.vars_init.projectAllZero(True)
+
+    def leftProjectZXi(self, Z_or_X, i):
+        self.vars_init.projectZXi(Z_or_X, i, True)
 
     def rightProjectAllZero(self):
-        x = self.tab.x; z = self.tab.z
-        for i in range(self.tab.n):
-            self.add_clause([-x[i]])
-        self.add_clause([-self.tab.r])
+        self.vars.projectAllZero()
+
+    def rightProjectZXi(self, Z_or_X, i):
+        self.vars.projectZXi(Z_or_X, i)
 
     def add_var(self):
         self.var += 1
         return self.var
 
-    def add_clause(self, cons):
-        self.clause += 1
-        constr = ''
-        for i in range(len(cons)):
-            constr += str(cons[i]) + " "
-            # self.cons_list.write(str(cons[i]))
-            # self.cons_list.write(" ")       
-        # self.cons_list.write("0\n")
-        constr = constr + "0\n"
-        self.cons_list.append(constr)
-
-    def insert_clause(self, cons):
+    def add_clause(self, cons, prepend=False):
         self.clause += 1
         constr = ''
         for i in range(len(cons)):
             constr += str(cons[i]) + " "
         constr = constr + "0\n"
-        self.cons_list.insert(0, constr)       
+        if prepend:
+            self.cons_list.insert(0, constr)
+        else:
+            self.cons_list.append(constr)
 
     def add_weight(self, var, weight):
         self.weight_list.write("c p weight ")
