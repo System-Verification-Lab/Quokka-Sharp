@@ -12,27 +12,6 @@ from subprocess import PIPE, Popen
 from queue import Queue
 from experiment.memory import ReturnValueThread, memory_monitor
 
-def EC2CNF(tab, cnf, Z_or_X, idx, init):
-    x = tab.x; z = tab.z; r = tab.r
-    if not init:
-        cnf.add_weight( r, -1)
-        cnf.add_weight(-r,  1)
-        # When basis is Z
-    if Z_or_X == True:    
-        for i in range(cnf.n):
-            cnf.insert_clause([-x[i]])
-            if i == idx:
-                cnf.insert_clause([z[i]])
-            else:
-                cnf.insert_clause([-z[i]])
-    else:
-        for i in range(cnf.n):
-            cnf.insert_clause([-z[i]])
-            if i == idx:
-                cnf.insert_clause([x[i]])
-            else:
-                cnf.insert_clause([-x[i]])
-
 def GPMC(cnf_file):
     gpmc_path = shutil.which("gpmc")
     if gpmc_path == None:
@@ -51,8 +30,9 @@ def get_result(result):
 
 def checker(i, Z_or_X, cnf):
     cnf_temp = copy.deepcopy(cnf)
-    EC2CNF(cnf.tab,      cnf_temp, Z_or_X, i, False)
-    EC2CNF(cnf.tab_init, cnf_temp, Z_or_X, i, True)
+    cnf_temp. leftProjectZXi(Z_or_X, i)
+    cnf_temp.rightProjectZXi(Z_or_X, i)
+
     cnf_file = tempfile.gettempdir() + "/ecmc_eq_check_"+ ("Z" if Z_or_X else "X") + str(i) + ".cnf"
     cnf_temp.write_to_file(cnf_file)
     proc = GPMC(cnf_file)

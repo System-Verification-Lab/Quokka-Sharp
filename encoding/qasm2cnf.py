@@ -1,7 +1,6 @@
 import sys
 from encoding.cnf import Variables, CNF
 from encoding.cliffordt2cnf import *
-from encoding.measure import M2CNF
 from encoding.qasm_parser import qasm_parser, Circuit
 import math, re
 
@@ -119,11 +118,13 @@ def qasm2cnf(circuit : Circuit) -> CNF:
             Tdg2CNF(cnf,qubitc2)
             CNOT2CNF(cnf,qubitc1,qubitc2)
         elif gate == 'm':
-            M2CNF(cnf,False)
+            cnf.rightProjectZXi(True, 0)
         elif gate == 'mm':
-            M2CNF(cnf,True)
+            cnf.rightProjectAllZero()
         else:
             raise Exception(str(gate) + " undefined."+ str(element))
+
+    cnf.finalize()
     return cnf
 
 if __name__ == "__main__":

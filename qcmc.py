@@ -19,7 +19,11 @@ def QC2SAT(qasm_file, multi_or_single):
     circuit.add_measurement(multi_or_single)
     cnf = qasm2cnf(circuit)
     cnf.leftProjectAllZero()
-
+    ## Alternative to circuit.add_measurement(multi_or_single):
+    # if multi_or_single:
+    #     cnf.rightProjectAllZero()
+    # else:
+    #     cnf.rightProjectZXi(True, 0)
     cnf.write_to_file(wmc_file)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
@@ -71,6 +75,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='QCMC: The Quantum Circuit simulator based on Model Counting from the Quokka-Sharp (Quokka#) package')
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
-    parser.add_argument('-t', '--timeout', type=int, help="timeout in seconds") #TODO
     args = parser.parse_args()
     main(args.filename, args.measurement == 'allzero')
