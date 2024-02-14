@@ -1,20 +1,26 @@
 
+import argparse
 import math
 import os
 import re
 import shutil
 import sys
 import time 
+from encoding.qasm_parser import qasm_parser
 from encoding.qasm2cnf import qasm2cnf
+from experiment.memory import ReturnValueThread, memory_monitor
 from settings import *
 from queue import Queue
 from time import sleep
-from experiment.memory import ReturnValueThread, memory_monitor
 
 def QC2SAT(qasm_file ,multi_or_single):
     wmc_file = qasm_file + ".cnf"
     prep_start = time.time()
-    circuit = qasm2cnf(qasm_file, wmc_file, multi_or_single)
+    circuit = qasm_parser(qasm_file, True)
+    print("N: "+ str(circuit.n) + " Clifford: " + str(len(circuit.circ) - circuit.tgate) + " T: " + str(circuit.tgate))
+    circuit.add_measurement(multi_or_single)
+    cnf = qasm2cnf(circuit)
+    cnf.write_to_file(wmc_file)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
     return [t_prep, circuit.n]
@@ -62,4 +68,8 @@ def main(qasm_file, multi_or_single):
             ' Max RSS:', max_rss / 1024 / 1024, "MB")
     
 if __name__ == "__main__":
-    main(sys.argv[1],sys.argv[2])
+    parser = argparse.ArgumentParser(description='QCMC: The Quantum Circuit simulator based on Model Counting from the Quokka-Sharp (Quokka#) package')
+    parser.add_argument('filename')
+    parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
+    args = parser.parse_args()
+    main(args.filename, args.measurement == 'allzero')
