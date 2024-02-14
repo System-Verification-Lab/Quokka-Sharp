@@ -1,7 +1,7 @@
 import copy
 import io
 
-class Tableau:
+class Variables:
     def __init__(self,n):
         self.n = n
         self.x = [0] * n
@@ -25,7 +25,7 @@ class CNF:
         # self.cons_list = io.StringIO()
         self.cons_list = []
         self.weight_list = io.StringIO()
-        self.tab = Tableau(n)                       # variables at timnestep m (end of circuit)
+        self.tab = Variables(n)                       # variables at timnestep m (end of circuit)
         self.tab.init(self)
         self.tab_init = copy.deepcopy(self.tab)     # variables at timnestep 0
 
