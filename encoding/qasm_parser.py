@@ -42,6 +42,41 @@ class Circuit:
         else:
             self.circ.append('m')
 
+    def dagger(self):
+        self.circ.reverse()
+        for gate in self.circ:
+            if gate[0] == 'tdg':
+                gate[0] = 't'
+            elif gate[0] == 't':
+                gate[0] = 'tdg'
+            elif gate[0] == 's':
+                gate[0] = 'sdg'
+            elif gate[0] == 'sdg':
+                gate[0] = 's'
+            elif gate[0] == 'y':
+                gate[0] = 'ydg'
+            elif gate[0] == 'ccx':
+                pass
+            elif gate[0] == 'x':
+                pass
+            elif gate[0] == 'z':
+                pass
+            elif gate[0] == 'h':
+                pass
+            elif gate[0] == 'cx':
+                pass
+            elif gate[0] == 'cz':
+                pass
+            else:
+                raise Exception("Gate "+ gate[0] +" dagger not supported.")
+                #TODO: add a "dagger" boolean flag to gates? Ignore for self-
+
+    def merge(self, other):
+        assert(self.translate_ccx == other.translate_ccx)
+        self.circ.extend( other.circ )
+        self.n = self.n + other.n
+        self.tgate = self.n + other.tgate
+
 def get_num(s):
     num = ''
     idx1 = s.index('[')
@@ -144,6 +179,18 @@ def qasm_parser(filename, translate_ccx) -> Circuit:
                 qubitc2 = get_num(qubits[1]) 
                 qubitr = get_num(qubits[2])                
             circuit.add_ccx(qubitc1, qubitc2, qubitr, dagger)
+
+        elif gate.startswith("rx"):
+            #TODO
+            raise Exception(str(gate) + " undefined.")
+
+        elif gate.startswith("ry"):
+            #TODO
+            raise Exception(str(gate) + " undefined.")
+
+        elif gate.startswith("rz"):
+            #TODO
+            raise Exception(str(gate) + " undefined.")
 
         elif gate == "m":
             circuit.add_measurement()
