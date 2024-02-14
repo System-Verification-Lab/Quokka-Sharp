@@ -164,29 +164,30 @@ def trans(filename):
     with open(filename,"r") as qasm_old:
         for line in qasm_old:
             linelist  = line.rsplit()
-            # if "cp" in line or "cu1" in line:
-            #     cu1(line, qasm_list)
-            # elif "p(" in line or "u1" in line:
-            #     p(line, qasm_list)
-            # elif "u3" in line:
-            #     u3(line,qasm_list)
-            # elif "u(" in line:
-            #     u(line, qasm_list)
-            # elif "ry" in line:
-            #     ry(line, qasm_list)
-            # elif "u2" in line:
-            #     u2(line, qasm_list)
-            # elif "rzz" in line:
-            #     rzz(line, qasm_list)
-            # elif "rccx" in line :
-            #     rccx(line, qasm_list)
-            # elif "cswap" in line:
-            #     cswap(line, qasm_list)
-            # elif "swap" in line:
-            #     swap(line, qasm_list)
-            # elif "cz" in line:
-            #     cz(line, qasm_list)
-            if "rz" in line or "rx" in line:
+            if "cp" in line or "cu1" in line:
+                cu1(line, qasm_list)
+            elif "p(" in line or "u1" in line:
+                p(line, qasm_list)
+            elif "u3" in line:
+                u3(line,qasm_list)
+            elif "u(" in line:
+                u(line, qasm_list)
+            elif "ry" in line:
+                ry(line, qasm_list)
+            elif "u2" in line:
+                u2(line, qasm_list)
+            elif "rzz" in line:
+                rzz(line, qasm_list)
+            elif "rccx" in line :
+                rccx(line, qasm_list)
+            elif "cswap" in line:
+                cswap(line, qasm_list)
+            elif "swap" in line:
+                swap(line, qasm_list)
+            elif "cz" in line:
+                
+                cz(line, qasm_list)
+            elif "rz" in line or "rx" in line:
                 qasm_list.append(line)
             elif len(linelist) > 0 and linelist[0] == 'sx':
                 sx(line, qasm_list)
