@@ -1,10 +1,13 @@
-import os, sys, shutil
+
 import glob
-import re
-import time
 import math
+import os
+import re
+import shutil
+import sys
+import time
+import qasm2cnf
 from settings import *
-from settings import GPMC_PATH
 from subprocess import Popen, PIPE, TimeoutExpired
 from queue import Queue, Empty
 from resource import getrusage, RUSAGE_SELF
@@ -40,28 +43,20 @@ def memory_monitor(command_queue: Queue, poll_interval=1):
             if max_rss > old_max:
                 old_max = max_rss
                 # print(datetime.now(), 'max RSS', max_rss / 1024 / 1024, "MB")
+
 def QC2SAT(qasm_file ,multi_or_single):
-    filepath = qasm_file.split('/')
-    l = len(filepath)
-    folder = filepath[l-3] + "/" + filepath[l-2]
-    filename = filepath[l-1]
-    if os.path.isdir(GPMC_PATH + '/example/' + folder):
-        shutil.rmtree(GPMC_PATH + '/example/' + folder)
-    os.mkdir(GPMC_PATH + '/example/' + folder)
-    wmc_file = GPMC_PATH + '/example/'+ folder + '/' + filename
+    wmc_file = qasm_file + ".cnf"
     prep_start = time.time()
-    info = os.popen('python3 qasm2cnf.py ' + qasm_file + ' ' + wmc_file + ' ' + multi_or_single).read()
+    circuit = qasm2cnf.qasm2cnf(qasm_file, wmc_file, multi_or_single)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
-    info = re.split(",|\[|\]",info)
-    return [t_prep, int(info[1])]
+    return [t_prep, circuit.n]
 
-def GPMC(filename, n, multi_or_single):
-    filepath = filename.split('/')
-    l = len(filepath)
-    filepath2 = filepath[l-3] + "/" + filepath[l-2] + "/" + filepath[l-1]
-    gpmc_path = GPMC_PATH + '/bin/gpmc'
-    wmc_file = GPMC_PATH + '/example/'+ filepath2
+def GPMC(qasm_file, n, multi_or_single):
+    gpmc_path = shutil.which("gpmc")
+    if gpmc_path == None:
+        sys.exit("Binary gpmc not found in path.")
+    wmc_file = qasm_file + ".cnf"
     result = os.popen(gpmc_path + " -mode=1 " + wmc_file).read()
     gpmc_time_str = re.findall(r"Real.time.*s",str(result))[0]
     gpmc_time = round(float(re.findall(r"[-+]?(?:\d*\.*\d+)", gpmc_time_str)[0]) * 1000, 3)
