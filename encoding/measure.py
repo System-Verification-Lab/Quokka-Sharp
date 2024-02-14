@@ -1,5 +1,5 @@
-def M2CNF(tab, cnf, multi_or_single):
-    n = tab.n; x = tab.x; z = tab.z; r = tab.r
+def M2CNF(cnf, multi_or_single):
+    n = cnf.n; x = cnf.tab.x; z = cnf.tab.z; r = cnf.tab.r
 
     cnf.add_weight( r, -1)
     cnf.add_weight(-r,  1)
