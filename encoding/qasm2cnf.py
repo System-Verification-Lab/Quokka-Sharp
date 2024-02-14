@@ -1,6 +1,5 @@
 import sys
 from encoding.Tableau import Tableau, CNF
-from encoding.InitConst import init
 from encoding.cliffordT import *
 from encoding.measure import M2CNF
 from encoding.qasm_parser import qasm_parser, Circuit
@@ -57,79 +56,75 @@ def get_cos_sin(str):
 
 def qasm2cnf(circuit : Circuit) -> CNF:
 
-    qclist = circuit.circ
-    n = circuit.n
-    m = len(qclist)
+    cnf = CNF(circuit.n)
 
-    tab = Tableau(n)
-    cnf = CNF()
-
-    init(tab, cnf)
-
-    for t in range(m):
-        element = qclist[t]
+    for element in circuit.circ:
         gate = element[0]
         if gate == 'h':
             k = int(element[1]) - 1
-            H2CNF(tab,cnf,k)
+            H2CNF(cnf,k)
         elif gate == 'x':
             k = int(element[1]) - 1
-            X2CNF(tab,cnf,k)
+            X2CNF(cnf,k)
         elif gate == 'y':
             k = int(element[1]) - 1
-            Y2CNF(tab,cnf,k)
+            Y2CNF(cnf,k)
         elif gate == 'z':
             k = int(element[1]) - 1
-            Z2CNF(tab,cnf,k)
+            Z2CNF(cnf,k)
         elif gate == 'cx':
             j = int(element[1]) - 1
             k = int(element[2]) - 1
-            CNOT2CNF(tab,cnf,j,k)
+            CNOT2CNF(cnf,j,k)
         elif gate == 's':
             k = int(element[1]) - 1
-            S2CNF(tab,cnf,k)
+            S2CNF(cnf,k)
         elif gate == 'tdg':
             k = int(element[1]) - 1
-            Tdg2CNF(tab,cnf,k)
+            Tdg2CNF(cnf,k)
         elif gate == 'sdg':
             k = int(element[1]) - 1
-            Sdg2CNF(tab,cnf,k)
+            Sdg2CNF(cnf,k)
         elif gate == 't':
             k = int(element[1]) - 1
-            T2CNF(tab,cnf,k)
+            T2CNF(cnf,k)
+        elif 'ydg' in gate:
+            [res_cos, res_sin] = get_cos_sin("rx(-0.25*pi)") # TODO: correct?
+            k = int(element[1]) - 1
+            RX2CNF(cnf,k, res_cos, res_sin)
         elif 'rx' in gate:
             [res_cos, res_sin] = get_cos_sin(element[0])
             k = int(element[1]) - 1
-            RX2CNF(tab,cnf,k, res_cos, res_sin)
+            RX2CNF(cnf,k, res_cos, res_sin)
         elif 'rz' in gate:
             [res_cos, res_sin] = get_cos_sin(element[0])
             k = int(element[1]) - 1
-            RZ2CNF(tab,cnf,k, res_cos, res_sin)
+            RZ2CNF(cnf,k, res_cos, res_sin)
         elif gate == "ccx":
             qubitc1 = int(element[1]) - 1
             qubitc2 = int(element[2]) - 1
             qubitr  = int(element[3]) - 1
-            H2CNF(tab,cnf,qubitr)
-            CNOT2CNF(tab,cnf,qubitc2,qubitr)
-            Tdg2CNF(tab,cnf,qubitr)
-            CNOT2CNF(tab,cnf,qubitc1,qubitr)
-            T2CNF(tab,cnf,qubitr)
-            CNOT2CNF(tab,cnf,qubitc2,qubitr)
-            Tdg2CNF(tab,cnf,qubitr)
-            CNOT2CNF(tab,cnf,qubitc1,qubitr)
-            T2CNF(tab,cnf,qubitc2)
-            T2CNF(tab,cnf,qubitr)
-            CNOT2CNF(tab,cnf,qubitc1,qubitc2)
-            H2CNF(tab,cnf,qubitr)
-            T2CNF(tab,cnf,qubitc1)
-            Tdg2CNF(tab,cnf,qubitc2)
-            CNOT2CNF(tab,cnf,qubitc1,qubitc2)
+            H2CNF(cnf,qubitr)
+            CNOT2CNF(cnf,qubitc2,qubitr)
+            Tdg2CNF(cnf,qubitr)
+            CNOT2CNF(cnf,qubitc1,qubitr)
+            T2CNF(cnf,qubitr)
+            CNOT2CNF(cnf,qubitc2,qubitr)
+            Tdg2CNF(cnf,qubitr)
+            CNOT2CNF(cnf,qubitc1,qubitr)
+            T2CNF(cnf,qubitc2)
+            T2CNF(cnf,qubitr)
+            CNOT2CNF(cnf,qubitc1,qubitc2)
+            H2CNF(cnf,qubitr)
+            T2CNF(cnf,qubitc1)
+            Tdg2CNF(cnf,qubitc2)
+            CNOT2CNF(cnf,qubitc1,qubitc2)
         elif gate == 'm':
-            M2CNF(tab,cnf,False)
+            M2CNF(cnf,False)
         elif gate == 'mm':
-            M2CNF(tab,cnf,True)
+            M2CNF(cnf,True)
         else:
-            raise Exception(str(line[0]) + " undefined.")
+            raise Exception(str(gate) + " undefined."+ str(element))
     return cnf
 
 if __name__ == "__main__":

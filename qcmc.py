@@ -1,4 +1,3 @@
-
 import argparse
 import math
 import os
@@ -13,13 +12,15 @@ from settings import *
 from queue import Queue
 from time import sleep
 
-def QC2SAT(qasm_file ,multi_or_single):
+def QC2SAT(qasm_file, multi_or_single):
     wmc_file = qasm_file + ".cnf"
     prep_start = time.time()
     circuit = qasm_parser(qasm_file, True)
     print("N: "+ str(circuit.n) + " Clifford: " + str(len(circuit.circ) - circuit.tgate) + " T: " + str(circuit.tgate))
     circuit.add_measurement(multi_or_single)
     cnf = qasm2cnf(circuit)
+    cnf.leftProjectAllZero()
+
     cnf.write_to_file(wmc_file)
     prep_end = time.time()
     t_prep = round((prep_end - prep_start) * 1000, 3)
@@ -66,7 +67,7 @@ def main(qasm_file, multi_or_single):
             ' time:', (pre_time + gpmc_time),
             ' prob:', prob,
             ' Max RSS:', max_rss / 1024 / 1024, "MB")
-    
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='QCMC: The Quantum Circuit simulator based on Model Counting from the Quokka-Sharp (Quokka#) package')
     parser.add_argument('filename')
