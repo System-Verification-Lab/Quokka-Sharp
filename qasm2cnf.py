@@ -66,7 +66,7 @@ def get_num(s):
     num = re.findall(r"\[([0-9]*)\]",s)[0]
     return globals()[qreg][int(num)]
 
-def main(qasm_file, cnf_file, multi_or_single):
+def qasm2cnf(qasm_file, cnf_file, multi_or_single):
     qasm_list = []
     with open(qasm_file,"r") as qasm:
         for line in qasm:
@@ -199,9 +199,9 @@ def main(qasm_file, cnf_file, multi_or_single):
     with open(cnf_file, 'w') as the_file:
         the_file.writelines("p cnf " + str(cnf.var)+" "+str(cnf.clause)+"\n")
         the_file.write(cnf.weight_list.getvalue())
-        the_file.write(cnf.cons_list.getvalue())
+        the_file.write("0\n".join(cnf.cons_list))  #cnf.cons_list.getvalue())
     
-    print([circuit.n, circuit.m, circuit.tgate, circuit.rgate])
+    return circuit
     
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -210,4 +210,5 @@ if __name__ == "__main__":
         out = sys.argv[1] + ".cnf"
     else:
         out = sys.argv[2]
-    main(sys.argv[1], out, sys.argv[3])
+    circuit = qasm2cnf(sys.argv[1], out, sys.argv[3])
+    print([circuit.n, circuit.m, circuit.tgate, circuit.rgate])
