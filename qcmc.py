@@ -1,6 +1,5 @@
 import argparse
 import math
-import os
 import re
 import shutil
 import sys
@@ -16,7 +15,6 @@ def QC2SAT(qasm_file, multi_or_single):
     wmc_file = qasm_file + ".cnf"
     prep_start = time.time()
     circuit = qasm_parser(qasm_file, True)
-    print("N: "+ str(circuit.n) + " Clifford: " + str(len(circuit.circ) - circuit.tgate) + " T: " + str(circuit.tgate))
     circuit.add_measurement(multi_or_single)
     cnf = qasm2cnf(circuit)
     cnf.leftProjectAllZero()
@@ -28,7 +26,7 @@ def QC2SAT(qasm_file, multi_or_single):
     cnf.write_to_file(wmc_file)
     prep_end = time.time()
     t_prep = round(prep_end - prep_start, 3)
-    return t_prep
+    return [t_prep, circuit.n]
 
 def GPMC(qasm_file, n, multi_or_single, TIMEOUT):
     gpmc_path = shutil.which("gpmc")
@@ -39,6 +37,7 @@ def GPMC(qasm_file, n, multi_or_single, TIMEOUT):
     try:
         start_time = time.time()
         result,err = p.communicate(timeout=TIMEOUT)
+        result = str(result)
         end_time = time.time()
         gpmc_time = end_time - start_time
         gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
@@ -61,13 +60,13 @@ def main(qasm_file, multi_or_single, timeout):
     monitor_thread.start()
     # wait a bit for monitor thread to start measuring mem
     sleep(.5)    
-    pre_time = QC2SAT(qasm_file, multi_or_single)
+    encode_time, n = QC2SAT(qasm_file, multi_or_single)
     gpmc_time, prob = GPMC(qasm_file, n, multi_or_single, timeout)
     
     if gpmc_time == timeout:
         time = gpmc_time
     else:
-        time = pre_time + gpmc_time
+        time = encode_time + gpmc_time
     
     queue.put('stop')
     max_rss = monitor_thread.join()

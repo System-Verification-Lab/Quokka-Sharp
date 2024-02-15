@@ -30,9 +30,8 @@ def get_result(result):
 
 def checker(i, Z_or_X, cnf):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp. leftProjectZXi(Z_or_X, i)
+    cnf_temp.leftProjectZXi(Z_or_X, i)
     cnf_temp.rightProjectZXi(Z_or_X, i)
-
     cnf_file = tempfile.gettempdir() + "/ecmc_eq_check_"+ ("Z" if Z_or_X else "X") + str(i) + ".cnf"
     cnf_temp.write_to_file(cnf_file)
     proc = GPMC(cnf_file)
@@ -49,11 +48,9 @@ def main(qasmfile1, qasmfile2):
             f1 = qasmfile1.split("/")[0]
             f2 = qasmfile2.split("/")[0]
             raise Exception("Different number of qubits:,"+ f1 +" has "+ circuit1.n +" while "+ f2 +" has "+ circuit2.n)
-    print("N: "+ str(circuit1.n) + " Clifford: " + str(len(circuit1.circ) - circuit1.tgate) + " T: " + str(circuit1.tgate))
-
+    # print("N: "+ str(circuit1.n) + " Clifford: " + str(len(circuit1.circ) - circuit1.tgate) + " T: " + str(circuit1.tgate))
     circuit1.dagger()
     circuit1.merge(circuit2)
-
     cnf = qasm2cnf(circuit1)
 
     encode_end = time.time()
