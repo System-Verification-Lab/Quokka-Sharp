@@ -33,17 +33,23 @@ def convert_to_float(frac_str):
         else:
             return math.pow(-1,sign) * num / denom
 
-def get_cos_sin(str):
-    angle = re.findall(r"\((.*?)\)",str)[0]
-    if "/" in str:
-        theta = convert_to_float(angle)
-    else:
-        theta_str = angle
-        if 'pi' in theta_str:
-            theta = theta_str.split('*')
-            theta = float(theta[0]) * math.pi
+def get_angle(angle):
+    try:
+        if "/" in str:
+            theta = convert_to_float(angle)
         else:
-            theta = float(theta_str)
+            theta_str = angle
+            if 'pi' in theta_str:
+                theta = theta_str.replace('*', '')
+                theta = theta_str.replace('pi', '')
+                theta = float(theta) * math.pi
+            else:
+                theta = float(theta_str)
+        return theta
+    except:
+        raise Exception(angle, "is not supported")
+
+def get_cos_sin(theta):
     res_cos = math.cos(theta)
     if abs(res_cos) < 1e-15:
         res_cos = 0
@@ -86,18 +92,25 @@ def qasm2cnf(circuit : Circuit) -> CNF:
         elif gate == 't':
             k = int(element[1]) - 1
             T2CNF(cnf,k)
-        elif 'ydg' in gate:
-            [res_cos, res_sin] = get_cos_sin("rx(-0.25*pi)") # TODO: correct?
-            k = int(element[1]) - 1
-            RX2CNF(cnf,k, res_cos, res_sin)
-        elif 'rx' in gate:
-            [res_cos, res_sin] = get_cos_sin(element[0])
-            k = int(element[1]) - 1
-            RX2CNF(cnf,k, res_cos, res_sin)
-        elif 'rz' in gate:
-            [res_cos, res_sin] = get_cos_sin(element[0])
-            k = int(element[1]) - 1
-            RZ2CNF(cnf,k, res_cos, res_sin)
+        # elif gate == 'ydg':
+        #     [res_cos, res_sin] = get_cos_sin("rx(-0.25*pi)") # TODO: correct?
+        #     k = int(element[1]) - 1
+        #     RX2CNF(cnf,k, res_cos, res_sin)
+        elif gate in ['rx', 'rz', 'rxdg', 'rzdg']:
+            angle = get_angle(element[1])
+            k = int(element[2]) - 1
+            if gate == 'rx':
+                [res_cos, res_sin] = get_cos_sin(angle)
+                RX2CNF(cnf,k, res_cos, res_sin)
+            elif gate == 'rz':
+                [res_cos, res_sin] = get_cos_sin(angle)
+                RZ2CNF(cnf,k, res_cos, res_sin)
+            elif gate == 'rxdg':
+                [res_cos, res_sin] = get_cos_sin((-1) * angle)
+                RX2CNF(cnf,k, res_cos, res_sin)
+            elif gate == 'rzdg':
+                [res_cos, res_sin] = get_cos_sin((-1) * angle)
+                RZ2CNF(cnf,k, res_cos, res_sin)
         elif gate == "ccx":
             qubitc1 = int(element[1]) - 1
             qubitc2 = int(element[2]) - 1
@@ -125,13 +138,3 @@ def qasm2cnf(circuit : Circuit) -> CNF:
             raise Exception(str(gate) + " undefined."+ str(element))
 
     return cnf
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        exit(1)
-    if len(sys.argv) < 3:
-        out = sys.argv[1] + ".cnf"
-    else:
-        out = sys.argv[2]
-    cnf = main(sys.argv[1])
-    cnf.write_to_file(out)
