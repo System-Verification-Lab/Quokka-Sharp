@@ -54,20 +54,20 @@ class Circuit:
 
     def dagger(self):
         self.circ.reverse()
-        for item in self.circ:
-            gate = item[0]
+        for idx in range(len(self.circ)):
+            gate = self.circ[idx][0]
             if gate in HermiGates:
                 pass
-            elif gate in list(NHermitGates.keys()):
-                gate = NHermitGates[gate]
+            elif NHermitGates.get(gate) != None:
+                self.circ[idx][0] = NHermitGates[gate]
             else:
                 raise Exception("Gate "+ gate[0] +" dagger not supported.")
 
     def merge(self, other):
         assert(self.translate_ccx == other.translate_ccx)
         self.circ.extend( other.circ )
-        self.n = self.n + other.n
-        self.tgate = self.n + other.tgate
+        self.n = self.n
+        self.tgate = self.tgate + other.tgate
 
 def get_num(s):
     num = ''
