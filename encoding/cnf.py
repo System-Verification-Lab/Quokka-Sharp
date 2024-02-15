@@ -17,13 +17,14 @@ class Variables:
         self.var += 1
         return self.var
 
-    def projectAllZero(self, prepend=False):
+    def projectAllZero(self, sign=False, prepend=False):
         for i in range(self.n):
             self.cnf.add_clause([-self.x[i]], prepend)
-        self.cnf.add_clause([-self.r], prepend)
+        if sign:
+            self.cnf.add_clause([-self.r], prepend)            
 
-    def projectZXi(self, Z_or_X, idx, prepend=False):
-        x = self.x; z = self.z
+    def projectZXi(self, Z_or_X, idx, sign=False, prepend=False):
+        x = self.x; z = self.z; r = self.r
         if not Z_or_X:
             z = self.x; x = self.z
         for i in range(self.n):
@@ -32,6 +33,8 @@ class Variables:
                 self.cnf.add_clause([z[i]], prepend)
             else:
                 self.cnf.add_clause([-z[i]], prepend)
+            if sign:
+                self.cnf.add_clause([-r], prepend)
 
 class CNF:
     def __init__(self, n):
@@ -42,18 +45,20 @@ class CNF:
         self.weight_list = io.StringIO()
         self.vars = Variables(self)                 # variables at timestep m (end of circuit)
         self.vars_init = copy.deepcopy(self.vars)   # variables at timestep 0
-
+        self.vars_init.cnf = self
     def finalize(self):
         self.locked = True
         r = self.vars.r
         self.add_weight( r, -1)
         self.add_weight(-r,  1)
 
+    # Left projections are initial states
     def leftProjectAllZero(self):
-        self.vars_init.projectAllZero(True)
+        self.vars_init.projectAllZero(True, True)
 
+    # Left projections are initial states
     def leftProjectZXi(self, Z_or_X, i):
-        self.vars_init.projectZXi(Z_or_X, i, True)
+        self.vars_init.projectZXi(Z_or_X, i, True, True)
 
     # Right projections are measurements: we only allow measurements at the end. See self.lock
     def rightProjectAllZero(self):
@@ -93,4 +98,4 @@ class CNF:
         with open(cnf_file, 'w') as the_file:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             the_file.write(self.weight_list.getvalue())
-            the_file.write("0\n".join(self.cons_list))
+            the_file.write(''.join(self.cons_list))
