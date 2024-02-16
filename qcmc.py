@@ -28,31 +28,27 @@ def QC2SAT(qasm_file, multi_or_single):
     t_prep = round(prep_end - prep_start, 3)
     return [t_prep, circuit.n]
 
-def GPMC(qasm_file, n, multi_or_single, TIMEOUT):
+def GPMC(qasm_file, n, multi_or_single):
     gpmc_path = shutil.which("gpmc")
     if gpmc_path == None:
         sys.exit("Binary gpmc not found in path.")
     wmc_file = qasm_file + ".cnf"
     p = Popen([gpmc_path, "-mode=1", wmc_file], stdout= PIPE, stderr=PIPE)
-    try:
-        start_time = time.time()
-        result,err = p.communicate(timeout=TIMEOUT)
-        result = str(result)
-        end_time = time.time()
-        gpmc_time = end_time - start_time
-        gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
-        gpmc_ans = float(gpmc_ans_str)
-        if multi_or_single == "multi":
-            prob = gpmc_ans / math.pow(2,int(n))
-        else:
-            prob = gpmc_ans/2+1/2        
-        return gpmc_time, prob
-    except TimeoutExpired:
-        p.kill() 
-        return "timeout", "-"
+    start_time = time.time()
+    result,err = p.communicate()
+    result = str(result)
+    end_time = time.time()
+    gpmc_time = end_time - start_time
+    gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
+    gpmc_ans = float(gpmc_ans_str)
+    if multi_or_single == "multi":
+        prob = gpmc_ans / math.pow(2,int(n))
+    else:
+        prob = gpmc_ans/2+1/2        
+    return gpmc_time, prob
 
 
-def main(qasm_file, multi_or_single, timeout):
+def main(qasm_file, multi_or_single):
     # start monitor thread for measuring mem
     queue = Queue()
     poll_interval = 0.1
@@ -61,12 +57,9 @@ def main(qasm_file, multi_or_single, timeout):
     # wait a bit for monitor thread to start measuring mem
     sleep(.5)    
     encode_time, n = QC2SAT(qasm_file, multi_or_single)
-    gpmc_time, prob = GPMC(qasm_file, n, multi_or_single, timeout)
+    gpmc_time, prob = GPMC(qasm_file, n, multi_or_single)
     
-    if gpmc_time == timeout:
-        time = gpmc_time
-    else:
-        time = encode_time + gpmc_time
+    time = encode_time + gpmc_time
     
     queue.put('stop')
     max_rss = monitor_thread.join()
@@ -80,6 +73,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='QCMC: The Quantum Circuit simulator based on Model Counting from the Quokka-Sharp (Quokka#) package')
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
-    parser.add_argument('-t', '--timeout', type=int, help="timeout in seconds")
     args = parser.parse_args()
-    main(args.filename, args.measurement == 'allzero', args.timeout)
+    main(args.filename, args.measurement == 'allzero')
