@@ -92,10 +92,6 @@ def qasm2cnf(circuit : Circuit) -> CNF:
         elif gate == 't':
             k = int(element[1]) - 1
             T2CNF(cnf,k)
-        # elif gate == 'ydg':
-        #     [res_cos, res_sin] = get_cos_sin("rx(-0.25*pi)") # TODO: correct?
-        #     k = int(element[1]) - 1
-        #     RX2CNF(cnf,k, res_cos, res_sin)
         elif gate in ['rx', 'rz', 'rxdg', 'rzdg']:
             angle = get_angle(element[1])
             k = int(element[2]) - 1
