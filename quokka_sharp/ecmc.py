@@ -6,11 +6,11 @@ import shutil
 import sys
 import tempfile
 import time
-from encoding.qasm_parser import qasm_parser
-from encoding.qasm2cnf import qasm2cnf
+from encoding.qasm_parser import QASMparser
+from encoding.qasm2cnf import QASM2CNF
 from subprocess import PIPE, Popen
 from queue import Queue
-from experiment.memory import ReturnValueThread, memory_monitor
+from encoding.memory import ReturnValueThread, memory_monitor
 
 def GPMC(cnf_file):
     gpmc_path = shutil.which("gpmc")
@@ -37,12 +37,12 @@ def checker(i, Z_or_X, cnf):
     proc = GPMC(cnf_file)
     return proc
 
-def main(qasmfile1, qasmfile2):
+def EQ_check(qasmfile1, qasmfile2):
 
     encode_start = time.time()
 
-    circuit1 = qasm_parser(qasmfile1, True)
-    circuit2 = qasm_parser(qasmfile1, True)
+    circuit1 = QASMparser(qasmfile1, True)
+    circuit2 = QASMparser(qasmfile1, True)
 
     if circuit1.n != circuit2.n:
             f1 = qasmfile1.split("/")[0]
@@ -51,7 +51,7 @@ def main(qasmfile1, qasmfile2):
     # print("N: "+ str(circuit1.n) + " Clifford: " + str(len(circuit1.circ) - circuit1.tgate) + " T: " + str(circuit1.tgate))
     circuit1.dagger()
     circuit1.merge(circuit2)
-    cnf = qasm2cnf(circuit1)
+    cnf = QASM2CNF(circuit1)
 
     encode_end = time.time()
     encode_time = encode_end - encode_start
@@ -122,4 +122,4 @@ if __name__ == "__main__":
     parser.add_argument('qasmfile1')
     parser.add_argument('qasmfile2')
     args = parser.parse_args()
-    main(args.qasmfile1, args.qasmfile2)
+    eq_check(args.qasmfile1, args.qasmfile2)

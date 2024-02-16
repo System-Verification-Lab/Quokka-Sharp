@@ -4,9 +4,9 @@ import re
 import shutil
 import sys
 import time 
-from encoding.qasm_parser import qasm_parser
-from encoding.qasm2cnf import qasm2cnf
-from experiment.memory import ReturnValueThread, memory_monitor
+from encoding.qasm_parser import QASMparser
+from encoding.qasm2cnf import QASM2CNF
+from encoding.memory import ReturnValueThread, memory_monitor
 from queue import Queue
 from time import sleep
 from subprocess import Popen, PIPE, TimeoutExpired
@@ -14,9 +14,9 @@ from subprocess import Popen, PIPE, TimeoutExpired
 def QC2SAT(qasm_file, multi_or_single):
     wmc_file = qasm_file + ".cnf"
     prep_start = time.time()
-    circuit = qasm_parser(qasm_file, True)
+    circuit = QASMparser(qasm_file, True)
     circuit.add_measurement(multi_or_single)
-    cnf = qasm2cnf(circuit)
+    cnf = QASM2CNF(circuit)
     cnf.leftProjectAllZero()
     ## Alternative to circuit.add_measurement(multi_or_single):
     # if multi_or_single:
@@ -48,7 +48,7 @@ def GPMC(qasm_file, n, multi_or_single):
     return gpmc_time, prob
 
 
-def main(qasm_file, multi_or_single):
+def Measure(qasm_file, multi_or_single):
     # start monitor thread for measuring mem
     queue = Queue()
     poll_interval = 0.1
@@ -74,4 +74,4 @@ if __name__ == "__main__":
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
     args = parser.parse_args()
-    main(args.filename, args.measurement == 'allzero')
+    measure(args.filename, args.measurement == 'allzero')
