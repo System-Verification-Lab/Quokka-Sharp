@@ -1,4 +1,3 @@
-import sys, io
 from sympy.logic.boolalg import *
 from sympy.logic import simplify_logic
 from sympy import symbols

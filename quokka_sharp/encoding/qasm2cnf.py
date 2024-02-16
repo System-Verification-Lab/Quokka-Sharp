@@ -1,7 +1,7 @@
 import sys
 from encoding.cnf import Variables, CNF
 from encoding.cliffordt2cnf import *
-from encoding.qasm_parser import qasm_parser, Circuit
+from encoding.qasm_parser import Circuit
 import math, re
 
 
@@ -58,7 +58,7 @@ def get_cos_sin(theta):
         res_sin = 0
     return [res_cos, res_sin]
 
-def qasm2cnf(circuit : Circuit) -> CNF:
+def QASM2CNF(circuit : Circuit) -> CNF:
 
     cnf = CNF(circuit.n)
 

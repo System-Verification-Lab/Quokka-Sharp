@@ -81,7 +81,7 @@ def get_num(s):
 
 #TODO: the translate CCX should be factored out to some optimization pass
 #      or separate circuit converter tool
-def qasm_parser(filename, translate_ccx) -> Circuit:
+def QASMparser(filename, translate_ccx) -> Circuit:
     qasm_list = []
     
     with open(filename,"r") as qasm:
