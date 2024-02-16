@@ -92,7 +92,7 @@ def qasm2cnf(circuit : Circuit) -> CNF:
         elif gate == 't':
             k = int(element[1]) - 1
             T2CNF(cnf,k)
-        elif gate in ['rx', 'rz', 'rxdg', 'rzdg']:
+        elif gate[0] == 'r':
             angle = get_angle(element[1])
             k = int(element[2]) - 1
             if gate == 'rx':
