@@ -7,3 +7,5 @@ __pycache__
 test.qasm
 test.qasm.cnf
 test.qasm.cnf
+dist
+quokka_sharp.egg-info
