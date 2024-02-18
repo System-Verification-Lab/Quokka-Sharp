@@ -6,11 +6,11 @@ import shutil
 import sys
 import tempfile
 import time
-from encoding.qasm_parser import QASMparser
-from encoding.qasm2cnf import QASM2CNF
+from .encoding.qasm_parser import QASMparser
+from .encoding.qasm2cnf import QASM2CNF
 from subprocess import PIPE, Popen
 from queue import Queue
-from encoding.memory import ReturnValueThread, memory_monitor
+from .encoding.memory import ReturnValueThread, memory_monitor
 
 def GPMC(cnf_file):
     gpmc_path = shutil.which("gpmc")
