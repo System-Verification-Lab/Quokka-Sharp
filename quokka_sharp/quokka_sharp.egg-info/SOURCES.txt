@@ -1,0 +1,17 @@
+README.md
+setup.py
+quokka_sharp/__init__.py
+quokka_sharp/ecmc.py
+quokka_sharp/qcmc.py
+quokka_sharp.egg-info/PKG-INFO
+quokka_sharp.egg-info/SOURCES.txt
+quokka_sharp.egg-info/dependency_links.txt
+quokka_sharp.egg-info/requires.txt
+quokka_sharp.egg-info/top_level.txt
+quokka_sharp/encoding/__init__.py
+quokka_sharp/encoding/cliffordt2cnf.py
+quokka_sharp/encoding/cliffordt2cnf_py_codegen.py
+quokka_sharp/encoding/cnf.py
+quokka_sharp/encoding/memory.py
+quokka_sharp/encoding/qasm2cnf.py
+quokka_sharp/encoding/qasm_parser.py
