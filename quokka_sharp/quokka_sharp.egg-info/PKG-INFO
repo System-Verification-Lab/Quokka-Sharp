@@ -1,0 +1,20 @@
+Metadata-Version: 2.1
+Name: quokka-sharp
+Version: 0.0.4
+Summary: Quokka Sharp
+Author: System Verification Lab
+Author-email: j.mei@liacs.leidenuniv.nl
+Keywords: python,quantum circuits
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Requires-Dist: sympy>=1.12
+
+
+                    Quokka Sharp for simulating and equivalence checking 
+                    of quantum circuits based on weighted model counting.
+                    You have to intall a weighted model counting tool first.
+                    
