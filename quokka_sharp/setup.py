@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
+VERSION = '0.0.4'
 DESCRIPTION = 'Quokka Sharp'
 LONG_DESCRIPTION = '''
                     Quokka Sharp for simulating and equivalence checking 
                     of quantum circuits based on weighted model counting.
-                    You have to intall a weighted model counting tool GPMC first.
+                    You have to intall a weighted model counting tool first.
                     '''
 
 setup(
