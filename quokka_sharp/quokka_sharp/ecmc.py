@@ -122,4 +122,4 @@ if __name__ == "__main__":
     parser.add_argument('qasmfile1')
     parser.add_argument('qasmfile2')
     args = parser.parse_args()
-    eq_check(args.qasmfile1, args.qasmfile2)
+    EQ_check(args.qasmfile1, args.qasmfile2)

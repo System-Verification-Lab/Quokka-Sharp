@@ -74,4 +74,4 @@ if __name__ == "__main__":
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
     args = parser.parse_args()
-    measure(args.filename, args.measurement == 'allzero')
+    Measure(args.filename, args.measurement == 'allzero')
