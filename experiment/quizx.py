@@ -1,8 +1,8 @@
 import os, sys
-from settings import *
+from .settings import *
 from queue import Queue
 from time import sleep
-from memory import ReturnValueThread, memory_monitor
+from .memory import ReturnValueThread, memory_monitor
 
 def ZX(filename, multi_or_single):
     if multi_or_single == "multi":
@@ -32,7 +32,7 @@ def main(qasm_file, multi_or_single):
     max_rss = monitor_thread.join()
     
     print(qasm_file.split("/")[-1], 
-            # ' time:', (zx_time),
+            ' time:', (zx_time),
             # ' prob:', prob,
             ' Max RSS:', max_rss / 1024 / 1024, "MB")
     
