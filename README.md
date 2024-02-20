@@ -41,7 +41,7 @@ import quokka-sharp as qk
   res = qk.Measure("circ.qasm", "allzero")
   print(res.prob)
 ```
-- circuit equivalence check
+- checking circuit equivalence
 
 ```python
 import quokka-sharp as qk
