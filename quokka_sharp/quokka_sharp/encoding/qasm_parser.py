@@ -163,7 +163,7 @@ def QASMparser(filename, translate_ccx) -> Circuit:
 
         elif len(gate) > 4 and gate[0:2] in RotationGates:
             # TODO: gate exception
-            gate_angle = re.findall(r"(.*?)\((.*?)\)",gate)
+            gate_angle = re.findall(r"(.*?)\((.*?)\)",gate)[0]
             rgate = gate_angle[0]
             angle = gate_angle[1]
             qubit = get_num(line[1])
