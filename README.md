@@ -9,9 +9,6 @@ Set `gpmc` binary file path to your environment path, for example,
  export PATH=$PATH:$HOME/GPMC/build
 ```
 - Install pip
-```
-pip install sympy
-```
 
 ## INSTALLATION
 
