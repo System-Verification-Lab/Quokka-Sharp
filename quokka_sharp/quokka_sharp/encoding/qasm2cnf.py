@@ -34,7 +34,7 @@ def convert_to_float(frac_str):
 
 def get_angle(angle):
     try:
-        if "/" in str:
+        if "/" in angle:
             theta = convert_to_float(angle)
         else:
             theta_str = angle
