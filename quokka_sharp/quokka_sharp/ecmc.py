@@ -12,10 +12,12 @@ from subprocess import PIPE, Popen
 from queue import Queue
 from .encoding.memory import ReturnValueThread, memory_monitor
 
+
 def GPMC(cnf_file):
-    gpmc_path = shutil.which("gpmc")
-    if gpmc_path == None:
-        sys.exit("Binary gpmc not found in path.")
+    # gpmc_path = shutil.which("gpmc")
+    # if gpmc_path == None:
+    #     sys.exit("Binary gpmc not found in path.")
+    gpmc_path = TOOL_PATH
     proc = Popen([gpmc_path, "-mode=1", cnf_file], stdout= PIPE, stderr=PIPE)
     # result, error = proc.communicate()
     return proc
@@ -37,8 +39,9 @@ def checker(i, Z_or_X, cnf):
     proc = GPMC(cnf_file)
     return proc
 
-def EQ_check(qasmfile1, qasmfile2):
-
+def EQ_check(toolpath, qasmfile1, qasmfile2):
+    global TOOL_PATH
+    TOOL_PATH = toolpath
     encode_start = time.time()
 
     circuit1 = QASMparser(qasmfile1, True)
@@ -119,7 +122,8 @@ def EQ_check(qasmfile1, qasmfile2):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ECMC: The quantum circuit Equivalence Checker based on Model Counting from the Quokka-Sharp (Quokka#) package')
+    parser.add_argument('toolpath')
     parser.add_argument('qasmfile1')
     parser.add_argument('qasmfile2')
     args = parser.parse_args()
-    EQ_check(args.qasmfile1, args.qasmfile2)
+    EQ_check(args.toolpath, args.qasmfile1, args.qasmfile2)

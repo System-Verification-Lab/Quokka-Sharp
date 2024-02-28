@@ -28,10 +28,11 @@ def QC2SAT(qasm_file, multi_or_single):
     t_prep = round(prep_end - prep_start, 3)
     return [t_prep, circuit.n]
 
-def GPMC(qasm_file, n, multi_or_single):
-    gpmc_path = shutil.which("gpmc")
-    if gpmc_path == None:
-        sys.exit("Binary gpmc not found in path.")
+def GPMC(toolpath, qasm_file, n, multi_or_single):
+    # gpmc_path = shutil.which("gpmc")
+    gpmc_path = toolpath
+    # if gpmc_path == None:
+    #     sys.exit("Binary gpmc not found in path.")
     wmc_file = qasm_file + ".cnf"
     p = Popen([gpmc_path, "-mode=1", wmc_file], stdout= PIPE, stderr=PIPE)
     start_time = time.time()
@@ -48,7 +49,7 @@ def GPMC(qasm_file, n, multi_or_single):
     return gpmc_time, prob
 
 
-def Measure(qasm_file, multi_or_single):
+def Measure(toolpath, qasm_file, multi_or_single):
     # start monitor thread for measuring mem
     queue = Queue()
     poll_interval = 0.1
@@ -57,7 +58,7 @@ def Measure(qasm_file, multi_or_single):
     # wait a bit for monitor thread to start measuring mem
     sleep(.5)    
     encode_time, n = QC2SAT(qasm_file, multi_or_single)
-    gpmc_time, prob = GPMC(qasm_file, n, multi_or_single)
+    gpmc_time, prob = GPMC(toolpath, qasm_file, n, multi_or_single)
     
     time = encode_time + gpmc_time
     
@@ -71,7 +72,8 @@ def Measure(qasm_file, multi_or_single):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='QCMC: The Quantum Circuit simulator based on Model Counting from the Quokka-Sharp (Quokka#) package')
+    parser.add_argument('toolpath')
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'])
     args = parser.parse_args()
-    Measure(args.filename, args.measurement == 'allzero')
+    Measure(args.toolpath, args.filename, args.measurement == 'allzero')
