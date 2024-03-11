@@ -22,8 +22,6 @@ the other is to check the equivalence of two circuits.
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs to use the tool.
 
-- simulating quantum circuits
-
 ```python
     from quokka_sharp.encoding import QASMparser, QASM2CNF
     from quokka_sharp import EQ2CNF, EQ_check
@@ -72,15 +70,6 @@ Here are some simple walkthroughs to use the tool.
     cnf_file_list = EQ2CNF(cnf, cnf_file_root="./")
     res = EQ_check(tool_path, cnf_file_list)
     print(res.result)
-```
-- checking circuit equivalence
-
-```python
-import quokka-sharp as qk
-  # the input circuit should be in QASM format
-  # check the equivalence of two circuits circ1.qasm and circ2.qasm
-  res = qk.EQcheck("circ1.qasm", "circ2.qasm")
-  print(res.equivalence)
 ```
 
 - extention of the encodings
