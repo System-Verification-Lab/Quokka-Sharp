@@ -1,4 +1,4 @@
-__version__ = "0.0.1"
+__version__ = "0.0.11"
 
-from .qcmc import Measure
+from .qcmc import Sim
 from .ecmc import EQ_check

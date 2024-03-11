@@ -5,7 +5,6 @@ import shutil
 import sys
 import time 
 # from .encoding.qasm_parser import QASMparser
-from .encoding.qasm2cnf import QASM2CNF
 from .encoding.memory import ReturnValueThread, memory_monitor
 from queue import Queue
 from time import sleep
