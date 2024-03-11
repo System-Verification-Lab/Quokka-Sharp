@@ -1,8 +1,7 @@
 from .cnf import Variables, CNF
-from .cliffordt2cnf import *
+from quokka_sharp.encoding.cliffordt2cnf import *
 from .qasm_parser import Circuit
 import math
-
 
 def convert_to_float(frac_str):
     sign = 0
