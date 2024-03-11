@@ -27,7 +27,7 @@ Here are some simple walkthroughs to use the tool.
     from quokka_sharp import EQ2CNF, EQ_check
     from quokka_sharp import Sim2CNF, Sim
     # the path of the WMC tool
-    tool_path = "/Users/meij/GPMC/bin/gpmc"
+    tool_path = "/Users/GPMC/bin/gpmc"
     # cnf_file_root = " "
     '''
     Simulation
