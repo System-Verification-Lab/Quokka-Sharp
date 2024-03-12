@@ -85,3 +85,10 @@ then run the following command:
 ```
 python3 cliffordt2cnf_py_codegen.py>cliffordt2cnf.py
 ```
+## Benchmarks
+
+Users can test the equivalence checking functionality of the tool by running eq_bench.sh under the folder quokka-sharp.
+```
+./eq_bench.sh
+```
+This script tests all both random circuits and quantum algorithms under ./quokka_sharp/benchmark with the equivalent cases (optimized circuits) and three kinds of errors: 1 gate-missing, bit flip in CNOT gate and phase shift in a rotation gate (with shifting error 1e-4 and 1e-7).
