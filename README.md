@@ -4,10 +4,7 @@
 - Install GPMC
 
 Follow instructions in [GPMC git](https://git.trs.css.i.nagoya-u.ac.jp/k-hasimt/GPMC) to install GPMC.
-Set `gpmc` binary file path to your environment path, for example,
-```
- export PATH=$PATH:$HOME/GPMC/build
-```
+
 - Install pip
 
 ## INSTALLATION
@@ -25,26 +22,54 @@ the other is to check the equivalence of two circuits.
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs to use the tool.
 
-- simulating quantum circuits
-
 ```python
-import quokka-sharp as qk
-  # the input circuit should be in QASM format
-  # measure the first qubit with computational basis
-  res = qk.Measure("circ.qasm", "firstzero")
-  print(res.prob)
-  # measure the all qubits all zero basis state |0...0>
-  res = qk.Measure("circ.qasm", "allzero")
-  print(res.prob)
-```
-- checking circuit equivalence
+    from quokka_sharp.encoding import QASMparser, QASM2CNF
+    from quokka_sharp import EQ2CNF, EQ_check
+    from quokka_sharp import Sim2CNF, Sim
+    # the path of the WMC tool
+    tool_path = "/Users/GPMC/bin/gpmc"
+    # cnf_file_root = " "
+    '''
+    Simulation
+    '''
+    # Parse the circuit
+    circuit1 = QASMparser(qasmfile1, True)
+    # Encode the circuit
+    cnf_circ1 = QASM2CNF(circuit1)
+    
+    # Add constraints of measurement outcome 0 on the first qubit and initial state
+    cnf_firstzero = Sim2CNF(cnf_circ1, "firstzero")
+    # Write to weighted cnf file 
+    cnf_firstzero.write_to_file("circ1_firstzero.cnf")
+    # Solving cnf file by a given tool
+    res = Sim(tool_path, cnf_firstzero, "circ1_firstzero.cnf", "firstzero")
+    print(res.prob)
 
-```python
-import quokka-sharp as qk
-  # the input circuit should be in QASM format
-  # check the equivalence of two circuits circ1.qasm and circ2.qasm
-  res = qk.EQcheck("circ1.qasm", "circ2.qasm")
-  print(res.equivalence)
+    # Add constraints of measurement outcome 0 on the all qubits and initial state
+    cnf_allzero = Sim2CNF(cnf_circ1, "allzero")
+    # Write to weighted cnf file 
+    cnf_allzero.write_to_file("circ1_allzero.cnf")
+    # Solving cnf file by a given tool
+    res = Sim(tool_path, cnf_allzero, "circ1_allzero.cnf", "allzero")
+    print(res.prob)    
+    
+    '''
+    Equivalence checking
+    '''
+
+    # Parse another circuit
+    circuit2 = QASMparser(qasmfile2, True)
+    # Get (circuit1)^dagger(circuit2)
+    circuit1.dagger()
+    circuit1.merge(circuit2)
+    # Get CNF for the merged circuit
+    cnf = QASM2CNF(circuit1)
+
+    # write to the cnf_file_list containing 2N cnf files under given root (tempfile.gettempdir() by default)
+    # N is the number of qubits
+    cnf_file_list = EQ2CNF(cnf, cnf_file_root="./")
+    res = EQ_check(tool_path, cnf_file_list)
+    print(res.result)
 ```
 
 - extention of the encodings
