@@ -78,6 +78,10 @@ def QASM2CNF(circuit : Circuit) -> CNF:
             j = int(element[1]) - 1
             k = int(element[2]) - 1
             CNOT2CNF(cnf,j,k)
+        elif gate == 'cz':
+            j = int(element[1]) - 1
+            k = int(element[2]) - 1
+            CZ2CNF(cnf,j,k)            
         elif gate == 's':
             k = int(element[1]) - 1
             S2CNF(cnf,k)
