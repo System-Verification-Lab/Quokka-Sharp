@@ -129,9 +129,9 @@ def QASMparser(filename, translate_ccx) -> Circuit:
             qubit = get_num(line[1])
             circuit.add_single('z',qubit)
 
-        elif gate == 'rx(pi/2)' or gate == 'rx(-0.5*pi)' or gate == 'rx(0.5*pi)':
-            qubit = get_num(line[1])
-            circuit.add_single('y',qubit)
+        # elif gate == 'rx(pi/2)' or gate == 'rx(-0.5*pi)' or gate == 'rx(0.5*pi)':
+        #     qubit = get_num(line[1])
+        #     circuit.add_single('y',qubit)
 
         elif gate == 's' or gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
             qubit = get_num(line[1])
