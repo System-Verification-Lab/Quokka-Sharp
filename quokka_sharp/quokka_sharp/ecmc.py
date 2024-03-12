@@ -29,7 +29,7 @@ def get_result(result):
     result = str(result)
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
     gpmc_ans = float(gpmc_ans_str)
-    if abs(gpmc_ans - 1) > 1e-16:
+    if abs(gpmc_ans - 1) > 1e-14:
         return False
     else: return True
 
@@ -89,7 +89,7 @@ def EQ_check(toolpath, cnf_file_list):
             break
 
         if length > N:
-            argulist = argulist[N: length]
+            cnf_file_list = cnf_file_list[N: length]
         else:
             break
     
