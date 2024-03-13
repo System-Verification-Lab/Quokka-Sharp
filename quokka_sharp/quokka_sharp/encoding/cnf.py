@@ -33,8 +33,8 @@ class Variables:
                 self.cnf.add_clause([z[i]], prepend)
             else:
                 self.cnf.add_clause([-z[i]], prepend)
-            if sign:
-                self.cnf.add_clause([-r], prepend)
+        if sign:
+            self.cnf.add_clause([-r], prepend)
 
 class CNF:
     def __init__(self, n):
@@ -70,7 +70,7 @@ class CNF:
     def rightProjectZXi(self, Z_or_X, i):
         if not self.locked:
             self.finalize()
-        self.vars.projectZXi(Z_or_X, i)
+        self.vars.projectZXi(Z_or_X, i, False, True)
 
     def add_var(self):
         assert(not self.locked)
