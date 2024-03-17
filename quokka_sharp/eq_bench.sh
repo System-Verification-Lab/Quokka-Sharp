@@ -4,16 +4,16 @@ tool_path=/Users/meij/GPMC/bin/gpmc
 path=$PWD/benchmark
 
 dirs=(
-"random/randqubitscale"
+#"random/randqubitscale"
 "random/randdepscale"
-"algorithm"
+#"algorithm"
 )
 
 options=(
-"opt"
+#"opt"
 "gm"
-"fp"
-"ps"
+#"fp"
+#"ps"
 )
 
 TIMEOUT=300
