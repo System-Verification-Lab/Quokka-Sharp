@@ -128,10 +128,10 @@ def QASM2CNF(circuit : Circuit) -> CNF:
             T2CNF(cnf,qubitc1)
             Tdg2CNF(cnf,qubitc2)
             CNOT2CNF(cnf,qubitc1,qubitc2)
-        elif gate == 'm':
-            cnf.rightProjectZXi(True, 0)
-        elif gate == 'mm':
-            cnf.rightProjectAllZero()
+        # elif gate == 'm':
+        #     cnf.rightProjectZXi(True, 0)
+        # elif gate == 'mm':
+        #     cnf.rightProjectAllZero()
         else:
             raise Exception(str(gate) + " undefined."+ str(element))
 
