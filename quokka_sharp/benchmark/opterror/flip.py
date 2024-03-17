@@ -29,7 +29,7 @@ def flip(file, to_file, SEED):
     qasm_list[cxidx] = flipcx(qasm_list[cxidx])
     print(origin, " --> " ,qasm_list[cxidx])
     
-    with open(to_file + '.gm.qasm', 'w') as file:
+    with open(to_file, 'w') as file:
         for item in qasm_list:
             file.writelines(item + '\n')
 
