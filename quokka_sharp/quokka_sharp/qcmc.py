@@ -16,29 +16,13 @@ class Result:
         self.prob = prob
         self.memory = memory
 
-def Sim2CNF(cnf, multi_or_single):
+def Measurement(cnf, multi_or_single):
     cnf.leftProjectAllZero()
     if multi_or_single == "allzero":
         cnf.rightProjectAllZero()
     elif multi_or_single == "firstzero":
         cnf.rightProjectZXi(True, 0)
     return cnf
-    
-# def QC2SAT(qasm_file, multi_or_single):
-#     wmc_file = qasm_file + ".cnf"
-#     prep_start = time.time()
-#     circuit = QASMparser(qasm_file, True)
-#     cnf = QASM2CNF(circuit)
-#     cnf.leftProjectAllZero()
-#     ## Alternative to circuit.add_measurement(multi_or_single):
-#     if multi_or_single:
-#         cnf.rightProjectAllZero()
-#     else:
-#         cnf.rightProjectZXi(True, 0)
-#     cnf.write_to_file(wmc_file)
-#     prep_end = time.time()
-#     t_prep = round(prep_end - prep_start, 3)
-#     return [t_prep, circuit.n]
 
 def GPMC(toolpath, wmc_file, n, multi_or_single):
     # gpmc_path = shutil.which("gpmc")
@@ -59,20 +43,21 @@ def GPMC(toolpath, wmc_file, n, multi_or_single):
         prob = gpmc_ans/2+1/2        
     return gpmc_time, prob
 
-def Sim(toolpath, cnf, wmc_file, multi_or_single):
+def Simulate(toolpath, cnf, wmc_file, multi_or_single):
     # start monitor thread for measuring mem
     queue = Queue()
     poll_interval = 0.1
     monitor_thread = ReturnValueThread(target=memory_monitor, args=(queue, poll_interval))
     monitor_thread.start()
     # wait a bit for monitor thread to start measuring mem
-    sleep(.5)    
+    sleep(.5)
+    cnf.write_to_file(wmc_file) 
     gpmc_time, prob = GPMC(toolpath, wmc_file, cnf.n, multi_or_single)
     
-    time = gpmc_time
+    # time = gpmc_time
     
-    queue.put('stop')
-    max_rss = monitor_thread.join()
-    memory = max_rss / 1024 / 1024, "MB"
-    res = Result(time, prob, memory)
-    return res
+    # queue.put('stop')
+    # max_rss = monitor_thread.join()
+    # memory = max_rss / 1024 / 1024, "MB"
+    # res = Result(time, prob, memory)
+    return prob
