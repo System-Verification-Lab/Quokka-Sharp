@@ -1,9 +1,10 @@
 path=`dirname $PWD`
 
 dirs=(
-"random/randqubitscale"
-"random/randdepscale"
-"algorithm"
+#"random/randqubitscale"
+#"random/randdepscale"
+#"algorithm"
+"add"
 )
 
 options=(
