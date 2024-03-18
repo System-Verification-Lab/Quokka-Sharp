@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.11'
+VERSION = '0.0.14'
 DESCRIPTION = 'Quokka Sharp'
 LONG_DESCRIPTION = '''
                     Quokka Sharp for simulating and equivalence checking 
@@ -25,6 +25,6 @@ setup(
             "Operating System :: MacOS :: MacOS X",
             "Operating System :: Microsoft :: Windows"  
     ],
-    install_requires=["sympy>=1.12"],
+    install_requires=[],
     include_package_data=True
 )
