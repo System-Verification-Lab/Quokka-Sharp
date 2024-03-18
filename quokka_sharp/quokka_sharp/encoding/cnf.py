@@ -1,5 +1,6 @@
 import copy
 import io
+from math import pow
 
 class Variables:
     def __init__(self, cnf):
@@ -17,6 +18,25 @@ class Variables:
         self.var += 1
         return self.var
 
+    def measurement(self, basis, prepend=False):
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            w = self.add_var()
+            self.cnf.add_clause([w], True)
+            self.cnf.add_weight(w, 1/pow(2,n))
+        elif basis == "first zero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+                if i != 0:
+                    self.cnf.add_clause([-self.z[i]], prepend)            
+            w = self.add_var()
+            self.cnf.add_clause([w], True)
+            self.cnf.add_weight(w, 1/2)
+        else: 
+            Exception("Please choose firstzero or allzero measurement")
+            
     def projectAllZero(self, sign=False, prepend=False):
         for i in range(self.n):
             self.cnf.add_clause([-self.x[i]], prepend)
@@ -72,6 +92,11 @@ class CNF:
             self.finalize()
         self.vars.projectZXi(Z_or_X, i, False, True)
 
+    def add_measurement(self, basis):
+        if not self.locked:
+            self.finalize()
+        self.vars.measurement(basis, False)  
+
     def add_var(self):
         assert(not self.locked)
         return self.vars.add_var()
@@ -98,4 +123,4 @@ class CNF:
         with open(cnf_file, 'w') as the_file:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             the_file.write(self.weight_list.getvalue())
-            the_file.write(''.join(self.cons_list))
+            the_file.write(''.join(self.cons_list))      
