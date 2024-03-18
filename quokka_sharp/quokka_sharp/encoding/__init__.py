@@ -1,4 +1,4 @@
-__version__ = "0.0.11"
+__version__ = "0.0.14"
 
 from .cnf import CNF
 from .cnf import Variables
