@@ -7,23 +7,6 @@ from subprocess import PIPE, Popen
 
 # TODO: information for arguments in functions
 
-class Result:
-    def __init__(self, time, result):
-        self.time = time
-        if result:
-            self.result = "equivalent"
-        else:
-            self.result = "not_equivalent"
-
-def GPMC(cnf_file):
-    # gpmc_path = shutil.which("gpmc")
-    # if gpmc_path == None:
-    #     sys.exit("Binary gpmc not found in path.")
-    gpmc_path = TOOL_PATH
-    proc = Popen([gpmc_path, "-mode=1 -prec=17", cnf_file], stdout= PIPE, stderr=PIPE)
-    # result, error = proc.communicate()
-    return proc
-
 def get_result(result):
     result = str(result)
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
@@ -41,31 +24,16 @@ def basis(i, Z_or_X, cnf, cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def EQ_check(toolpath, cnf_file_list):
-    global TOOL_PATH
-    TOOL_PATH = toolpath
+def CheckEquivalence(tool_invocation, cnf, cnf_file_root = tempfile.gettempdir()):
     #TODO: different number of qubits
+    cnf_file_list = []
     
+    for i in range(cnf.n):
+        cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
+        cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+        
     result = True
-    
-    for file in cnf_file_list:
-        p = GPMC(file)
-        res = p.communicate()
-        result = get_result(res[0])
-        if result == False:
-            break
-    
-    res = Result(0, result)
-    return res
-
-def CheckEquivalence(toolpath, cnf_file_list):
-    global TOOL_PATH
-    TOOL_PATH = toolpath
-    #TODO: different number of qubits
-    
-    result = True
-
-    start = time.time()
+    tool_command = tool_invocation.split(' ')
     # parallel processes
     N = 16
     while True:
@@ -73,7 +41,8 @@ def CheckEquivalence(toolpath, cnf_file_list):
         length = len(cnf_file_list)
         for i in range(min(N, length)):        
             cnf_file = cnf_file_list[i]
-            p = GPMC(cnf_file)
+            tool_file_command = tool_command + [cnf_file]
+            p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
             proclist.append(p)
         if len(proclist) == 0:
             break
@@ -102,7 +71,4 @@ def CheckEquivalence(toolpath, cnf_file_list):
     for pid in watched_pids:
         procdict[pid].terminate()
     
-    end = time.time()
-
-    # res = Result(end - start, result)
     return result
