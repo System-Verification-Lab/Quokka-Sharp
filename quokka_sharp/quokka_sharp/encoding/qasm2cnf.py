@@ -1,5 +1,5 @@
 from .cnf import Variables, CNF
-from quokka_sharp.encoding.cliffordt2cnf import *
+from .cliffordt2cnf import *
 from .qasm_parser import Circuit
 import math
 
