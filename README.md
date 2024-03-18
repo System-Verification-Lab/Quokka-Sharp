@@ -23,53 +23,37 @@ All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs to use the tool.
 
 ```python
-    from quokka_sharp.encoding import QASMparser, QASM2CNF
-    from quokka_sharp import EQ2CNF, EQ_check
-    from quokka_sharp import Sim2CNF, Sim
-    # the path of the WMC tool
-    tool_path = "/Users/GPMC/bin/gpmc"
-    # cnf_file_root = " "
-    '''
-    Simulation
-    '''
-    # Parse the circuit
-    circuit1 = QASMparser(qasmfile1, True)
-    # Encode the circuit
-    cnf_circ1 = QASM2CNF(circuit1)
-    
-    # Add constraints of measurement outcome 0 on the first qubit and initial state
-    cnf_firstzero = Sim2CNF(cnf_circ1, "firstzero")
-    # Write to weighted cnf file 
-    cnf_firstzero.write_to_file("circ1_firstzero.cnf")
-    # Solving cnf file by a given tool
-    res = Sim(tool_path, cnf_firstzero, "circ1_firstzero.cnf", "firstzero")
-    print(res.prob)
+import quokka_sharp as qk
 
-    # Add constraints of measurement outcome 0 on the all qubits and initial state
-    cnf_allzero = Sim2CNF(cnf_circ1, "allzero")
-    # Write to weighted cnf file 
-    cnf_allzero.write_to_file("circ1_allzero.cnf")
-    # Solving cnf file by a given tool
-    res = Sim(tool_path, cnf_allzero, "circ1_allzero.cnf", "allzero")
-    print(res.prob)    
-    
-    '''
-    Equivalence checking
-    '''
+# the path of the WMC tool
+tool_invocation = "/Users/GPMC/bin/gpmc -mode=1"
+'''
+Simulation
+'''
+# Parse the circuit
+circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+# Encode the circuit
+cnf = qk.encoding.QASM2CNF(circuit1)
+# Choose firstzero or allzero
+cnf.add_measurement("firstzero")
+# Export to benchmarks
+cnf.write_to_file("circ.cnf")
+prob = qk.Simulate(tool_invocation, "circ.cnf")
+print(prob)
 
-    # Parse another circuit
-    circuit2 = QASMparser(qasmfile2, True)
-    # Get (circuit1)^dagger(circuit2)
-    circuit1.dagger()
-    circuit1.merge(circuit2)
-    # Get CNF for the merged circuit
-    cnf = QASM2CNF(circuit1)
-
-    # write to the cnf_file_list containing 2N cnf files under given root (tempfile.gettempdir() by default)
-    # N is the number of qubits
-    cnf_file_list = EQ2CNF(cnf, cnf_file_root="./")
-    res = EQ_check(tool_path, cnf_file_list)
-    print(res.result)
+'''
+Equivalence checking
+'''
+# Parse the circuit
+circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+# Parse another circuit
+circuit2 = qk.encoding.QASMparser(qasmfile2, True)
+# Get (circuit1)^dagger(circuit2)
+circuit2.dagger()
+circuit1.append(circuit2)
+# Get CNF for the merged circuit
+cnf = qk.encoding.QASM2CNF(circuit1)
+res = qk.CheckEquivalence(tool_path, cnf)
 ```
 
 - extention of the encodings
@@ -87,11 +71,15 @@ python3 cliffordt2cnf_py_codegen.py>cliffordt2cnf.py
 ```
 ## Benchmarks
 
-Users can test the equivalence checking functionality of the tool by running eq_bench.sh under the folder quokka-sharp.
+Users can test the equivalence checking functionality of the tool by running eq_bench.sh under the folder experiment:
 ```
 ./eq_bench.sh
 ```
-This script tests all both random circuits and quantum algorithms under ./quokka_sharp/benchmark with the equivalent cases (optimized circuits) and three kinds of errors: 1 gate-missing, bit flip in CNOT gate and phase shift in a rotation gate (with shifting error 1e-4 and 1e-7).
+and test the simulation of the tool by running
+```
+./sim_bench.sh
+```
+This script tests all both random circuits and quantum algorithms under ./experiment/benchmark with the equivalent cases (optimized circuits) and three kinds of errors: 1 gate-missing, bit flip in CNOT gate and phase shift in a rotation gate (with shifting error 1e-4 and 1e-7).
 
 Users can test the  simulation functionality of the tool by running eq_bench.sh under the folder quokka-sharp.
 ```
