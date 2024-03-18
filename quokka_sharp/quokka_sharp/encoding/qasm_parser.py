@@ -63,7 +63,7 @@ class Circuit:
             else:
                 raise Exception("Gate "+ gate[0] +" dagger not supported.")
 
-    def merge(self, other):
+    def append(self, other):
         assert(self.translate_ccx == other.translate_ccx)
         self.circ.extend( other.circ )
         self.n = self.n
@@ -128,10 +128,6 @@ def QASMparser(filename, translate_ccx) -> Circuit:
         elif gate == 'rz(pi)' or gate == 'rz(-pi)' or gate == 'rz(1.0*pi)':
             qubit = get_num(line[1])
             circuit.add_single('z',qubit)
-
-        # elif gate == 'rx(pi/2)' or gate == 'rx(-0.5*pi)' or gate == 'rx(0.5*pi)':
-        #     qubit = get_num(line[1])
-        #     circuit.add_single('y',qubit)
 
         elif gate == 's' or gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
             qubit = get_num(line[1])
