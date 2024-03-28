@@ -2,7 +2,6 @@ __pycache__
 *.swp
 **/.DS_Store
 /.vscode
-*.cnf
 *.quasimodo*
 test.qasm
 test.qasm.cnf
