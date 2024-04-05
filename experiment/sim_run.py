@@ -15,7 +15,7 @@ def main(tool_invocation, qasmfile1):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        main("/Users/meij/GPMC/bin/gpmc -mode=3", "test.qasm")
+        main("/Users/meij/GPMC/bin/gpmc -mode=1", "test.qasm")
     else:
         tool_invocation = sys.argv[1]
         circ1 = sys.argv[2]
