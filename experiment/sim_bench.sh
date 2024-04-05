@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tool_path=/Users/meij/GPMC/bin/gpmc
+tool_path="/Users/meij/GPMC/bin/gpmc -mode=3"
 path=$PWD/benchmark
 
 dirs=(
