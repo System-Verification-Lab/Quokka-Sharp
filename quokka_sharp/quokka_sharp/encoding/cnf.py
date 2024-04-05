@@ -26,7 +26,7 @@ class Variables:
             w = self.add_var()
             self.cnf.add_clause([w], True)
             self.cnf.add_weight(w, 1/pow(2,n))
-        elif basis == "first zero":
+        elif basis == "firstzero":
             for i in range(self.n):
                 self.cnf.add_clause([-self.x[i]], prepend)
                 if i != 0:
