@@ -7,6 +7,7 @@ def main(tool_invocation, qasmfile1):
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     # Encode the circuit
     cnf = qk.encoding.QASM2CNF(circuit1)
+    cnf.leftProjectAllZero()
     cnf.add_measurement("firstzero")
     cnf.write_to_file("circ.cnf")
     prob = qk.Simulate(tool_invocation, "circ.cnf")
