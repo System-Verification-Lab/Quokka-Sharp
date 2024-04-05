@@ -20,7 +20,7 @@ def main(tool_path, qasmfile1, qasmfile2):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        main("/Users/meij/GPMC/bin/gpmc -mode=3", "test.qasm", "test.qasm")
+        main("/Users/meij/GPMC/bin/gpmc -mode=1", "test.qasm", "test.qasm")
     else:
         tool_path = sys.argv[1]
         circ1 = sys.argv[2]
