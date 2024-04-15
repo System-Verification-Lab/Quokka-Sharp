@@ -80,8 +80,3 @@ and test the simulation of the tool by running
 ./sim_bench.sh
 ```
 This script tests all both random circuits and quantum algorithms under ./experiment/benchmark with the equivalent cases (optimized circuits) and three kinds of errors: 1 gate-missing, bit flip in CNOT gate and phase shift in a rotation gate (with shifting error 1e-4 and 1e-7).
-
-Users can test the  simulation functionality of the tool by running eq_bench.sh under the folder quokka-sharp.
-```
-./sim_bench.sh
-```
