@@ -1,6 +1,7 @@
 import copy
 import os
 import re
+import sys
 import tempfile
 import time
 from subprocess import PIPE, Popen
@@ -25,6 +26,7 @@ def basis(i, Z_or_X, cnf, cnf_file_root):
     return cnf_file
 
 def CheckEquivalence(tool_invocation, cnf, cnf_file_root = tempfile.gettempdir()):
+    
     #TODO: different number of qubits
     cnf_file_list = []
     
@@ -69,6 +71,6 @@ def CheckEquivalence(tool_invocation, cnf, cnf_file_root = tempfile.gettempdir()
             break
     
     for pid in watched_pids:
-        procdict[pid].terminate()
+        procdict[pid].kill()
     
     return result
