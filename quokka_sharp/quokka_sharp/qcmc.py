@@ -1,5 +1,5 @@
 import re, os, sys
-from subprocess import Popen, PIPE, TimeoutExpired
+from subprocess import Popen, PIPE
 
 class Result:
     def __init__(self, time, prob, memory):
@@ -30,7 +30,7 @@ def GPMC(tool_invocation, wmc_file):
         gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
         gpmc_ans = float(gpmc_ans_str) 
         return gpmc_ans
-    except TimeoutExpired:
+    except:
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
