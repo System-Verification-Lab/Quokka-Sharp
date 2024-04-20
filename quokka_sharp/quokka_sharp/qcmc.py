@@ -29,6 +29,8 @@ def GPMC(tool_invocation, wmc_file):
         result = str(result)    
         gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
         gpmc_ans = float(gpmc_ans_str) 
+        if abs(gpmc_ans) < 1e-8:
+            gpmc_ans = 0
         return gpmc_ans
     except:
         os.system("kill -9 " + str(p.pid))
