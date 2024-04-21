@@ -19,6 +19,11 @@ pip install quokka_sharp
 Quokka# provides two kinds of funcionalities: one is to simulate a quantum circuit, 
 the other is to check the equivalence of two circuits.
 
+Please first export TIMEOUT as
+```
+export TIMEOUT=3600
+```
+
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs to use the tool.
 
