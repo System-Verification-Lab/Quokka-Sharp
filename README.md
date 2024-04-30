@@ -37,6 +37,8 @@ Simulation
 '''
 # Parse the circuit
 circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+# Set the input state to be all zero state.
+cnf.leftProjectAllZero()
 # Encode the circuit
 cnf = qk.encoding.QASM2CNF(circuit1)
 # Choose firstzero or allzero
