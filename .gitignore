@@ -8,3 +8,8 @@ test.qasm.cnf
 test.qasm.cnf
 dist
 quokka_sharp.egg-info
+wmc_benchmarks/WMCBench.zip
+wmc_benchmarks/WMCBench.zip
+wmc_benchmarks/bzip.sh
+wmc_benchmarks/abstract.pdf
+quokka_sharp/quokka_sharp/docker.sh
