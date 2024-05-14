@@ -106,7 +106,7 @@ def Sdg2CNF(cnf, k):
 # Equivalent(R, r ^ (x[k] & z[k] & ~Z))
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
-def T2CNF(cnf, k):
+def T2CNF(cnf, k, w):
     r = cnf.vars.r
     x = cnf.vars.x
     z = cnf.vars.z
@@ -127,7 +127,7 @@ def T2CNF(cnf, k):
     u = cnf.add_var()
     cnf.add_clause([ u, -x[k]])
     cnf.add_clause([-u,  x[k]])
-    cnf.add_weight(u, 0.707106781186548)
+    cnf.add_weight(u, w)
 
     cnf.vars.z[k] = Z
     cnf.vars.r = R
@@ -135,7 +135,7 @@ def T2CNF(cnf, k):
 # Equivalent(R, r ^ (Z & x[k] & ~z[k]))
 # x[k] | (Equivalent(Z, z[k]))
 # Equivalent(u, x[k])
-def Tdg2CNF(cnf, k):
+def Tdg2CNF(cnf, k, w):
     r = cnf.vars.r
     x = cnf.vars.x
     z = cnf.vars.z
@@ -156,7 +156,7 @@ def Tdg2CNF(cnf, k):
     u = cnf.add_var()
     cnf.add_clause([ u, -x[k]])
     cnf.add_clause([-u,  x[k]])
-    cnf.add_weight(u, 0.707106781186548)
+    cnf.add_weight(u, w)
 
     cnf.vars.z[k] = Z
     cnf.vars.r = R
