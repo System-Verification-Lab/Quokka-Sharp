@@ -2,8 +2,12 @@ from .cnf import Variables, CNF
 from .cliffordt2cnf import *
 from .qasm_parser import Circuit
 import math
+from decimal import Decimal, getcontext
 
-def convert_to_float(frac_str):
+# set the precision of rotation angles
+getcontext().prec = 32
+
+def frac_to_float(frac_str):
     sign = 0
     if "-" in frac_str:
         sign = 1
@@ -29,12 +33,12 @@ def convert_to_float(frac_str):
         if piflag == 1:
             return math.pow(-1,sign) * num / denom * math.pi
         else:
-            return math.pow(-1,sign) * num / denom
+            return Decimal(math.pow(-1,sign) * num / denom)
 
 def get_angle(angle):
     try:
         if "/" in angle:
-            theta = convert_to_float(angle)
+            theta = frac_to_float(angle)
         else:
             theta_str = angle
             if 'pi' in theta_str:
@@ -42,16 +46,16 @@ def get_angle(angle):
                 theta = theta.replace('pi', '')
                 theta = float(theta) * math.pi
             else:
-                theta = float(theta_str)
+                theta = Decimal(float(theta_str))
         return theta
     except:
         raise Exception(angle, "is not supported")
 
 def get_cos_sin(theta):
-    res_cos = math.cos(theta)
+    res_cos = str(Decimal(math.cos(theta)))
     if abs(res_cos) < 1e-15:
         res_cos = 0
-    res_sin = math.sin(theta)
+    res_sin = str(Decimal(math.sin(theta)))
     if abs(res_sin) < 1e-15:
         res_sin = 0
     return [res_cos, res_sin]
@@ -87,13 +91,15 @@ def QASM2CNF(circuit : Circuit) -> CNF:
             S2CNF(cnf,k)
         elif gate == 'tdg':
             k = int(element[1]) - 1
-            Tdg2CNF(cnf,k)
+            w = str(Decimal(1/2).sqrt())
+            Tdg2CNF(cnf,k, w)
         elif gate == 'sdg':
             k = int(element[1]) - 1
             Sdg2CNF(cnf,k)
         elif gate == 't':
             k = int(element[1]) - 1
-            T2CNF(cnf,k)
+            w = str(Decimal(1/2).sqrt())
+            T2CNF(cnf, k, w)
         elif gate[0] == 'r':
             angle = get_angle(element[1])
             k = int(element[2]) - 1
