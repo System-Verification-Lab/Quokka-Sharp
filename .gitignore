@@ -13,3 +13,4 @@ wmc_benchmarks/WMCBench.zip
 wmc_benchmarks/bzip.sh
 wmc_benchmarks/abstract.pdf
 quokka_sharp/quokka_sharp/docker.sh
+env/
