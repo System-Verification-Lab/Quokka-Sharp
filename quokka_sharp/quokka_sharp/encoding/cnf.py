@@ -3,7 +3,7 @@ import io
 from math import pow
 
 class Variables:
-    def __init__(self, cnf):
+    def __init__(self, cnf: 'CNF'):
         self.cnf = cnf
         self.n = cnf.n
         self.var = 0
@@ -112,11 +112,14 @@ class CNF:
         else:
             self.cons_list.append(constr)
 
-    def add_weight(self, var, weight):
+    def add_weight(self, var, weight, complex_weight=None):
         self.weight_list.write("c p weight ")
         self.weight_list.write(str(var))
         self.weight_list.write(" ")
         self.weight_list.write(str(weight))
+        if (complex_weight != None):
+            self.weight_list.write(" ")
+            self.weight_list.write(str(complex_weight))
         self.weight_list.write(" 0\n")
 
     def write_to_file(self, cnf_file):
