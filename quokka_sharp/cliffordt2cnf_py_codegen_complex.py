@@ -153,8 +153,8 @@ def main():
     print("def T2CNF(cnf, k):")
     print("    RZ2CNF(cnf, k, Decimal(math.cos(math.pi/4)), Decimal(math.sin(math.pi/4)))")
     print()
-    #T
-    print("def T2CNF(cnf, k):")
+    #Tdg
+    print("def Tdg2CNF(cnf, k):")
     print("    RZ2CNF(cnf, k, Decimal(math.cos(math.pi/4)), -Decimal(math.sin(math.pi/4)))")
     print()
 
