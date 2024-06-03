@@ -11,7 +11,8 @@ from subprocess import PIPE, Popen
 def get_result(result):
     result = str(result)
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
-    gpmc_ans = float(gpmc_ans_str)
+    gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
+    gpmc_ans = complex(gpmc_ans_str)
     if abs(gpmc_ans - 1) > 1e-12:
         return False
     else: return True
