@@ -7,7 +7,7 @@ class Result:
         self.prob = prob
         self.memory = memory
 
-def Measurement(cnf, multi_or_single):
+def Measurement(cnf: "CNF", multi_or_single):
     cnf.leftProjectAllZero()
     if multi_or_single == "allzero":
         cnf.rightProjectAllZero()
