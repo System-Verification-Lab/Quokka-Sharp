@@ -3,16 +3,20 @@ import io
 from math import pow
 
 class Variables:
-    def __init__(self, cnf: 'CNF'):
+    def __init__(self, cnf: 'CNF', computationl_basis=False):
         self.cnf = cnf
         self.n = cnf.n
         self.var = 0
         self.x = [0] * cnf.n
-        self.z = [0] * cnf.n
+        if not computationl_basis:
+            self.z = [0] * cnf.n
         for i in range(cnf.n):
             self.x[i] = self.add_var()
-            self.z[i] = self.add_var()
-        self.r = self.add_var()
+            if not computationl_basis:
+                self.z[i] = self.add_var()
+        if not computationl_basis:
+            self.r = self.add_var()
+        self.computational_basis = computationl_basis
 
     def add_var(self):
         self.var += 1
