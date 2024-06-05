@@ -1,0 +1,17 @@
+// Used Gate Set: ['rz', 'sx', 'x', 'cx', 'measure']
+OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[16];
+x q[0] ;
+y q[1] ;
+z q[2] ;
+rx(0.2*pi) q[3] ;
+// ry(0.2*pi) q[4] ;
+rz(0.2*pi) q[5] ;
+cx q[6],q[9] ;
+cz q[7],q[10] ;
+// cy q[8],q[11] ;
+s q[12] ;
+sdg q[13] ;
+t q[14] ;
+tdg q[15] ;
