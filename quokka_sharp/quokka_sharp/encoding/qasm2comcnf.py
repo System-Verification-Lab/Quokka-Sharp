@@ -60,7 +60,7 @@ def get_cos_sin(theta):
         res_sin = 0
     return [str(res_cos), str(res_sin)]
 
-def QASM2CNF_C(circuit : Circuit) -> CNF:
+def QASM2COMFCNF(circuit : Circuit) -> CNF:
 
     cnf = CNF(circuit.n)
 
