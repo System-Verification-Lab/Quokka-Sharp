@@ -1,22 +1,23 @@
 #!/bin/bash
 
-tool_path="/Users/meij/GPMC/bin/gpmc -mode=1"
+# tool_path="/Users/dekel/Library/CloudStorage/OneDrive-UniversiteitLeiden/Formal_Work/project/GPMC_bin/gpmc_old -mode=1"
+tool_path="/Users/dekel/Library/CloudStorage/OneDrive-UniversiteitLeiden/Formal_Work/project/GPMC_bin/gpmc -mode=1"
 path=$PWD/benchmark
 
 dirs=(
-"random/randqubitscale"
-"random/randdepscale"
+# "random/randqubitscale"
+# "random/randdepscale"
 "algorithm"
 )
 
 options=(
 "opt"
-"gm"
-"fp"
-"ps"
+# "gm"
+# "fp"
+# "ps"
 )
 
-TIMEOUT=300
+TIMEOUT=10
 
 for i in "${dirs[@]}"; do
     DIR=$path/"$i"
@@ -27,7 +28,9 @@ for i in "${dirs[@]}"; do
             do
                 base_name=$(basename ${file})
                 echo $base_name
-            gtimeout "$TIMEOUT" python3 eq_run.py "$tool_path" "$file" "$DIR"/opt/"$base_name".opt.qasm
+                gtimeout "$TIMEOUT" python3 eq_run.py "$tool_path" "$file" "$DIR"/opt/"$base_name".opt.qasm || { 
+                    echo "Error: python3 eq_run.py \"$tool_path\" \"$file\" \"$DIR\"/opt/\"$base_name\".opt.qasm";
+                    exit 1;}
             done
             ;;
             "gm")
