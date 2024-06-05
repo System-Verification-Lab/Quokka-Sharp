@@ -46,7 +46,7 @@ def main():
     print()
 
     # H:
-    F = Equivalent(h, (x[k] & ~X) )
+    F = Equivalent(h, (~x[k] | ~X) )
     C = to_cnf(F, True, True)
 
     print("def H2CNF(cnf, k):")
@@ -67,7 +67,7 @@ def main():
     Fx = Equivalent(X, ~x[k])
     Cx = to_cnf(Fx, True, True)
 
-    Fh = Equivalent(h, x[k])
+    Fh = Equivalent(h, ~x[k])
     Ch = to_cnf(Fh, True, True)
 
     print("def Y2CNF(cnf, k):")
