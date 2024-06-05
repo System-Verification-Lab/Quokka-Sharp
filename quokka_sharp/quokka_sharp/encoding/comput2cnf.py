@@ -8,10 +8,10 @@ def H2CNF(cnf, k):
     X = cnf.add_var()
     h = cnf.add_var()
 
-    # Equivalent(h, x[k] & ~X)
-    cnf.add_clause([-h,  x[k]])
-    cnf.add_clause([-X, -h])
-    cnf.add_clause([ X,  h, -x[k]])
+    # Equivalent(h, ~X | ~x[k])
+    cnf.add_clause([ X,  h])
+    cnf.add_clause([ h,  x[k]])
+    cnf.add_clause([-X, -h, -x[k]])
 
     cnf.vars.x[k] = X
 
@@ -27,9 +27,9 @@ def Y2CNF(cnf, k):
     cnf.add_clause([ X,  x[k]])
     cnf.add_clause([-X, -x[k]])
 
-    # Equivalent(h, x[k])
-    cnf.add_clause([ h, -x[k]])
-    cnf.add_clause([-h,  x[k]])
+    # Equivalent(h, ~x[k])
+    cnf.add_clause([ h,  x[k]])
+    cnf.add_clause([-h, -x[k]])
 
     cnf.vars.x[k] = X
 
