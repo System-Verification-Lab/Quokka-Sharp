@@ -16,3 +16,6 @@ quokka_sharp/quokka_sharp/docker.sh
 env/
 .venv/
 build/
+experiment/shortened_files/algorithm/
+experiment/circ_C.cnf
+experiment/circ.cnf
