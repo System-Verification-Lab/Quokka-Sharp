@@ -28,11 +28,13 @@ def GPMC(tool_invocation, wmc_file):
         result = p.communicate(timeout = TIMEOUT)
         result = str(result)    
         gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
-        gpmc_ans = float(gpmc_ans_str) 
+        gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
+        gpmc_ans = complex(gpmc_ans_str)
         if abs(gpmc_ans) < 1e-8:
             gpmc_ans = 0
         return gpmc_ans
-    except:
+    except Exception as error:
+        print("An exception occurred:", error)
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
