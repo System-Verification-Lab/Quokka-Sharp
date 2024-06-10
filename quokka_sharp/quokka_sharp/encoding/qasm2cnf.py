@@ -52,13 +52,13 @@ def get_angle(angle):
         raise Exception(angle, "is not supported")
 
 def get_cos_sin(theta):
-    res_cos = str(Decimal(math.cos(theta)))
+    res_cos = Decimal(math.cos(theta))
     if abs(res_cos) < 1e-15:
         res_cos = 0
-    res_sin = str(Decimal(math.sin(theta)))
+    res_sin = Decimal(math.sin(theta))
     if abs(res_sin) < 1e-15:
         res_sin = 0
-    return [res_cos, res_sin]
+    return [str(res_cos), str(res_sin)]
 
 def QASM2CNF(circuit : Circuit) -> CNF:
 
