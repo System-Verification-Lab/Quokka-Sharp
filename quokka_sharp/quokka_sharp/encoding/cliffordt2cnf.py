@@ -128,6 +128,7 @@ def T2CNF(cnf, k, w):
     cnf.add_clause([ u, -x[k]])
     cnf.add_clause([-u,  x[k]])
     cnf.add_weight(u, w)
+    cnf.add_weight(-u, 1)
 
     cnf.vars.z[k] = Z
     cnf.vars.r = R
@@ -157,6 +158,7 @@ def Tdg2CNF(cnf, k, w):
     cnf.add_clause([ u, -x[k]])
     cnf.add_clause([-u,  x[k]])
     cnf.add_weight(u, w)
+    cnf.add_weight(-u, 1)
 
     cnf.vars.z[k] = Z
     cnf.vars.r = R
