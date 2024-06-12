@@ -2,7 +2,6 @@ import quokka_sharp as qk
 import sys
 
 def main(reg_tool_path, com_tool_path, qasmfile1, qasmfile2):
-    
     # Parse the circuit
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     # Parse another circuit
@@ -27,4 +26,17 @@ if __name__ == '__main__':
         com_tool_path = sys.argv[2]
         circ1 = sys.argv[3]
         circ2 = sys.argv[4]
-        main(reg_tool_path, com_tool_path, circ1, circ2)
+        try:
+            main(reg_tool_path, com_tool_path, circ1, circ2)
+        except Exception as e:
+            if isinstance(e, AssertionError):
+                print(f'''assertion failed for call:
+                        reg_tool_path = \"{reg_tool_path}\"
+                        com_tool_path = \"{com_tool_path}\"
+                        circ1 = \"{circ1}\"
+                        circ2 = \"{circ2}\"''')
+                print(f"{e}")
+            elif isinstance(e, FileNotFoundError):
+                # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
+                # print(f"\tFile not found: {e.filename}")
+                print(f"\tFile not found")
