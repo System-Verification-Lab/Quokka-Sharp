@@ -2,8 +2,8 @@
 
 reg_tool_path="/Users/dekel/Library/CloudStorage/OneDrive-UniversiteitLeiden/Formal_Work/project/GPMC_bin/gpmc_old -mode=1"
 com_tool_path="/Users/dekel/Library/CloudStorage/OneDrive-UniversiteitLeiden/Formal_Work/project/GPMC_bin/gpmc -mode=1"
-# path=$PWD/benchmark
-path=$PWD/shortened_files
+path=$PWD/benchmark
+# path=$PWD/shortened_files
 
 dirs=(
 "algorithm"
