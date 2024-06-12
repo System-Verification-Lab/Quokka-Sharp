@@ -1,6 +1,7 @@
 import copy
 import os
 import re
+import signal
 import sys
 import tempfile
 import time
@@ -17,6 +18,15 @@ def get_result(result):
         return False
     else: return True
 
+def comp_basis(i, cnf, cnf_file_root):
+    cnf_temp = copy.deepcopy(cnf)
+    cnf_temp.rightProjectQBi(i)
+    cnf_temp.leftProjectQBi(i)
+    
+    cnf_file = cnf_file_root + "/quokka_eq_check_"+ str(i) + ".cnf"
+    cnf_temp.write_to_file(cnf_file)
+    return cnf_file
+
 def basis(i, Z_or_X, cnf, cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.rightProjectZXi(Z_or_X, i)
@@ -27,13 +37,29 @@ def basis(i, Z_or_X, cnf, cnf_file_root):
     return cnf_file
 
 def CheckEquivalence(tool_invocation, cnf, cnf_file_root = tempfile.gettempdir()):
-    
+    try:  
+        TIMEOUT = int(os.environ["TIMEOUT"])
+        def timeout():
+            for proc in proclist:
+                procdict[proc.pid].kill()
+            return "TIMEOUT"
+    except KeyError: 
+        print ("Please set the environment variable TIMEOUT")
+        sys.exit(1)
+
+    signal.signal(signal.SIGALRM, timeout)
+    signal.alarm(TIMEOUT)
+
     #TODO: different number of qubits
     cnf_file_list = []
     
-    for i in range(cnf.n):
-        cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
-        cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+    if cnf.computational_basis:
+        for i in range(cnf.n):
+            cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
+    else:
+        for i in range(cnf.n):
+            cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
+            cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
         
     result = True
     tool_command = tool_invocation.split(' ')
