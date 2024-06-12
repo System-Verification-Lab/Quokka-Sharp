@@ -3,20 +3,20 @@ import io
 from math import pow
 
 class Variables:
-    def __init__(self, cnf: 'CNF', computationl_basis=False):
+    def __init__(self, cnf: 'CNF', computational_basis=False):
         self.cnf = cnf
         self.n = cnf.n
         self.var = 0
         self.x = [0] * cnf.n
-        if not computationl_basis:
+        if not computational_basis:
             self.z = [0] * cnf.n
         for i in range(cnf.n):
             self.x[i] = self.add_var()
-            if not computationl_basis:
+            if not computational_basis:
                 self.z[i] = self.add_var()
-        if not computationl_basis:
+        if not computational_basis:
             self.r = self.add_var()
-        self.computational_basis = computationl_basis
+        self.computational_basis = computational_basis
 
     def add_var(self):
         self.var += 1
@@ -27,17 +27,20 @@ class Variables:
         if basis == "allzero":
             for i in range(self.n):
                 self.cnf.add_clause([-self.x[i]], prepend)
-            w = self.add_var()
-            self.cnf.add_clause([w], True)
-            self.cnf.add_weight(w, 1/pow(2,n))
+            if not self.computational_basis:
+                w = self.add_var()
+                self.cnf.add_clause([w], True)
+                self.cnf.add_weight(w, 1/pow(2,n))
         elif basis == "firstzero":
-            for i in range(self.n):
-                self.cnf.add_clause([-self.x[i]], prepend)
-                if i != 0:
-                    self.cnf.add_clause([-self.z[i]], prepend)            
-            w = self.add_var()
-            self.cnf.add_clause([w], True)
-            self.cnf.add_weight(w, 1/2)
+            self.cnf.add_clause([-self.x[0]], prepend)
+            if not self.computational_basis:
+                 for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)   
+            if not self.computational_basis:         
+                w = self.add_var()
+                self.cnf.add_clause([w], True)
+                self.cnf.add_weight(w, 1/2)
         else: 
             Exception("Please choose firstzero or allzero measurement")
             
@@ -45,9 +48,11 @@ class Variables:
         for i in range(self.n):
             self.cnf.add_clause([-self.x[i]], prepend)
         if sign:
-            self.cnf.add_clause([-self.r], prepend)            
+            if not self.computational_basis:
+                self.cnf.add_clause([-self.r], prepend)            
 
     def projectZXi(self, Z_or_X, idx, sign=False, prepend=False):
+        assert(not self.computational_basis)
         x = self.x; z = self.z; r = self.r
         if not Z_or_X:
             z = self.x; x = self.z
@@ -61,20 +66,23 @@ class Variables:
             self.cnf.add_clause([-r], prepend)
 
 class CNF:
-    def __init__(self, n):
+    def __init__(self, n, computational_basis=False):
         self.clause = 0
         self.n = n
         self.locked = False
         self.cons_list = []
         self.weight_list = io.StringIO()
-        self.vars = Variables(self)                 # variables at timestep m (end of circuit)
-        self.vars_init = copy.deepcopy(self.vars)   # variables at timestep 0
+        self.vars = Variables(self,computational_basis) # variables at timestep m (end of circuit)
+        self.vars_init = copy.deepcopy(self.vars)      # variables at timestep 0
         self.vars_init.cnf = self
+        self.computational_basis = computational_basis
+    
     def finalize(self):
         self.locked = True
-        r = self.vars.r
-        self.add_weight( r, -1)
-        self.add_weight(-r,  1)
+        if not self.computational_basis:
+            r = self.vars.r
+            self.add_weight( r, -1)
+            self.add_weight(-r,  1)
 
     # Left projections are initial states
     def leftProjectAllZero(self):
