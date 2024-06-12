@@ -64,4 +64,4 @@ for i in "${dirs[@]}"; do
         esac
     done
 done
-echo
+echo -e "\n"
