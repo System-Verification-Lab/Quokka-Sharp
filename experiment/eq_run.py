@@ -39,4 +39,4 @@ if __name__ == '__main__':
             elif isinstance(e, FileNotFoundError):
                 # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
                 # print(f"\tFile not found: {e.filename}")
-                print(f"\tFile not found")
+                print(f"nf", end="")
