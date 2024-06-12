@@ -34,10 +34,9 @@ class Variables:
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend)
             if not self.computational_basis:
-                 for i in range(1, self.n):
+                for i in range(1, self.n):
                     self.cnf.add_clause([-self.x[i]], prepend)
                     self.cnf.add_clause([-self.z[i]], prepend)   
-            if not self.computational_basis:         
                 w = self.add_var()
                 self.cnf.add_clause([w], True)
                 self.cnf.add_weight(w, 1/2)
@@ -64,6 +63,14 @@ class Variables:
                 self.cnf.add_clause([-z[i]], prepend)
         if sign:
             self.cnf.add_clause([-r], prepend)
+
+    def projectQBi(self, idx, prepend=False):
+        assert(self.computational_basis)
+        for i in range(self.n):
+            if i == idx:
+                self.cnf.add_clause([self.x[i]], prepend)
+            else:
+                self.cnf.add_clause([-self.x[i]], prepend)
 
 class CNF:
     def __init__(self, n, computational_basis=False):
@@ -92,6 +99,10 @@ class CNF:
     def leftProjectZXi(self, Z_or_X, i):
         self.vars_init.projectZXi(Z_or_X, i, True, True)
 
+    # Left projections are initial states
+    def leftProjectQBi(self, i):
+        self.vars_init.projectQBi(i, True)
+
     # Right projections are measurements: we only allow measurements at the end. See self.lock
     def rightProjectAllZero(self):
         if not self.locked:
@@ -103,6 +114,12 @@ class CNF:
         if not self.locked:
             self.finalize()
         self.vars.projectZXi(Z_or_X, i, False, True)
+
+    # Right projections are measurements: we only allow measurements at the end. See self.lock
+    def rightProjectQBi(self, i):
+        if not self.locked:
+            self.finalize()
+        self.vars.projectQBi(i, True)
 
     def add_measurement(self, basis):
         if not self.locked:
