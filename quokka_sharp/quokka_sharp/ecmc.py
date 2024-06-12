@@ -7,6 +7,8 @@ import tempfile
 import time
 from subprocess import PIPE, Popen
 
+from .encoding.cnf import CNF
+
 # TODO: information for arguments in functions
 
 def get_result(result):
@@ -14,7 +16,7 @@ def get_result(result):
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
     gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
-    if abs(gpmc_ans - 1) > 1e-12:
+    if abs(gpmc_ans) > 1e-12:
         return False
     else: return True
 
@@ -27,7 +29,7 @@ def comp_basis(i, cnf, cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def basis(i, Z_or_X, cnf, cnf_file_root):
+def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.rightProjectZXi(Z_or_X, i)
     cnf_temp.leftProjectZXi(Z_or_X, i)
@@ -36,7 +38,15 @@ def basis(i, Z_or_X, cnf, cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(tool_invocation, cnf, cnf_file_root = tempfile.gettempdir()):
+def identity_check(cnf:'CNF', cnf_file_root):
+    cnf_temp = copy.deepcopy(cnf)
+    cnf_temp.check_not_identity()
+    
+    cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
+    cnf_temp.write_to_file(cnf_file)
+    return cnf_file
+
+def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         def timeout():
@@ -53,13 +63,14 @@ def CheckEquivalence(tool_invocation, cnf, cnf_file_root = tempfile.gettempdir()
     #TODO: different number of qubits
     cnf_file_list = []
     
-    if cnf.computational_basis:
-        for i in range(cnf.n):
-            cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
-    else:
-        for i in range(cnf.n):
-            cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
-            cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+    # if cnf.computational_basis:
+    #     for i in range(cnf.n):
+    #         cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
+    # else:
+    #     for i in range(cnf.n):
+    #         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
+    #         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+    cnf_file_list.append(identity_check(cnf, cnf_file_root))
         
     result = True
     tool_command = tool_invocation.split(' ')
