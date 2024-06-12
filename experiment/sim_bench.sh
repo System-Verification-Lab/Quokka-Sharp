@@ -11,9 +11,6 @@ dirs=(
 "random/randdepscale"
 )
 
-
-TIMEOUT=400
-
 echo "sim_run: basic_tests.txt"
 python3 sim_run.py "$reg_tool_path" "$com_tool_path" "$PWD/basic_tests.txt" >&1;
 
