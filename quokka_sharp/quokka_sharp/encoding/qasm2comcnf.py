@@ -62,7 +62,7 @@ def get_cos_sin(theta):
 
 def QASM2COMFCNF(circuit : Circuit) -> CNF:
 
-    cnf = CNF(circuit.n)
+    cnf = CNF(circuit.n, computational_basis=True)
 
     for element in circuit.circ:
         gate = element[0]
