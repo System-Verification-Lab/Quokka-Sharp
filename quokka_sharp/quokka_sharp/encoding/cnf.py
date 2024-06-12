@@ -1,6 +1,7 @@
 import copy
 import io
 from math import pow
+from sympy.logic.boolalg import *
 
 class Variables:
     def __init__(self, cnf: 'CNF', computational_basis=False):
@@ -72,6 +73,7 @@ class Variables:
             else:
                 self.cnf.add_clause([-self.x[i]], prepend)
 
+
 class CNF:
     def __init__(self, n, computational_basis=False):
         self.clause = 0
@@ -120,6 +122,18 @@ class CNF:
         if not self.locked:
             self.finalize()
         self.vars.projectQBi(i, True)
+
+    def check_not_identity(self):
+        assert(self.vars.n == self.vars_init.n)
+        for i in range(self.vars.n):
+            self.cnf.add_clause([ self.vars.x[i],  self.vars_init.x[i]], True)
+            self.cnf.add_clause([-self.vars.x[i], -self.vars_init.x[i]], True)
+            if not self.computational_basis:
+                self.cnf.add_clause([ self.vars.z[i],  self.vars_init.z[i]], True)
+                self.cnf.add_clause([-self.vars.z[i], -self.vars_init.z[i]], True)
+        if not self.computational_basis:
+            self.cnf.add_clause([ self.vars.r[i],  self.vars_init.r[i]], True)
+            self.cnf.add_clause([-self.vars.r[i], -self.vars_init.r[i]], True)
 
     def add_measurement(self, basis):
         if not self.locked:
