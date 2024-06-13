@@ -5,7 +5,7 @@ path=$PWD/benchmark
 
 dirs=(
 "random/randqubitscale"
-"random/randdepscale"# 
+"random/randdepscale" 
 "algorithm"
 )
 
