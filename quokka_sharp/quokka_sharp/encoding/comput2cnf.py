@@ -59,20 +59,20 @@ def CNOT2CNF(cnf, c, t):
 def RZ2CNF(cnf, k, theta):
     x = cnf.vars.x
     X = cnf.add_var()
-    rz = cnf.add_var()
+    h = cnf.add_var()
 
     # Equivalent(X, x[k])
     cnf.add_clause([ X, -x[k]])
     cnf.add_clause([-X,  x[k]])
 
-    # Equivalent(rz, x[k])
-    cnf.add_clause([ rz, -x[k]])
-    cnf.add_clause([-rz,  x[k]])
+    # Equivalent(h, x[k])
+    cnf.add_clause([ h, -x[k]])
+    cnf.add_clause([-h,  x[k]])
 
     cnf.vars.x[k] = X
 
-    cnf.add_weight(rz, Decimal(math.cos(theta)), Decimal(math.sin(theta)))
-    cnf.add_weight(-rz, 1, 0)
+    cnf.add_weight(h, Decimal(math.cos(theta)), Decimal(math.sin(theta)))
+    cnf.add_weight(-h, 1, 0)
 
 def Z2CNF(cnf, k):
     RZ2CNF(cnf, k, Decimal(math.pi))
@@ -100,9 +100,20 @@ def X2CNF(cnf, k):
     cnf.vars.x[k] = X
 
 def RX2CNF(cnf, k, theta):
-    H2CNF(cnf, k)
-    RZ2CNF(cnf, k, theta)
-    H2CNF(cnf, k)
+    x = cnf.vars.x
+    X = cnf.add_var()
+    h = cnf.add_var()
+
+    # Equivalent(h, Equivalent(X, x[k]))
+    cnf.add_clause([ X,  h,  x[k]])
+    cnf.add_clause([ X, -h, -x[k]])
+    cnf.add_clause([-X,  h, -x[k]])
+    cnf.add_clause([-X, -h,  x[k]])
+
+    cnf.vars.x[k] = X
+
+    cnf.add_weight(h, Decimal(math.cos(theta/2)), 0)
+    cnf.add_weight(-h, 0, -Decimal(math.sin(theta/2)))
 
 def CZ2CNF(cnf, c, t):
     x = cnf.vars.x

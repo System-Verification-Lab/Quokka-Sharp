@@ -7,7 +7,6 @@ t = 1
 k = 2
 
 h    = symbols('h')
-rz   = symbols('rz')
 
 x = [0,0,0]
 x[k] = symbols("x[k]")
@@ -117,13 +116,13 @@ def main():
     Fx = Equivalent(X, x[k])
     Cx = to_cnf(Fx, True, True)
 
-    Frz = Equivalent(rz, x[k])
+    Frz = Equivalent(h, x[k])
     Crz = to_cnf(Frz, True, True)
 
     print("def RZ2CNF(cnf, k, theta):")
     print("    x = cnf.vars.x")
     print("    X = cnf.add_var()")
-    print("    rz = cnf.add_var()")
+    print("    h = cnf.add_var()")
     print()
     print("    # "+ str(Fx))
     to_py(	   str(Cx))
@@ -133,8 +132,8 @@ def main():
     print()
     print("    cnf.vars.x[k] = X")
     print()
-    print(f"    cnf.add_weight(rz, Decimal(math.cos(theta)), Decimal(math.sin(theta)))")
-    print(f"    cnf.add_weight(-rz, 1, 0)")
+    print(f"    cnf.add_weight(h, Decimal(math.cos(theta)), Decimal(math.sin(theta)))")
+    print(f"    cnf.add_weight(-h, 1, 0)")
     print()
 
     #Z
@@ -175,33 +174,22 @@ def main():
     print()
 
     #RX(theta)
+    F = Equivalent(h, Equivalent(x[k], X) )
+    C = to_cnf(F, True, True)
+
     print("def RX2CNF(cnf, k, theta):")
-    print("    H2CNF(cnf, k)")
-    print("    RZ2CNF(cnf, k, theta)")
-    print("    H2CNF(cnf, k)")
+    print("    x = cnf.vars.x")
+    print("    X = cnf.add_var()")
+    print("    h = cnf.add_var()")
     print()
-
-    # F = Equivalent(h, Equivalent(X[k],x[x]))
-    # C = to_cnf(F, True, True)
-
-    # cos = sqrt(1/2)
-
-    # print("def RX2CNF(cnf, k, theta):")
-    # print("    x = cnf.vars.x")
-    # print("    X = cnf.add_var()")
-    # print("    rx = cnf.add_var()")
-    # print()
-    # print("    # "+ str(Fx))
-    # to_py(	   str(Cx))
-    # print()
-    # print("    # "+ str(Frz))
-    # to_py(	   str(Crz))
-    # print()
-    # print("    cnf.vars.x[k] = X")
-    # print()
-    # print(f"    cnf.add_weight(rz, theta)")
-    # print(f"    cnf.add_weight(-rz, 1, 0)")
-    # print()
+    print("    # "+ str(F))
+    to_py(      str(C))
+    print()
+    print("    cnf.vars.x[k] = X")
+    print()
+    print(f"    cnf.add_weight(h, Decimal(math.cos(theta/2)), 0)")
+    print(f"    cnf.add_weight(-h, 0, -Decimal(math.sin(theta/2)))")
+    print()
 
 
 
