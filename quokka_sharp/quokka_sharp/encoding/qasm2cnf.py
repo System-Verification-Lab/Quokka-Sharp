@@ -104,17 +104,13 @@ def QASM2CNF(circuit : Circuit) -> CNF:
             angle = get_angle(element[1])
             k = int(element[2]) - 1
             if gate == 'rx':
-                [res_cos, res_sin] = get_cos_sin(angle)
-                RX2CNF(cnf,k, res_cos, res_sin)
+                RX2CNF(cnf,k, angle)
             elif gate == 'rz':
-                [res_cos, res_sin] = get_cos_sin(angle)
-                RZ2CNF(cnf,k, res_cos, res_sin)
+                RZ2CNF(cnf,k, angle)
             elif gate == 'rxdg':
-                [res_cos, res_sin] = get_cos_sin((-1) * angle)
-                RX2CNF(cnf,k, res_cos, res_sin)
+                RX2CNF(cnf,k, -angle)
             elif gate == 'rzdg':
-                [res_cos, res_sin] = get_cos_sin((-1) * angle)
-                RZ2CNF(cnf,k, res_cos, res_sin)
+                RZ2CNF(cnf,k, -angle)
         elif gate == "ccx":
             qubitc1 = int(element[1]) - 1
             qubitc2 = int(element[2]) - 1
