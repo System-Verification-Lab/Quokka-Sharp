@@ -11,14 +11,23 @@ dirs=(
 "random/randdepscale"
 )
 
-echo "sim_run: basic_tests.txt"
-python3 sim_run.py "$reg_tool_path" "$com_tool_path" "$PWD/basic_tests.txt" >&1;
+echo -e -n "\nbasic_tests:\t"
+for i in ./basic_tests/*; do
+    # echo "sim_run: $i"
+    echo -n "/"
+
+    python3 sim_run.py "$reg_tool_path" "$com_tool_path" "$i" >&1;
+done
 
 for i in "${dirs[@]}"; do
+    echo -e -n "\n$i:\t"
     DIR=$path/"$i"
     for file in $DIR/origin/*; do
         base_name=$(basename ${file})
-        echo "sim_run: $base_name"
+        # echo "sim_run: $base_name"
+        echo -n "/"
+
         python3 sim_run.py "$reg_tool_path" "$com_tool_path" "$file" >&1;
     done
 done
+echo -e "\n"
