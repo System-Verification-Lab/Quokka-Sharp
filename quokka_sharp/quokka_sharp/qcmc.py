@@ -1,6 +1,8 @@
 import re, os, sys
 from subprocess import Popen, PIPE
 
+from .encoding.cnf import CNF
+
 class Result:
     def __init__(self, time, prob, memory):
         self.time = time
