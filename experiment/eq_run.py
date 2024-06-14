@@ -1,4 +1,5 @@
 import quokka_sharp as qk
+import traceback
 import sys
 
 def main(reg_tool_path, com_tool_path, qasmfile1, qasmfile2):
@@ -10,9 +11,11 @@ def main(reg_tool_path, com_tool_path, qasmfile1, qasmfile2):
     circuit2.dagger()
     circuit1.append(circuit2)
     # Get CNF for the merged circuit
+    print("**reg")
     cnf = qk.encoding.QASM2CNF(circuit1)
     res = qk.CheckEquivalence(reg_tool_path, cnf)
-    cnf_C = qk.encoding.QASM2COMCNF(circuit1)
+    print("**com")
+    cnf_C = qk.encoding.QASM2COMFCNF(circuit1)
     res_C = qk.CheckEquivalence(com_tool_path, cnf_C)
     assert res == res_C, f"Results are different: {res} vs {res_C}"
     
@@ -30,13 +33,15 @@ if __name__ == '__main__':
             main(reg_tool_path, com_tool_path, circ1, circ2)
         except Exception as e:
             if isinstance(e, AssertionError):
-                print(f'''assertion failed for call:
-                        reg_tool_path = \"{reg_tool_path}\"
-                        com_tool_path = \"{com_tool_path}\"
-                        circ1 = \"{circ1}\"
-                        circ2 = \"{circ2}\"''')
+                print(f"""\nassertion failed for call:\
+                        \n\treg_tool_path = \"{reg_tool_path}\"\
+                        \n\tcom_tool_path = \"{com_tool_path}\"\
+                        \n\tcirc1 = \"{circ1}\"\
+                        \n\tcirc2 = \"{circ2}\"""")
                 print(f"{e}")
             elif isinstance(e, FileNotFoundError):
                 # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
                 # print(f"\tFile not found: {e.filename}")
                 print(f"nf", end="")
+            else:
+                print(traceback.format_exc())
