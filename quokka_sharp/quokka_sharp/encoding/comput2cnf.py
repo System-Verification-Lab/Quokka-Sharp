@@ -71,8 +71,8 @@ def RZ2CNF(cnf, k, theta):
 
     cnf.vars.x[k] = X
 
-    cnf.add_weight(h, Decimal(math.cos(theta)), Decimal(math.sin(theta)))
-    cnf.add_weight(-h, 1, 0)
+    cnf.add_weight(h, Decimal(math.cos(theta/2)), Decimal(math.sin(theta/2)))
+    cnf.add_weight(-h, Decimal(math.cos(theta/2)), -Decimal(math.sin(theta/2)))
 
 def Z2CNF(cnf, k):
     RZ2CNF(cnf, k, Decimal(math.pi))
@@ -81,13 +81,13 @@ def S2CNF(cnf, k):
     RZ2CNF(cnf, k, Decimal(math.pi/2))
 
 def Sdg2CNF(cnf, k):
-    RZ2CNF(cnf, k, Decimal(math.pi/2))
+    RZ2CNF(cnf, k, Decimal(-math.pi/2))
 
 def T2CNF(cnf, k):
     RZ2CNF(cnf, k, Decimal(math.pi/4))
 
 def Tdg2CNF(cnf, k):
-    RZ2CNF(cnf, k, Decimal(math.pi/4))
+    RZ2CNF(cnf, k, Decimal(-math.pi/4))
 
 def X2CNF(cnf, k):
     x = cnf.vars.x
