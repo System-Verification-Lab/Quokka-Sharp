@@ -132,8 +132,8 @@ def main():
     print()
     print("    cnf.vars.x[k] = X")
     print()
-    print(f"    cnf.add_weight(h, Decimal(math.cos(theta)), Decimal(math.sin(theta)))")
-    print(f"    cnf.add_weight(-h, 1, 0)")
+    print(f"    cnf.add_weight(h, Decimal(math.cos(theta/2)), Decimal(math.sin(theta/2)))")
+    print(f"    cnf.add_weight(-h, Decimal(math.cos(theta/2)), -Decimal(math.sin(theta/2)))")
     print()
 
     #Z
@@ -147,7 +147,7 @@ def main():
     print()
     #Sdg
     print("def Sdg2CNF(cnf, k):")
-    print("    RZ2CNF(cnf, k, Decimal(math.pi/2))")
+    print("    RZ2CNF(cnf, k, Decimal(-math.pi/2))")
     print()
 
     #T
@@ -156,7 +156,7 @@ def main():
     print()
     #Tdg
     print("def Tdg2CNF(cnf, k):")
-    print("    RZ2CNF(cnf, k, Decimal(math.pi/4))")
+    print("    RZ2CNF(cnf, k, Decimal(-math.pi/4))")
     print()
 
     # X:
