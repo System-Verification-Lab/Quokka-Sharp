@@ -126,14 +126,26 @@ class CNF:
     def check_not_identity(self):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
-            self.cnf.add_clause([ self.vars.x[i],  self.vars_init.x[i]], True)
-            self.cnf.add_clause([-self.vars.x[i], -self.vars_init.x[i]], True)
+            self.add_clause([ self.vars.x[i],  self.vars_init.x[i]], True)
+            self.add_clause([-self.vars.x[i], -self.vars_init.x[i]], True)
             if not self.computational_basis:
-                self.cnf.add_clause([ self.vars.z[i],  self.vars_init.z[i]], True)
-                self.cnf.add_clause([-self.vars.z[i], -self.vars_init.z[i]], True)
+                self.add_clause([ self.vars.z[i],  self.vars_init.z[i]], True)
+                self.add_clause([-self.vars.z[i], -self.vars_init.z[i]], True)
         if not self.computational_basis:
-            self.cnf.add_clause([ self.vars.r[i],  self.vars_init.r[i]], True)
-            self.cnf.add_clause([-self.vars.r[i], -self.vars_init.r[i]], True)
+            self.add_clause([ self.vars.r,  self.vars_init.r], True)
+            self.add_clause([-self.vars.r, -self.vars_init.r], True)
+    
+    def check_identity(self):
+        assert(self.vars.n == self.vars_init.n)
+        for i in range(self.vars.n):
+            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]], True)
+            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]], True)
+            if not self.computational_basis:
+                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]], True)
+                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]], True)
+        if not self.computational_basis:
+            self.add_clause([ self.vars.r, -self.vars_init.r], True)
+            self.add_clause([-self.vars.r,  self.vars_init.r], True)
 
     def add_measurement(self, basis):
         if not self.locked:
