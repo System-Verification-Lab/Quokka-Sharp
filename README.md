@@ -39,13 +39,16 @@ Simulation
 circuit1 = qk.encoding.QASMparser(qasmfile1, True)
 # Set the input state to be all zero state.
 cnf.leftProjectAllZero()
-# Encode the circuit
-cnf = qk.encoding.QASM2CNF(circuit1)
+# Encode the circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
+cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Choose firstzero or allzero
 cnf.add_measurement("firstzero")
 # Export to benchmarks
 cnf.write_to_file("circ.cnf")
 prob = qk.Simulate(tool_invocation, "circ.cnf")
+prob = abs(prob) # since the tool returns a complex number
+## if `computational_basis = True` add
+# prob = prob*prob
 print(prob)
 
 '''
@@ -58,8 +61,8 @@ circuit2 = qk.encoding.QASMparser(qasmfile2, True)
 # Get (circuit1)^dagger(circuit2)
 circuit2.dagger()
 circuit1.append(circuit2)
-# Get CNF for the merged circuit
-cnf = qk.encoding.QASM2CNF(circuit1)
+# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
+cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 res = qk.CheckEquivalence(tool_path, cnf)
 ```
 
@@ -70,11 +73,16 @@ If you want to add direct encoding of other gates, you should first install the 
 pip install sympy
 ```
 
-and add new encoding in ./encoding/cliffordt2cnf_py_codegen.py,
-then run the following command:
+and add new encoding in ./encoding/cliffordt2cnf_py_codegen.py 
+or in ./encoding/comput2cnf_py_codegen.py, depending on the base used.
+then run one of the following comands corespondingly:
 
 ```
 python3 cliffordt2cnf_py_codegen.py>cliffordt2cnf.py
+```
+or
+```
+python3 comput2cnf_py_codegen.py>comput2cnf.py
 ```
 ## Benchmarks
 
