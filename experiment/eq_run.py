@@ -11,9 +11,9 @@ def main(reg_tool_path, com_tool_path, qasmfile1, qasmfile2):
     circuit2.dagger()
     circuit1.append(circuit2)
     # Get CNF for the merged circuit
-    cnf = qk.encoding.QASM2CNF(circuit1)
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
     res = qk.CheckEquivalence(reg_tool_path, cnf)
-    cnf_C = qk.encoding.QASM2COMFCNF(circuit1)
+    cnf_C = qk.encoding.QASM2CNF(circuit1, computational_basis = True)
     res_C = qk.CheckEquivalence(com_tool_path, cnf_C)
     assert res == res_C, f"Results are different: {res} vs {res_C}"
     
