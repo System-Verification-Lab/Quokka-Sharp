@@ -28,8 +28,8 @@ for i in "${dirs[@]}"; do
             for file in $DIR/origin/*
             do
                 base_name=$(basename ${file})
-                echo "eq_run.py: $base_name"
-                # echo -n "/"
+                # echo "eq_run.py: $base_name"
+                echo -n "/"
                 python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/opt/"$base_name".opt.qasm >&1;
             done
             ;;
@@ -37,8 +37,8 @@ for i in "${dirs[@]}"; do
             for file in $DIR/origin/*
             do
                 base_name=$(basename ${file})
-                echo "eq_run.py: $base_name"
-                # echo -n "/"
+                # echo "eq_run.py: $base_name"
+                echo -n "/"
                 python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/gm/"$base_name".gm.qasm >&1; 
             done
             ;;
