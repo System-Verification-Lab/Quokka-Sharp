@@ -46,14 +46,18 @@ if __name__ == '__main__':
             main(reg_tool_invocation, com_tool_invocation, circ1)
     except Exception as e:
         if isinstance(e, AssertionError):
-            print(f"""\nassertion failed for call:\
+            print(f"""\nAssertion Failed for call:\
                     \n\treg_tool_path = \"{reg_tool_invocation}\"\
                     \n\tcom_tool_path = \"{com_tool_invocation}\"\
                     \n\tcirc = \"{circ1}\"""")
-            print(f"{e}")
+            print(traceback.format_exc())
         elif isinstance(e, FileNotFoundError):
             # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
             # print(f"\tFile not found: {e.filename}")
             print(f"nf", end="")
         else:
+            print(f"""\nError for call:\
+                    \n\treg_tool_path = \"{reg_tool_invocation}\"\
+                    \n\tcom_tool_path = \"{com_tool_invocation}\"\
+                    \n\tcirc = \"{circ1}\"""")
             print(traceback.format_exc())
