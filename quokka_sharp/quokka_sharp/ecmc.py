@@ -16,7 +16,7 @@ def get_result(result):
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
     gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
-    if abs(gpmc_ans) > 1e-12:
+    if abs(gpmc_ans-1) > 1e-12:
         return False
     else: return True
 
