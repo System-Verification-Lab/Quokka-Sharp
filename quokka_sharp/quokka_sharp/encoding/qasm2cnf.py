@@ -1,5 +1,4 @@
 from .cnf import Variables, CNF
-from .cliffordt2cnf import *
 from .qasm_parser import Circuit
 import math
 from decimal import Decimal, getcontext
@@ -60,76 +59,78 @@ def get_cos_sin(theta):
         res_sin = 0
     return [str(res_cos), str(res_sin)]
 
-def QASM2CNF(circuit : Circuit) -> CNF:
+def QASM2CNF(circuit : Circuit, computational_basis = False) -> CNF:
+    if computational_basis:
+        from .comput2cnf import comput2cnf as to_CNF 
+    else:
+        from .cliffordt2cnf import cliffordt2cnf as to_CNF
 
-    cnf = CNF(circuit.n)
+    cnf = CNF(circuit.n, computational_basis)
 
     for element in circuit.circ:
         gate = element[0]
         if gate == 'h':
             k = int(element[1]) - 1
-            H2CNF(cnf,k)
+            to_CNF.H2CNF(cnf,k)
         elif gate == 'x':
             k = int(element[1]) - 1
-            X2CNF(cnf,k)
+            to_CNF.X2CNF(cnf,k)
         elif gate == 'y':
             k = int(element[1]) - 1
-            Y2CNF(cnf,k)
+            to_CNF.Y2CNF(cnf,k)
         elif gate == 'z':
             k = int(element[1]) - 1
-            Z2CNF(cnf,k)
+            to_CNF.Z2CNF(cnf,k)
         elif gate == 'cx':
             j = int(element[1]) - 1
             k = int(element[2]) - 1
-            CNOT2CNF(cnf,j,k)
+            to_CNF.CNOT2CNF(cnf,j,k)
         elif gate == 'cz':
             j = int(element[1]) - 1
             k = int(element[2]) - 1
-            CZ2CNF(cnf,j,k)            
+            to_CNF.CZ2CNF(cnf,j,k)            
         elif gate == 's':
             k = int(element[1]) - 1
-            S2CNF(cnf,k)
+            to_CNF.S2CNF(cnf,k)
         elif gate == 'tdg':
             k = int(element[1]) - 1
-            w = str(Decimal(1/2).sqrt())
-            Tdg2CNF(cnf,k, w)
+            to_CNF.Tdg2CNF(cnf,k)
         elif gate == 'sdg':
             k = int(element[1]) - 1
-            Sdg2CNF(cnf,k)
+            to_CNF.Sdg2CNF(cnf,k)
         elif gate == 't':
             k = int(element[1]) - 1
-            w = str(Decimal(1/2).sqrt())
-            T2CNF(cnf, k, w)
+            to_CNF.T2CNF(cnf, k)
         elif gate[0] == 'r':
             angle = get_angle(element[1])
             k = int(element[2]) - 1
             if gate == 'rx':
-                RX2CNF(cnf,k, angle)
+                to_CNF.RX2CNF(cnf,k, angle)
             elif gate == 'rz':
-                RZ2CNF(cnf,k, angle)
+                to_CNF.RZ2CNF(cnf,k, angle)
             elif gate == 'rxdg':
-                RX2CNF(cnf,k, -angle)
+                to_CNF.RX2CNF(cnf,k, -angle)
             elif gate == 'rzdg':
-                RZ2CNF(cnf,k, -angle)
+                to_CNF.RZ2CNF(cnf,k, -angle)
         elif gate == "ccx":
             qubitc1 = int(element[1]) - 1
             qubitc2 = int(element[2]) - 1
             qubitr  = int(element[3]) - 1
-            H2CNF(cnf,qubitr)
-            CNOT2CNF(cnf,qubitc2,qubitr)
-            Tdg2CNF(cnf,qubitr)
-            CNOT2CNF(cnf,qubitc1,qubitr)
-            T2CNF(cnf,qubitr)
-            CNOT2CNF(cnf,qubitc2,qubitr)
-            Tdg2CNF(cnf,qubitr)
-            CNOT2CNF(cnf,qubitc1,qubitr)
-            T2CNF(cnf,qubitc2)
-            T2CNF(cnf,qubitr)
-            CNOT2CNF(cnf,qubitc1,qubitc2)
-            H2CNF(cnf,qubitr)
-            T2CNF(cnf,qubitc1)
-            Tdg2CNF(cnf,qubitc2)
-            CNOT2CNF(cnf,qubitc1,qubitc2)
+            to_CNF.H2CNF(cnf,qubitr)
+            to_CNF.CNOT2CNF(cnf,qubitc2,qubitr)
+            to_CNF.Tdg2CNF(cnf,qubitr)
+            to_CNF.CNOT2CNF(cnf,qubitc1,qubitr)
+            to_CNF.T2CNF(cnf,qubitr)
+            to_CNF.CNOT2CNF(cnf,qubitc2,qubitr)
+            to_CNF.Tdg2CNF(cnf,qubitr)
+            to_CNF.CNOT2CNF(cnf,qubitc1,qubitr)
+            to_CNF.T2CNF(cnf,qubitc2)
+            to_CNF.T2CNF(cnf,qubitr)
+            to_CNF.CNOT2CNF(cnf,qubitc1,qubitc2)
+            to_CNF.H2CNF(cnf,qubitr)
+            to_CNF.T2CNF(cnf,qubitc1)
+            to_CNF.Tdg2CNF(cnf,qubitc2)
+            to_CNF.CNOT2CNF(cnf,qubitc1,qubitc2)
         # elif gate == 'm':
         #     cnf.rightProjectZXi(True, 0)
         # elif gate == 'mm':
