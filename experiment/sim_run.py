@@ -8,7 +8,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
 
     # Encode the circuit
-    cnf = qk.encoding.QASM2CNF(circuit1)
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
     cnf.write_to_file("circ.cnf")
@@ -19,7 +19,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
         return
     prob = abs(rez)
 
-    cnf = qk.encoding.QASM2COMFCNF(circuit1)
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = True)
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
     cnf.write_to_file("circ_C.cnf")
