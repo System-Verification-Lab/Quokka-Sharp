@@ -1,7 +1,9 @@
 import copy
 import io
-from math import pow
+import math
 from sympy.logic.boolalg import *
+
+from .qasm_parser import Circuit
 
 class Variables:
     def __init__(self, cnf: 'CNF', computational_basis=False):
@@ -31,7 +33,7 @@ class Variables:
             if not self.computational_basis:
                 w = self.add_var()
                 self.cnf.add_clause([w], True)
-                self.cnf.add_weight(w, 1/pow(2,n))
+                self.cnf.add_weight(w, 1/math.pow(2,n))
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend)
             if not self.computational_basis:
@@ -75,9 +77,9 @@ class Variables:
 
 
 class CNF:
-    def __init__(self, n, computational_basis=False):
+    def __init__(self, circuit:Circuit, computational_basis=False):
         self.clause = 0
-        self.n = n
+        self.n = circuit.n
         self.locked = False
         self.cons_list = []
         self.weight_list = io.StringIO()
@@ -85,6 +87,7 @@ class CNF:
         self.vars_init = copy.deepcopy(self.vars)      # variables at timestep 0
         self.vars_init.cnf = self
         self.computational_basis = computational_basis
+        self.circuit = circuit
     
     def finalize(self):
         self.locked = True
@@ -182,3 +185,86 @@ class CNF:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))      
+
+    def encode_circuit(self, circuit : Circuit):
+
+        if self.computational_basis:
+            from .comput2cnf import comput2cnf as to_CNF 
+        else:
+            from .cliffordt2cnf import cliffordt2cnf as to_CNF
+
+        for element in circuit.circ:
+            gate = element[0]
+            if gate == 'h':
+                k = int(element[1]) - 1
+                to_CNF.H2CNF(self,k)
+            elif gate == 'x':
+                k = int(element[1]) - 1
+                to_CNF.X2CNF(self,k)
+            elif gate == 'y':
+                k = int(element[1]) - 1
+                to_CNF.Y2CNF(self,k)
+            elif gate == 'z':
+                k = int(element[1]) - 1
+                to_CNF.Z2CNF(self,k)
+            elif gate == 'cx':
+                j = int(element[1]) - 1
+                k = int(element[2]) - 1
+                to_CNF.CNOT2CNF(self,j,k)
+            elif gate == 'cz':
+                j = int(element[1]) - 1
+                k = int(element[2]) - 1
+                to_CNF.CZ2CNF(self,j,k)            
+            elif gate == 's':
+                k = int(element[1]) - 1
+                to_CNF.S2CNF(self,k)
+            elif gate == 'tdg':
+                k = int(element[1]) - 1
+                to_CNF.Tdg2CNF(self,k)
+            elif gate == 'sdg':
+                k = int(element[1]) - 1
+                to_CNF.Sdg2CNF(self,k)
+            elif gate == 't':
+                k = int(element[1]) - 1
+                to_CNF.T2CNF(self, k)
+            elif gate[0] == 'r':
+                angle = element[1]
+                k = int(element[2]) - 1
+                if gate == 'rx':
+                    to_CNF.RX2CNF(self,k, angle)
+                elif gate == 'rz':
+                    to_CNF.RZ2CNF(self,k, angle)
+                elif gate == 'rxdg':
+                    to_CNF.RX2CNF(self,k, -angle)
+                elif gate == 'rzdg':
+                    to_CNF.RZ2CNF(self,k, -angle)
+            elif gate == "ccx":
+                qubitc1 = int(element[1]) - 1
+                qubitc2 = int(element[2]) - 1
+                qubitr  = int(element[3]) - 1
+                to_CNF.H2CNF(self,qubitr)
+                to_CNF.CNOT2CNF(self,qubitc2,qubitr)
+                to_CNF.Tdg2CNF(self,qubitr)
+                to_CNF.CNOT2CNF(self,qubitc1,qubitr)
+                to_CNF.T2CNF(self,qubitr)
+                to_CNF.CNOT2CNF(self,qubitc2,qubitr)
+                to_CNF.Tdg2CNF(self,qubitr)
+                to_CNF.CNOT2CNF(self,qubitc1,qubitr)
+                to_CNF.T2CNF(self,qubitc2)
+                to_CNF.T2CNF(self,qubitr)
+                to_CNF.CNOT2CNF(self,qubitc1,qubitc2)
+                to_CNF.H2CNF(self,qubitr)
+                to_CNF.T2CNF(self,qubitc1)
+                to_CNF.Tdg2CNF(self,qubitc2)
+                to_CNF.CNOT2CNF(self,qubitc1,qubitc2)
+            # elif gate == 'm':
+            #     self.rightProjectZXi(True, 0)
+            # elif gate == 'mm':
+            #     self.rightProjectAllZero()
+            else:
+                raise Exception(str(gate) + " undefined."+ str(element))
+
+def QASM2CNF(circuit : Circuit, computational_basis = False) -> CNF:
+    cnf = CNF(circuit, computational_basis)
+    cnf.encode_circuit(circuit)
+    return cnf
