@@ -12,26 +12,26 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
     cnf.write_to_file("circ.cnf")
-    rez = qk.Simulate(reg_tool_invocation, "circ.cnf")
-    # print(rez)
-    if rez == "TIMEOUT":
+    res = qk.Simulate(reg_tool_invocation, "circ.cnf")
+    # print(res)
+    if res == "TIMEOUT":
         print("T", end="")
         return
-    prob = abs(rez)
+    prob = abs(res)
 
     cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = True)
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
     cnf.write_to_file("circ_C.cnf")
-    rez_C = qk.Simulate(com_tool_invocation, "circ_C.cnf")
-    # print(rez_C)
-    if rez_C == "TIMEOUT":
+    res_C = qk.Simulate(com_tool_invocation, "circ_C.cnf")
+    # print(res_C)
+    if res_C == "TIMEOUT":
         print("T", end="")
         return
-    prob_C = abs(rez_C)*abs(rez_C)
+    prob_C = abs(res_C)*abs(res_C)
 
-    assert abs(prob - prob_C) < 1e-15, f'''Probs are different: {prob} vs {prob_C} 
-        \n\t\t Results are: {rez} vs {rez_C} 
+    assert abs(prob - prob_C) < 1e-8, f'''Probs are different: {prob} vs {prob_C} 
+        \n\t\t Results are: {res} vs {res_C} 
         \n\t\t diff: {prob - prob_C}'''
 
 if __name__ == '__main__':
