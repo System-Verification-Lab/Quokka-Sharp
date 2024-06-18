@@ -40,7 +40,8 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
 
 def identity_check(cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.check_not_identity()
+    # cnf_temp.check_not_identity()
+    cnf_temp.check_identity()
     
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
@@ -49,7 +50,7 @@ def identity_check(cnf:'CNF', cnf_file_root):
 def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
-        def timeout():
+        def timeout(signum, frame):
             for proc in proclist:
                 procdict[proc.pid].kill()
             return "TIMEOUT"
