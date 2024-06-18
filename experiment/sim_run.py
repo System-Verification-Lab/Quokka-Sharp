@@ -46,17 +46,21 @@ if __name__ == '__main__':
             main(reg_tool_invocation, com_tool_invocation, circ1)
     except AssertionError:
         print(f"""\nAssertion Failed for call:\
-                \n\treg_tool_path = \"{reg_tool_invocation}\"\
-                \n\tcom_tool_path = \"{com_tool_invocation}\"\
-                \n\tcirc = \"{circ1}\"""")
+                \n   reg_tool_path = \"{reg_tool_invocation}\"\
+                \n   com_tool_path = \"{com_tool_invocation}\"\
+                \n   circ = \"{circ1}\"""")
+        print()
         print(traceback.format_exc())
+        print()
     except FileNotFoundError:
         # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
         # print(f"\tFile not found: {e.filename}")
         print(f"nf", end="")
     except:
         print(f"""\nError for call:\
-                \n\treg_tool_path = \"{reg_tool_invocation}\"\
-                \n\tcom_tool_path = \"{com_tool_invocation}\"\
-                \n\tcirc = \"{circ1}\"""")
+                \n   reg_tool_path = \"{reg_tool_invocation}\"\
+                \n   com_tool_path = \"{com_tool_invocation}\"\
+                \n   circ = \"{circ1}\"""")
+        print()
         print(traceback.format_exc())
+        print()
