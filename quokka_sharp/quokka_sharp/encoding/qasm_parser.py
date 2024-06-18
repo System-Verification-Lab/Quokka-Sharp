@@ -7,20 +7,20 @@ NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's',
 
 class Circuit:
     def __init__(self, translate_ccx):
-        self.n = 0
-        self.tgate = 0
+        self.n: int = 0
+        self.tgate: int = 0
         self.circ = []
-        self.translate_ccx = translate_ccx
+        self.translate_ccx: bool = translate_ccx
     
     def depth(self):
         return len(self.circ)
     
-    def add_single(self,gate,qubit):
+    def add_single(self,gate: str, qubit:int):
         if(gate == 't' or gate == 'tdg'):
             self.tgate += 1
         self.circ.append([gate, qubit])
 
-    def add_double(self, gate, qubitc,qubitr):
+    def add_double(self, gate:str , qubitc: int,qubitr: int):
         self.circ.append([gate, qubitc, qubitr])
     
     def add_rotation(self, gate, angle, qubit):
