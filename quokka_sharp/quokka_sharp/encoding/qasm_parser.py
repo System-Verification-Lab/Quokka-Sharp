@@ -1,4 +1,9 @@
+import math
 import re
+from decimal import Decimal, getcontext
+
+# set the precision of rotation angles
+getcontext().prec = 32
 
 HermiGates = ['h', 'cx', 'cz', 'x', 'z', 'y', 'ccx']
 RotationGates = ['rx', 'ry', 'rz']
@@ -15,18 +20,18 @@ class Circuit:
     def depth(self):
         return len(self.circ)
     
-    def add_single(self,gate: str, qubit:int):
+    def add_single(self,gate: str, qubit: int):
         if(gate == 't' or gate == 'tdg'):
             self.tgate += 1
         self.circ.append([gate, qubit])
 
-    def add_double(self, gate:str , qubitc: int,qubitr: int):
+    def add_double(self, gate: str , qubitc: int, qubitr: int):
         self.circ.append([gate, qubitc, qubitr])
     
-    def add_rotation(self, gate, angle, qubit):
+    def add_rotation(self, gate: str, angle: Decimal, qubit: int):
         self.circ.append([gate, angle, qubit])
     
-    def add_ccx(self,qubitc1,qubitc2,qubitr):
+    def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int):
         if self.translate_ccx:
             self.add_single('h',    qubitr)
             self.add_double('cx',   qubitc2, qubitr)
@@ -46,7 +51,7 @@ class Circuit:
         else:
             self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
         
-    def add_measurement(self, multi_or_single):
+    def add_measurement(self, multi_or_single: bool):
         if multi_or_single:
             self.circ.append('mm')
         else:
@@ -63,13 +68,13 @@ class Circuit:
             else:
                 raise Exception("Gate "+ gate[0] +" dagger not supported.")
 
-    def append(self, other):
+    def append(self, other: 'Circuit'):
         assert(self.translate_ccx == other.translate_ccx)
         self.circ.extend( other.circ )
         self.n = self.n
         self.tgate = self.tgate + other.tgate
 
-def get_num(s):
+def get_num(s: str):
     num = ''
     idx1 = s.index('[')
     idx2 = s.index(']')
@@ -79,9 +84,53 @@ def get_num(s):
             num = num + s[i]
     return globals()[qreg][int(num)]
 
+def frac_to_float(frac: str):
+    sign = 0
+    if "-" in frac:
+        sign = 1
+        frac = frac.replace("-",'')
+    try:
+        return float(frac)
+    except:
+        try:
+            num, denom = frac.split('/')
+        except:
+            num = frac.split('/')[0]
+            denom = 1
+        piflag = 0
+        denom = float(denom)
+        if num == "pi":
+            piflag = 1
+            num = 1
+        elif "pi" in num:
+            piflag = 1
+            num = num.replace("pi",'')
+            num = num.replace("*",'')
+            num = float(num)
+        if piflag == 1:
+            return math.pow(-1,sign) * num / denom * math.pi
+        else:
+            return Decimal(math.pow(-1,sign) * num / denom)
+
+def get_angle(angle: str):
+    try:
+        if "/" in angle:
+            theta = frac_to_float(angle)
+        else:
+            theta_str = angle
+            if 'pi' in theta_str:
+                theta = theta_str.replace('*', '')
+                theta = theta.replace('pi', '')
+                theta = float(theta) * math.pi
+            else:
+                theta = Decimal(float(theta_str))
+        return theta
+    except:
+        raise Exception(angle, "is not supported")
+
 #TODO: the translate CCX should be factored out to some optimization pass
 #      or separate circuit converter tool
-def QASMparser(filename, translate_ccx) -> Circuit:
+def QASMparser(filename, translate_ccx: bool) -> Circuit:
     qasm_list = []
     
     with open(filename,"r") as qasm:
@@ -161,7 +210,7 @@ def QASMparser(filename, translate_ccx) -> Circuit:
             # TODO: gate exception
             gate_angle = re.findall(r"(.*?)\((.*?)\)",gate)[0]
             rgate = gate_angle[0]
-            angle = gate_angle[1]
+            angle = get_angle(gate_angle[1])
             qubit = get_num(line[1])
             circuit.add_rotation(rgate, angle, qubit)
         else:
