@@ -72,8 +72,8 @@ class comput2cnf:
 
         cnf.vars.x[k] = X
 
-        cnf.add_weight(h, Decimal(math.cos(theta/2)), Decimal(math.sin(theta/2)))
-        cnf.add_weight(-h, Decimal(math.cos(theta/2)), -Decimal(math.sin(theta/2)))
+        cnf.add_weight(h, 1, 0)
+        cnf.add_weight(-h, Decimal(math.cos(theta)), -Decimal(math.sin(theta)))
 
     def Z2CNF(cnf, k):
         comput2cnf.RZ2CNF(cnf, k, Decimal(math.pi))
@@ -101,20 +101,9 @@ class comput2cnf:
         cnf.vars.x[k] = X
 
     def RX2CNF(cnf, k, theta):
-        x = cnf.vars.x
-        X = cnf.add_var()
-        h = cnf.add_var()
-
-        # Equivalent(h, Equivalent(X, x[k]))
-        cnf.add_clause([ X,  h,  x[k]])
-        cnf.add_clause([ X, -h, -x[k]])
-        cnf.add_clause([-X,  h, -x[k]])
-        cnf.add_clause([-X, -h,  x[k]])
-
-        cnf.vars.x[k] = X
-
-        cnf.add_weight(h, Decimal(math.cos(theta/2)), 0)
-        cnf.add_weight(-h, 0, -Decimal(math.sin(theta/2)))
+        comput2cnf.H2CNF(cnf, k)
+        comput2cnf.RZ2CNF(cnf, k, theta)
+        comput2cnf.H2CNF(cnf, k)
 
     def CZ2CNF(cnf, c, t):
         x = cnf.vars.x
