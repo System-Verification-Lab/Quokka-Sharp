@@ -11,6 +11,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
+    # cnf.add_measurement("firstzero")
     cnf.write_to_file("circ.cnf")
     res = qk.Simulate(reg_tool_invocation, "circ.cnf")
     # print(res)
@@ -22,6 +23,8 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = True)
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
+    # cnf.add_measurement("firstzero")
+    # cnf.rightProjectAllZero()
     cnf.write_to_file("circ_C.cnf")
     res_C = qk.Simulate(com_tool_invocation, "circ_C.cnf")
     # print(res_C)
@@ -29,6 +32,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
         print("T", end="")
         return
     prob_C = abs(res_C)*abs(res_C)
+    # prob_C = abs(res_C)
 
     assert abs(prob - prob_C) < 1e-8, f'''Probs are different: {prob} vs {prob_C} 
         \n\t\t Results are: {res} vs {res_C} 

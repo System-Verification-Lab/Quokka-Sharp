@@ -36,7 +36,11 @@ class Variables:
                 self.cnf.add_weight(w, 1/math.pow(2,n))
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend)
-            if not self.computational_basis:
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+            else:
                 for i in range(1, self.n):
                     self.cnf.add_clause([-self.x[i]], prepend)
                     self.cnf.add_clause([-self.z[i]], prepend)   
@@ -80,6 +84,7 @@ class CNF:
     def __init__(self, circuit:Circuit, computational_basis=False):
         self.clause = 0
         self.n = circuit.n
+        self.circuit = circuit
         self.locked = False
         self.cons_list = []
         self.weight_list = io.StringIO()
@@ -87,7 +92,6 @@ class CNF:
         self.vars_init = copy.deepcopy(self.vars)      # variables at timestep 0
         self.vars_init.cnf = self
         self.computational_basis = computational_basis
-        self.circuit = circuit
     
     def finalize(self):
         self.locked = True
@@ -151,10 +155,10 @@ class CNF:
             self.add_clause([-self.vars.r,  self.vars_init.r], True)
 
     def add_measurement(self, basis):
+        self.vars.measurement(basis, False) 
         if not self.locked:
-            self.finalize()
-        self.vars.measurement(basis, False)  
-
+            self.finalize() 
+            
     def add_var(self):
         assert(not self.locked)
         return self.vars.add_var()
