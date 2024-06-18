@@ -2,20 +2,20 @@
 
 reg_tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc_old -mode=1"
 com_tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc -mode=1"
-# path=$PWD/benchmark
-path=$PWD/shortened_files
+path=$PWD/benchmark
+# path=$PWD/shortened_files
 
 dirs=(
 "algorithm"
-# "random/randqubitscale"
-# "random/randdepscale"
+"random/randqubitscale"
+"random/randdepscale"
 )
 
 options=(
 "opt"
-# "gm"
-# "fp"
-# "ps"
+"gm"
+"fp"
+"ps"
 )
 
 for i in "${dirs[@]}"; do
