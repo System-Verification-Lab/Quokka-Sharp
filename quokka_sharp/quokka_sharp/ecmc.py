@@ -50,66 +50,69 @@ def identity_check(cnf:'CNF', cnf_file_root):
 def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
+        class TimeoutException(Exception): pass 
         def timeout(signum, frame):
             for proc in proclist:
                 procdict[proc.pid].kill()
-            return "TIMEOUT"
+            raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
         sys.exit(1)
 
-    signal.signal(signal.SIGALRM, timeout)
-    signal.alarm(TIMEOUT)
-
-    #TODO: different number of qubits
-    cnf_file_list = []
-    
-    # if cnf.computational_basis:
-    #     for i in range(cnf.n):
-    #         cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
-    # else:
-    #     for i in range(cnf.n):
-    #         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
-    #         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
-    cnf_file_list.append(identity_check(cnf, cnf_file_root))
+    try:
+        signal.signal(signal.SIGALRM, timeout)
+        signal.alarm(TIMEOUT)
+        #TODO: different number of qubits
+        cnf_file_list = []
         
-    result = True
-    tool_command = tool_invocation.split(' ')
-    # parallel processes
-    N = 16
-    while True:
-        proclist = []
-        length = len(cnf_file_list)
-        for i in range(min(N, length)):        
-            cnf_file = cnf_file_list[i]
-            tool_file_command = tool_command + [cnf_file]
-            p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
-            proclist.append(p)
-        if len(proclist) == 0:
-            break
-        procdict = {proc.pid: proc for proc in proclist}
-        watched_pids = set(proc.pid for proc in proclist)
+        # if cnf.computational_basis:
+        #     for i in range(cnf.n):
+        #         cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
+        # else:
+        #     for i in range(cnf.n):
+        #         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
+        #         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+        cnf_file_list.append(identity_check(cnf, cnf_file_root))
+            
+        result = True
+        tool_command = tool_invocation.split(' ')
+        # parallel processes
+        N = 16
         while True:
-            pid, _ = os.wait()
-            if pid in watched_pids:
-                res = procdict[pid].communicate()
-                result = get_result(res[0])
-                if result == False:
+            proclist = []
+            length = len(cnf_file_list)
+            for i in range(min(N, length)):        
+                cnf_file = cnf_file_list[i]
+                tool_file_command = tool_command + [cnf_file]
+                p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
+                proclist.append(p)
+            if len(proclist) == 0:
+                break
+            procdict = {proc.pid: proc for proc in proclist}
+            watched_pids = set(proc.pid for proc in proclist)
+            while True:
+                pid, _ = os.wait()
+                if pid in watched_pids:
+                    res = procdict[pid].communicate()
+                    result = get_result(res[0])
+                    if result == False:
+                        break
+                    else:
+                        watched_pids.remove(pid)
+                if len(watched_pids) == 0:
                     break
-                else:
-                    watched_pids.remove(pid)
-            if len(watched_pids) == 0:
+
+            if result == False:
                 break
 
-        if result == False:
-            break
-
-        if length > N:
-            cnf_file_list = cnf_file_list[N: length]
-        else:
-            break
-    
-    for pid in watched_pids:
-        procdict[pid].kill()
-    
-    return result
+            if length > N:
+                cnf_file_list = cnf_file_list[N: length]
+            else:
+                break
+        
+        for pid in watched_pids:
+            procdict[pid].kill()
+        
+        return result
+    except TimeoutException:
+        return "TIMEOUT"
