@@ -13,8 +13,14 @@ def main(reg_tool_path, com_tool_path, qasmfile1, qasmfile2):
     # Get CNF for the merged circuit
     cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
     res = qk.CheckEquivalence(reg_tool_path, cnf)
+    if res == "TIMEOUT":
+        print("T", end="")
+        return
     cnf_C = qk.encoding.QASM2CNF(circuit1, computational_basis = True)
     res_C = qk.CheckEquivalence(com_tool_path, cnf_C)
+    if res_C == "TIMEOUT":
+        print("T", end="")
+        return
     assert res == res_C, f"Results are different: {res} vs {res_C}"
     
     
