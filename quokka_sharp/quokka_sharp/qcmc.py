@@ -1,5 +1,5 @@
 import re, os, sys
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, TimeoutExpired
 
 from .encoding.cnf import CNF
 
@@ -35,8 +35,7 @@ def GPMC(tool_invocation, wmc_file):
         if abs(gpmc_ans) < 1e-8:
             gpmc_ans = 0
         return gpmc_ans
-    except Exception as error:
-        print("An exception occurred:", error)
+    except TimeoutExpired:
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
