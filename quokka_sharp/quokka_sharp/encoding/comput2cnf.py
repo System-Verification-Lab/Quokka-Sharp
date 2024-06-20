@@ -18,8 +18,8 @@ class comput2cnf:
 
         cnf.vars.x[k] = X
 
-        cnf.add_weight( h,  Decimal(1/2).sqrt())
-        cnf.add_weight(-h, -Decimal(1/2).sqrt())
+        cnf.add_weight( h,  Decimal(math.sqrt(1/2)))
+        cnf.add_weight(-h, -Decimal(math.sqrt(1/2)))
 
     def Y2CNF(cnf, k):
         x = cnf.vars.x
