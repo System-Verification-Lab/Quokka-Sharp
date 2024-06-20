@@ -61,8 +61,8 @@ def main():
     print()
     print("        cnf.vars.x[k] = X")
     print()
-    print(f"        cnf.add_weight( h,  Decimal(1/2).sqrt())")
-    print(f"        cnf.add_weight(-h, -Decimal(1/2).sqrt())")
+    print(f"        cnf.add_weight( h,  Decimal(math.sqrt(1/2)))")
+    print(f"        cnf.add_weight(-h, -Decimal(math.sqrt(1/2)))")
     print()
 
     # Y:
