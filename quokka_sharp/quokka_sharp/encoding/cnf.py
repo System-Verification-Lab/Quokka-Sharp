@@ -130,7 +130,7 @@ class CNF:
             self.finalize()
         self.vars.projectQBi(i, True)
 
-    def check_not_identity(self):
+    def add_not_identity_clauses(self):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
             self.add_clause([ self.vars.x[i],  self.vars_init.x[i]], True)
@@ -142,7 +142,7 @@ class CNF:
             self.add_clause([ self.vars.r,  self.vars_init.r], True)
             self.add_clause([-self.vars.r, -self.vars_init.r], True)
     
-    def check_identity(self):
+    def add_identity_clauses(self):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
             self.add_clause([ self.vars.x[i], -self.vars_init.x[i]], True)
