@@ -12,8 +12,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
     # cnf.add_measurement("firstzero")
-    cnf.write_to_file("circ.cnf")
-    res = qk.Simulate(reg_tool_invocation, "circ.cnf")
+    res = qk.Simulate(reg_tool_invocation, cnf)
     # print(res)
     if res == "TIMEOUT":
         print("T", end="")
@@ -25,8 +24,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     cnf.add_measurement("allzero")
     # cnf.add_measurement("firstzero")
     # cnf.rightProjectAllZero()
-    cnf.write_to_file("circ_C.cnf")
-    res_C = qk.Simulate(com_tool_invocation, "circ_C.cnf")
+    res_C = qk.Simulate(com_tool_invocation, cnf)
     # print(res_C)
     if res_C == "TIMEOUT":
         print("T", end="")
