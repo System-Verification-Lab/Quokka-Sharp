@@ -40,8 +40,8 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
 
 def identity_check(cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
-    # cnf_temp.check_not_identity()
-    cnf_temp.check_identity()
+    # cnf_temp.add_not_identity_clauses()
+    cnf_temp.add_identity_clauses()
     
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
