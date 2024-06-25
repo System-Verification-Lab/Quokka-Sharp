@@ -17,6 +17,5 @@ env/
 .venv/
 build/
 experiment/shortened_files/algorithm/
-experiment/circ_C.cnf
-experiment/circ.cnf
 experiment/shortened_files/
+experiment/temp_for_sim.cnf
