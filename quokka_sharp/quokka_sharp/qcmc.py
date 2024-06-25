@@ -3,20 +3,6 @@ from subprocess import Popen, PIPE, TimeoutExpired
 
 from .encoding.cnf import CNF
 
-class Result:
-    def __init__(self, time, prob, memory):
-        self.time = time
-        self.prob = prob
-        self.memory = memory
-
-def Measurement(cnf: "CNF", multi_or_single):
-    cnf.leftProjectAllZero()
-    if multi_or_single == "allzero":
-        cnf.rightProjectAllZero()
-    elif multi_or_single == "firstzero":
-        cnf.rightProjectZXi(True, 0)
-    return cnf
-
 def GPMC(tool_invocation, wmc_file):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
