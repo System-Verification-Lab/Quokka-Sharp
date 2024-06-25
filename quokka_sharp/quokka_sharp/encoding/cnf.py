@@ -30,7 +30,9 @@ class Variables:
         if basis == "allzero":
             for i in range(self.n):
                 self.cnf.add_clause([-self.x[i]], prepend)
-            if not self.computational_basis:
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
                 w = self.add_var()
                 self.cnf.add_clause([w], True)
                 self.cnf.add_weight(w, 1/math.pow(2,n))
@@ -93,6 +95,7 @@ class CNF:
         self.vars_init = copy.deepcopy(self.vars)      # variables at timestep 0
         self.vars_init.cnf = self
         self.computational_basis = computational_basis
+        self.square_result = False
     
     def finalize(self):
         self.locked = True

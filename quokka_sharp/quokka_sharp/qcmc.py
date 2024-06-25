@@ -29,4 +29,6 @@ def Simulate(toolpath, cnf: "CNF"):
     filename = "temp_for_sim.cnf"
     cnf.write_to_file(filename)
     prob = GPMC(toolpath, filename)
+    if cnf.square_result:
+        prob = abs(prob) * abs(prob)
     return prob
