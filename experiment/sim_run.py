@@ -23,7 +23,6 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     cnf.leftProjectAllZero()
     cnf.add_measurement("allzero")
     # cnf.add_measurement("firstzero")
-    # cnf.rightProjectAllZero()
     res_C = qk.Simulate(com_tool_invocation, cnf)
     # print(res_C)
     if res_C == "TIMEOUT":
