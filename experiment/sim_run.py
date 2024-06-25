@@ -28,8 +28,7 @@ def main(reg_tool_invocation, com_tool_invocation, qasmfile1):
     if res_C == "TIMEOUT":
         print("T", end="")
         return
-    prob_C = abs(res_C)*abs(res_C)
-    # prob_C = abs(res_C)
+    prob_C = abs(res_C)
 
     assert abs(prob - prob_C) < 1e-8, f'''Probs are different: {prob} vs {prob_C} 
         \n\t\t Results are: {res} vs {res_C} 
