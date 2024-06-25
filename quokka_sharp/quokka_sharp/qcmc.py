@@ -25,6 +25,8 @@ def GPMC(tool_invocation, wmc_file):
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
-def Simulate(toolpath, wmc_file):
-    prob = GPMC(toolpath, wmc_file)
+def Simulate(toolpath, cnf: "CNF"):
+    filename = "temp_for_sim.cnf"
+    cnf.write_to_file(filename)
+    prob = GPMC(toolpath, filename)
     return prob
