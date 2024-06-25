@@ -40,6 +40,7 @@ class Variables:
                 circuit_copy = copy.deepcopy(self.cnf.circuit)
                 circuit_copy.dagger()
                 self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
             else:
                 for i in range(1, self.n):
                     self.cnf.add_clause([-self.x[i]], prepend)
