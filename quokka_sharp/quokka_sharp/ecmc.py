@@ -8,6 +8,8 @@ import time
 from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF
+from decimal import Decimal, getcontext
+getcontext().prec = 32
 
 # TODO: information for arguments in functions
 
@@ -16,9 +18,11 @@ def get_result(result):
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
     gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
-    if abs(gpmc_ans-1) > 1e-12:
+    real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
+    if abs(real-1) > 1e-12 or abs(imag) > 1e-12:
         return False
-    else: return True
+    else: 
+        return True
 
 def comp_basis(i, cnf, cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)

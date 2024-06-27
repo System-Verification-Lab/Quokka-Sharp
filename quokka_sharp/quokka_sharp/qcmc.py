@@ -2,6 +2,8 @@ import re, os, sys
 from subprocess import Popen, PIPE, TimeoutExpired
 
 from .encoding.cnf import CNF
+from decimal import Decimal, getcontext
+getcontext().prec = 32
 
 def GPMC(tool_invocation, wmc_file):
     try:  
@@ -18,7 +20,8 @@ def GPMC(tool_invocation, wmc_file):
         gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
         gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
         gpmc_ans = complex(gpmc_ans_str)
-        if abs(gpmc_ans) < 1e-8:
+        real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
+        if abs(real) < 1e-16 and abs(imag) < 1e-16:
             gpmc_ans = 0
         return gpmc_ans
     except TimeoutExpired:
