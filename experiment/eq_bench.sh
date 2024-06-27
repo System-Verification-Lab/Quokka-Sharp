@@ -1,7 +1,6 @@
 #!/bin/bash
 
-reg_tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc_old -mode=1"
-com_tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc -mode=1"
+tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc -mode=1"
 path=$PWD/benchmark
 # path=$PWD/shortened_files
 
@@ -30,7 +29,7 @@ for i in "${dirs[@]}"; do
                 base_name=$(basename ${file})
                 # echo "eq_run.py: $base_name"
                 echo -n "/"
-                python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/opt/"$base_name".opt.qasm >&1;
+                python3 eq_run.py "$tool_path" "$file" "$DIR"/opt/"$base_name".opt.qasm >&1;
             done
             ;;
             "gm")
@@ -39,7 +38,7 @@ for i in "${dirs[@]}"; do
                 base_name=$(basename ${file})
                 # echo "eq_run.py: $base_name"
                 echo -n "/"
-                python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/gm/"$base_name".gm.qasm >&1; 
+                python3 eq_run.py "$tool_path" "$file" "$DIR"/gm/"$base_name".gm.qasm >&1; 
             done
             ;;
             "fp")
@@ -48,7 +47,7 @@ for i in "${dirs[@]}"; do
                 base_name=$(basename ${file})
                 # echo "eq_run.py: $base_name"
                 echo -n "/"
-                python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/flip/"$base_name".fp.qasm >&1;
+                python3 eq_run.py "$tool_path" "$file" "$DIR"/flip/"$base_name".fp.qasm >&1;
             done
             ;;
             "ps")
@@ -57,8 +56,8 @@ for i in "${dirs[@]}"; do
                 base_name=$(basename ${file})
                 # echo "eq_run.py: $base_name"
                 echo -n "/"
-                python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/shift4/"$base_name".ps4.qasm >&1;
-                python3 eq_run.py "$reg_tool_path" "$com_tool_path" "$file" "$DIR"/shift7/"$base_name".ps7.qasm >&1;
+                python3 eq_run.py "$tool_path" "$file" "$DIR"/shift4/"$base_name".ps4.qasm >&1;
+                python3 eq_run.py "$tool_path" "$file" "$DIR"/shift7/"$base_name".ps7.qasm >&1;
             done
             ;;
         esac
