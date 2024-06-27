@@ -91,7 +91,7 @@ class CNF:
         self.locked = False
         self.cons_list = []
         self.weight_list = io.StringIO()
-        self.vars = Variables(self,computational_basis) # variables at timestep m (end of circuit)
+        self.vars = Variables(self, computational_basis) # variables at timestep m (end of circuit)
         self.vars_init = copy.deepcopy(self.vars)      # variables at timestep 0
         self.vars_init.cnf = self
         self.computational_basis = computational_basis
@@ -272,7 +272,7 @@ class CNF:
             else:
                 raise Exception(str(gate) + " undefined."+ str(element))
 
-def QASM2CNF(circuit : Circuit, computational_basis = False) -> CNF:
+def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
     cnf = CNF(circuit, computational_basis)
     cnf.encode_circuit(circuit)
     return cnf

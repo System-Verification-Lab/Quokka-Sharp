@@ -2,26 +2,26 @@ import quokka_sharp as qk
 import traceback
 import sys
 
-def main(reg_tool_path, com_tool_path, qasmfile1, qasmfile2):
-    # Parse the circuit
+def main(tool_path, qasmfile1, qasmfile2):
+    # Parse the circuits
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-    # Parse another circuit
     circuit2 = qk.encoding.QASMparser(qasmfile2, True)
+
     # Get (circuit1)^dagger(circuit2)
     circuit2.dagger()
     circuit1.append(circuit2)
-    # Get CNF for the merged circuit
-    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-    res = qk.CheckEquivalence(reg_tool_path, cnf)
-    if res == "TIMEOUT":
-        print("T", end="")
-        return
-    cnf_C = qk.encoding.QASM2CNF(circuit1, computational_basis = True)
-    res_C = qk.CheckEquivalence(com_tool_path, cnf_C)
-    if res_C == "TIMEOUT":
-        print("T", end="")
-        return
-    assert res == res_C, f"Results are different: {res} vs {res_C}"
+
+    res = {}
+    for basis in ["poul", "comp"]:
+        # Get CNF for the merged circuit
+        cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
+        res[basis] = qk.CheckEquivalence(tool_path, cnf)
+        if res[basis] == "TIMEOUT":
+            print("T", end="")
+            return
+    
+    # Compare the results
+    assert res["poul"] == res["comp"], f"Results are different: {res["poul"]} vs {res["comp"]}"
     
     
 
@@ -29,16 +29,14 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         main("/Users/meij/GPMC/bin/gpmc -mode=1", "test.qasm", "test.qasm")
     else:
-        reg_tool_path = sys.argv[1]
-        com_tool_path = sys.argv[2]
-        circ1 = sys.argv[3]
-        circ2 = sys.argv[4]
+        tool_path = sys.argv[1]
+        circ1 = sys.argv[2]
+        circ2 = sys.argv[3]
         try:
-            main(reg_tool_path, com_tool_path, circ1, circ2)
+            main(tool_path, circ1, circ2)
         except AssertionError:
             print(f"""\nAssertion Failed for call:\
-                    \n   reg_tool_path = \"{reg_tool_path}\"\
-                    \n   com_tool_path = \"{com_tool_path}\"\
+                    \n   tool_path = \"{tool_path}\"\
                     \n   circ1 = \"{circ1}\"\
                     \n   circ2 = \"{circ2}\"""")
             print()
@@ -50,8 +48,7 @@ if __name__ == '__main__':
             print(f"nf", end="")
         except:
             print(f"""\nError for call:\
-                    \n   reg_tool_path = \"{reg_tool_path}\"\
-                    \n   com_tool_path = \"{com_tool_path}\"\
+                    \n   tool_path = \"{tool_path}\"\
                     \n   circ1 = \"{circ1}\"\
                     \n   circ2 = \"{circ2}\"""")
             print()
