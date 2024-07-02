@@ -23,7 +23,7 @@ def GPMC(tool_invocation, wmc_file):
         real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
         if abs(real) < 1e-16 and abs(imag) < 1e-16:
             gpmc_ans = 0
-        return gpmc_ans
+        return (real*real + imag*imag).sqrt()
     except TimeoutExpired:
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
@@ -33,5 +33,5 @@ def Simulate(toolpath, cnf: "CNF"):
     cnf.write_to_file(filename)
     prob = GPMC(toolpath, filename)
     if cnf.square_result:
-        prob = abs(prob) * abs(prob)
+        prob = prob * prob
     return prob
