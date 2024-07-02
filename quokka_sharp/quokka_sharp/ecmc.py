@@ -68,6 +68,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         signal.alarm(TIMEOUT)
         #TODO: different number of qubits
         cnf_file_list = []
+        proclist = []
         
         # if cnf.computational_basis:
         #     for i in range(cnf.n):
