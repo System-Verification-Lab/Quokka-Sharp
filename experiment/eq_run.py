@@ -74,6 +74,8 @@ if __name__ == '__main__':
             # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
             # print(f"\tFile not found: {e.filename}")
             print(f"nf", end="")
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt")
         except:
             print(f"""\nError for call:\
                     \n   tool_path = \"{tool_path}\"\
