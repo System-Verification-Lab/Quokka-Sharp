@@ -16,6 +16,12 @@ options=(
 "fp"
 # "ps"
 )
+echo -e -n "\nbasic_tests:\t"
+for i in ./basic_tests/*; do
+    # echo "sim_run: $i"
+    echo -n "/"
+    python3 eq_run.py "$tool_path" "$i" "$i" "True" >&1;
+done
 
 for i in "${dirs[@]}"; do
     DIR=$path/"$i"
