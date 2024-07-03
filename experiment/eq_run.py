@@ -1,3 +1,4 @@
+import copy
 import time
 import quokka_sharp as qk
 import traceback
@@ -15,14 +16,15 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
     circuit1.append(circuit2)
 
     data = []
-    for basis in ["poul", "comp"]:
+    for basis in ["comp", "paul"]:
+        # Get CNF for the merged circuit
+        orig_cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
+        
         for check_type in ["id", "nid", "2n"]:
             if basis == "comp" and check_type == "2n":
                 continue
             
-            # Get CNF for the merged circuit
-            cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
-
+            cnf =  copy.deepcopy(orig_cnf) 
             cpu_st, glb_st = time.process_time(), time.time()
             res = qk.CheckEquivalence(tool_path, cnf, check = check_type)
             cpu_et, glb_et = time.process_time(), time.time()
