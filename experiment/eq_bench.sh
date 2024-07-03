@@ -6,15 +6,15 @@ path=$PWD/benchmark
 
 dirs=(
 "algorithm"
-# "random/randqubitscale"
-# "random/randdepscale"
+"random/randqubitscale"
+"random/randdepscale"
 )
 
 options=(
 "opt"
-# "gm"
+"gm"
 "fp"
-# "ps"
+"ps"
 )
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
