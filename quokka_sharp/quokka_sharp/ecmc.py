@@ -19,7 +19,8 @@ def get_result(result, expexted_prob):
     gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
-    if ((abs(real)**2 + abs(imag)**2).sqrt() - expexted_prob) < 1e-12:
+    prob = (abs(real)**2 + abs(imag)**2).sqrt()
+    if abs(prob - expexted_prob) < (expexted_prob+1) * 1e-12:
         return True
     else: 
         return False
@@ -76,22 +77,27 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         #TODO: different number of qubits
         cnf_file_list = []
         proclist = []
-        expexted_prob = 1
         
         match check:
             case "id":
                 cnf_file_list.append(identity_check(cnf, cnf_file_root))
+                if cnf.computational_basis:
+                    expected_prob = 2**cnf.n
+                else:
+                    expected_prob = 4**cnf.n
             case "nid":
                 cnf_file_list.append(not_identity_check(cnf, cnf_file_root))
-                expexted_prob = 0
+                expected_prob = 0
             case "2n":
                 if cnf.computational_basis:
+                    assert False, "2n check is not supported for computational basis"
                     for i in range(cnf.n):
                         cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
                 else:
                     for i in range(cnf.n):
                         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
                         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+                    expected_prob = 1
             case _:
                 raise ValueError("Invalid check type")
         
@@ -116,7 +122,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 pid, _ = os.wait()
                 if pid in watched_pids:
                     res = procdict[pid].communicate()
-                    result = get_result(res[0], expexted_prob)
+                    result = get_result(res[0], expected_prob)
                     if result == False:
                         break
                     else:
