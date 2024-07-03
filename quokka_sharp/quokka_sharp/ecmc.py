@@ -13,16 +13,16 @@ getcontext().prec = 32
 
 # TODO: information for arguments in functions
 
-def get_result(result):
+def get_result(result, expexted_prob):
     result = str(result)
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
     gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
-    if abs(real-1) > 1e-12 or abs(imag) > 1e-12:
-        return False
-    else: 
+    if ((abs(real)**2 + abs(imag)**2).sqrt() - expexted_prob) < 1e-12:
         return True
+    else: 
+        return False
 
 def comp_basis(i, cnf, cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
@@ -44,14 +44,21 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
 
 def identity_check(cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
-    # cnf_temp.add_not_identity_clauses()
     cnf_temp.add_identity_clauses()
     
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()):
+def not_identity_check(cnf:'CNF', cnf_file_root):
+    cnf_temp = copy.deepcopy(cnf)
+    cnf_temp.add_not_identity_clauses()
+    
+    cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
+    cnf_temp.write_to_file(cnf_file)
+    return cnf_file
+
+def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id"):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass 
@@ -69,15 +76,25 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         #TODO: different number of qubits
         cnf_file_list = []
         proclist = []
+        expexted_prob = 1
         
-        # if cnf.computational_basis:
-        #     for i in range(cnf.n):
-        #         cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
-        # else:
-        #     for i in range(cnf.n):
-        #         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
-        #         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
-        cnf_file_list.append(identity_check(cnf, cnf_file_root))
+        match check:
+            case "id":
+                cnf_file_list.append(identity_check(cnf, cnf_file_root))
+            case "nid":
+                cnf_file_list.append(not_identity_check(cnf, cnf_file_root))
+                expexted_prob = 0
+            case "2n":
+                if cnf.computational_basis:
+                    for i in range(cnf.n):
+                        cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
+                else:
+                    for i in range(cnf.n):
+                        cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
+                        cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+            case _:
+                raise ValueError("Invalid check type")
+        
             
         result = True
         tool_command = tool_invocation.split(' ')
@@ -99,7 +116,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 pid, _ = os.wait()
                 if pid in watched_pids:
                     res = procdict[pid].communicate()
-                    result = get_result(res[0])
+                    result = get_result(res[0], expexted_prob)
                     if result == False:
                         break
                     else:
