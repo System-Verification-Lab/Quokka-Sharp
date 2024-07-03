@@ -137,26 +137,28 @@ class CNF:
     def add_not_identity_clauses(self):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
-            self.add_clause([ self.vars.x[i],  self.vars_init.x[i]], True)
-            self.add_clause([-self.vars.x[i], -self.vars_init.x[i]], True)
+            self.add_clause([ self.vars.x[i],  self.vars_init.x[i]])
+            self.add_clause([-self.vars.x[i], -self.vars_init.x[i]])
             if not self.computational_basis:
-                self.add_clause([ self.vars.z[i],  self.vars_init.z[i]], True)
-                self.add_clause([-self.vars.z[i], -self.vars_init.z[i]], True)
+                self.add_clause([ self.vars.z[i],  self.vars_init.z[i]])
+                self.add_clause([-self.vars.z[i], -self.vars_init.z[i]])
         if not self.computational_basis:
-            self.add_clause([ self.vars.r,  self.vars_init.r], True)
-            self.add_clause([-self.vars.r, -self.vars_init.r], True)
+            self.add_clause([-self.vars_init.r], True)
+        if not self.locked:
+            self.finalize() 
     
     def add_identity_clauses(self):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
-            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]], True)
-            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]], True)
+            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
+            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]])
             if not self.computational_basis:
-                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]], True)
-                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]], True)
+                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]])
+                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
         if not self.computational_basis:
-            self.add_clause([ self.vars.r, -self.vars_init.r], True)
-            self.add_clause([-self.vars.r,  self.vars_init.r], True)
+            self.add_clause([-self.vars_init.r], True)
+        if not self.locked:
+            self.finalize() 
 
     def add_measurement(self, basis):
         self.vars.measurement(basis, False) 
