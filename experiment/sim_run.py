@@ -6,7 +6,6 @@ def main(tool_invocation, qasmfile1):
     
     # Parse the circuit
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-    res = {}
     prob = {}
     for mesurement in ["allzero", "firstzero"]:
         for basis in ["poul", "comp"]:
@@ -14,17 +13,15 @@ def main(tool_invocation, qasmfile1):
             cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
             cnf.leftProjectAllZero()
             cnf.add_measurement(mesurement)
-            res[basis] = qk.Simulate(tool_invocation, cnf)
+            prob[basis] = qk.Simulate(tool_invocation, cnf)
             # print(res[basis])
-            if res[basis] == "TIMEOUT":
+            if prob[basis] == "TIMEOUT":
                 print("T", end="")
                 return
-            prob[basis] = abs(res[basis])
 
         assert abs(prob["poul"] - prob["comp"]) < 1e-8, f'''
             For mesurement {mesurement}:
             Probs are different: {prob["poul"]} vs {prob["comp"]} 
-            \n\t\t Results are: {res["poul"]} vs {res["comp"]} 
             \n\t\t diff: {prob["poul"] - prob["comp"]}'''
 
 if __name__ == '__main__':
