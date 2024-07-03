@@ -30,7 +30,7 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
             if res == "TIMEOUT":
                 print("T", end="")
             else:
-                assert(str(res[basis]) == expected_res), f"Result not as expected for basis {basis}: {res[basis]} vs {expected_res}"
+                assert(str(res) == expected_res), f"Result not as expected for basis {basis} and check type {check_type}: Got {res} instead of {expected_res}"
                 print(".", end="")
 
             # pandas dataframe for results
