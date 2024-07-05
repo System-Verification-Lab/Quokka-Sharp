@@ -20,7 +20,7 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
         # Get CNF for the merged circuit
         orig_cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
         
-        for check_type in ["id", "nid", "2n"]:
+        for check_type in ["id", "2n"]:
             if basis == "comp" and check_type == "2n":
                 continue
             

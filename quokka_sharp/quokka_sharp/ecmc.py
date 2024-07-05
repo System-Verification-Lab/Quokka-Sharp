@@ -51,14 +51,6 @@ def identity_check(cnf:'CNF', cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def not_identity_check(cnf:'CNF', cnf_file_root):
-    cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.add_not_identity_clauses()
-    
-    cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
-    cnf_temp.write_to_file(cnf_file)
-    return cnf_file
-
 def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id"):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
@@ -85,9 +77,6 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                     expected_prob = 2**cnf.n
                 else:
                     expected_prob = 4**cnf.n
-            case "nid":
-                cnf_file_list.append(not_identity_check(cnf, cnf_file_root))
-                expected_prob = 0
             case "2n":
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
