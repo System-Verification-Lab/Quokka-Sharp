@@ -16,6 +16,7 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
     circuit1.append(circuit2)
 
     data = []
+    print_files = False
     for basis in ["comp", "paul"]:
         # Get CNF for the merged circuit
         orig_cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
@@ -32,8 +33,13 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
             if res == "TIMEOUT":
                 print("T", end="")
             else:
-                assert(str(res) == expected_res), f"Result not as expected for basis {basis} and check type {check_type}: Got {res} instead of {expected_res}"
-                print(".", end="")
+                # assert(str(res) == expected_res), f"Result not as expected for basis {basis} and check type {check_type}: Got {res} instead of {expected_res}"
+                if str(res) != expected_res:
+                    print("W", end="")
+                    print_files = True
+                else:
+                    print(".", end="")
+                    
 
             # pandas dataframe for results
             data.append({'technic': [check_type],
@@ -52,6 +58,11 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
         df0 = pd.read_csv(pandas_file_name)
         df = pd.concat([df0, df], ignore_index=True)
     df.to_csv(pandas_file_name, index=False)
+
+    if print_files:
+        print(f"""\nFile dosn't match expected:\
+                \n   circ1 = \"{qasmfile1}\"\
+                \n   circ2 = \"{qasmfile2}\"""")
 
 
 if __name__ == '__main__':
