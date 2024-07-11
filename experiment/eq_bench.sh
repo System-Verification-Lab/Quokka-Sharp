@@ -16,6 +16,7 @@ options=(
 "fp"
 "ps"
 )
+
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
     # echo "sim_run: $i"
