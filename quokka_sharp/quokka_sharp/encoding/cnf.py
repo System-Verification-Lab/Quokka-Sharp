@@ -143,7 +143,7 @@ class CNF:
                 self.add_clause([ self.vars.z[i], -self.vars_init.z[i]])
                 self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
         if not self.computational_basis:
-            self.add_clause([-self.vars_init.r], True)
+            self.add_clause([-self.vars_init.r])
         if not self.locked:
             self.finalize() 
 
