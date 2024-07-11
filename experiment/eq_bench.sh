@@ -22,12 +22,13 @@ for i in ./basic_tests/*; do
     echo -n "/"
     python3 eq_run.py "$tool_path" "$i" "$i" "True" >&1;
 done
+echo -e "\n"
 
 for i in "${dirs[@]}"; do
     DIR=$path/"$i"
-    echo -e "\n$i:"
+    echo -e "$i:"
     for option in "${options[@]}"; do
-        echo -n -e "\n\t$option:\t"
+        echo -n -e "\t$option:\t"
          case ${option} in
             "opt")
             for file in $DIR/origin/*
@@ -67,6 +68,8 @@ for i in "${dirs[@]}"; do
             done
             ;;
         esac
+        echo -e "\n"
     done
+    echo -e "\n"
 done
 echo -e "\n"
