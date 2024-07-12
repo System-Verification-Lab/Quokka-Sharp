@@ -53,7 +53,7 @@ def main():
     print("class cliffordt2cnf:")
 
     # H:
-    F = Equivalent(R, r ^ (x[k] & z[k]) )
+    F = Equivalent(R, x[k] & z[k])
 
     C = to_cnf(F, True, True)
     print("    # "+ str(F))
@@ -65,11 +65,13 @@ def main():
     to_py(	   str(C))
     print("        x[k], z[k] = z[k], x[k]")
     print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     # S:
-    Fr = Equivalent(R, (r ^ x[k] & z[k] ))
+    Fr = Equivalent(R, x[k] & z[k])
     Cr = to_cnf(Fr, True, True)
 
     Fz = Equivalent(Z, x[k] ^ z[k])
@@ -81,6 +83,7 @@ def main():
     print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
+    print()
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
@@ -88,11 +91,14 @@ def main():
     to_py(	   str(Cz))
     print()
     print("        cnf.vars.z[k] = Z")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     # X:
-    Fr = Equivalent(R, (r ^ z[k]))
+    Fr = Equivalent(R, z[k])
     Cr = to_cnf(Fr, True, True)
 
     print("    # "+ str(Fr))
@@ -102,11 +108,13 @@ def main():
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     # Y:
-    Fr = Equivalent(R, (r ^ x[k] ^ z[k]))
+    Fr = Equivalent(R, x[k] ^ z[k])
     Cr = to_cnf(Fr, True, True)
 
     print("    # "+ str(Fr))
@@ -117,11 +125,13 @@ def main():
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     # Z:
-    Fr = Equivalent(R, (r ^ x[k]))
+    Fr = Equivalent(R, x[k])
     Cr = to_cnf(Fr, True, True)
 
     print("    # "+ str(Fr))
@@ -131,11 +141,13 @@ def main():
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     #Sdg
-    Fr = Equivalent(R, (r ^ x[k] & ~z[k]))
+    Fr = Equivalent(R, x[k] & ~z[k])
     Cr = to_cnf(Fr, True, True)
 
     Fz = Equivalent(Z, x[k] ^ z[k])
@@ -147,6 +159,7 @@ def main():
     print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
+    print()
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
@@ -154,12 +167,15 @@ def main():
     to_py(	   str(Cz))
     print()
     print("        cnf.vars.z[k] = Z")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()    
     
     
     #T
-    Fr = Equivalent(R, r ^ (x[k] & z[k] & ~Z))
+    Fr = Equivalent(R, x[k] & z[k] & ~Z)
     Cr = to_cnf(Fr, True, True)
 
     Fz = x[k] | Equivalent(Z, z[k])
@@ -186,13 +202,15 @@ def main():
     to_py(	   str(Cu))
     print("        cnf.add_weight(u, str(Decimal(1/2).sqrt()))")
     print()   
-
     print("        cnf.vars.z[k] = Z")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     #Tdag
-    Fr = Equivalent(R, r ^ (x[k] & ~z[k] & Z))
+    Fr = Equivalent(R, x[k] & ~z[k] & Z)
     Cr = to_cnf(Fr, True, True)
 
     Fz = x[k] | Equivalent(Z, z[k])
@@ -213,19 +231,20 @@ def main():
     to_py(	   str(Cr))
     print()
     to_py(	   str(Cz))
-
     print()   
     print("        u = cnf.add_var()")
     to_py(	   str(Cu))
     print("        cnf.add_weight(u, str(Decimal(1/2).sqrt()))")
     print()   
-
     print("        cnf.vars.z[k] = Z")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     #CNOT
-    Fr = Equivalent(R, r ^ (x[c] & z[t] & (~x[t] ^ z[c])))
+    Fr = Equivalent(R, x[c] & z[t] & (~x[t] ^ z[c]))
     Cr = to_cnf(Fr, True, True)
 
     Fx = Equivalent(X, x[t] ^ x[c])
@@ -251,13 +270,16 @@ def main():
     to_py(	   str(Cz))
     print("        cnf.vars.x[t] = X")
     print("        cnf.vars.z[c] = Z")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
     
     #CZ
     Z1    = symbols('Z1')
     Z2    = symbols('Z2')
-    Fr = Equivalent(R, r ^ (x[t] & x[c] & (z[t] ^ z[c])))
+    Fr = Equivalent(R, x[t] & x[c] & (z[t] ^ z[c]))
     Cr = to_cnf(Fr, True, True)
 
     Fz1 = Equivalent(Z1, z[c] ^ x[t])
@@ -284,11 +306,14 @@ def main():
     print()
     print("        cnf.vars.z[c] = Z1")
     print("        cnf.vars.z[t] = Z2")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     #RZ
-    Fr = Equivalent(R, r ^ (x[k] & z[k] & ~Z))
+    Fr = Equivalent(R, x[k] & z[k] & ~Z)
     Cr = to_cnf(Fr, True, True)
 
     Fz = x[k] | Equivalent(Z, z[k])
@@ -326,11 +351,14 @@ def main():
     print("        cnf.add_weight(-u2, 1)")
 
     print("        cnf.vars.z[k] = Z")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
 
     #RX
-    Fr = Equivalent(R, r ^ (z[k] & ~x[k] & X))
+    Fr = Equivalent(R, z[k] & ~x[k] & X)
     Cr = to_cnf(Fr, True, True)
 
     Fx = z[k] | Equivalent(X, x[k])
@@ -368,6 +396,9 @@ def main():
     print("        cnf.add_weight(-u2, 1)")
 
     print("        cnf.vars.x[k] = X")
+    print()
+    print("        cnf.add_weight(-R, 1)")
+    print("        cnf.add_weight(R, -1)")
     print("        cnf.vars.r = R")
     print()
   
