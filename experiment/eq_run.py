@@ -46,8 +46,8 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
                         'basis': [basis],
                         'file1': [qasmfile1], 
                         'file2': [qasmfile2], 
-                        'global time': [glb_st - glb_et],
-                        'cpu time': [cpu_st - cpu_et],
+                        'global time': [glb_et - glb_st],
+                        'cpu time': [cpu_et - cpu_st],
                         'result': [res]
                         })
 
