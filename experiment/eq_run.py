@@ -42,13 +42,13 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
                     
 
             # pandas dataframe for results
-            data.append({'technic': [check_type],
-                        'basis': [basis],
-                        'file1': [qasmfile1], 
-                        'file2': [qasmfile2], 
-                        'global time': [glb_et - glb_st],
-                        'cpu time': [cpu_et - cpu_st],
-                        'result': [res]
+            data.append({'technic': check_type,
+                        'basis': basis,
+                        'file1': qasmfile1, 
+                        'file2': qasmfile2, 
+                        'global time': glb_et - glb_st,
+                        'cpu time': cpu_et - cpu_st,
+                        'result': res
                         })
 
     # convert data to pandas dataframe and add to file
