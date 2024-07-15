@@ -26,9 +26,9 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
                 continue
             
             cnf =  copy.deepcopy(orig_cnf) 
-            cpu_st, glb_st = time.process_time(), time.time()
+            glb_st = time.time()
             res = qk.CheckEquivalence(tool_path, cnf, check = check_type)
-            cpu_et, glb_et = time.process_time(), time.time()
+            glb_et = time.time()
 
             if res == "TIMEOUT":
                 print("T", end="")
@@ -47,7 +47,6 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
                         'file1': qasmfile1, 
                         'file2': qasmfile2, 
                         'global time': glb_et - glb_st,
-                        'cpu time': cpu_et - cpu_st,
                         'result': res
                         })
 
