@@ -251,7 +251,6 @@ class cliffordt2cnf:
     # z[k] | (Equivalent(X, x[k]))
     # Equivalent(u, x[k])
     def RX2CNF(cnf, k, theta):
-        r = cnf.vars.r
         x = cnf.vars.x
         z = cnf.vars.z
         R = cnf.add_var()
