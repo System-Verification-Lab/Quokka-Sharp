@@ -31,7 +31,7 @@ def GPMC(tool_invocation, wmc_file):
 def Simulate(toolpath, cnf: "CNF"):
     filename = "temp_for_sim.cnf"
     cnf.write_to_file(filename)
-    prob = GPMC(toolpath, filename)
-    if cnf.square_result:
-        prob = prob * prob
-    return prob
+    result = GPMC(toolpath, filename)
+    if cnf.square_result and result != "TIMEOUT":
+        result = result * result
+    return result
