@@ -58,7 +58,6 @@ def main():
     C = to_cnf(F, True, True)
     print("    # "+ str(F))
     print("    def H2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -67,7 +66,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     # S:
@@ -80,7 +78,6 @@ def main():
     print("    # "+ str(Fr))
     print("    # "+ str(Fz))
     print("    def S2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print()
@@ -94,7 +91,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     # X:
@@ -103,14 +99,12 @@ def main():
 
     print("    # "+ str(Fr))
     print("    def X2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     # Y:
@@ -119,7 +113,6 @@ def main():
 
     print("    # "+ str(Fr))
     print("    def Y2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -127,7 +120,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     # Z:
@@ -136,14 +128,12 @@ def main():
 
     print("    # "+ str(Fr))
     print("    def Z2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        R = cnf.add_var()")
     to_py(	   str(Cr))
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     #Sdg
@@ -156,7 +146,6 @@ def main():
     print("    # "+ str(Fr))
     print("    # "+ str(Fz))
     print("    def Sdg2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print()
@@ -170,7 +159,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()    
     
     
@@ -188,7 +176,6 @@ def main():
     print("    # "+ str(Fz))
     print("    # "+ str(Fu))
     print("    def T2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -206,7 +193,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     #Tdag
@@ -223,7 +209,6 @@ def main():
     print("    # "+ str(Fz))
     print("    # "+ str(Fu))
     print("    def Tdg2CNF(cnf, k):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -240,7 +225,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     #CNOT
@@ -257,7 +241,6 @@ def main():
     print("    # "+ str(Fx))
     print("    # "+ str(Fz))
     print("    def CNOT2CNF(cnf, c, t):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -273,7 +256,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
     
     #CZ
@@ -292,7 +274,6 @@ def main():
     print("    # "+ str(Fx))
     print("    # "+ str(Fz))
     print("    def CZ2CNF(cnf, c, t):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -309,7 +290,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     #RZ
@@ -329,7 +309,6 @@ def main():
     print("    # "+ str(Fz))
     print("    # "+ str(Fu))
     print("    def RZ2CNF(cnf, k, theta):")
-    print("        r = cnf.vars.r")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        R = cnf.add_var()")
@@ -354,7 +333,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
 
     #RX
@@ -399,7 +377,6 @@ def main():
     print()
     print("        cnf.add_weight(-R, 1)")
     print("        cnf.add_weight(R, -1)")
-    print("        cnf.vars.r = R")
     print()
   
 
