@@ -18,13 +18,11 @@ class Variables:
             if not computational_basis:
                 self.z[i] = self.add_var()
         self.computational_basis = computational_basis
-        self.syn_gate_layer = 0
-        self.syn_gate_picking_vars = {}
 
     def add_var(self, syn_gate_pick = False, Name ="UnNamed", bit = None):
         self.var += 1
         if syn_gate_pick:
-            self.syn_gate_picking_vars[self.var] = {"Name": Name, "bit": bit, "layer": self.syn_gate_layer}
+            self.cnf.syn_gate_picking_vars[self.var] = {"Name": Name, "bit": bit, "layer": self.cnf.syn_gate_layer}
         return self.var
 
     def measurement(self, basis, prepend=False):
@@ -93,6 +91,8 @@ class CNF:
         self.vars_init.cnf = self
         self.computational_basis = computational_basis
         self.square_result = False
+        self.syn_gate_layer = 0
+        self.syn_gate_picking_vars = {}
     
     def finalize(self):
         self.locked = True
@@ -168,11 +168,12 @@ class CNF:
             self.weight_list.write(str(complex_weight))
         self.weight_list.write(" 0\n")
 
-    def write_to_file(self, cnf_file):
+    def write_to_file(self, cnf_file, syntesis_fomat = False):
         with open(cnf_file, 'w') as the_file:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             the_file.write(self.weight_list.getvalue())
-            the_file.write(''.join(self.cons_list))      
+            the_file.write(''.join(self.cons_list))   
+            # the_file.write(''.join(self.cons_list))      
 
     def encode_circuit(self, circuit : Circuit):
 
@@ -260,13 +261,13 @@ class CNF:
             from .cliffordt2cnf import cliffordt2cnf as to_CNF
         
         for _ in range(n):
-            self.vars.syn_gate_layer += 1
+            self.syn_gate_layer += 1
             to_CNF.SynGate2CNF(self)
 
     def get_syn_cuirct(self, assignment):
         for v in assignment:
             if v > 0:
-                print(self.vars.syn_gate_picking_vars[v])
+                print(self.syn_gate_picking_vars[v])
 
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
     cnf = CNF(circuit, computational_basis)
