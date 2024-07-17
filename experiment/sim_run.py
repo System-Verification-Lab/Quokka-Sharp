@@ -19,7 +19,7 @@ def main(tool_invocation, qasmfile1):
                 print("T", end="")
                 return
 
-        assert abs(prob["poul"] - prob["comp"]) < 1e-8, f'''
+        assert abs(prob["poul"] - prob["comp"]) < 1e-12, f'''
             For mesurement {mesurement}:
             Probs are different: {prob["poul"]} vs {prob["comp"]} 
             \n\t\t diff: {prob["poul"] - prob["comp"]}'''
