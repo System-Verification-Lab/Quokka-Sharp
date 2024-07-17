@@ -285,3 +285,76 @@ class cliffordt2cnf:
         cnf.add_weight(-R, 1)
         cnf.add_weight(R, -1)
 
+    def AMO(cnf, var_list):
+        assert None not in var_list
+        # at least one:
+        cnf.add_claus(var_list)
+        # at most one:
+        [cnf.add_claus([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
+
+
+    def SynGate2CNF(cnf):
+        x = cnf.vars.x
+        z = cnf.vars.z
+        X = [cnf.add_var() for _ in range(cnf.n)]
+        Z = [cnf.add_var() for _ in range(cnf.n)]
+        R = [cnf.add_var() for _ in range(cnf.n)]
+        [cnf.add_weight(-R[k], 1) for k in range(cnf.n)]
+        [cnf.add_weight(R[k], -1) for k in range(cnf.n)]
+        czg = [[None]*cnf.n]*cnf.n
+        for k in range(cnf.n):
+            idg = cnf.add_var()
+            hg = cnf.add_var()
+            sg = cnf.add_var()
+            tg = cnf.add_var()
+            # (Implies(idg, ~R[k])) & (Implies(hg, Equivalent(X[k], z[k]))) & (Implies(hg, Equivalent(Z[k], x[k]))) & (Implies(idg, Equivalent(X[k], x[k]))) & (Implies(idg, Equivalent(Z[k], z[k]))) & (Implies(sg, Equivalent(X[k], x[k]))) & (Implies(tg, Equivalent(X[k], x[k]))) & (Implies(hg, Equivalent(R[k], x[k] & z[k]))) & (Implies(sg, Equivalent(R[k], x[k] & z[k]))) & (Implies(sg, Equivalent(Z[k], x[k] ^ z[k]))) & (x[k] | (Implies(tg, Equivalent(Z[k], z[k])))) & (Implies(tg, Equivalent(R[k], x[k] & z[k] & ~Z)))
+            cnf.add_clause([-R[k], -idg])
+            cnf.add_clause([-R[k],  X[k], -hg])
+            cnf.add_clause([-R[k],  X[k], -tg])
+            cnf.add_clause([ X[k], -hg, -z[k]])
+            cnf.add_clause([ X[k], -idg, -x[k]])
+            cnf.add_clause([ X[k], -sg, -x[k]])
+            cnf.add_clause([ X[k], -tg, -x[k]])
+            cnf.add_clause([-R[k],  Z[k], -hg])
+            cnf.add_clause([ Z[k], -hg, -x[k]])
+            cnf.add_clause([ Z[k], -idg, -z[k]])
+            cnf.add_clause([-R[k], -sg,  x[k]])
+            cnf.add_clause([-X[k], -idg,  x[k]])
+            cnf.add_clause([-X[k], -tg,  x[k]])
+            cnf.add_clause([-Z[k], -hg,  x[k]])
+            cnf.add_clause([-R[k], -sg,  z[k]])
+            cnf.add_clause([-R[k], -tg,  z[k]])
+            cnf.add_clause([-X[k], -hg,  z[k]])
+            cnf.add_clause([-Z[k], -idg,  z[k]])
+            cnf.add_clause([-R[k], -Z, -tg])
+            cnf.add_clause([ R[k],  Z[k], -sg, -z[k]])
+            cnf.add_clause([ X[k],  Z[k], -tg, -z[k]])
+            cnf.add_clause([ X[k], -Z[k], -tg,  z[k]])
+            cnf.add_clause([-X[k],  Z[k], -sg,  z[k]])
+            cnf.add_clause([-Z[k], -sg,  x[k],  z[k]])
+            cnf.add_clause([ R[k], -hg, -x[k], -z[k]])
+            cnf.add_clause([-X[k], -Z[k], -sg, -z[k]])
+            cnf.add_clause([ R[k],  Z, -tg, -x[k], -z[k]])
+            c = k
+            for t in range(c+1, cnf.n):
+                czg[c][t] = cnf.add_var()
+                # (Implies(czg[c][t], Equivalent(X[c], x[c]))) & (Implies(czg[c][t], Equivalent(X[t], x[t]))) & (Implies(czg[c][t], Equivalent(Z[c], x[t] ^ z[c]))) & (Implies(czg[c][t], Equivalent(Z[t], x[c] ^ z[t]))) & (Implies(czg[c][t], Equivalent(R, x[c] & x[t] & (z[c] ^ z[t]))))
+                cnf.add_clause([-R,  X[c], -czg[c][t]])
+                cnf.add_clause([ X[c], -czg[c][t], -x[c]])
+                cnf.add_clause([-R,  X[t], -czg[c][t]])
+                cnf.add_clause([ X[t], -czg[c][t], -x[t]])
+                cnf.add_clause([-R,  Z[c],  Z[t], -czg[c][t]])
+                cnf.add_clause([ Z[c], -czg[c][t],  x[t], -z[c]])
+                cnf.add_clause([-X[t],  Z[c], -czg[c][t],  z[c]])
+                cnf.add_clause([ Z[t], -czg[c][t],  x[c], -z[t]])
+                cnf.add_clause([-X[c],  Z[t], -czg[c][t],  z[t]])
+                cnf.add_clause([-Z[t], -czg[c][t],  x[c],  z[t]])
+                cnf.add_clause([-Z[c], -czg[c][t],  x[t],  z[c]])
+                cnf.add_clause([-R, -czg[c][t],  z[c],  z[t]])
+                cnf.add_clause([-X[c], -Z[t], -czg[c][t], -z[t]])
+                cnf.add_clause([-X[t], -Z[c], -czg[c][t], -z[c]])
+                cnf.add_clause([ R,  Z[c], -czg[c][t], -x[c], -z[c],  z[t]])
+                cnf.add_clause([ R,  Z[t], -czg[c][t], -x[t],  z[c], -z[t]])
+            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]
+            cliffordt2cnf.AMO(cnf, gate_controlers)
+

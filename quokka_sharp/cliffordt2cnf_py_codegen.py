@@ -27,9 +27,9 @@ Z    = symbols('Z')
 def strstrip(item1):
     return item1.lstrip(' ()~')
 
-def to_py(s):
+def to_py(s, prefix = ""):
     for a in s.split("&"):
-        print("        cnf.add_clause([", end="")
+        print(prefix+"        cnf.add_clause([", end="")
         l = a.split("|")
         l.sort(key=strstrip)
         for x in l:
@@ -385,6 +385,92 @@ def main():
     print("        cnf.add_weight(R, -1)")
     print()
   
+  
+    
+    # Synthesis
+
+    # dynamic single bit gate:
+
+    idg    = symbols('idg')
+    hg    = symbols('hg')
+    sg    = symbols('sg')
+    tg    = symbols('tg')
+
+    Rk = symbols('R[k]')
+    Xk = symbols('X[k]')
+    Zk = symbols('Z[k]')
+
+    I_r = idg >> Equivalent(Rk, False)
+    I_x = idg >> Equivalent(Xk, x[k])
+    I_z = idg >> Equivalent(Zk, z[k])
+
+    H_r = hg >> Equivalent(Rk, x[k] & z[k])
+    H_x = hg >> Equivalent(Xk, z[k])
+    H_z = hg >> Equivalent(Zk, x[k])
+
+    S_r = sg >> Equivalent(Rk, x[k] & z[k])
+    S_x = sg >> Equivalent(Xk, x[k])
+    S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
+
+    T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Z)
+    T_x = tg >> Equivalent(Xk, x[k])
+    T_z = tg >> Equivalent(Zk, z[k]) | x[k]
+
+    single_qb_gate_property = I_r & I_x & I_z & H_r & H_x & H_z & S_r & S_x & S_z & T_r & T_x & T_z
+    
+
+    # dynamic two bit gate:
+
+    czg_ct    = symbols('czg[c][t]')
+    Xc = symbols('X[c]')
+    Xt = symbols('X[t]')
+    Zc = symbols('Z[c]')
+    Zt = symbols('Z[t]')
+
+    CZ_r = czg_ct >> Equivalent(R, x[t] & x[c] & (z[t] ^ z[c]))
+    CZ_xc = czg_ct >> Equivalent(Xc, x[c])
+    CZ_xt = czg_ct >> Equivalent(Xt, x[t])
+    CZ_zc = czg_ct >> Equivalent(Zc, z[c] ^ x[t])
+    CZ_zt = czg_ct >> Equivalent(Zt, z[t] ^ x[c])
+
+    double_qb_gate_property = CZ_r & CZ_xc & CZ_xt & CZ_zc & CZ_zt
+
+    print("    def AMO(cnf, var_list):")
+    print("        assert None not in var_list")
+    print("        # at least one:")
+    print("        cnf.add_claus(var_list)")
+    print("        # at most one:")
+    print("        [cnf.add_claus([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]")
+    print()
+    print()
+    print("    def SynGate2CNF(cnf, gatenameprefix = ""):")
+    print("        x = cnf.vars.x")
+    print("        z = cnf.vars.z")
+    print("        X = [cnf.add_var() for _ in range(cnf.n)]")
+    print("        Z = [cnf.add_var() for _ in range(cnf.n)]")
+    print("        R = [cnf.add_var() for _ in range(cnf.n)]")
+    print("        [cnf.add_weight(-R[k], 1) for k in range(cnf.n)]")
+    print("        [cnf.add_weight(R[k], -1) for k in range(cnf.n)]")
+    print("        czg = [[None]*cnf.n]*cnf.n")
+    print("        for k in range(cnf.n):")
+    print("            idg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'I[{k}]')")
+    print("            hg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'H[{k}]')")
+    print("            sg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'S[{k}]')")
+    print("            tg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'T[{k}]')")
+    print("            # " + str(single_qb_gate_property))
+    to_py(	           str(to_cnf(single_qb_gate_property, True, True)), prefix="    ")
+    print("            c = k")
+    print("            for t in range(c+1, cnf.n):")
+    print("                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'czg[{c}][{t}]')")
+    print("                # " + str(double_qb_gate_property))
+    to_py(	               str(to_cnf(double_qb_gate_property, True, True)), prefix="        ")
+    print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]")
+    print("            cliffordt2cnf.AMO(cnf, gate_controlers)")
+    print()
+
+
+
+
 
 
 if __name__ == "__main__":

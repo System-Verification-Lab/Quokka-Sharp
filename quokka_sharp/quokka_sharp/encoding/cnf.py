@@ -18,9 +18,13 @@ class Variables:
             if not computational_basis:
                 self.z[i] = self.add_var()
         self.computational_basis = computational_basis
+        self.syn_gate_layer = 0
+        self.syn_gate_picking_vars = {}
 
-    def add_var(self):
+    def add_var(self, syn_gate_pick = False, Name ="UnNamed"):
         self.var += 1
+        if syn_gate_pick:
+            self.syn_gate_picking_vars[self.var] = (self.syn_gate_layer, Name)
         return self.var
 
     def measurement(self, basis, prepend=False):
