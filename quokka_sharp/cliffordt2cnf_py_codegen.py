@@ -443,7 +443,7 @@ def main():
     print("        [cnf.add_claus([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]")
     print()
     print()
-    print("    def SynGate2CNF(cnf, gatenameprefix = ""):")
+    print("    def SynGate2CNF(cnf):")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        X = [cnf.add_var() for _ in range(cnf.n)]")
@@ -453,23 +453,20 @@ def main():
     print("        [cnf.add_weight(R[k], -1) for k in range(cnf.n)]")
     print("        czg = [[None]*cnf.n]*cnf.n")
     print("        for k in range(cnf.n):")
-    print("            idg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'I[{k}]')")
-    print("            hg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'H[{k}]')")
-    print("            sg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'S[{k}]')")
-    print("            tg = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'T[{k}]')")
+    print("            idg = cnf.add_var(syn_gate_pick = True, Name = 'I', bit = k)")
+    print("            hg = cnf.add_var(syn_gate_pick = True, Name = 'H', bit = k)")
+    print("            sg = cnf.add_var(syn_gate_pick = True, Name = 'S', bit = k)")
+    print("            tg = cnf.add_var(syn_gate_pick = True, Name = 'T', bit = k)")
     print("            # " + str(single_qb_gate_property))
     to_py(	           str(to_cnf(single_qb_gate_property, True, True)), prefix="    ")
     print("            c = k")
     print("            for t in range(c+1, cnf.n):")
-    print("                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = gatenameprefix + f'czg[{c}][{t}]')")
+    print("                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'CZ', bit = (c,t))")
     print("                # " + str(double_qb_gate_property))
     to_py(	               str(to_cnf(double_qb_gate_property, True, True)), prefix="        ")
     print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]")
     print("            cliffordt2cnf.AMO(cnf, gate_controlers)")
     print()
-
-
-
 
 
 
