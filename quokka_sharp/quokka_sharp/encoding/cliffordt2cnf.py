@@ -303,10 +303,10 @@ class cliffordt2cnf:
         [cnf.add_weight(R[k], -1) for k in range(cnf.n)]
         czg = [[None]*cnf.n]*cnf.n
         for k in range(cnf.n):
-            idg = cnf.add_var()
-            hg = cnf.add_var()
-            sg = cnf.add_var()
-            tg = cnf.add_var()
+            idg = cnf.add_var(syn_gate_pick = True, Name = 'I', bit = k)
+            hg = cnf.add_var(syn_gate_pick = True, Name = 'H', bit = k)
+            sg = cnf.add_var(syn_gate_pick = True, Name = 'S', bit = k)
+            tg = cnf.add_var(syn_gate_pick = True, Name = 'T', bit = k)
             # (Implies(idg, ~R[k])) & (Implies(hg, Equivalent(X[k], z[k]))) & (Implies(hg, Equivalent(Z[k], x[k]))) & (Implies(idg, Equivalent(X[k], x[k]))) & (Implies(idg, Equivalent(Z[k], z[k]))) & (Implies(sg, Equivalent(X[k], x[k]))) & (Implies(tg, Equivalent(X[k], x[k]))) & (Implies(hg, Equivalent(R[k], x[k] & z[k]))) & (Implies(sg, Equivalent(R[k], x[k] & z[k]))) & (Implies(sg, Equivalent(Z[k], x[k] ^ z[k]))) & (x[k] | (Implies(tg, Equivalent(Z[k], z[k])))) & (Implies(tg, Equivalent(R[k], x[k] & z[k] & ~Z)))
             cnf.add_clause([-R[k], -idg])
             cnf.add_clause([-R[k],  X[k], -hg])
@@ -337,7 +337,7 @@ class cliffordt2cnf:
             cnf.add_clause([ R[k],  Z, -tg, -x[k], -z[k]])
             c = k
             for t in range(c+1, cnf.n):
-                czg[c][t] = cnf.add_var()
+                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'CZ', bit = (c,t))
                 # (Implies(czg[c][t], Equivalent(X[c], x[c]))) & (Implies(czg[c][t], Equivalent(X[t], x[t]))) & (Implies(czg[c][t], Equivalent(Z[c], x[t] ^ z[c]))) & (Implies(czg[c][t], Equivalent(Z[t], x[c] ^ z[t]))) & (Implies(czg[c][t], Equivalent(R, x[c] & x[t] & (z[c] ^ z[t]))))
                 cnf.add_clause([-R,  X[c], -czg[c][t]])
                 cnf.add_clause([ X[c], -czg[c][t], -x[c]])
