@@ -21,10 +21,10 @@ class Variables:
         self.syn_gate_layer = 0
         self.syn_gate_picking_vars = {}
 
-    def add_var(self, syn_gate_pick = False, Name ="UnNamed"):
+    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bit = None):
         self.var += 1
         if syn_gate_pick:
-            self.syn_gate_picking_vars[self.var] = (self.syn_gate_layer, Name)
+            self.syn_gate_picking_vars[self.var] = {"Name": Name, "bit": bit, "layer": self.syn_gate_layer}
         return self.var
 
     def measurement(self, basis, prepend=False):
@@ -251,6 +251,22 @@ class CNF:
             #     self.rightProjectAllZero()
             else:
                 raise Exception(str(gate) + " undefined."+ str(element))
+            
+    def add_syn_layer(self, n=1):
+
+        if self.computational_basis:
+            from .comput2cnf import comput2cnf as to_CNF 
+        else:
+            from .cliffordt2cnf import cliffordt2cnf as to_CNF
+        
+        for _ in range(n):
+            self.vars.syn_gate_layer += 1
+            to_CNF.SynGate2CNF(self)
+
+    def get_syn_cuirct(self, assignment):
+        for v in assignment:
+            if v > 0:
+                print(self.vars.syn_gate_picking_vars[v])
 
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
     cnf = CNF(circuit, computational_basis)
