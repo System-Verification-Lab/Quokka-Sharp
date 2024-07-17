@@ -19,10 +19,8 @@ class Variables:
                 self.z[i] = self.add_var()
         self.computational_basis = computational_basis
 
-    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bit = None):
+    def add_var(self):
         self.var += 1
-        if syn_gate_pick:
-            self.cnf.syn_gate_picking_vars[self.var] = {"Name": Name, "bit": bit, "layer": self.cnf.syn_gate_layer}
         return self.var
 
     def measurement(self, basis, prepend=False):
@@ -143,9 +141,12 @@ class CNF:
         if not self.locked:
             self.finalize() 
             
-    def add_var(self):
+    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bit = None):
         assert(not self.locked)
-        return self.vars.add_var()
+        var = self.vars.add_var()
+        if syn_gate_pick:
+            self.syn_gate_picking_vars[var] = {"Name": Name, "bit": bit, "layer": self.syn_gate_layer}
+        return var
 
     def add_clause(self, cons, prepend=False):
         self.clause += 1
@@ -171,9 +172,11 @@ class CNF:
     def write_to_file(self, cnf_file, syntesis_fomat = False):
         with open(cnf_file, 'w') as the_file:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
+            if syntesis_fomat:
+                the_file.write("c max " +''.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0")
+                the_file.write("c ind " +''.join([str(v) for v in range(self.vars.var) - self.syn_gate_picking_vars.keys()]) + " 0")
             the_file.write(self.weight_list.getvalue())
-            the_file.write(''.join(self.cons_list))   
-            # the_file.write(''.join(self.cons_list))      
+            the_file.write(''.join(self.cons_list))
 
     def encode_circuit(self, circuit : Circuit):
 
