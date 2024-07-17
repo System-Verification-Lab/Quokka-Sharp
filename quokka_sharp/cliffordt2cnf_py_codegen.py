@@ -412,7 +412,7 @@ def main():
     S_x = sg >> Equivalent(Xk, x[k])
     S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
 
-    T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Z)
+    T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
     T_x = tg >> Equivalent(Xk, x[k])
     T_z = tg >> Equivalent(Zk, z[k]) | x[k]
 
@@ -426,8 +426,9 @@ def main():
     Xt = symbols('X[t]')
     Zc = symbols('Z[c]')
     Zt = symbols('Z[t]')
+    Rc = symbols('R[c]')
 
-    CZ_r = czg_ct >> Equivalent(R, x[t] & x[c] & (z[t] ^ z[c]))
+    CZ_r = czg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
     CZ_xc = czg_ct >> Equivalent(Xc, x[c])
     CZ_xt = czg_ct >> Equivalent(Xt, x[t])
     CZ_zc = czg_ct >> Equivalent(Zc, z[c] ^ x[t])
@@ -438,9 +439,9 @@ def main():
     print("    def AMO(cnf, var_list):")
     print("        assert None not in var_list")
     print("        # at least one:")
-    print("        cnf.add_claus(var_list)")
+    print("        cnf.add_clause(var_list)")
     print("        # at most one:")
-    print("        [cnf.add_claus([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]")
+    print("        [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]")
     print()
     print()
     print("    def SynGate2CNF(cnf):")

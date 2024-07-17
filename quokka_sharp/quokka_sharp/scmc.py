@@ -52,9 +52,10 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         def timeout(signum, frame):
             if p is not None:
                 p.kill()
-            print(f"""result found: {found} \n
+            print(f"""
+                  result found: {found}
                   max layers tried: {cnf.syn_gate_layer}
-                  weight achived: {weight} \n
+                  weight achived: {weight}
                   best assignment: {assignment} """)
             raise TimeoutException("TIMEOUT")
     except KeyError: 
