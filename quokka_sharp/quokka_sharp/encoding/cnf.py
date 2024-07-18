@@ -1,7 +1,6 @@
 import copy
 import io
 import math
-from sympy.logic.boolalg import *
 
 from .qasm_parser import Circuit
 
