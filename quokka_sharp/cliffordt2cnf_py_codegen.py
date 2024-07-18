@@ -467,6 +467,8 @@ def main():
     to_py(	               str(to_cnf(double_qb_gate_property, True, True)), prefix="        ")
     print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]")
     print("            cliffordt2cnf.AMO(cnf, gate_controlers)")
+    print("        cnf.vars.x = X")
+    print("        cnf.vars.z = Z")
     print()
 
 
