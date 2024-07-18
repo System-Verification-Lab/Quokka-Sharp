@@ -1,7 +1,6 @@
 import copy
 import io
 import math
-from sympy.logic.boolalg import *
 
 from .qasm_parser import Circuit
 
@@ -174,7 +173,7 @@ class CNF:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
-                the_file.write("c ind " +' '.join([str(v) for v in range(self.vars.var) - self.syn_gate_picking_vars.keys()]) + " 0\n")
+                the_file.write("c ind " +' '.join([str(v) for v in range(1, self.vars.var) - self.syn_gate_picking_vars.keys()]) + " 0\n")
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))
 
