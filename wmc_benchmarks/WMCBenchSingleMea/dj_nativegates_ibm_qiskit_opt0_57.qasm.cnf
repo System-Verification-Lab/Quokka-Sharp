@@ -1,0 +1,5818 @@
+p cnf 1244 4459
+c p weight -115 1 0
+c p weight 115 -1 0
+c p weight 119 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -119 1 0
+c p weight 120 1 0
+c p weight -120 1 0
+c p weight -117 1 0
+c p weight 117 -1 0
+c p weight -121 1 0
+c p weight 121 -1 0
+c p weight -123 1 0
+c p weight 123 -1 0
+c p weight -124 1 0
+c p weight 124 -1 0
+c p weight 128 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -128 1 0
+c p weight 129 1 0
+c p weight -129 1 0
+c p weight -126 1 0
+c p weight 126 -1 0
+c p weight -130 1 0
+c p weight 130 -1 0
+c p weight -132 1 0
+c p weight 132 -1 0
+c p weight -133 1 0
+c p weight 133 -1 0
+c p weight 137 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -137 1 0
+c p weight 138 1 0
+c p weight -138 1 0
+c p weight -135 1 0
+c p weight 135 -1 0
+c p weight -139 1 0
+c p weight 139 -1 0
+c p weight -141 1 0
+c p weight 141 -1 0
+c p weight 145 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -145 1 0
+c p weight 146 1 0
+c p weight -146 1 0
+c p weight -143 1 0
+c p weight 143 -1 0
+c p weight -147 1 0
+c p weight 147 -1 0
+c p weight -149 1 0
+c p weight 149 -1 0
+c p weight -150 1 0
+c p weight 150 -1 0
+c p weight 154 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -154 1 0
+c p weight 155 1 0
+c p weight -155 1 0
+c p weight -152 1 0
+c p weight 152 -1 0
+c p weight -156 1 0
+c p weight 156 -1 0
+c p weight -158 1 0
+c p weight 158 -1 0
+c p weight 162 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -162 1 0
+c p weight 163 1 0
+c p weight -163 1 0
+c p weight -160 1 0
+c p weight 160 -1 0
+c p weight -164 1 0
+c p weight 164 -1 0
+c p weight -166 1 0
+c p weight 166 -1 0
+c p weight -167 1 0
+c p weight 167 -1 0
+c p weight 171 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -171 1 0
+c p weight 172 1 0
+c p weight -172 1 0
+c p weight -169 1 0
+c p weight 169 -1 0
+c p weight -173 1 0
+c p weight 173 -1 0
+c p weight -175 1 0
+c p weight 175 -1 0
+c p weight -176 1 0
+c p weight 176 -1 0
+c p weight 180 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -180 1 0
+c p weight 181 1 0
+c p weight -181 1 0
+c p weight -178 1 0
+c p weight 178 -1 0
+c p weight -182 1 0
+c p weight 182 -1 0
+c p weight -184 1 0
+c p weight 184 -1 0
+c p weight 188 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -188 1 0
+c p weight 189 1 0
+c p weight -189 1 0
+c p weight -186 1 0
+c p weight 186 -1 0
+c p weight -190 1 0
+c p weight 190 -1 0
+c p weight -192 1 0
+c p weight 192 -1 0
+c p weight -193 1 0
+c p weight 193 -1 0
+c p weight 197 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -197 1 0
+c p weight 198 1 0
+c p weight -198 1 0
+c p weight -195 1 0
+c p weight 195 -1 0
+c p weight -199 1 0
+c p weight 199 -1 0
+c p weight -201 1 0
+c p weight 201 -1 0
+c p weight -202 1 0
+c p weight 202 -1 0
+c p weight 206 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -206 1 0
+c p weight 207 1 0
+c p weight -207 1 0
+c p weight -204 1 0
+c p weight 204 -1 0
+c p weight -208 1 0
+c p weight 208 -1 0
+c p weight -210 1 0
+c p weight 210 -1 0
+c p weight 214 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -214 1 0
+c p weight 215 1 0
+c p weight -215 1 0
+c p weight -212 1 0
+c p weight 212 -1 0
+c p weight -216 1 0
+c p weight 216 -1 0
+c p weight -218 1 0
+c p weight 218 -1 0
+c p weight -219 1 0
+c p weight 219 -1 0
+c p weight 223 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -223 1 0
+c p weight 224 1 0
+c p weight -224 1 0
+c p weight -221 1 0
+c p weight 221 -1 0
+c p weight -225 1 0
+c p weight 225 -1 0
+c p weight -227 1 0
+c p weight 227 -1 0
+c p weight -228 1 0
+c p weight 228 -1 0
+c p weight 232 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -232 1 0
+c p weight 233 1 0
+c p weight -233 1 0
+c p weight -230 1 0
+c p weight 230 -1 0
+c p weight -234 1 0
+c p weight 234 -1 0
+c p weight -236 1 0
+c p weight 236 -1 0
+c p weight 240 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -240 1 0
+c p weight 241 1 0
+c p weight -241 1 0
+c p weight -238 1 0
+c p weight 238 -1 0
+c p weight -242 1 0
+c p weight 242 -1 0
+c p weight -244 1 0
+c p weight 244 -1 0
+c p weight 248 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -248 1 0
+c p weight 249 1 0
+c p weight -249 1 0
+c p weight -246 1 0
+c p weight 246 -1 0
+c p weight -250 1 0
+c p weight 250 -1 0
+c p weight -252 1 0
+c p weight 252 -1 0
+c p weight -253 1 0
+c p weight 253 -1 0
+c p weight 257 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -257 1 0
+c p weight 258 1 0
+c p weight -258 1 0
+c p weight -255 1 0
+c p weight 255 -1 0
+c p weight -259 1 0
+c p weight 259 -1 0
+c p weight -261 1 0
+c p weight 261 -1 0
+c p weight 265 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -265 1 0
+c p weight 266 1 0
+c p weight -266 1 0
+c p weight -263 1 0
+c p weight 263 -1 0
+c p weight -267 1 0
+c p weight 267 -1 0
+c p weight -269 1 0
+c p weight 269 -1 0
+c p weight 273 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -273 1 0
+c p weight 274 1 0
+c p weight -274 1 0
+c p weight -271 1 0
+c p weight 271 -1 0
+c p weight -275 1 0
+c p weight 275 -1 0
+c p weight -277 1 0
+c p weight 277 -1 0
+c p weight 281 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -281 1 0
+c p weight 282 1 0
+c p weight -282 1 0
+c p weight -279 1 0
+c p weight 279 -1 0
+c p weight -283 1 0
+c p weight 283 -1 0
+c p weight -285 1 0
+c p weight 285 -1 0
+c p weight 289 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -289 1 0
+c p weight 290 1 0
+c p weight -290 1 0
+c p weight -287 1 0
+c p weight 287 -1 0
+c p weight -291 1 0
+c p weight 291 -1 0
+c p weight -293 1 0
+c p weight 293 -1 0
+c p weight 297 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -297 1 0
+c p weight 298 1 0
+c p weight -298 1 0
+c p weight -295 1 0
+c p weight 295 -1 0
+c p weight -299 1 0
+c p weight 299 -1 0
+c p weight -301 1 0
+c p weight 301 -1 0
+c p weight -302 1 0
+c p weight 302 -1 0
+c p weight 306 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -306 1 0
+c p weight 307 1 0
+c p weight -307 1 0
+c p weight -304 1 0
+c p weight 304 -1 0
+c p weight -308 1 0
+c p weight 308 -1 0
+c p weight -310 1 0
+c p weight 310 -1 0
+c p weight 314 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -314 1 0
+c p weight 315 1 0
+c p weight -315 1 0
+c p weight -312 1 0
+c p weight 312 -1 0
+c p weight -316 1 0
+c p weight 316 -1 0
+c p weight -318 1 0
+c p weight 318 -1 0
+c p weight 322 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -322 1 0
+c p weight 323 1 0
+c p weight -323 1 0
+c p weight -320 1 0
+c p weight 320 -1 0
+c p weight -324 1 0
+c p weight 324 -1 0
+c p weight -326 1 0
+c p weight 326 -1 0
+c p weight -327 1 0
+c p weight 327 -1 0
+c p weight 331 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -331 1 0
+c p weight 332 1 0
+c p weight -332 1 0
+c p weight -329 1 0
+c p weight 329 -1 0
+c p weight -333 1 0
+c p weight 333 -1 0
+c p weight -335 1 0
+c p weight 335 -1 0
+c p weight -336 1 0
+c p weight 336 -1 0
+c p weight 340 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -340 1 0
+c p weight 341 1 0
+c p weight -341 1 0
+c p weight -338 1 0
+c p weight 338 -1 0
+c p weight -342 1 0
+c p weight 342 -1 0
+c p weight -344 1 0
+c p weight 344 -1 0
+c p weight 348 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -348 1 0
+c p weight 349 1 0
+c p weight -349 1 0
+c p weight -346 1 0
+c p weight 346 -1 0
+c p weight -350 1 0
+c p weight 350 -1 0
+c p weight -352 1 0
+c p weight 352 -1 0
+c p weight 356 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -356 1 0
+c p weight 357 1 0
+c p weight -357 1 0
+c p weight -354 1 0
+c p weight 354 -1 0
+c p weight -358 1 0
+c p weight 358 -1 0
+c p weight -360 1 0
+c p weight 360 -1 0
+c p weight -361 1 0
+c p weight 361 -1 0
+c p weight 365 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -365 1 0
+c p weight 366 1 0
+c p weight -366 1 0
+c p weight -363 1 0
+c p weight 363 -1 0
+c p weight -367 1 0
+c p weight 367 -1 0
+c p weight -369 1 0
+c p weight 369 -1 0
+c p weight 373 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -373 1 0
+c p weight 374 1 0
+c p weight -374 1 0
+c p weight -371 1 0
+c p weight 371 -1 0
+c p weight -375 1 0
+c p weight 375 -1 0
+c p weight -377 1 0
+c p weight 377 -1 0
+c p weight 381 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -381 1 0
+c p weight 382 1 0
+c p weight -382 1 0
+c p weight -379 1 0
+c p weight 379 -1 0
+c p weight -383 1 0
+c p weight 383 -1 0
+c p weight -385 1 0
+c p weight 385 -1 0
+c p weight -386 1 0
+c p weight 386 -1 0
+c p weight 390 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -390 1 0
+c p weight 391 1 0
+c p weight -391 1 0
+c p weight -388 1 0
+c p weight 388 -1 0
+c p weight -392 1 0
+c p weight 392 -1 0
+c p weight -394 1 0
+c p weight 394 -1 0
+c p weight 398 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -398 1 0
+c p weight 399 1 0
+c p weight -399 1 0
+c p weight -396 1 0
+c p weight 396 -1 0
+c p weight -400 1 0
+c p weight 400 -1 0
+c p weight -402 1 0
+c p weight 402 -1 0
+c p weight 406 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -406 1 0
+c p weight 407 1 0
+c p weight -407 1 0
+c p weight -404 1 0
+c p weight 404 -1 0
+c p weight -408 1 0
+c p weight 408 -1 0
+c p weight -410 1 0
+c p weight 410 -1 0
+c p weight 414 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -414 1 0
+c p weight 415 1 0
+c p weight -415 1 0
+c p weight -412 1 0
+c p weight 412 -1 0
+c p weight -416 1 0
+c p weight 416 -1 0
+c p weight -418 1 0
+c p weight 418 -1 0
+c p weight -419 1 0
+c p weight 419 -1 0
+c p weight 423 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -423 1 0
+c p weight 424 1 0
+c p weight -424 1 0
+c p weight -421 1 0
+c p weight 421 -1 0
+c p weight -425 1 0
+c p weight 425 -1 0
+c p weight -427 1 0
+c p weight 427 -1 0
+c p weight -428 1 0
+c p weight 428 -1 0
+c p weight 432 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -432 1 0
+c p weight 433 1 0
+c p weight -433 1 0
+c p weight -430 1 0
+c p weight 430 -1 0
+c p weight -434 1 0
+c p weight 434 -1 0
+c p weight -436 1 0
+c p weight 436 -1 0
+c p weight 440 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -440 1 0
+c p weight 441 1 0
+c p weight -441 1 0
+c p weight -438 1 0
+c p weight 438 -1 0
+c p weight -442 1 0
+c p weight 442 -1 0
+c p weight -444 1 0
+c p weight 444 -1 0
+c p weight -445 1 0
+c p weight 445 -1 0
+c p weight 449 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -449 1 0
+c p weight 450 1 0
+c p weight -450 1 0
+c p weight -447 1 0
+c p weight 447 -1 0
+c p weight -451 1 0
+c p weight 451 -1 0
+c p weight -453 1 0
+c p weight 453 -1 0
+c p weight -454 1 0
+c p weight 454 -1 0
+c p weight 458 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -458 1 0
+c p weight 459 1 0
+c p weight -459 1 0
+c p weight -456 1 0
+c p weight 456 -1 0
+c p weight -460 1 0
+c p weight 460 -1 0
+c p weight -462 1 0
+c p weight 462 -1 0
+c p weight -463 1 0
+c p weight 463 -1 0
+c p weight 467 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -467 1 0
+c p weight 468 1 0
+c p weight -468 1 0
+c p weight -465 1 0
+c p weight 465 -1 0
+c p weight -469 1 0
+c p weight 469 -1 0
+c p weight -471 1 0
+c p weight 471 -1 0
+c p weight -472 1 0
+c p weight 472 -1 0
+c p weight 476 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -476 1 0
+c p weight 477 1 0
+c p weight -477 1 0
+c p weight -474 1 0
+c p weight 474 -1 0
+c p weight -478 1 0
+c p weight 478 -1 0
+c p weight -480 1 0
+c p weight 480 -1 0
+c p weight -481 1 0
+c p weight 481 -1 0
+c p weight 485 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -485 1 0
+c p weight 486 1 0
+c p weight -486 1 0
+c p weight -483 1 0
+c p weight 483 -1 0
+c p weight -487 1 0
+c p weight 487 -1 0
+c p weight -489 1 0
+c p weight 489 -1 0
+c p weight 493 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -493 1 0
+c p weight 494 1 0
+c p weight -494 1 0
+c p weight -491 1 0
+c p weight 491 -1 0
+c p weight -495 1 0
+c p weight 495 -1 0
+c p weight -497 1 0
+c p weight 497 -1 0
+c p weight -498 1 0
+c p weight 498 -1 0
+c p weight 502 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -502 1 0
+c p weight 503 1 0
+c p weight -503 1 0
+c p weight -500 1 0
+c p weight 500 -1 0
+c p weight -504 1 0
+c p weight 504 -1 0
+c p weight -506 1 0
+c p weight 506 -1 0
+c p weight 510 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -510 1 0
+c p weight 511 1 0
+c p weight -511 1 0
+c p weight -508 1 0
+c p weight 508 -1 0
+c p weight -512 1 0
+c p weight 512 -1 0
+c p weight -514 1 0
+c p weight 514 -1 0
+c p weight 518 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -518 1 0
+c p weight 519 1 0
+c p weight -519 1 0
+c p weight -516 1 0
+c p weight 516 -1 0
+c p weight -520 1 0
+c p weight 520 -1 0
+c p weight -522 1 0
+c p weight 522 -1 0
+c p weight 526 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -526 1 0
+c p weight 527 1 0
+c p weight -527 1 0
+c p weight -524 1 0
+c p weight 524 -1 0
+c p weight -528 1 0
+c p weight 528 -1 0
+c p weight -530 1 0
+c p weight 530 -1 0
+c p weight 534 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -534 1 0
+c p weight 535 1 0
+c p weight -535 1 0
+c p weight -532 1 0
+c p weight 532 -1 0
+c p weight -536 1 0
+c p weight 536 -1 0
+c p weight -538 1 0
+c p weight 538 -1 0
+c p weight -539 1 0
+c p weight 539 -1 0
+c p weight 543 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -543 1 0
+c p weight 544 1 0
+c p weight -544 1 0
+c p weight -541 1 0
+c p weight 541 -1 0
+c p weight -545 1 0
+c p weight 545 -1 0
+c p weight -547 1 0
+c p weight 547 -1 0
+c p weight 551 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -551 1 0
+c p weight 552 1 0
+c p weight -552 1 0
+c p weight -549 1 0
+c p weight 549 -1 0
+c p weight -553 1 0
+c p weight 553 -1 0
+c p weight -555 1 0
+c p weight 555 -1 0
+c p weight -556 1 0
+c p weight 556 -1 0
+c p weight 560 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -560 1 0
+c p weight 561 1 0
+c p weight -561 1 0
+c p weight -558 1 0
+c p weight 558 -1 0
+c p weight -562 1 0
+c p weight 562 -1 0
+c p weight -564 1 0
+c p weight 564 -1 0
+c p weight -565 1 0
+c p weight 565 -1 0
+c p weight 569 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -569 1 0
+c p weight 570 1 0
+c p weight -570 1 0
+c p weight -567 1 0
+c p weight 567 -1 0
+c p weight -571 1 0
+c p weight 571 -1 0
+c p weight -573 1 0
+c p weight 573 -1 0
+c p weight -574 1 0
+c p weight 574 -1 0
+c p weight 578 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -578 1 0
+c p weight 579 1 0
+c p weight -579 1 0
+c p weight -576 1 0
+c p weight 576 -1 0
+c p weight -580 1 0
+c p weight 580 -1 0
+c p weight -582 1 0
+c p weight 582 -1 0
+c p weight 586 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -586 1 0
+c p weight 587 1 0
+c p weight -587 1 0
+c p weight -584 1 0
+c p weight 584 -1 0
+c p weight -588 1 0
+c p weight 588 -1 0
+c p weight -590 1 0
+c p weight 590 -1 0
+c p weight -591 1 0
+c p weight 591 -1 0
+c p weight -592 1 0
+c p weight 592 -1 0
+c p weight 596 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -596 1 0
+c p weight 597 1 0
+c p weight -597 1 0
+c p weight -594 1 0
+c p weight 594 -1 0
+c p weight -598 1 0
+c p weight 598 -1 0
+c p weight -600 1 0
+c p weight 600 -1 0
+c p weight -603 1 0
+c p weight 603 -1 0
+c p weight -604 1 0
+c p weight 604 -1 0
+c p weight 608 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -608 1 0
+c p weight 609 1 0
+c p weight -609 1 0
+c p weight -606 1 0
+c p weight 606 -1 0
+c p weight -610 1 0
+c p weight 610 -1 0
+c p weight -612 1 0
+c p weight 612 -1 0
+c p weight -615 1 0
+c p weight 615 -1 0
+c p weight -616 1 0
+c p weight 616 -1 0
+c p weight 620 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -620 1 0
+c p weight 621 1 0
+c p weight -621 1 0
+c p weight -618 1 0
+c p weight 618 -1 0
+c p weight -622 1 0
+c p weight 622 -1 0
+c p weight -624 1 0
+c p weight 624 -1 0
+c p weight -627 1 0
+c p weight 627 -1 0
+c p weight 631 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -631 1 0
+c p weight 632 1 0
+c p weight -632 1 0
+c p weight -629 1 0
+c p weight 629 -1 0
+c p weight -633 1 0
+c p weight 633 -1 0
+c p weight -635 1 0
+c p weight 635 -1 0
+c p weight -638 1 0
+c p weight 638 -1 0
+c p weight -639 1 0
+c p weight 639 -1 0
+c p weight 643 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -643 1 0
+c p weight 644 1 0
+c p weight -644 1 0
+c p weight -641 1 0
+c p weight 641 -1 0
+c p weight -645 1 0
+c p weight 645 -1 0
+c p weight -647 1 0
+c p weight 647 -1 0
+c p weight -650 1 0
+c p weight 650 -1 0
+c p weight 654 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -654 1 0
+c p weight 655 1 0
+c p weight -655 1 0
+c p weight -652 1 0
+c p weight 652 -1 0
+c p weight -656 1 0
+c p weight 656 -1 0
+c p weight -658 1 0
+c p weight 658 -1 0
+c p weight -661 1 0
+c p weight 661 -1 0
+c p weight -662 1 0
+c p weight 662 -1 0
+c p weight 666 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -666 1 0
+c p weight 667 1 0
+c p weight -667 1 0
+c p weight -664 1 0
+c p weight 664 -1 0
+c p weight -668 1 0
+c p weight 668 -1 0
+c p weight -670 1 0
+c p weight 670 -1 0
+c p weight -673 1 0
+c p weight 673 -1 0
+c p weight -674 1 0
+c p weight 674 -1 0
+c p weight 678 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -678 1 0
+c p weight 679 1 0
+c p weight -679 1 0
+c p weight -676 1 0
+c p weight 676 -1 0
+c p weight -680 1 0
+c p weight 680 -1 0
+c p weight -682 1 0
+c p weight 682 -1 0
+c p weight -685 1 0
+c p weight 685 -1 0
+c p weight 689 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -689 1 0
+c p weight 690 1 0
+c p weight -690 1 0
+c p weight -687 1 0
+c p weight 687 -1 0
+c p weight -691 1 0
+c p weight 691 -1 0
+c p weight -693 1 0
+c p weight 693 -1 0
+c p weight -696 1 0
+c p weight 696 -1 0
+c p weight -697 1 0
+c p weight 697 -1 0
+c p weight 701 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -701 1 0
+c p weight 702 1 0
+c p weight -702 1 0
+c p weight -699 1 0
+c p weight 699 -1 0
+c p weight -703 1 0
+c p weight 703 -1 0
+c p weight -705 1 0
+c p weight 705 -1 0
+c p weight -708 1 0
+c p weight 708 -1 0
+c p weight -709 1 0
+c p weight 709 -1 0
+c p weight 713 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -713 1 0
+c p weight 714 1 0
+c p weight -714 1 0
+c p weight -711 1 0
+c p weight 711 -1 0
+c p weight -715 1 0
+c p weight 715 -1 0
+c p weight -717 1 0
+c p weight 717 -1 0
+c p weight -720 1 0
+c p weight 720 -1 0
+c p weight 724 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -724 1 0
+c p weight 725 1 0
+c p weight -725 1 0
+c p weight -722 1 0
+c p weight 722 -1 0
+c p weight -726 1 0
+c p weight 726 -1 0
+c p weight -728 1 0
+c p weight 728 -1 0
+c p weight -731 1 0
+c p weight 731 -1 0
+c p weight -732 1 0
+c p weight 732 -1 0
+c p weight 736 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -736 1 0
+c p weight 737 1 0
+c p weight -737 1 0
+c p weight -734 1 0
+c p weight 734 -1 0
+c p weight -738 1 0
+c p weight 738 -1 0
+c p weight -740 1 0
+c p weight 740 -1 0
+c p weight -743 1 0
+c p weight 743 -1 0
+c p weight -744 1 0
+c p weight 744 -1 0
+c p weight 748 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -748 1 0
+c p weight 749 1 0
+c p weight -749 1 0
+c p weight -746 1 0
+c p weight 746 -1 0
+c p weight -750 1 0
+c p weight 750 -1 0
+c p weight -752 1 0
+c p weight 752 -1 0
+c p weight -755 1 0
+c p weight 755 -1 0
+c p weight 759 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -759 1 0
+c p weight 760 1 0
+c p weight -760 1 0
+c p weight -757 1 0
+c p weight 757 -1 0
+c p weight -761 1 0
+c p weight 761 -1 0
+c p weight -763 1 0
+c p weight 763 -1 0
+c p weight -766 1 0
+c p weight 766 -1 0
+c p weight 770 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -770 1 0
+c p weight 771 1 0
+c p weight -771 1 0
+c p weight -768 1 0
+c p weight 768 -1 0
+c p weight -772 1 0
+c p weight 772 -1 0
+c p weight -774 1 0
+c p weight 774 -1 0
+c p weight -777 1 0
+c p weight 777 -1 0
+c p weight -778 1 0
+c p weight 778 -1 0
+c p weight 782 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -782 1 0
+c p weight 783 1 0
+c p weight -783 1 0
+c p weight -780 1 0
+c p weight 780 -1 0
+c p weight -784 1 0
+c p weight 784 -1 0
+c p weight -786 1 0
+c p weight 786 -1 0
+c p weight -789 1 0
+c p weight 789 -1 0
+c p weight 793 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -793 1 0
+c p weight 794 1 0
+c p weight -794 1 0
+c p weight -791 1 0
+c p weight 791 -1 0
+c p weight -795 1 0
+c p weight 795 -1 0
+c p weight -797 1 0
+c p weight 797 -1 0
+c p weight -800 1 0
+c p weight 800 -1 0
+c p weight 804 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -804 1 0
+c p weight 805 1 0
+c p weight -805 1 0
+c p weight -802 1 0
+c p weight 802 -1 0
+c p weight -806 1 0
+c p weight 806 -1 0
+c p weight -808 1 0
+c p weight 808 -1 0
+c p weight -811 1 0
+c p weight 811 -1 0
+c p weight 815 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -815 1 0
+c p weight 816 1 0
+c p weight -816 1 0
+c p weight -813 1 0
+c p weight 813 -1 0
+c p weight -817 1 0
+c p weight 817 -1 0
+c p weight -819 1 0
+c p weight 819 -1 0
+c p weight -822 1 0
+c p weight 822 -1 0
+c p weight 826 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -826 1 0
+c p weight 827 1 0
+c p weight -827 1 0
+c p weight -824 1 0
+c p weight 824 -1 0
+c p weight -828 1 0
+c p weight 828 -1 0
+c p weight -830 1 0
+c p weight 830 -1 0
+c p weight -833 1 0
+c p weight 833 -1 0
+c p weight 837 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -837 1 0
+c p weight 838 1 0
+c p weight -838 1 0
+c p weight -835 1 0
+c p weight 835 -1 0
+c p weight -839 1 0
+c p weight 839 -1 0
+c p weight -841 1 0
+c p weight 841 -1 0
+c p weight -844 1 0
+c p weight 844 -1 0
+c p weight -845 1 0
+c p weight 845 -1 0
+c p weight 849 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -849 1 0
+c p weight 850 1 0
+c p weight -850 1 0
+c p weight -847 1 0
+c p weight 847 -1 0
+c p weight -851 1 0
+c p weight 851 -1 0
+c p weight -853 1 0
+c p weight 853 -1 0
+c p weight -856 1 0
+c p weight 856 -1 0
+c p weight 860 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -860 1 0
+c p weight 861 1 0
+c p weight -861 1 0
+c p weight -858 1 0
+c p weight 858 -1 0
+c p weight -862 1 0
+c p weight 862 -1 0
+c p weight -864 1 0
+c p weight 864 -1 0
+c p weight -867 1 0
+c p weight 867 -1 0
+c p weight 871 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -871 1 0
+c p weight 872 1 0
+c p weight -872 1 0
+c p weight -869 1 0
+c p weight 869 -1 0
+c p weight -873 1 0
+c p weight 873 -1 0
+c p weight -875 1 0
+c p weight 875 -1 0
+c p weight -878 1 0
+c p weight 878 -1 0
+c p weight -879 1 0
+c p weight 879 -1 0
+c p weight 883 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -883 1 0
+c p weight 884 1 0
+c p weight -884 1 0
+c p weight -881 1 0
+c p weight 881 -1 0
+c p weight -885 1 0
+c p weight 885 -1 0
+c p weight -887 1 0
+c p weight 887 -1 0
+c p weight -890 1 0
+c p weight 890 -1 0
+c p weight -891 1 0
+c p weight 891 -1 0
+c p weight 895 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -895 1 0
+c p weight 896 1 0
+c p weight -896 1 0
+c p weight -893 1 0
+c p weight 893 -1 0
+c p weight -897 1 0
+c p weight 897 -1 0
+c p weight -899 1 0
+c p weight 899 -1 0
+c p weight -902 1 0
+c p weight 902 -1 0
+c p weight 906 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -906 1 0
+c p weight 907 1 0
+c p weight -907 1 0
+c p weight -904 1 0
+c p weight 904 -1 0
+c p weight -908 1 0
+c p weight 908 -1 0
+c p weight -910 1 0
+c p weight 910 -1 0
+c p weight -913 1 0
+c p weight 913 -1 0
+c p weight 917 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -917 1 0
+c p weight 918 1 0
+c p weight -918 1 0
+c p weight -915 1 0
+c p weight 915 -1 0
+c p weight -919 1 0
+c p weight 919 -1 0
+c p weight -921 1 0
+c p weight 921 -1 0
+c p weight -924 1 0
+c p weight 924 -1 0
+c p weight -925 1 0
+c p weight 925 -1 0
+c p weight 929 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -929 1 0
+c p weight 930 1 0
+c p weight -930 1 0
+c p weight -927 1 0
+c p weight 927 -1 0
+c p weight -931 1 0
+c p weight 931 -1 0
+c p weight -933 1 0
+c p weight 933 -1 0
+c p weight -936 1 0
+c p weight 936 -1 0
+c p weight 940 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -940 1 0
+c p weight 941 1 0
+c p weight -941 1 0
+c p weight -938 1 0
+c p weight 938 -1 0
+c p weight -942 1 0
+c p weight 942 -1 0
+c p weight -944 1 0
+c p weight 944 -1 0
+c p weight -947 1 0
+c p weight 947 -1 0
+c p weight 951 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -951 1 0
+c p weight 952 1 0
+c p weight -952 1 0
+c p weight -949 1 0
+c p weight 949 -1 0
+c p weight -953 1 0
+c p weight 953 -1 0
+c p weight -955 1 0
+c p weight 955 -1 0
+c p weight -958 1 0
+c p weight 958 -1 0
+c p weight -959 1 0
+c p weight 959 -1 0
+c p weight 963 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -963 1 0
+c p weight 964 1 0
+c p weight -964 1 0
+c p weight -961 1 0
+c p weight 961 -1 0
+c p weight -965 1 0
+c p weight 965 -1 0
+c p weight -967 1 0
+c p weight 967 -1 0
+c p weight -970 1 0
+c p weight 970 -1 0
+c p weight 974 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -974 1 0
+c p weight 975 1 0
+c p weight -975 1 0
+c p weight -972 1 0
+c p weight 972 -1 0
+c p weight -976 1 0
+c p weight 976 -1 0
+c p weight -978 1 0
+c p weight 978 -1 0
+c p weight -981 1 0
+c p weight 981 -1 0
+c p weight 985 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -985 1 0
+c p weight 986 1 0
+c p weight -986 1 0
+c p weight -983 1 0
+c p weight 983 -1 0
+c p weight -987 1 0
+c p weight 987 -1 0
+c p weight -989 1 0
+c p weight 989 -1 0
+c p weight -992 1 0
+c p weight 992 -1 0
+c p weight 996 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -996 1 0
+c p weight 997 1 0
+c p weight -997 1 0
+c p weight -994 1 0
+c p weight 994 -1 0
+c p weight -998 1 0
+c p weight 998 -1 0
+c p weight -1000 1 0
+c p weight 1000 -1 0
+c p weight -1003 1 0
+c p weight 1003 -1 0
+c p weight -1004 1 0
+c p weight 1004 -1 0
+c p weight 1008 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1008 1 0
+c p weight 1009 1 0
+c p weight -1009 1 0
+c p weight -1006 1 0
+c p weight 1006 -1 0
+c p weight -1010 1 0
+c p weight 1010 -1 0
+c p weight -1012 1 0
+c p weight 1012 -1 0
+c p weight -1015 1 0
+c p weight 1015 -1 0
+c p weight -1016 1 0
+c p weight 1016 -1 0
+c p weight 1020 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1020 1 0
+c p weight 1021 1 0
+c p weight -1021 1 0
+c p weight -1018 1 0
+c p weight 1018 -1 0
+c p weight -1022 1 0
+c p weight 1022 -1 0
+c p weight -1024 1 0
+c p weight 1024 -1 0
+c p weight -1027 1 0
+c p weight 1027 -1 0
+c p weight 1031 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1031 1 0
+c p weight 1032 1 0
+c p weight -1032 1 0
+c p weight -1029 1 0
+c p weight 1029 -1 0
+c p weight -1033 1 0
+c p weight 1033 -1 0
+c p weight -1035 1 0
+c p weight 1035 -1 0
+c p weight -1038 1 0
+c p weight 1038 -1 0
+c p weight -1039 1 0
+c p weight 1039 -1 0
+c p weight 1043 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1043 1 0
+c p weight 1044 1 0
+c p weight -1044 1 0
+c p weight -1041 1 0
+c p weight 1041 -1 0
+c p weight -1045 1 0
+c p weight 1045 -1 0
+c p weight -1047 1 0
+c p weight 1047 -1 0
+c p weight -1050 1 0
+c p weight 1050 -1 0
+c p weight -1051 1 0
+c p weight 1051 -1 0
+c p weight 1055 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1055 1 0
+c p weight 1056 1 0
+c p weight -1056 1 0
+c p weight -1053 1 0
+c p weight 1053 -1 0
+c p weight -1057 1 0
+c p weight 1057 -1 0
+c p weight -1059 1 0
+c p weight 1059 -1 0
+c p weight -1062 1 0
+c p weight 1062 -1 0
+c p weight -1063 1 0
+c p weight 1063 -1 0
+c p weight 1067 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1067 1 0
+c p weight 1068 1 0
+c p weight -1068 1 0
+c p weight -1065 1 0
+c p weight 1065 -1 0
+c p weight -1069 1 0
+c p weight 1069 -1 0
+c p weight -1071 1 0
+c p weight 1071 -1 0
+c p weight -1074 1 0
+c p weight 1074 -1 0
+c p weight -1075 1 0
+c p weight 1075 -1 0
+c p weight 1079 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1079 1 0
+c p weight 1080 1 0
+c p weight -1080 1 0
+c p weight -1077 1 0
+c p weight 1077 -1 0
+c p weight -1081 1 0
+c p weight 1081 -1 0
+c p weight -1083 1 0
+c p weight 1083 -1 0
+c p weight -1086 1 0
+c p weight 1086 -1 0
+c p weight -1087 1 0
+c p weight 1087 -1 0
+c p weight 1091 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1091 1 0
+c p weight 1092 1 0
+c p weight -1092 1 0
+c p weight -1089 1 0
+c p weight 1089 -1 0
+c p weight -1093 1 0
+c p weight 1093 -1 0
+c p weight -1095 1 0
+c p weight 1095 -1 0
+c p weight -1098 1 0
+c p weight 1098 -1 0
+c p weight 1102 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1102 1 0
+c p weight 1103 1 0
+c p weight -1103 1 0
+c p weight -1100 1 0
+c p weight 1100 -1 0
+c p weight -1104 1 0
+c p weight 1104 -1 0
+c p weight -1106 1 0
+c p weight 1106 -1 0
+c p weight -1109 1 0
+c p weight 1109 -1 0
+c p weight -1110 1 0
+c p weight 1110 -1 0
+c p weight 1114 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1114 1 0
+c p weight 1115 1 0
+c p weight -1115 1 0
+c p weight -1112 1 0
+c p weight 1112 -1 0
+c p weight -1116 1 0
+c p weight 1116 -1 0
+c p weight -1118 1 0
+c p weight 1118 -1 0
+c p weight -1121 1 0
+c p weight 1121 -1 0
+c p weight 1125 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1125 1 0
+c p weight 1126 1 0
+c p weight -1126 1 0
+c p weight -1123 1 0
+c p weight 1123 -1 0
+c p weight -1127 1 0
+c p weight 1127 -1 0
+c p weight -1129 1 0
+c p weight 1129 -1 0
+c p weight -1132 1 0
+c p weight 1132 -1 0
+c p weight 1136 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1136 1 0
+c p weight 1137 1 0
+c p weight -1137 1 0
+c p weight -1134 1 0
+c p weight 1134 -1 0
+c p weight -1138 1 0
+c p weight 1138 -1 0
+c p weight -1140 1 0
+c p weight 1140 -1 0
+c p weight -1143 1 0
+c p weight 1143 -1 0
+c p weight 1147 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1147 1 0
+c p weight 1148 1 0
+c p weight -1148 1 0
+c p weight -1145 1 0
+c p weight 1145 -1 0
+c p weight -1149 1 0
+c p weight 1149 -1 0
+c p weight -1151 1 0
+c p weight 1151 -1 0
+c p weight -1154 1 0
+c p weight 1154 -1 0
+c p weight 1158 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1158 1 0
+c p weight 1159 1 0
+c p weight -1159 1 0
+c p weight -1156 1 0
+c p weight 1156 -1 0
+c p weight -1160 1 0
+c p weight 1160 -1 0
+c p weight -1162 1 0
+c p weight 1162 -1 0
+c p weight -1165 1 0
+c p weight 1165 -1 0
+c p weight -1166 1 0
+c p weight 1166 -1 0
+c p weight 1170 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1170 1 0
+c p weight 1171 1 0
+c p weight -1171 1 0
+c p weight -1168 1 0
+c p weight 1168 -1 0
+c p weight -1172 1 0
+c p weight 1172 -1 0
+c p weight -1174 1 0
+c p weight 1174 -1 0
+c p weight -1177 1 0
+c p weight 1177 -1 0
+c p weight 1181 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1181 1 0
+c p weight 1182 1 0
+c p weight -1182 1 0
+c p weight -1179 1 0
+c p weight 1179 -1 0
+c p weight -1183 1 0
+c p weight 1183 -1 0
+c p weight -1185 1 0
+c p weight 1185 -1 0
+c p weight -1188 1 0
+c p weight 1188 -1 0
+c p weight -1189 1 0
+c p weight 1189 -1 0
+c p weight 1193 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1193 1 0
+c p weight 1194 1 0
+c p weight -1194 1 0
+c p weight -1191 1 0
+c p weight 1191 -1 0
+c p weight -1195 1 0
+c p weight 1195 -1 0
+c p weight -1197 1 0
+c p weight 1197 -1 0
+c p weight -1200 1 0
+c p weight 1200 -1 0
+c p weight -1201 1 0
+c p weight 1201 -1 0
+c p weight 1205 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1205 1 0
+c p weight 1206 1 0
+c p weight -1206 1 0
+c p weight -1203 1 0
+c p weight 1203 -1 0
+c p weight -1207 1 0
+c p weight 1207 -1 0
+c p weight -1209 1 0
+c p weight 1209 -1 0
+c p weight -1212 1 0
+c p weight 1212 -1 0
+c p weight -1213 1 0
+c p weight 1213 -1 0
+c p weight 1217 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1217 1 0
+c p weight 1218 1 0
+c p weight -1218 1 0
+c p weight -1215 1 0
+c p weight 1215 -1 0
+c p weight -1219 1 0
+c p weight 1219 -1 0
+c p weight -1221 1 0
+c p weight 1221 -1 0
+c p weight -1224 1 0
+c p weight 1224 -1 0
+c p weight 1228 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1228 1 0
+c p weight 1229 1 0
+c p weight -1229 1 0
+c p weight -1226 1 0
+c p weight 1226 -1 0
+c p weight -1230 1 0
+c p weight 1230 -1 0
+c p weight -1232 1 0
+c p weight 1232 -1 0
+c p weight -1235 1 0
+c p weight 1235 -1 0
+c p weight -1236 1 0
+c p weight 1236 -1 0
+c p weight 1240 6.12323399573676603586882014729198302312846062338790031898128063403419218957424163818359375E-17 0
+c p weight -1240 1 0
+c p weight 1241 1 0
+c p weight -1241 1 0
+c p weight -1238 1 0
+c p weight 1238 -1 0
+c p weight -1242 1 0
+c p weight 1242 -1 0
+c p weight 1244 0.5 0
+c p weight -1244 1 0
+1244 0
+-113 0
+-111 0
+-109 0
+-107 0
+-105 0
+-103 0
+-101 0
+-99 0
+-97 0
+-95 0
+-93 0
+-91 0
+-89 0
+-87 0
+-85 0
+-83 0
+-81 0
+-79 0
+-77 0
+-75 0
+-73 0
+-71 0
+-69 0
+-67 0
+-65 0
+-63 0
+-61 0
+-59 0
+-57 0
+-55 0
+-53 0
+-51 0
+-49 0
+-47 0
+-45 0
+-43 0
+-41 0
+-39 0
+-37 0
+-35 0
+-33 0
+-31 0
+-29 0
+-27 0
+-25 0
+-23 0
+-21 0
+-19 0
+-17 0
+-15 0
+-13 0
+-11 0
+-9 0
+-7 0
+-5 0
+-3 0
+-1 0
+-115 1 0
+-115 2 0
+115 -1 -2 0
+116 1 -2 0
+116 -1 2 0
+-116 1 2 0
+-116 -1 -2 0
+-117 118 0
+-117 116 0
+-117 -1 0
+117 -118 1 -116 0
+118 -1 116 0
+-118 1 116 0
+-119 116 0
+118 -119 -1 0
+-118 -119 1 0
+118 119 1 -116 0
+-118 119 -1 -116 0
+-120 116 0
+118 -120 1 0
+-118 -120 -1 0
+118 120 -1 -116 0
+-118 120 1 -116 0
+-121 118 0
+-121 116 0
+121 -118 -116 0
+122 118 -116 0
+122 -118 116 0
+-122 118 116 0
+-122 -118 -116 0
+123 -122 0
+-123 122 0
+-124 3 0
+-124 4 0
+124 -3 -4 0
+125 3 -4 0
+125 -3 4 0
+-125 3 4 0
+-125 -3 -4 0
+-126 127 0
+-126 125 0
+-126 -3 0
+126 -127 3 -125 0
+127 -3 125 0
+-127 3 125 0
+-128 125 0
+127 -128 -3 0
+-127 -128 3 0
+127 128 3 -125 0
+-127 128 -3 -125 0
+-129 125 0
+127 -129 3 0
+-127 -129 -3 0
+127 129 -3 -125 0
+-127 129 3 -125 0
+-130 127 0
+-130 125 0
+130 -127 -125 0
+131 127 -125 0
+131 -127 125 0
+-131 127 125 0
+-131 -127 -125 0
+132 -131 0
+-132 131 0
+-133 5 0
+-133 6 0
+133 -5 -6 0
+134 5 -6 0
+134 -5 6 0
+-134 5 6 0
+-134 -5 -6 0
+-135 136 0
+-135 134 0
+-135 -5 0
+135 -136 5 -134 0
+136 -5 134 0
+-136 5 134 0
+-137 134 0
+136 -137 -5 0
+-136 -137 5 0
+136 137 5 -134 0
+-136 137 -5 -134 0
+-138 134 0
+136 -138 5 0
+-136 -138 -5 0
+136 138 -5 -134 0
+-136 138 5 -134 0
+-139 136 0
+-139 134 0
+139 -136 -134 0
+140 136 -134 0
+140 -136 134 0
+-140 136 134 0
+-140 -136 -134 0
+-141 7 0
+-141 8 0
+141 -7 -8 0
+142 7 -8 0
+142 -7 8 0
+-142 7 8 0
+-142 -7 -8 0
+-143 144 0
+-143 142 0
+-143 -7 0
+143 -144 7 -142 0
+144 -7 142 0
+-144 7 142 0
+-145 142 0
+144 -145 -7 0
+-144 -145 7 0
+144 145 7 -142 0
+-144 145 -7 -142 0
+-146 142 0
+144 -146 7 0
+-144 -146 -7 0
+144 146 -7 -142 0
+-144 146 7 -142 0
+-147 144 0
+-147 142 0
+147 -144 -142 0
+148 144 -142 0
+148 -144 142 0
+-148 144 142 0
+-148 -144 -142 0
+149 -148 0
+-149 148 0
+-150 9 0
+-150 10 0
+150 -9 -10 0
+151 9 -10 0
+151 -9 10 0
+-151 9 10 0
+-151 -9 -10 0
+-152 153 0
+-152 151 0
+-152 -9 0
+152 -153 9 -151 0
+153 -9 151 0
+-153 9 151 0
+-154 151 0
+153 -154 -9 0
+-153 -154 9 0
+153 154 9 -151 0
+-153 154 -9 -151 0
+-155 151 0
+153 -155 9 0
+-153 -155 -9 0
+153 155 -9 -151 0
+-153 155 9 -151 0
+-156 153 0
+-156 151 0
+156 -153 -151 0
+157 153 -151 0
+157 -153 151 0
+-157 153 151 0
+-157 -153 -151 0
+-158 11 0
+-158 12 0
+158 -11 -12 0
+159 11 -12 0
+159 -11 12 0
+-159 11 12 0
+-159 -11 -12 0
+-160 161 0
+-160 159 0
+-160 -11 0
+160 -161 11 -159 0
+161 -11 159 0
+-161 11 159 0
+-162 159 0
+161 -162 -11 0
+-161 -162 11 0
+161 162 11 -159 0
+-161 162 -11 -159 0
+-163 159 0
+161 -163 11 0
+-161 -163 -11 0
+161 163 -11 -159 0
+-161 163 11 -159 0
+-164 161 0
+-164 159 0
+164 -161 -159 0
+165 161 -159 0
+165 -161 159 0
+-165 161 159 0
+-165 -161 -159 0
+166 -165 0
+-166 165 0
+-167 13 0
+-167 14 0
+167 -13 -14 0
+168 13 -14 0
+168 -13 14 0
+-168 13 14 0
+-168 -13 -14 0
+-169 170 0
+-169 168 0
+-169 -13 0
+169 -170 13 -168 0
+170 -13 168 0
+-170 13 168 0
+-171 168 0
+170 -171 -13 0
+-170 -171 13 0
+170 171 13 -168 0
+-170 171 -13 -168 0
+-172 168 0
+170 -172 13 0
+-170 -172 -13 0
+170 172 -13 -168 0
+-170 172 13 -168 0
+-173 170 0
+-173 168 0
+173 -170 -168 0
+174 170 -168 0
+174 -170 168 0
+-174 170 168 0
+-174 -170 -168 0
+175 -174 0
+-175 174 0
+-176 15 0
+-176 16 0
+176 -15 -16 0
+177 15 -16 0
+177 -15 16 0
+-177 15 16 0
+-177 -15 -16 0
+-178 179 0
+-178 177 0
+-178 -15 0
+178 -179 15 -177 0
+179 -15 177 0
+-179 15 177 0
+-180 177 0
+179 -180 -15 0
+-179 -180 15 0
+179 180 15 -177 0
+-179 180 -15 -177 0
+-181 177 0
+179 -181 15 0
+-179 -181 -15 0
+179 181 -15 -177 0
+-179 181 15 -177 0
+-182 179 0
+-182 177 0
+182 -179 -177 0
+183 179 -177 0
+183 -179 177 0
+-183 179 177 0
+-183 -179 -177 0
+-184 17 0
+-184 18 0
+184 -17 -18 0
+185 17 -18 0
+185 -17 18 0
+-185 17 18 0
+-185 -17 -18 0
+-186 187 0
+-186 185 0
+-186 -17 0
+186 -187 17 -185 0
+187 -17 185 0
+-187 17 185 0
+-188 185 0
+187 -188 -17 0
+-187 -188 17 0
+187 188 17 -185 0
+-187 188 -17 -185 0
+-189 185 0
+187 -189 17 0
+-187 -189 -17 0
+187 189 -17 -185 0
+-187 189 17 -185 0
+-190 187 0
+-190 185 0
+190 -187 -185 0
+191 187 -185 0
+191 -187 185 0
+-191 187 185 0
+-191 -187 -185 0
+192 -191 0
+-192 191 0
+-193 19 0
+-193 20 0
+193 -19 -20 0
+194 19 -20 0
+194 -19 20 0
+-194 19 20 0
+-194 -19 -20 0
+-195 196 0
+-195 194 0
+-195 -19 0
+195 -196 19 -194 0
+196 -19 194 0
+-196 19 194 0
+-197 194 0
+196 -197 -19 0
+-196 -197 19 0
+196 197 19 -194 0
+-196 197 -19 -194 0
+-198 194 0
+196 -198 19 0
+-196 -198 -19 0
+196 198 -19 -194 0
+-196 198 19 -194 0
+-199 196 0
+-199 194 0
+199 -196 -194 0
+200 196 -194 0
+200 -196 194 0
+-200 196 194 0
+-200 -196 -194 0
+201 -200 0
+-201 200 0
+-202 21 0
+-202 22 0
+202 -21 -22 0
+203 21 -22 0
+203 -21 22 0
+-203 21 22 0
+-203 -21 -22 0
+-204 205 0
+-204 203 0
+-204 -21 0
+204 -205 21 -203 0
+205 -21 203 0
+-205 21 203 0
+-206 203 0
+205 -206 -21 0
+-205 -206 21 0
+205 206 21 -203 0
+-205 206 -21 -203 0
+-207 203 0
+205 -207 21 0
+-205 -207 -21 0
+205 207 -21 -203 0
+-205 207 21 -203 0
+-208 205 0
+-208 203 0
+208 -205 -203 0
+209 205 -203 0
+209 -205 203 0
+-209 205 203 0
+-209 -205 -203 0
+-210 23 0
+-210 24 0
+210 -23 -24 0
+211 23 -24 0
+211 -23 24 0
+-211 23 24 0
+-211 -23 -24 0
+-212 213 0
+-212 211 0
+-212 -23 0
+212 -213 23 -211 0
+213 -23 211 0
+-213 23 211 0
+-214 211 0
+213 -214 -23 0
+-213 -214 23 0
+213 214 23 -211 0
+-213 214 -23 -211 0
+-215 211 0
+213 -215 23 0
+-213 -215 -23 0
+213 215 -23 -211 0
+-213 215 23 -211 0
+-216 213 0
+-216 211 0
+216 -213 -211 0
+217 213 -211 0
+217 -213 211 0
+-217 213 211 0
+-217 -213 -211 0
+218 -217 0
+-218 217 0
+-219 25 0
+-219 26 0
+219 -25 -26 0
+220 25 -26 0
+220 -25 26 0
+-220 25 26 0
+-220 -25 -26 0
+-221 222 0
+-221 220 0
+-221 -25 0
+221 -222 25 -220 0
+222 -25 220 0
+-222 25 220 0
+-223 220 0
+222 -223 -25 0
+-222 -223 25 0
+222 223 25 -220 0
+-222 223 -25 -220 0
+-224 220 0
+222 -224 25 0
+-222 -224 -25 0
+222 224 -25 -220 0
+-222 224 25 -220 0
+-225 222 0
+-225 220 0
+225 -222 -220 0
+226 222 -220 0
+226 -222 220 0
+-226 222 220 0
+-226 -222 -220 0
+227 -226 0
+-227 226 0
+-228 27 0
+-228 28 0
+228 -27 -28 0
+229 27 -28 0
+229 -27 28 0
+-229 27 28 0
+-229 -27 -28 0
+-230 231 0
+-230 229 0
+-230 -27 0
+230 -231 27 -229 0
+231 -27 229 0
+-231 27 229 0
+-232 229 0
+231 -232 -27 0
+-231 -232 27 0
+231 232 27 -229 0
+-231 232 -27 -229 0
+-233 229 0
+231 -233 27 0
+-231 -233 -27 0
+231 233 -27 -229 0
+-231 233 27 -229 0
+-234 231 0
+-234 229 0
+234 -231 -229 0
+235 231 -229 0
+235 -231 229 0
+-235 231 229 0
+-235 -231 -229 0
+-236 29 0
+-236 30 0
+236 -29 -30 0
+237 29 -30 0
+237 -29 30 0
+-237 29 30 0
+-237 -29 -30 0
+-238 239 0
+-238 237 0
+-238 -29 0
+238 -239 29 -237 0
+239 -29 237 0
+-239 29 237 0
+-240 237 0
+239 -240 -29 0
+-239 -240 29 0
+239 240 29 -237 0
+-239 240 -29 -237 0
+-241 237 0
+239 -241 29 0
+-239 -241 -29 0
+239 241 -29 -237 0
+-239 241 29 -237 0
+-242 239 0
+-242 237 0
+242 -239 -237 0
+243 239 -237 0
+243 -239 237 0
+-243 239 237 0
+-243 -239 -237 0
+-244 31 0
+-244 32 0
+244 -31 -32 0
+245 31 -32 0
+245 -31 32 0
+-245 31 32 0
+-245 -31 -32 0
+-246 247 0
+-246 245 0
+-246 -31 0
+246 -247 31 -245 0
+247 -31 245 0
+-247 31 245 0
+-248 245 0
+247 -248 -31 0
+-247 -248 31 0
+247 248 31 -245 0
+-247 248 -31 -245 0
+-249 245 0
+247 -249 31 0
+-247 -249 -31 0
+247 249 -31 -245 0
+-247 249 31 -245 0
+-250 247 0
+-250 245 0
+250 -247 -245 0
+251 247 -245 0
+251 -247 245 0
+-251 247 245 0
+-251 -247 -245 0
+252 -251 0
+-252 251 0
+-253 33 0
+-253 34 0
+253 -33 -34 0
+254 33 -34 0
+254 -33 34 0
+-254 33 34 0
+-254 -33 -34 0
+-255 256 0
+-255 254 0
+-255 -33 0
+255 -256 33 -254 0
+256 -33 254 0
+-256 33 254 0
+-257 254 0
+256 -257 -33 0
+-256 -257 33 0
+256 257 33 -254 0
+-256 257 -33 -254 0
+-258 254 0
+256 -258 33 0
+-256 -258 -33 0
+256 258 -33 -254 0
+-256 258 33 -254 0
+-259 256 0
+-259 254 0
+259 -256 -254 0
+260 256 -254 0
+260 -256 254 0
+-260 256 254 0
+-260 -256 -254 0
+-261 35 0
+-261 36 0
+261 -35 -36 0
+262 35 -36 0
+262 -35 36 0
+-262 35 36 0
+-262 -35 -36 0
+-263 264 0
+-263 262 0
+-263 -35 0
+263 -264 35 -262 0
+264 -35 262 0
+-264 35 262 0
+-265 262 0
+264 -265 -35 0
+-264 -265 35 0
+264 265 35 -262 0
+-264 265 -35 -262 0
+-266 262 0
+264 -266 35 0
+-264 -266 -35 0
+264 266 -35 -262 0
+-264 266 35 -262 0
+-267 264 0
+-267 262 0
+267 -264 -262 0
+268 264 -262 0
+268 -264 262 0
+-268 264 262 0
+-268 -264 -262 0
+-269 37 0
+-269 38 0
+269 -37 -38 0
+270 37 -38 0
+270 -37 38 0
+-270 37 38 0
+-270 -37 -38 0
+-271 272 0
+-271 270 0
+-271 -37 0
+271 -272 37 -270 0
+272 -37 270 0
+-272 37 270 0
+-273 270 0
+272 -273 -37 0
+-272 -273 37 0
+272 273 37 -270 0
+-272 273 -37 -270 0
+-274 270 0
+272 -274 37 0
+-272 -274 -37 0
+272 274 -37 -270 0
+-272 274 37 -270 0
+-275 272 0
+-275 270 0
+275 -272 -270 0
+276 272 -270 0
+276 -272 270 0
+-276 272 270 0
+-276 -272 -270 0
+-277 39 0
+-277 40 0
+277 -39 -40 0
+278 39 -40 0
+278 -39 40 0
+-278 39 40 0
+-278 -39 -40 0
+-279 280 0
+-279 278 0
+-279 -39 0
+279 -280 39 -278 0
+280 -39 278 0
+-280 39 278 0
+-281 278 0
+280 -281 -39 0
+-280 -281 39 0
+280 281 39 -278 0
+-280 281 -39 -278 0
+-282 278 0
+280 -282 39 0
+-280 -282 -39 0
+280 282 -39 -278 0
+-280 282 39 -278 0
+-283 280 0
+-283 278 0
+283 -280 -278 0
+284 280 -278 0
+284 -280 278 0
+-284 280 278 0
+-284 -280 -278 0
+-285 41 0
+-285 42 0
+285 -41 -42 0
+286 41 -42 0
+286 -41 42 0
+-286 41 42 0
+-286 -41 -42 0
+-287 288 0
+-287 286 0
+-287 -41 0
+287 -288 41 -286 0
+288 -41 286 0
+-288 41 286 0
+-289 286 0
+288 -289 -41 0
+-288 -289 41 0
+288 289 41 -286 0
+-288 289 -41 -286 0
+-290 286 0
+288 -290 41 0
+-288 -290 -41 0
+288 290 -41 -286 0
+-288 290 41 -286 0
+-291 288 0
+-291 286 0
+291 -288 -286 0
+292 288 -286 0
+292 -288 286 0
+-292 288 286 0
+-292 -288 -286 0
+-293 43 0
+-293 44 0
+293 -43 -44 0
+294 43 -44 0
+294 -43 44 0
+-294 43 44 0
+-294 -43 -44 0
+-295 296 0
+-295 294 0
+-295 -43 0
+295 -296 43 -294 0
+296 -43 294 0
+-296 43 294 0
+-297 294 0
+296 -297 -43 0
+-296 -297 43 0
+296 297 43 -294 0
+-296 297 -43 -294 0
+-298 294 0
+296 -298 43 0
+-296 -298 -43 0
+296 298 -43 -294 0
+-296 298 43 -294 0
+-299 296 0
+-299 294 0
+299 -296 -294 0
+300 296 -294 0
+300 -296 294 0
+-300 296 294 0
+-300 -296 -294 0
+301 -300 0
+-301 300 0
+-302 45 0
+-302 46 0
+302 -45 -46 0
+303 45 -46 0
+303 -45 46 0
+-303 45 46 0
+-303 -45 -46 0
+-304 305 0
+-304 303 0
+-304 -45 0
+304 -305 45 -303 0
+305 -45 303 0
+-305 45 303 0
+-306 303 0
+305 -306 -45 0
+-305 -306 45 0
+305 306 45 -303 0
+-305 306 -45 -303 0
+-307 303 0
+305 -307 45 0
+-305 -307 -45 0
+305 307 -45 -303 0
+-305 307 45 -303 0
+-308 305 0
+-308 303 0
+308 -305 -303 0
+309 305 -303 0
+309 -305 303 0
+-309 305 303 0
+-309 -305 -303 0
+-310 47 0
+-310 48 0
+310 -47 -48 0
+311 47 -48 0
+311 -47 48 0
+-311 47 48 0
+-311 -47 -48 0
+-312 313 0
+-312 311 0
+-312 -47 0
+312 -313 47 -311 0
+313 -47 311 0
+-313 47 311 0
+-314 311 0
+313 -314 -47 0
+-313 -314 47 0
+313 314 47 -311 0
+-313 314 -47 -311 0
+-315 311 0
+313 -315 47 0
+-313 -315 -47 0
+313 315 -47 -311 0
+-313 315 47 -311 0
+-316 313 0
+-316 311 0
+316 -313 -311 0
+317 313 -311 0
+317 -313 311 0
+-317 313 311 0
+-317 -313 -311 0
+-318 49 0
+-318 50 0
+318 -49 -50 0
+319 49 -50 0
+319 -49 50 0
+-319 49 50 0
+-319 -49 -50 0
+-320 321 0
+-320 319 0
+-320 -49 0
+320 -321 49 -319 0
+321 -49 319 0
+-321 49 319 0
+-322 319 0
+321 -322 -49 0
+-321 -322 49 0
+321 322 49 -319 0
+-321 322 -49 -319 0
+-323 319 0
+321 -323 49 0
+-321 -323 -49 0
+321 323 -49 -319 0
+-321 323 49 -319 0
+-324 321 0
+-324 319 0
+324 -321 -319 0
+325 321 -319 0
+325 -321 319 0
+-325 321 319 0
+-325 -321 -319 0
+326 -325 0
+-326 325 0
+-327 51 0
+-327 52 0
+327 -51 -52 0
+328 51 -52 0
+328 -51 52 0
+-328 51 52 0
+-328 -51 -52 0
+-329 330 0
+-329 328 0
+-329 -51 0
+329 -330 51 -328 0
+330 -51 328 0
+-330 51 328 0
+-331 328 0
+330 -331 -51 0
+-330 -331 51 0
+330 331 51 -328 0
+-330 331 -51 -328 0
+-332 328 0
+330 -332 51 0
+-330 -332 -51 0
+330 332 -51 -328 0
+-330 332 51 -328 0
+-333 330 0
+-333 328 0
+333 -330 -328 0
+334 330 -328 0
+334 -330 328 0
+-334 330 328 0
+-334 -330 -328 0
+335 -334 0
+-335 334 0
+-336 53 0
+-336 54 0
+336 -53 -54 0
+337 53 -54 0
+337 -53 54 0
+-337 53 54 0
+-337 -53 -54 0
+-338 339 0
+-338 337 0
+-338 -53 0
+338 -339 53 -337 0
+339 -53 337 0
+-339 53 337 0
+-340 337 0
+339 -340 -53 0
+-339 -340 53 0
+339 340 53 -337 0
+-339 340 -53 -337 0
+-341 337 0
+339 -341 53 0
+-339 -341 -53 0
+339 341 -53 -337 0
+-339 341 53 -337 0
+-342 339 0
+-342 337 0
+342 -339 -337 0
+343 339 -337 0
+343 -339 337 0
+-343 339 337 0
+-343 -339 -337 0
+-344 55 0
+-344 56 0
+344 -55 -56 0
+345 55 -56 0
+345 -55 56 0
+-345 55 56 0
+-345 -55 -56 0
+-346 347 0
+-346 345 0
+-346 -55 0
+346 -347 55 -345 0
+347 -55 345 0
+-347 55 345 0
+-348 345 0
+347 -348 -55 0
+-347 -348 55 0
+347 348 55 -345 0
+-347 348 -55 -345 0
+-349 345 0
+347 -349 55 0
+-347 -349 -55 0
+347 349 -55 -345 0
+-347 349 55 -345 0
+-350 347 0
+-350 345 0
+350 -347 -345 0
+351 347 -345 0
+351 -347 345 0
+-351 347 345 0
+-351 -347 -345 0
+-352 57 0
+-352 58 0
+352 -57 -58 0
+353 57 -58 0
+353 -57 58 0
+-353 57 58 0
+-353 -57 -58 0
+-354 355 0
+-354 353 0
+-354 -57 0
+354 -355 57 -353 0
+355 -57 353 0
+-355 57 353 0
+-356 353 0
+355 -356 -57 0
+-355 -356 57 0
+355 356 57 -353 0
+-355 356 -57 -353 0
+-357 353 0
+355 -357 57 0
+-355 -357 -57 0
+355 357 -57 -353 0
+-355 357 57 -353 0
+-358 355 0
+-358 353 0
+358 -355 -353 0
+359 355 -353 0
+359 -355 353 0
+-359 355 353 0
+-359 -355 -353 0
+360 -359 0
+-360 359 0
+-361 59 0
+-361 60 0
+361 -59 -60 0
+362 59 -60 0
+362 -59 60 0
+-362 59 60 0
+-362 -59 -60 0
+-363 364 0
+-363 362 0
+-363 -59 0
+363 -364 59 -362 0
+364 -59 362 0
+-364 59 362 0
+-365 362 0
+364 -365 -59 0
+-364 -365 59 0
+364 365 59 -362 0
+-364 365 -59 -362 0
+-366 362 0
+364 -366 59 0
+-364 -366 -59 0
+364 366 -59 -362 0
+-364 366 59 -362 0
+-367 364 0
+-367 362 0
+367 -364 -362 0
+368 364 -362 0
+368 -364 362 0
+-368 364 362 0
+-368 -364 -362 0
+-369 61 0
+-369 62 0
+369 -61 -62 0
+370 61 -62 0
+370 -61 62 0
+-370 61 62 0
+-370 -61 -62 0
+-371 372 0
+-371 370 0
+-371 -61 0
+371 -372 61 -370 0
+372 -61 370 0
+-372 61 370 0
+-373 370 0
+372 -373 -61 0
+-372 -373 61 0
+372 373 61 -370 0
+-372 373 -61 -370 0
+-374 370 0
+372 -374 61 0
+-372 -374 -61 0
+372 374 -61 -370 0
+-372 374 61 -370 0
+-375 372 0
+-375 370 0
+375 -372 -370 0
+376 372 -370 0
+376 -372 370 0
+-376 372 370 0
+-376 -372 -370 0
+-377 63 0
+-377 64 0
+377 -63 -64 0
+378 63 -64 0
+378 -63 64 0
+-378 63 64 0
+-378 -63 -64 0
+-379 380 0
+-379 378 0
+-379 -63 0
+379 -380 63 -378 0
+380 -63 378 0
+-380 63 378 0
+-381 378 0
+380 -381 -63 0
+-380 -381 63 0
+380 381 63 -378 0
+-380 381 -63 -378 0
+-382 378 0
+380 -382 63 0
+-380 -382 -63 0
+380 382 -63 -378 0
+-380 382 63 -378 0
+-383 380 0
+-383 378 0
+383 -380 -378 0
+384 380 -378 0
+384 -380 378 0
+-384 380 378 0
+-384 -380 -378 0
+385 -384 0
+-385 384 0
+-386 65 0
+-386 66 0
+386 -65 -66 0
+387 65 -66 0
+387 -65 66 0
+-387 65 66 0
+-387 -65 -66 0
+-388 389 0
+-388 387 0
+-388 -65 0
+388 -389 65 -387 0
+389 -65 387 0
+-389 65 387 0
+-390 387 0
+389 -390 -65 0
+-389 -390 65 0
+389 390 65 -387 0
+-389 390 -65 -387 0
+-391 387 0
+389 -391 65 0
+-389 -391 -65 0
+389 391 -65 -387 0
+-389 391 65 -387 0
+-392 389 0
+-392 387 0
+392 -389 -387 0
+393 389 -387 0
+393 -389 387 0
+-393 389 387 0
+-393 -389 -387 0
+-394 67 0
+-394 68 0
+394 -67 -68 0
+395 67 -68 0
+395 -67 68 0
+-395 67 68 0
+-395 -67 -68 0
+-396 397 0
+-396 395 0
+-396 -67 0
+396 -397 67 -395 0
+397 -67 395 0
+-397 67 395 0
+-398 395 0
+397 -398 -67 0
+-397 -398 67 0
+397 398 67 -395 0
+-397 398 -67 -395 0
+-399 395 0
+397 -399 67 0
+-397 -399 -67 0
+397 399 -67 -395 0
+-397 399 67 -395 0
+-400 397 0
+-400 395 0
+400 -397 -395 0
+401 397 -395 0
+401 -397 395 0
+-401 397 395 0
+-401 -397 -395 0
+-402 69 0
+-402 70 0
+402 -69 -70 0
+403 69 -70 0
+403 -69 70 0
+-403 69 70 0
+-403 -69 -70 0
+-404 405 0
+-404 403 0
+-404 -69 0
+404 -405 69 -403 0
+405 -69 403 0
+-405 69 403 0
+-406 403 0
+405 -406 -69 0
+-405 -406 69 0
+405 406 69 -403 0
+-405 406 -69 -403 0
+-407 403 0
+405 -407 69 0
+-405 -407 -69 0
+405 407 -69 -403 0
+-405 407 69 -403 0
+-408 405 0
+-408 403 0
+408 -405 -403 0
+409 405 -403 0
+409 -405 403 0
+-409 405 403 0
+-409 -405 -403 0
+-410 71 0
+-410 72 0
+410 -71 -72 0
+411 71 -72 0
+411 -71 72 0
+-411 71 72 0
+-411 -71 -72 0
+-412 413 0
+-412 411 0
+-412 -71 0
+412 -413 71 -411 0
+413 -71 411 0
+-413 71 411 0
+-414 411 0
+413 -414 -71 0
+-413 -414 71 0
+413 414 71 -411 0
+-413 414 -71 -411 0
+-415 411 0
+413 -415 71 0
+-413 -415 -71 0
+413 415 -71 -411 0
+-413 415 71 -411 0
+-416 413 0
+-416 411 0
+416 -413 -411 0
+417 413 -411 0
+417 -413 411 0
+-417 413 411 0
+-417 -413 -411 0
+418 -417 0
+-418 417 0
+-419 73 0
+-419 74 0
+419 -73 -74 0
+420 73 -74 0
+420 -73 74 0
+-420 73 74 0
+-420 -73 -74 0
+-421 422 0
+-421 420 0
+-421 -73 0
+421 -422 73 -420 0
+422 -73 420 0
+-422 73 420 0
+-423 420 0
+422 -423 -73 0
+-422 -423 73 0
+422 423 73 -420 0
+-422 423 -73 -420 0
+-424 420 0
+422 -424 73 0
+-422 -424 -73 0
+422 424 -73 -420 0
+-422 424 73 -420 0
+-425 422 0
+-425 420 0
+425 -422 -420 0
+426 422 -420 0
+426 -422 420 0
+-426 422 420 0
+-426 -422 -420 0
+427 -426 0
+-427 426 0
+-428 75 0
+-428 76 0
+428 -75 -76 0
+429 75 -76 0
+429 -75 76 0
+-429 75 76 0
+-429 -75 -76 0
+-430 431 0
+-430 429 0
+-430 -75 0
+430 -431 75 -429 0
+431 -75 429 0
+-431 75 429 0
+-432 429 0
+431 -432 -75 0
+-431 -432 75 0
+431 432 75 -429 0
+-431 432 -75 -429 0
+-433 429 0
+431 -433 75 0
+-431 -433 -75 0
+431 433 -75 -429 0
+-431 433 75 -429 0
+-434 431 0
+-434 429 0
+434 -431 -429 0
+435 431 -429 0
+435 -431 429 0
+-435 431 429 0
+-435 -431 -429 0
+-436 77 0
+-436 78 0
+436 -77 -78 0
+437 77 -78 0
+437 -77 78 0
+-437 77 78 0
+-437 -77 -78 0
+-438 439 0
+-438 437 0
+-438 -77 0
+438 -439 77 -437 0
+439 -77 437 0
+-439 77 437 0
+-440 437 0
+439 -440 -77 0
+-439 -440 77 0
+439 440 77 -437 0
+-439 440 -77 -437 0
+-441 437 0
+439 -441 77 0
+-439 -441 -77 0
+439 441 -77 -437 0
+-439 441 77 -437 0
+-442 439 0
+-442 437 0
+442 -439 -437 0
+443 439 -437 0
+443 -439 437 0
+-443 439 437 0
+-443 -439 -437 0
+444 -443 0
+-444 443 0
+-445 79 0
+-445 80 0
+445 -79 -80 0
+446 79 -80 0
+446 -79 80 0
+-446 79 80 0
+-446 -79 -80 0
+-447 448 0
+-447 446 0
+-447 -79 0
+447 -448 79 -446 0
+448 -79 446 0
+-448 79 446 0
+-449 446 0
+448 -449 -79 0
+-448 -449 79 0
+448 449 79 -446 0
+-448 449 -79 -446 0
+-450 446 0
+448 -450 79 0
+-448 -450 -79 0
+448 450 -79 -446 0
+-448 450 79 -446 0
+-451 448 0
+-451 446 0
+451 -448 -446 0
+452 448 -446 0
+452 -448 446 0
+-452 448 446 0
+-452 -448 -446 0
+453 -452 0
+-453 452 0
+-454 81 0
+-454 82 0
+454 -81 -82 0
+455 81 -82 0
+455 -81 82 0
+-455 81 82 0
+-455 -81 -82 0
+-456 457 0
+-456 455 0
+-456 -81 0
+456 -457 81 -455 0
+457 -81 455 0
+-457 81 455 0
+-458 455 0
+457 -458 -81 0
+-457 -458 81 0
+457 458 81 -455 0
+-457 458 -81 -455 0
+-459 455 0
+457 -459 81 0
+-457 -459 -81 0
+457 459 -81 -455 0
+-457 459 81 -455 0
+-460 457 0
+-460 455 0
+460 -457 -455 0
+461 457 -455 0
+461 -457 455 0
+-461 457 455 0
+-461 -457 -455 0
+462 -461 0
+-462 461 0
+-463 83 0
+-463 84 0
+463 -83 -84 0
+464 83 -84 0
+464 -83 84 0
+-464 83 84 0
+-464 -83 -84 0
+-465 466 0
+-465 464 0
+-465 -83 0
+465 -466 83 -464 0
+466 -83 464 0
+-466 83 464 0
+-467 464 0
+466 -467 -83 0
+-466 -467 83 0
+466 467 83 -464 0
+-466 467 -83 -464 0
+-468 464 0
+466 -468 83 0
+-466 -468 -83 0
+466 468 -83 -464 0
+-466 468 83 -464 0
+-469 466 0
+-469 464 0
+469 -466 -464 0
+470 466 -464 0
+470 -466 464 0
+-470 466 464 0
+-470 -466 -464 0
+471 -470 0
+-471 470 0
+-472 85 0
+-472 86 0
+472 -85 -86 0
+473 85 -86 0
+473 -85 86 0
+-473 85 86 0
+-473 -85 -86 0
+-474 475 0
+-474 473 0
+-474 -85 0
+474 -475 85 -473 0
+475 -85 473 0
+-475 85 473 0
+-476 473 0
+475 -476 -85 0
+-475 -476 85 0
+475 476 85 -473 0
+-475 476 -85 -473 0
+-477 473 0
+475 -477 85 0
+-475 -477 -85 0
+475 477 -85 -473 0
+-475 477 85 -473 0
+-478 475 0
+-478 473 0
+478 -475 -473 0
+479 475 -473 0
+479 -475 473 0
+-479 475 473 0
+-479 -475 -473 0
+480 -479 0
+-480 479 0
+-481 87 0
+-481 88 0
+481 -87 -88 0
+482 87 -88 0
+482 -87 88 0
+-482 87 88 0
+-482 -87 -88 0
+-483 484 0
+-483 482 0
+-483 -87 0
+483 -484 87 -482 0
+484 -87 482 0
+-484 87 482 0
+-485 482 0
+484 -485 -87 0
+-484 -485 87 0
+484 485 87 -482 0
+-484 485 -87 -482 0
+-486 482 0
+484 -486 87 0
+-484 -486 -87 0
+484 486 -87 -482 0
+-484 486 87 -482 0
+-487 484 0
+-487 482 0
+487 -484 -482 0
+488 484 -482 0
+488 -484 482 0
+-488 484 482 0
+-488 -484 -482 0
+-489 89 0
+-489 90 0
+489 -89 -90 0
+490 89 -90 0
+490 -89 90 0
+-490 89 90 0
+-490 -89 -90 0
+-491 492 0
+-491 490 0
+-491 -89 0
+491 -492 89 -490 0
+492 -89 490 0
+-492 89 490 0
+-493 490 0
+492 -493 -89 0
+-492 -493 89 0
+492 493 89 -490 0
+-492 493 -89 -490 0
+-494 490 0
+492 -494 89 0
+-492 -494 -89 0
+492 494 -89 -490 0
+-492 494 89 -490 0
+-495 492 0
+-495 490 0
+495 -492 -490 0
+496 492 -490 0
+496 -492 490 0
+-496 492 490 0
+-496 -492 -490 0
+497 -496 0
+-497 496 0
+-498 91 0
+-498 92 0
+498 -91 -92 0
+499 91 -92 0
+499 -91 92 0
+-499 91 92 0
+-499 -91 -92 0
+-500 501 0
+-500 499 0
+-500 -91 0
+500 -501 91 -499 0
+501 -91 499 0
+-501 91 499 0
+-502 499 0
+501 -502 -91 0
+-501 -502 91 0
+501 502 91 -499 0
+-501 502 -91 -499 0
+-503 499 0
+501 -503 91 0
+-501 -503 -91 0
+501 503 -91 -499 0
+-501 503 91 -499 0
+-504 501 0
+-504 499 0
+504 -501 -499 0
+505 501 -499 0
+505 -501 499 0
+-505 501 499 0
+-505 -501 -499 0
+-506 93 0
+-506 94 0
+506 -93 -94 0
+507 93 -94 0
+507 -93 94 0
+-507 93 94 0
+-507 -93 -94 0
+-508 509 0
+-508 507 0
+-508 -93 0
+508 -509 93 -507 0
+509 -93 507 0
+-509 93 507 0
+-510 507 0
+509 -510 -93 0
+-509 -510 93 0
+509 510 93 -507 0
+-509 510 -93 -507 0
+-511 507 0
+509 -511 93 0
+-509 -511 -93 0
+509 511 -93 -507 0
+-509 511 93 -507 0
+-512 509 0
+-512 507 0
+512 -509 -507 0
+513 509 -507 0
+513 -509 507 0
+-513 509 507 0
+-513 -509 -507 0
+-514 95 0
+-514 96 0
+514 -95 -96 0
+515 95 -96 0
+515 -95 96 0
+-515 95 96 0
+-515 -95 -96 0
+-516 517 0
+-516 515 0
+-516 -95 0
+516 -517 95 -515 0
+517 -95 515 0
+-517 95 515 0
+-518 515 0
+517 -518 -95 0
+-517 -518 95 0
+517 518 95 -515 0
+-517 518 -95 -515 0
+-519 515 0
+517 -519 95 0
+-517 -519 -95 0
+517 519 -95 -515 0
+-517 519 95 -515 0
+-520 517 0
+-520 515 0
+520 -517 -515 0
+521 517 -515 0
+521 -517 515 0
+-521 517 515 0
+-521 -517 -515 0
+-522 97 0
+-522 98 0
+522 -97 -98 0
+523 97 -98 0
+523 -97 98 0
+-523 97 98 0
+-523 -97 -98 0
+-524 525 0
+-524 523 0
+-524 -97 0
+524 -525 97 -523 0
+525 -97 523 0
+-525 97 523 0
+-526 523 0
+525 -526 -97 0
+-525 -526 97 0
+525 526 97 -523 0
+-525 526 -97 -523 0
+-527 523 0
+525 -527 97 0
+-525 -527 -97 0
+525 527 -97 -523 0
+-525 527 97 -523 0
+-528 525 0
+-528 523 0
+528 -525 -523 0
+529 525 -523 0
+529 -525 523 0
+-529 525 523 0
+-529 -525 -523 0
+-530 99 0
+-530 100 0
+530 -99 -100 0
+531 99 -100 0
+531 -99 100 0
+-531 99 100 0
+-531 -99 -100 0
+-532 533 0
+-532 531 0
+-532 -99 0
+532 -533 99 -531 0
+533 -99 531 0
+-533 99 531 0
+-534 531 0
+533 -534 -99 0
+-533 -534 99 0
+533 534 99 -531 0
+-533 534 -99 -531 0
+-535 531 0
+533 -535 99 0
+-533 -535 -99 0
+533 535 -99 -531 0
+-533 535 99 -531 0
+-536 533 0
+-536 531 0
+536 -533 -531 0
+537 533 -531 0
+537 -533 531 0
+-537 533 531 0
+-537 -533 -531 0
+538 -537 0
+-538 537 0
+-539 101 0
+-539 102 0
+539 -101 -102 0
+540 101 -102 0
+540 -101 102 0
+-540 101 102 0
+-540 -101 -102 0
+-541 542 0
+-541 540 0
+-541 -101 0
+541 -542 101 -540 0
+542 -101 540 0
+-542 101 540 0
+-543 540 0
+542 -543 -101 0
+-542 -543 101 0
+542 543 101 -540 0
+-542 543 -101 -540 0
+-544 540 0
+542 -544 101 0
+-542 -544 -101 0
+542 544 -101 -540 0
+-542 544 101 -540 0
+-545 542 0
+-545 540 0
+545 -542 -540 0
+546 542 -540 0
+546 -542 540 0
+-546 542 540 0
+-546 -542 -540 0
+-547 103 0
+-547 104 0
+547 -103 -104 0
+548 103 -104 0
+548 -103 104 0
+-548 103 104 0
+-548 -103 -104 0
+-549 550 0
+-549 548 0
+-549 -103 0
+549 -550 103 -548 0
+550 -103 548 0
+-550 103 548 0
+-551 548 0
+550 -551 -103 0
+-550 -551 103 0
+550 551 103 -548 0
+-550 551 -103 -548 0
+-552 548 0
+550 -552 103 0
+-550 -552 -103 0
+550 552 -103 -548 0
+-550 552 103 -548 0
+-553 550 0
+-553 548 0
+553 -550 -548 0
+554 550 -548 0
+554 -550 548 0
+-554 550 548 0
+-554 -550 -548 0
+555 -554 0
+-555 554 0
+-556 105 0
+-556 106 0
+556 -105 -106 0
+557 105 -106 0
+557 -105 106 0
+-557 105 106 0
+-557 -105 -106 0
+-558 559 0
+-558 557 0
+-558 -105 0
+558 -559 105 -557 0
+559 -105 557 0
+-559 105 557 0
+-560 557 0
+559 -560 -105 0
+-559 -560 105 0
+559 560 105 -557 0
+-559 560 -105 -557 0
+-561 557 0
+559 -561 105 0
+-559 -561 -105 0
+559 561 -105 -557 0
+-559 561 105 -557 0
+-562 559 0
+-562 557 0
+562 -559 -557 0
+563 559 -557 0
+563 -559 557 0
+-563 559 557 0
+-563 -559 -557 0
+564 -563 0
+-564 563 0
+-565 107 0
+-565 108 0
+565 -107 -108 0
+566 107 -108 0
+566 -107 108 0
+-566 107 108 0
+-566 -107 -108 0
+-567 568 0
+-567 566 0
+-567 -107 0
+567 -568 107 -566 0
+568 -107 566 0
+-568 107 566 0
+-569 566 0
+568 -569 -107 0
+-568 -569 107 0
+568 569 107 -566 0
+-568 569 -107 -566 0
+-570 566 0
+568 -570 107 0
+-568 -570 -107 0
+568 570 -107 -566 0
+-568 570 107 -566 0
+-571 568 0
+-571 566 0
+571 -568 -566 0
+572 568 -566 0
+572 -568 566 0
+-572 568 566 0
+-572 -568 -566 0
+573 -572 0
+-573 572 0
+-574 109 0
+-574 110 0
+574 -109 -110 0
+575 109 -110 0
+575 -109 110 0
+-575 109 110 0
+-575 -109 -110 0
+-576 577 0
+-576 575 0
+-576 -109 0
+576 -577 109 -575 0
+577 -109 575 0
+-577 109 575 0
+-578 575 0
+577 -578 -109 0
+-577 -578 109 0
+577 578 109 -575 0
+-577 578 -109 -575 0
+-579 575 0
+577 -579 109 0
+-577 -579 -109 0
+577 579 -109 -575 0
+-577 579 109 -575 0
+-580 577 0
+-580 575 0
+580 -577 -575 0
+581 577 -575 0
+581 -577 575 0
+-581 577 575 0
+-581 -577 -575 0
+-582 111 0
+-582 112 0
+582 -111 -112 0
+583 111 -112 0
+583 -111 112 0
+-583 111 112 0
+-583 -111 -112 0
+-584 585 0
+-584 583 0
+-584 -111 0
+584 -585 111 -583 0
+585 -111 583 0
+-585 111 583 0
+-586 583 0
+585 -586 -111 0
+-585 -586 111 0
+585 586 111 -583 0
+-585 586 -111 -583 0
+-587 583 0
+585 -587 111 0
+-585 -587 -111 0
+585 587 -111 -583 0
+-585 587 111 -583 0
+-588 585 0
+-588 583 0
+588 -585 -583 0
+589 585 -583 0
+589 -585 583 0
+-589 585 583 0
+-589 -585 -583 0
+590 -589 0
+-590 589 0
+591 -114 0
+-591 114 0
+-592 113 0
+-592 114 0
+592 -113 -114 0
+593 113 -114 0
+593 -113 114 0
+-593 113 114 0
+-593 -113 -114 0
+-594 595 0
+-594 593 0
+-594 -113 0
+594 -595 113 -593 0
+595 -113 593 0
+-595 113 593 0
+-596 593 0
+595 -596 -113 0
+-595 -596 113 0
+595 596 113 -593 0
+-595 596 -113 -593 0
+-597 593 0
+595 -597 113 0
+-595 -597 -113 0
+595 597 -113 -593 0
+-595 597 113 -593 0
+-598 595 0
+-598 593 0
+598 -595 -593 0
+599 595 -593 0
+599 -595 593 0
+-599 595 593 0
+-599 -595 -593 0
+-600 118 0
+-600 599 0
+-600 595 -122 0
+-600 -595 122 0
+600 -118 595 122 -599 0
+600 -118 -595 -122 -599 0
+602 118 -595 0
+602 -118 595 0
+-602 118 595 0
+-602 -118 -595 0
+601 122 -599 0
+601 -122 599 0
+-601 122 599 0
+-601 -122 -599 0
+603 -601 0
+-603 601 0
+-604 118 0
+-604 601 0
+604 -118 -601 0
+605 118 -601 0
+605 -118 601 0
+-605 118 601 0
+-605 -118 -601 0
+-606 607 0
+-606 605 0
+-606 -118 0
+606 -607 118 -605 0
+607 -118 605 0
+-607 118 605 0
+-608 605 0
+607 -608 -118 0
+-607 -608 118 0
+607 608 118 -605 0
+-607 608 -118 -605 0
+-609 605 0
+607 -609 118 0
+-607 -609 -118 0
+607 609 -118 -605 0
+-607 609 118 -605 0
+-610 607 0
+-610 605 0
+610 -607 -605 0
+611 607 -605 0
+611 -607 605 0
+-611 607 605 0
+-611 -607 -605 0
+-612 127 0
+-612 599 0
+-612 602 -131 0
+-612 -602 131 0
+612 -127 602 131 -599 0
+612 -127 -602 -131 -599 0
+614 127 -602 0
+614 -127 602 0
+-614 127 602 0
+-614 -127 -602 0
+613 131 -599 0
+613 -131 599 0
+-613 131 599 0
+-613 -131 -599 0
+615 -613 0
+-615 613 0
+-616 127 0
+-616 613 0
+616 -127 -613 0
+617 127 -613 0
+617 -127 613 0
+-617 127 613 0
+-617 -127 -613 0
+-618 619 0
+-618 617 0
+-618 -127 0
+618 -619 127 -617 0
+619 -127 617 0
+-619 127 617 0
+-620 617 0
+619 -620 -127 0
+-619 -620 127 0
+619 620 127 -617 0
+-619 620 -127 -617 0
+-621 617 0
+619 -621 127 0
+-619 -621 -127 0
+619 621 -127 -617 0
+-619 621 127 -617 0
+-622 619 0
+-622 617 0
+622 -619 -617 0
+623 619 -617 0
+623 -619 617 0
+-623 619 617 0
+-623 -619 -617 0
+-624 136 0
+-624 599 0
+-624 614 -140 0
+-624 -614 140 0
+624 -136 614 140 -599 0
+624 -136 -614 -140 -599 0
+626 136 -614 0
+626 -136 614 0
+-626 136 614 0
+-626 -136 -614 0
+625 140 -599 0
+625 -140 599 0
+-625 140 599 0
+-625 -140 -599 0
+-627 136 0
+-627 625 0
+627 -136 -625 0
+628 136 -625 0
+628 -136 625 0
+-628 136 625 0
+-628 -136 -625 0
+-629 630 0
+-629 628 0
+-629 -136 0
+629 -630 136 -628 0
+630 -136 628 0
+-630 136 628 0
+-631 628 0
+630 -631 -136 0
+-630 -631 136 0
+630 631 136 -628 0
+-630 631 -136 -628 0
+-632 628 0
+630 -632 136 0
+-630 -632 -136 0
+630 632 -136 -628 0
+-630 632 136 -628 0
+-633 630 0
+-633 628 0
+633 -630 -628 0
+634 630 -628 0
+634 -630 628 0
+-634 630 628 0
+-634 -630 -628 0
+-635 144 0
+-635 599 0
+-635 626 -148 0
+-635 -626 148 0
+635 -144 626 148 -599 0
+635 -144 -626 -148 -599 0
+637 144 -626 0
+637 -144 626 0
+-637 144 626 0
+-637 -144 -626 0
+636 148 -599 0
+636 -148 599 0
+-636 148 599 0
+-636 -148 -599 0
+638 -636 0
+-638 636 0
+-639 144 0
+-639 636 0
+639 -144 -636 0
+640 144 -636 0
+640 -144 636 0
+-640 144 636 0
+-640 -144 -636 0
+-641 642 0
+-641 640 0
+-641 -144 0
+641 -642 144 -640 0
+642 -144 640 0
+-642 144 640 0
+-643 640 0
+642 -643 -144 0
+-642 -643 144 0
+642 643 144 -640 0
+-642 643 -144 -640 0
+-644 640 0
+642 -644 144 0
+-642 -644 -144 0
+642 644 -144 -640 0
+-642 644 144 -640 0
+-645 642 0
+-645 640 0
+645 -642 -640 0
+646 642 -640 0
+646 -642 640 0
+-646 642 640 0
+-646 -642 -640 0
+-647 153 0
+-647 599 0
+-647 637 -157 0
+-647 -637 157 0
+647 -153 637 157 -599 0
+647 -153 -637 -157 -599 0
+649 153 -637 0
+649 -153 637 0
+-649 153 637 0
+-649 -153 -637 0
+648 157 -599 0
+648 -157 599 0
+-648 157 599 0
+-648 -157 -599 0
+-650 153 0
+-650 648 0
+650 -153 -648 0
+651 153 -648 0
+651 -153 648 0
+-651 153 648 0
+-651 -153 -648 0
+-652 653 0
+-652 651 0
+-652 -153 0
+652 -653 153 -651 0
+653 -153 651 0
+-653 153 651 0
+-654 651 0
+653 -654 -153 0
+-653 -654 153 0
+653 654 153 -651 0
+-653 654 -153 -651 0
+-655 651 0
+653 -655 153 0
+-653 -655 -153 0
+653 655 -153 -651 0
+-653 655 153 -651 0
+-656 653 0
+-656 651 0
+656 -653 -651 0
+657 653 -651 0
+657 -653 651 0
+-657 653 651 0
+-657 -653 -651 0
+-658 161 0
+-658 599 0
+-658 649 -165 0
+-658 -649 165 0
+658 -161 649 165 -599 0
+658 -161 -649 -165 -599 0
+660 161 -649 0
+660 -161 649 0
+-660 161 649 0
+-660 -161 -649 0
+659 165 -599 0
+659 -165 599 0
+-659 165 599 0
+-659 -165 -599 0
+661 -659 0
+-661 659 0
+-662 161 0
+-662 659 0
+662 -161 -659 0
+663 161 -659 0
+663 -161 659 0
+-663 161 659 0
+-663 -161 -659 0
+-664 665 0
+-664 663 0
+-664 -161 0
+664 -665 161 -663 0
+665 -161 663 0
+-665 161 663 0
+-666 663 0
+665 -666 -161 0
+-665 -666 161 0
+665 666 161 -663 0
+-665 666 -161 -663 0
+-667 663 0
+665 -667 161 0
+-665 -667 -161 0
+665 667 -161 -663 0
+-665 667 161 -663 0
+-668 665 0
+-668 663 0
+668 -665 -663 0
+669 665 -663 0
+669 -665 663 0
+-669 665 663 0
+-669 -665 -663 0
+-670 170 0
+-670 599 0
+-670 660 -174 0
+-670 -660 174 0
+670 -170 660 174 -599 0
+670 -170 -660 -174 -599 0
+672 170 -660 0
+672 -170 660 0
+-672 170 660 0
+-672 -170 -660 0
+671 174 -599 0
+671 -174 599 0
+-671 174 599 0
+-671 -174 -599 0
+673 -671 0
+-673 671 0
+-674 170 0
+-674 671 0
+674 -170 -671 0
+675 170 -671 0
+675 -170 671 0
+-675 170 671 0
+-675 -170 -671 0
+-676 677 0
+-676 675 0
+-676 -170 0
+676 -677 170 -675 0
+677 -170 675 0
+-677 170 675 0
+-678 675 0
+677 -678 -170 0
+-677 -678 170 0
+677 678 170 -675 0
+-677 678 -170 -675 0
+-679 675 0
+677 -679 170 0
+-677 -679 -170 0
+677 679 -170 -675 0
+-677 679 170 -675 0
+-680 677 0
+-680 675 0
+680 -677 -675 0
+681 677 -675 0
+681 -677 675 0
+-681 677 675 0
+-681 -677 -675 0
+-682 179 0
+-682 599 0
+-682 672 -183 0
+-682 -672 183 0
+682 -179 672 183 -599 0
+682 -179 -672 -183 -599 0
+684 179 -672 0
+684 -179 672 0
+-684 179 672 0
+-684 -179 -672 0
+683 183 -599 0
+683 -183 599 0
+-683 183 599 0
+-683 -183 -599 0
+-685 179 0
+-685 683 0
+685 -179 -683 0
+686 179 -683 0
+686 -179 683 0
+-686 179 683 0
+-686 -179 -683 0
+-687 688 0
+-687 686 0
+-687 -179 0
+687 -688 179 -686 0
+688 -179 686 0
+-688 179 686 0
+-689 686 0
+688 -689 -179 0
+-688 -689 179 0
+688 689 179 -686 0
+-688 689 -179 -686 0
+-690 686 0
+688 -690 179 0
+-688 -690 -179 0
+688 690 -179 -686 0
+-688 690 179 -686 0
+-691 688 0
+-691 686 0
+691 -688 -686 0
+692 688 -686 0
+692 -688 686 0
+-692 688 686 0
+-692 -688 -686 0
+-693 187 0
+-693 599 0
+-693 684 -191 0
+-693 -684 191 0
+693 -187 684 191 -599 0
+693 -187 -684 -191 -599 0
+695 187 -684 0
+695 -187 684 0
+-695 187 684 0
+-695 -187 -684 0
+694 191 -599 0
+694 -191 599 0
+-694 191 599 0
+-694 -191 -599 0
+696 -694 0
+-696 694 0
+-697 187 0
+-697 694 0
+697 -187 -694 0
+698 187 -694 0
+698 -187 694 0
+-698 187 694 0
+-698 -187 -694 0
+-699 700 0
+-699 698 0
+-699 -187 0
+699 -700 187 -698 0
+700 -187 698 0
+-700 187 698 0
+-701 698 0
+700 -701 -187 0
+-700 -701 187 0
+700 701 187 -698 0
+-700 701 -187 -698 0
+-702 698 0
+700 -702 187 0
+-700 -702 -187 0
+700 702 -187 -698 0
+-700 702 187 -698 0
+-703 700 0
+-703 698 0
+703 -700 -698 0
+704 700 -698 0
+704 -700 698 0
+-704 700 698 0
+-704 -700 -698 0
+-705 196 0
+-705 599 0
+-705 695 -200 0
+-705 -695 200 0
+705 -196 695 200 -599 0
+705 -196 -695 -200 -599 0
+707 196 -695 0
+707 -196 695 0
+-707 196 695 0
+-707 -196 -695 0
+706 200 -599 0
+706 -200 599 0
+-706 200 599 0
+-706 -200 -599 0
+708 -706 0
+-708 706 0
+-709 196 0
+-709 706 0
+709 -196 -706 0
+710 196 -706 0
+710 -196 706 0
+-710 196 706 0
+-710 -196 -706 0
+-711 712 0
+-711 710 0
+-711 -196 0
+711 -712 196 -710 0
+712 -196 710 0
+-712 196 710 0
+-713 710 0
+712 -713 -196 0
+-712 -713 196 0
+712 713 196 -710 0
+-712 713 -196 -710 0
+-714 710 0
+712 -714 196 0
+-712 -714 -196 0
+712 714 -196 -710 0
+-712 714 196 -710 0
+-715 712 0
+-715 710 0
+715 -712 -710 0
+716 712 -710 0
+716 -712 710 0
+-716 712 710 0
+-716 -712 -710 0
+-717 205 0
+-717 599 0
+-717 707 -209 0
+-717 -707 209 0
+717 -205 707 209 -599 0
+717 -205 -707 -209 -599 0
+719 205 -707 0
+719 -205 707 0
+-719 205 707 0
+-719 -205 -707 0
+718 209 -599 0
+718 -209 599 0
+-718 209 599 0
+-718 -209 -599 0
+-720 205 0
+-720 718 0
+720 -205 -718 0
+721 205 -718 0
+721 -205 718 0
+-721 205 718 0
+-721 -205 -718 0
+-722 723 0
+-722 721 0
+-722 -205 0
+722 -723 205 -721 0
+723 -205 721 0
+-723 205 721 0
+-724 721 0
+723 -724 -205 0
+-723 -724 205 0
+723 724 205 -721 0
+-723 724 -205 -721 0
+-725 721 0
+723 -725 205 0
+-723 -725 -205 0
+723 725 -205 -721 0
+-723 725 205 -721 0
+-726 723 0
+-726 721 0
+726 -723 -721 0
+727 723 -721 0
+727 -723 721 0
+-727 723 721 0
+-727 -723 -721 0
+-728 213 0
+-728 599 0
+-728 719 -217 0
+-728 -719 217 0
+728 -213 719 217 -599 0
+728 -213 -719 -217 -599 0
+730 213 -719 0
+730 -213 719 0
+-730 213 719 0
+-730 -213 -719 0
+729 217 -599 0
+729 -217 599 0
+-729 217 599 0
+-729 -217 -599 0
+731 -729 0
+-731 729 0
+-732 213 0
+-732 729 0
+732 -213 -729 0
+733 213 -729 0
+733 -213 729 0
+-733 213 729 0
+-733 -213 -729 0
+-734 735 0
+-734 733 0
+-734 -213 0
+734 -735 213 -733 0
+735 -213 733 0
+-735 213 733 0
+-736 733 0
+735 -736 -213 0
+-735 -736 213 0
+735 736 213 -733 0
+-735 736 -213 -733 0
+-737 733 0
+735 -737 213 0
+-735 -737 -213 0
+735 737 -213 -733 0
+-735 737 213 -733 0
+-738 735 0
+-738 733 0
+738 -735 -733 0
+739 735 -733 0
+739 -735 733 0
+-739 735 733 0
+-739 -735 -733 0
+-740 222 0
+-740 599 0
+-740 730 -226 0
+-740 -730 226 0
+740 -222 730 226 -599 0
+740 -222 -730 -226 -599 0
+742 222 -730 0
+742 -222 730 0
+-742 222 730 0
+-742 -222 -730 0
+741 226 -599 0
+741 -226 599 0
+-741 226 599 0
+-741 -226 -599 0
+743 -741 0
+-743 741 0
+-744 222 0
+-744 741 0
+744 -222 -741 0
+745 222 -741 0
+745 -222 741 0
+-745 222 741 0
+-745 -222 -741 0
+-746 747 0
+-746 745 0
+-746 -222 0
+746 -747 222 -745 0
+747 -222 745 0
+-747 222 745 0
+-748 745 0
+747 -748 -222 0
+-747 -748 222 0
+747 748 222 -745 0
+-747 748 -222 -745 0
+-749 745 0
+747 -749 222 0
+-747 -749 -222 0
+747 749 -222 -745 0
+-747 749 222 -745 0
+-750 747 0
+-750 745 0
+750 -747 -745 0
+751 747 -745 0
+751 -747 745 0
+-751 747 745 0
+-751 -747 -745 0
+-752 231 0
+-752 599 0
+-752 742 -235 0
+-752 -742 235 0
+752 -231 742 235 -599 0
+752 -231 -742 -235 -599 0
+754 231 -742 0
+754 -231 742 0
+-754 231 742 0
+-754 -231 -742 0
+753 235 -599 0
+753 -235 599 0
+-753 235 599 0
+-753 -235 -599 0
+-755 231 0
+-755 753 0
+755 -231 -753 0
+756 231 -753 0
+756 -231 753 0
+-756 231 753 0
+-756 -231 -753 0
+-757 758 0
+-757 756 0
+-757 -231 0
+757 -758 231 -756 0
+758 -231 756 0
+-758 231 756 0
+-759 756 0
+758 -759 -231 0
+-758 -759 231 0
+758 759 231 -756 0
+-758 759 -231 -756 0
+-760 756 0
+758 -760 231 0
+-758 -760 -231 0
+758 760 -231 -756 0
+-758 760 231 -756 0
+-761 758 0
+-761 756 0
+761 -758 -756 0
+762 758 -756 0
+762 -758 756 0
+-762 758 756 0
+-762 -758 -756 0
+-763 239 0
+-763 599 0
+-763 754 -243 0
+-763 -754 243 0
+763 -239 754 243 -599 0
+763 -239 -754 -243 -599 0
+765 239 -754 0
+765 -239 754 0
+-765 239 754 0
+-765 -239 -754 0
+764 243 -599 0
+764 -243 599 0
+-764 243 599 0
+-764 -243 -599 0
+-766 239 0
+-766 764 0
+766 -239 -764 0
+767 239 -764 0
+767 -239 764 0
+-767 239 764 0
+-767 -239 -764 0
+-768 769 0
+-768 767 0
+-768 -239 0
+768 -769 239 -767 0
+769 -239 767 0
+-769 239 767 0
+-770 767 0
+769 -770 -239 0
+-769 -770 239 0
+769 770 239 -767 0
+-769 770 -239 -767 0
+-771 767 0
+769 -771 239 0
+-769 -771 -239 0
+769 771 -239 -767 0
+-769 771 239 -767 0
+-772 769 0
+-772 767 0
+772 -769 -767 0
+773 769 -767 0
+773 -769 767 0
+-773 769 767 0
+-773 -769 -767 0
+-774 247 0
+-774 599 0
+-774 765 -251 0
+-774 -765 251 0
+774 -247 765 251 -599 0
+774 -247 -765 -251 -599 0
+776 247 -765 0
+776 -247 765 0
+-776 247 765 0
+-776 -247 -765 0
+775 251 -599 0
+775 -251 599 0
+-775 251 599 0
+-775 -251 -599 0
+777 -775 0
+-777 775 0
+-778 247 0
+-778 775 0
+778 -247 -775 0
+779 247 -775 0
+779 -247 775 0
+-779 247 775 0
+-779 -247 -775 0
+-780 781 0
+-780 779 0
+-780 -247 0
+780 -781 247 -779 0
+781 -247 779 0
+-781 247 779 0
+-782 779 0
+781 -782 -247 0
+-781 -782 247 0
+781 782 247 -779 0
+-781 782 -247 -779 0
+-783 779 0
+781 -783 247 0
+-781 -783 -247 0
+781 783 -247 -779 0
+-781 783 247 -779 0
+-784 781 0
+-784 779 0
+784 -781 -779 0
+785 781 -779 0
+785 -781 779 0
+-785 781 779 0
+-785 -781 -779 0
+-786 256 0
+-786 599 0
+-786 776 -260 0
+-786 -776 260 0
+786 -256 776 260 -599 0
+786 -256 -776 -260 -599 0
+788 256 -776 0
+788 -256 776 0
+-788 256 776 0
+-788 -256 -776 0
+787 260 -599 0
+787 -260 599 0
+-787 260 599 0
+-787 -260 -599 0
+-789 256 0
+-789 787 0
+789 -256 -787 0
+790 256 -787 0
+790 -256 787 0
+-790 256 787 0
+-790 -256 -787 0
+-791 792 0
+-791 790 0
+-791 -256 0
+791 -792 256 -790 0
+792 -256 790 0
+-792 256 790 0
+-793 790 0
+792 -793 -256 0
+-792 -793 256 0
+792 793 256 -790 0
+-792 793 -256 -790 0
+-794 790 0
+792 -794 256 0
+-792 -794 -256 0
+792 794 -256 -790 0
+-792 794 256 -790 0
+-795 792 0
+-795 790 0
+795 -792 -790 0
+796 792 -790 0
+796 -792 790 0
+-796 792 790 0
+-796 -792 -790 0
+-797 264 0
+-797 599 0
+-797 788 -268 0
+-797 -788 268 0
+797 -264 788 268 -599 0
+797 -264 -788 -268 -599 0
+799 264 -788 0
+799 -264 788 0
+-799 264 788 0
+-799 -264 -788 0
+798 268 -599 0
+798 -268 599 0
+-798 268 599 0
+-798 -268 -599 0
+-800 264 0
+-800 798 0
+800 -264 -798 0
+801 264 -798 0
+801 -264 798 0
+-801 264 798 0
+-801 -264 -798 0
+-802 803 0
+-802 801 0
+-802 -264 0
+802 -803 264 -801 0
+803 -264 801 0
+-803 264 801 0
+-804 801 0
+803 -804 -264 0
+-803 -804 264 0
+803 804 264 -801 0
+-803 804 -264 -801 0
+-805 801 0
+803 -805 264 0
+-803 -805 -264 0
+803 805 -264 -801 0
+-803 805 264 -801 0
+-806 803 0
+-806 801 0
+806 -803 -801 0
+807 803 -801 0
+807 -803 801 0
+-807 803 801 0
+-807 -803 -801 0
+-808 272 0
+-808 599 0
+-808 799 -276 0
+-808 -799 276 0
+808 -272 799 276 -599 0
+808 -272 -799 -276 -599 0
+810 272 -799 0
+810 -272 799 0
+-810 272 799 0
+-810 -272 -799 0
+809 276 -599 0
+809 -276 599 0
+-809 276 599 0
+-809 -276 -599 0
+-811 272 0
+-811 809 0
+811 -272 -809 0
+812 272 -809 0
+812 -272 809 0
+-812 272 809 0
+-812 -272 -809 0
+-813 814 0
+-813 812 0
+-813 -272 0
+813 -814 272 -812 0
+814 -272 812 0
+-814 272 812 0
+-815 812 0
+814 -815 -272 0
+-814 -815 272 0
+814 815 272 -812 0
+-814 815 -272 -812 0
+-816 812 0
+814 -816 272 0
+-814 -816 -272 0
+814 816 -272 -812 0
+-814 816 272 -812 0
+-817 814 0
+-817 812 0
+817 -814 -812 0
+818 814 -812 0
+818 -814 812 0
+-818 814 812 0
+-818 -814 -812 0
+-819 280 0
+-819 599 0
+-819 810 -284 0
+-819 -810 284 0
+819 -280 810 284 -599 0
+819 -280 -810 -284 -599 0
+821 280 -810 0
+821 -280 810 0
+-821 280 810 0
+-821 -280 -810 0
+820 284 -599 0
+820 -284 599 0
+-820 284 599 0
+-820 -284 -599 0
+-822 280 0
+-822 820 0
+822 -280 -820 0
+823 280 -820 0
+823 -280 820 0
+-823 280 820 0
+-823 -280 -820 0
+-824 825 0
+-824 823 0
+-824 -280 0
+824 -825 280 -823 0
+825 -280 823 0
+-825 280 823 0
+-826 823 0
+825 -826 -280 0
+-825 -826 280 0
+825 826 280 -823 0
+-825 826 -280 -823 0
+-827 823 0
+825 -827 280 0
+-825 -827 -280 0
+825 827 -280 -823 0
+-825 827 280 -823 0
+-828 825 0
+-828 823 0
+828 -825 -823 0
+829 825 -823 0
+829 -825 823 0
+-829 825 823 0
+-829 -825 -823 0
+-830 288 0
+-830 599 0
+-830 821 -292 0
+-830 -821 292 0
+830 -288 821 292 -599 0
+830 -288 -821 -292 -599 0
+832 288 -821 0
+832 -288 821 0
+-832 288 821 0
+-832 -288 -821 0
+831 292 -599 0
+831 -292 599 0
+-831 292 599 0
+-831 -292 -599 0
+-833 288 0
+-833 831 0
+833 -288 -831 0
+834 288 -831 0
+834 -288 831 0
+-834 288 831 0
+-834 -288 -831 0
+-835 836 0
+-835 834 0
+-835 -288 0
+835 -836 288 -834 0
+836 -288 834 0
+-836 288 834 0
+-837 834 0
+836 -837 -288 0
+-836 -837 288 0
+836 837 288 -834 0
+-836 837 -288 -834 0
+-838 834 0
+836 -838 288 0
+-836 -838 -288 0
+836 838 -288 -834 0
+-836 838 288 -834 0
+-839 836 0
+-839 834 0
+839 -836 -834 0
+840 836 -834 0
+840 -836 834 0
+-840 836 834 0
+-840 -836 -834 0
+-841 296 0
+-841 599 0
+-841 832 -300 0
+-841 -832 300 0
+841 -296 832 300 -599 0
+841 -296 -832 -300 -599 0
+843 296 -832 0
+843 -296 832 0
+-843 296 832 0
+-843 -296 -832 0
+842 300 -599 0
+842 -300 599 0
+-842 300 599 0
+-842 -300 -599 0
+844 -842 0
+-844 842 0
+-845 296 0
+-845 842 0
+845 -296 -842 0
+846 296 -842 0
+846 -296 842 0
+-846 296 842 0
+-846 -296 -842 0
+-847 848 0
+-847 846 0
+-847 -296 0
+847 -848 296 -846 0
+848 -296 846 0
+-848 296 846 0
+-849 846 0
+848 -849 -296 0
+-848 -849 296 0
+848 849 296 -846 0
+-848 849 -296 -846 0
+-850 846 0
+848 -850 296 0
+-848 -850 -296 0
+848 850 -296 -846 0
+-848 850 296 -846 0
+-851 848 0
+-851 846 0
+851 -848 -846 0
+852 848 -846 0
+852 -848 846 0
+-852 848 846 0
+-852 -848 -846 0
+-853 305 0
+-853 599 0
+-853 843 -309 0
+-853 -843 309 0
+853 -305 843 309 -599 0
+853 -305 -843 -309 -599 0
+855 305 -843 0
+855 -305 843 0
+-855 305 843 0
+-855 -305 -843 0
+854 309 -599 0
+854 -309 599 0
+-854 309 599 0
+-854 -309 -599 0
+-856 305 0
+-856 854 0
+856 -305 -854 0
+857 305 -854 0
+857 -305 854 0
+-857 305 854 0
+-857 -305 -854 0
+-858 859 0
+-858 857 0
+-858 -305 0
+858 -859 305 -857 0
+859 -305 857 0
+-859 305 857 0
+-860 857 0
+859 -860 -305 0
+-859 -860 305 0
+859 860 305 -857 0
+-859 860 -305 -857 0
+-861 857 0
+859 -861 305 0
+-859 -861 -305 0
+859 861 -305 -857 0
+-859 861 305 -857 0
+-862 859 0
+-862 857 0
+862 -859 -857 0
+863 859 -857 0
+863 -859 857 0
+-863 859 857 0
+-863 -859 -857 0
+-864 313 0
+-864 599 0
+-864 855 -317 0
+-864 -855 317 0
+864 -313 855 317 -599 0
+864 -313 -855 -317 -599 0
+866 313 -855 0
+866 -313 855 0
+-866 313 855 0
+-866 -313 -855 0
+865 317 -599 0
+865 -317 599 0
+-865 317 599 0
+-865 -317 -599 0
+-867 313 0
+-867 865 0
+867 -313 -865 0
+868 313 -865 0
+868 -313 865 0
+-868 313 865 0
+-868 -313 -865 0
+-869 870 0
+-869 868 0
+-869 -313 0
+869 -870 313 -868 0
+870 -313 868 0
+-870 313 868 0
+-871 868 0
+870 -871 -313 0
+-870 -871 313 0
+870 871 313 -868 0
+-870 871 -313 -868 0
+-872 868 0
+870 -872 313 0
+-870 -872 -313 0
+870 872 -313 -868 0
+-870 872 313 -868 0
+-873 870 0
+-873 868 0
+873 -870 -868 0
+874 870 -868 0
+874 -870 868 0
+-874 870 868 0
+-874 -870 -868 0
+-875 321 0
+-875 599 0
+-875 866 -325 0
+-875 -866 325 0
+875 -321 866 325 -599 0
+875 -321 -866 -325 -599 0
+877 321 -866 0
+877 -321 866 0
+-877 321 866 0
+-877 -321 -866 0
+876 325 -599 0
+876 -325 599 0
+-876 325 599 0
+-876 -325 -599 0
+878 -876 0
+-878 876 0
+-879 321 0
+-879 876 0
+879 -321 -876 0
+880 321 -876 0
+880 -321 876 0
+-880 321 876 0
+-880 -321 -876 0
+-881 882 0
+-881 880 0
+-881 -321 0
+881 -882 321 -880 0
+882 -321 880 0
+-882 321 880 0
+-883 880 0
+882 -883 -321 0
+-882 -883 321 0
+882 883 321 -880 0
+-882 883 -321 -880 0
+-884 880 0
+882 -884 321 0
+-882 -884 -321 0
+882 884 -321 -880 0
+-882 884 321 -880 0
+-885 882 0
+-885 880 0
+885 -882 -880 0
+886 882 -880 0
+886 -882 880 0
+-886 882 880 0
+-886 -882 -880 0
+-887 330 0
+-887 599 0
+-887 877 -334 0
+-887 -877 334 0
+887 -330 877 334 -599 0
+887 -330 -877 -334 -599 0
+889 330 -877 0
+889 -330 877 0
+-889 330 877 0
+-889 -330 -877 0
+888 334 -599 0
+888 -334 599 0
+-888 334 599 0
+-888 -334 -599 0
+890 -888 0
+-890 888 0
+-891 330 0
+-891 888 0
+891 -330 -888 0
+892 330 -888 0
+892 -330 888 0
+-892 330 888 0
+-892 -330 -888 0
+-893 894 0
+-893 892 0
+-893 -330 0
+893 -894 330 -892 0
+894 -330 892 0
+-894 330 892 0
+-895 892 0
+894 -895 -330 0
+-894 -895 330 0
+894 895 330 -892 0
+-894 895 -330 -892 0
+-896 892 0
+894 -896 330 0
+-894 -896 -330 0
+894 896 -330 -892 0
+-894 896 330 -892 0
+-897 894 0
+-897 892 0
+897 -894 -892 0
+898 894 -892 0
+898 -894 892 0
+-898 894 892 0
+-898 -894 -892 0
+-899 339 0
+-899 599 0
+-899 889 -343 0
+-899 -889 343 0
+899 -339 889 343 -599 0
+899 -339 -889 -343 -599 0
+901 339 -889 0
+901 -339 889 0
+-901 339 889 0
+-901 -339 -889 0
+900 343 -599 0
+900 -343 599 0
+-900 343 599 0
+-900 -343 -599 0
+-902 339 0
+-902 900 0
+902 -339 -900 0
+903 339 -900 0
+903 -339 900 0
+-903 339 900 0
+-903 -339 -900 0
+-904 905 0
+-904 903 0
+-904 -339 0
+904 -905 339 -903 0
+905 -339 903 0
+-905 339 903 0
+-906 903 0
+905 -906 -339 0
+-905 -906 339 0
+905 906 339 -903 0
+-905 906 -339 -903 0
+-907 903 0
+905 -907 339 0
+-905 -907 -339 0
+905 907 -339 -903 0
+-905 907 339 -903 0
+-908 905 0
+-908 903 0
+908 -905 -903 0
+909 905 -903 0
+909 -905 903 0
+-909 905 903 0
+-909 -905 -903 0
+-910 347 0
+-910 599 0
+-910 901 -351 0
+-910 -901 351 0
+910 -347 901 351 -599 0
+910 -347 -901 -351 -599 0
+912 347 -901 0
+912 -347 901 0
+-912 347 901 0
+-912 -347 -901 0
+911 351 -599 0
+911 -351 599 0
+-911 351 599 0
+-911 -351 -599 0
+-913 347 0
+-913 911 0
+913 -347 -911 0
+914 347 -911 0
+914 -347 911 0
+-914 347 911 0
+-914 -347 -911 0
+-915 916 0
+-915 914 0
+-915 -347 0
+915 -916 347 -914 0
+916 -347 914 0
+-916 347 914 0
+-917 914 0
+916 -917 -347 0
+-916 -917 347 0
+916 917 347 -914 0
+-916 917 -347 -914 0
+-918 914 0
+916 -918 347 0
+-916 -918 -347 0
+916 918 -347 -914 0
+-916 918 347 -914 0
+-919 916 0
+-919 914 0
+919 -916 -914 0
+920 916 -914 0
+920 -916 914 0
+-920 916 914 0
+-920 -916 -914 0
+-921 355 0
+-921 599 0
+-921 912 -359 0
+-921 -912 359 0
+921 -355 912 359 -599 0
+921 -355 -912 -359 -599 0
+923 355 -912 0
+923 -355 912 0
+-923 355 912 0
+-923 -355 -912 0
+922 359 -599 0
+922 -359 599 0
+-922 359 599 0
+-922 -359 -599 0
+924 -922 0
+-924 922 0
+-925 355 0
+-925 922 0
+925 -355 -922 0
+926 355 -922 0
+926 -355 922 0
+-926 355 922 0
+-926 -355 -922 0
+-927 928 0
+-927 926 0
+-927 -355 0
+927 -928 355 -926 0
+928 -355 926 0
+-928 355 926 0
+-929 926 0
+928 -929 -355 0
+-928 -929 355 0
+928 929 355 -926 0
+-928 929 -355 -926 0
+-930 926 0
+928 -930 355 0
+-928 -930 -355 0
+928 930 -355 -926 0
+-928 930 355 -926 0
+-931 928 0
+-931 926 0
+931 -928 -926 0
+932 928 -926 0
+932 -928 926 0
+-932 928 926 0
+-932 -928 -926 0
+-933 364 0
+-933 599 0
+-933 923 -368 0
+-933 -923 368 0
+933 -364 923 368 -599 0
+933 -364 -923 -368 -599 0
+935 364 -923 0
+935 -364 923 0
+-935 364 923 0
+-935 -364 -923 0
+934 368 -599 0
+934 -368 599 0
+-934 368 599 0
+-934 -368 -599 0
+-936 364 0
+-936 934 0
+936 -364 -934 0
+937 364 -934 0
+937 -364 934 0
+-937 364 934 0
+-937 -364 -934 0
+-938 939 0
+-938 937 0
+-938 -364 0
+938 -939 364 -937 0
+939 -364 937 0
+-939 364 937 0
+-940 937 0
+939 -940 -364 0
+-939 -940 364 0
+939 940 364 -937 0
+-939 940 -364 -937 0
+-941 937 0
+939 -941 364 0
+-939 -941 -364 0
+939 941 -364 -937 0
+-939 941 364 -937 0
+-942 939 0
+-942 937 0
+942 -939 -937 0
+943 939 -937 0
+943 -939 937 0
+-943 939 937 0
+-943 -939 -937 0
+-944 372 0
+-944 599 0
+-944 935 -376 0
+-944 -935 376 0
+944 -372 935 376 -599 0
+944 -372 -935 -376 -599 0
+946 372 -935 0
+946 -372 935 0
+-946 372 935 0
+-946 -372 -935 0
+945 376 -599 0
+945 -376 599 0
+-945 376 599 0
+-945 -376 -599 0
+-947 372 0
+-947 945 0
+947 -372 -945 0
+948 372 -945 0
+948 -372 945 0
+-948 372 945 0
+-948 -372 -945 0
+-949 950 0
+-949 948 0
+-949 -372 0
+949 -950 372 -948 0
+950 -372 948 0
+-950 372 948 0
+-951 948 0
+950 -951 -372 0
+-950 -951 372 0
+950 951 372 -948 0
+-950 951 -372 -948 0
+-952 948 0
+950 -952 372 0
+-950 -952 -372 0
+950 952 -372 -948 0
+-950 952 372 -948 0
+-953 950 0
+-953 948 0
+953 -950 -948 0
+954 950 -948 0
+954 -950 948 0
+-954 950 948 0
+-954 -950 -948 0
+-955 380 0
+-955 599 0
+-955 946 -384 0
+-955 -946 384 0
+955 -380 946 384 -599 0
+955 -380 -946 -384 -599 0
+957 380 -946 0
+957 -380 946 0
+-957 380 946 0
+-957 -380 -946 0
+956 384 -599 0
+956 -384 599 0
+-956 384 599 0
+-956 -384 -599 0
+958 -956 0
+-958 956 0
+-959 380 0
+-959 956 0
+959 -380 -956 0
+960 380 -956 0
+960 -380 956 0
+-960 380 956 0
+-960 -380 -956 0
+-961 962 0
+-961 960 0
+-961 -380 0
+961 -962 380 -960 0
+962 -380 960 0
+-962 380 960 0
+-963 960 0
+962 -963 -380 0
+-962 -963 380 0
+962 963 380 -960 0
+-962 963 -380 -960 0
+-964 960 0
+962 -964 380 0
+-962 -964 -380 0
+962 964 -380 -960 0
+-962 964 380 -960 0
+-965 962 0
+-965 960 0
+965 -962 -960 0
+966 962 -960 0
+966 -962 960 0
+-966 962 960 0
+-966 -962 -960 0
+-967 389 0
+-967 599 0
+-967 957 -393 0
+-967 -957 393 0
+967 -389 957 393 -599 0
+967 -389 -957 -393 -599 0
+969 389 -957 0
+969 -389 957 0
+-969 389 957 0
+-969 -389 -957 0
+968 393 -599 0
+968 -393 599 0
+-968 393 599 0
+-968 -393 -599 0
+-970 389 0
+-970 968 0
+970 -389 -968 0
+971 389 -968 0
+971 -389 968 0
+-971 389 968 0
+-971 -389 -968 0
+-972 973 0
+-972 971 0
+-972 -389 0
+972 -973 389 -971 0
+973 -389 971 0
+-973 389 971 0
+-974 971 0
+973 -974 -389 0
+-973 -974 389 0
+973 974 389 -971 0
+-973 974 -389 -971 0
+-975 971 0
+973 -975 389 0
+-973 -975 -389 0
+973 975 -389 -971 0
+-973 975 389 -971 0
+-976 973 0
+-976 971 0
+976 -973 -971 0
+977 973 -971 0
+977 -973 971 0
+-977 973 971 0
+-977 -973 -971 0
+-978 397 0
+-978 599 0
+-978 969 -401 0
+-978 -969 401 0
+978 -397 969 401 -599 0
+978 -397 -969 -401 -599 0
+980 397 -969 0
+980 -397 969 0
+-980 397 969 0
+-980 -397 -969 0
+979 401 -599 0
+979 -401 599 0
+-979 401 599 0
+-979 -401 -599 0
+-981 397 0
+-981 979 0
+981 -397 -979 0
+982 397 -979 0
+982 -397 979 0
+-982 397 979 0
+-982 -397 -979 0
+-983 984 0
+-983 982 0
+-983 -397 0
+983 -984 397 -982 0
+984 -397 982 0
+-984 397 982 0
+-985 982 0
+984 -985 -397 0
+-984 -985 397 0
+984 985 397 -982 0
+-984 985 -397 -982 0
+-986 982 0
+984 -986 397 0
+-984 -986 -397 0
+984 986 -397 -982 0
+-984 986 397 -982 0
+-987 984 0
+-987 982 0
+987 -984 -982 0
+988 984 -982 0
+988 -984 982 0
+-988 984 982 0
+-988 -984 -982 0
+-989 405 0
+-989 599 0
+-989 980 -409 0
+-989 -980 409 0
+989 -405 980 409 -599 0
+989 -405 -980 -409 -599 0
+991 405 -980 0
+991 -405 980 0
+-991 405 980 0
+-991 -405 -980 0
+990 409 -599 0
+990 -409 599 0
+-990 409 599 0
+-990 -409 -599 0
+-992 405 0
+-992 990 0
+992 -405 -990 0
+993 405 -990 0
+993 -405 990 0
+-993 405 990 0
+-993 -405 -990 0
+-994 995 0
+-994 993 0
+-994 -405 0
+994 -995 405 -993 0
+995 -405 993 0
+-995 405 993 0
+-996 993 0
+995 -996 -405 0
+-995 -996 405 0
+995 996 405 -993 0
+-995 996 -405 -993 0
+-997 993 0
+995 -997 405 0
+-995 -997 -405 0
+995 997 -405 -993 0
+-995 997 405 -993 0
+-998 995 0
+-998 993 0
+998 -995 -993 0
+999 995 -993 0
+999 -995 993 0
+-999 995 993 0
+-999 -995 -993 0
+-1000 413 0
+-1000 599 0
+-1000 991 -417 0
+-1000 -991 417 0
+1000 -413 991 417 -599 0
+1000 -413 -991 -417 -599 0
+1002 413 -991 0
+1002 -413 991 0
+-1002 413 991 0
+-1002 -413 -991 0
+1001 417 -599 0
+1001 -417 599 0
+-1001 417 599 0
+-1001 -417 -599 0
+1003 -1001 0
+-1003 1001 0
+-1004 413 0
+-1004 1001 0
+1004 -413 -1001 0
+1005 413 -1001 0
+1005 -413 1001 0
+-1005 413 1001 0
+-1005 -413 -1001 0
+-1006 1007 0
+-1006 1005 0
+-1006 -413 0
+1006 -1007 413 -1005 0
+1007 -413 1005 0
+-1007 413 1005 0
+-1008 1005 0
+1007 -1008 -413 0
+-1007 -1008 413 0
+1007 1008 413 -1005 0
+-1007 1008 -413 -1005 0
+-1009 1005 0
+1007 -1009 413 0
+-1007 -1009 -413 0
+1007 1009 -413 -1005 0
+-1007 1009 413 -1005 0
+-1010 1007 0
+-1010 1005 0
+1010 -1007 -1005 0
+1011 1007 -1005 0
+1011 -1007 1005 0
+-1011 1007 1005 0
+-1011 -1007 -1005 0
+-1012 422 0
+-1012 599 0
+-1012 1002 -426 0
+-1012 -1002 426 0
+1012 -422 1002 426 -599 0
+1012 -422 -1002 -426 -599 0
+1014 422 -1002 0
+1014 -422 1002 0
+-1014 422 1002 0
+-1014 -422 -1002 0
+1013 426 -599 0
+1013 -426 599 0
+-1013 426 599 0
+-1013 -426 -599 0
+1015 -1013 0
+-1015 1013 0
+-1016 422 0
+-1016 1013 0
+1016 -422 -1013 0
+1017 422 -1013 0
+1017 -422 1013 0
+-1017 422 1013 0
+-1017 -422 -1013 0
+-1018 1019 0
+-1018 1017 0
+-1018 -422 0
+1018 -1019 422 -1017 0
+1019 -422 1017 0
+-1019 422 1017 0
+-1020 1017 0
+1019 -1020 -422 0
+-1019 -1020 422 0
+1019 1020 422 -1017 0
+-1019 1020 -422 -1017 0
+-1021 1017 0
+1019 -1021 422 0
+-1019 -1021 -422 0
+1019 1021 -422 -1017 0
+-1019 1021 422 -1017 0
+-1022 1019 0
+-1022 1017 0
+1022 -1019 -1017 0
+1023 1019 -1017 0
+1023 -1019 1017 0
+-1023 1019 1017 0
+-1023 -1019 -1017 0
+-1024 431 0
+-1024 599 0
+-1024 1014 -435 0
+-1024 -1014 435 0
+1024 -431 1014 435 -599 0
+1024 -431 -1014 -435 -599 0
+1026 431 -1014 0
+1026 -431 1014 0
+-1026 431 1014 0
+-1026 -431 -1014 0
+1025 435 -599 0
+1025 -435 599 0
+-1025 435 599 0
+-1025 -435 -599 0
+-1027 431 0
+-1027 1025 0
+1027 -431 -1025 0
+1028 431 -1025 0
+1028 -431 1025 0
+-1028 431 1025 0
+-1028 -431 -1025 0
+-1029 1030 0
+-1029 1028 0
+-1029 -431 0
+1029 -1030 431 -1028 0
+1030 -431 1028 0
+-1030 431 1028 0
+-1031 1028 0
+1030 -1031 -431 0
+-1030 -1031 431 0
+1030 1031 431 -1028 0
+-1030 1031 -431 -1028 0
+-1032 1028 0
+1030 -1032 431 0
+-1030 -1032 -431 0
+1030 1032 -431 -1028 0
+-1030 1032 431 -1028 0
+-1033 1030 0
+-1033 1028 0
+1033 -1030 -1028 0
+1034 1030 -1028 0
+1034 -1030 1028 0
+-1034 1030 1028 0
+-1034 -1030 -1028 0
+-1035 439 0
+-1035 599 0
+-1035 1026 -443 0
+-1035 -1026 443 0
+1035 -439 1026 443 -599 0
+1035 -439 -1026 -443 -599 0
+1037 439 -1026 0
+1037 -439 1026 0
+-1037 439 1026 0
+-1037 -439 -1026 0
+1036 443 -599 0
+1036 -443 599 0
+-1036 443 599 0
+-1036 -443 -599 0
+1038 -1036 0
+-1038 1036 0
+-1039 439 0
+-1039 1036 0
+1039 -439 -1036 0
+1040 439 -1036 0
+1040 -439 1036 0
+-1040 439 1036 0
+-1040 -439 -1036 0
+-1041 1042 0
+-1041 1040 0
+-1041 -439 0
+1041 -1042 439 -1040 0
+1042 -439 1040 0
+-1042 439 1040 0
+-1043 1040 0
+1042 -1043 -439 0
+-1042 -1043 439 0
+1042 1043 439 -1040 0
+-1042 1043 -439 -1040 0
+-1044 1040 0
+1042 -1044 439 0
+-1042 -1044 -439 0
+1042 1044 -439 -1040 0
+-1042 1044 439 -1040 0
+-1045 1042 0
+-1045 1040 0
+1045 -1042 -1040 0
+1046 1042 -1040 0
+1046 -1042 1040 0
+-1046 1042 1040 0
+-1046 -1042 -1040 0
+-1047 448 0
+-1047 599 0
+-1047 1037 -452 0
+-1047 -1037 452 0
+1047 -448 1037 452 -599 0
+1047 -448 -1037 -452 -599 0
+1049 448 -1037 0
+1049 -448 1037 0
+-1049 448 1037 0
+-1049 -448 -1037 0
+1048 452 -599 0
+1048 -452 599 0
+-1048 452 599 0
+-1048 -452 -599 0
+1050 -1048 0
+-1050 1048 0
+-1051 448 0
+-1051 1048 0
+1051 -448 -1048 0
+1052 448 -1048 0
+1052 -448 1048 0
+-1052 448 1048 0
+-1052 -448 -1048 0
+-1053 1054 0
+-1053 1052 0
+-1053 -448 0
+1053 -1054 448 -1052 0
+1054 -448 1052 0
+-1054 448 1052 0
+-1055 1052 0
+1054 -1055 -448 0
+-1054 -1055 448 0
+1054 1055 448 -1052 0
+-1054 1055 -448 -1052 0
+-1056 1052 0
+1054 -1056 448 0
+-1054 -1056 -448 0
+1054 1056 -448 -1052 0
+-1054 1056 448 -1052 0
+-1057 1054 0
+-1057 1052 0
+1057 -1054 -1052 0
+1058 1054 -1052 0
+1058 -1054 1052 0
+-1058 1054 1052 0
+-1058 -1054 -1052 0
+-1059 457 0
+-1059 599 0
+-1059 1049 -461 0
+-1059 -1049 461 0
+1059 -457 1049 461 -599 0
+1059 -457 -1049 -461 -599 0
+1061 457 -1049 0
+1061 -457 1049 0
+-1061 457 1049 0
+-1061 -457 -1049 0
+1060 461 -599 0
+1060 -461 599 0
+-1060 461 599 0
+-1060 -461 -599 0
+1062 -1060 0
+-1062 1060 0
+-1063 457 0
+-1063 1060 0
+1063 -457 -1060 0
+1064 457 -1060 0
+1064 -457 1060 0
+-1064 457 1060 0
+-1064 -457 -1060 0
+-1065 1066 0
+-1065 1064 0
+-1065 -457 0
+1065 -1066 457 -1064 0
+1066 -457 1064 0
+-1066 457 1064 0
+-1067 1064 0
+1066 -1067 -457 0
+-1066 -1067 457 0
+1066 1067 457 -1064 0
+-1066 1067 -457 -1064 0
+-1068 1064 0
+1066 -1068 457 0
+-1066 -1068 -457 0
+1066 1068 -457 -1064 0
+-1066 1068 457 -1064 0
+-1069 1066 0
+-1069 1064 0
+1069 -1066 -1064 0
+1070 1066 -1064 0
+1070 -1066 1064 0
+-1070 1066 1064 0
+-1070 -1066 -1064 0
+-1071 466 0
+-1071 599 0
+-1071 1061 -470 0
+-1071 -1061 470 0
+1071 -466 1061 470 -599 0
+1071 -466 -1061 -470 -599 0
+1073 466 -1061 0
+1073 -466 1061 0
+-1073 466 1061 0
+-1073 -466 -1061 0
+1072 470 -599 0
+1072 -470 599 0
+-1072 470 599 0
+-1072 -470 -599 0
+1074 -1072 0
+-1074 1072 0
+-1075 466 0
+-1075 1072 0
+1075 -466 -1072 0
+1076 466 -1072 0
+1076 -466 1072 0
+-1076 466 1072 0
+-1076 -466 -1072 0
+-1077 1078 0
+-1077 1076 0
+-1077 -466 0
+1077 -1078 466 -1076 0
+1078 -466 1076 0
+-1078 466 1076 0
+-1079 1076 0
+1078 -1079 -466 0
+-1078 -1079 466 0
+1078 1079 466 -1076 0
+-1078 1079 -466 -1076 0
+-1080 1076 0
+1078 -1080 466 0
+-1078 -1080 -466 0
+1078 1080 -466 -1076 0
+-1078 1080 466 -1076 0
+-1081 1078 0
+-1081 1076 0
+1081 -1078 -1076 0
+1082 1078 -1076 0
+1082 -1078 1076 0
+-1082 1078 1076 0
+-1082 -1078 -1076 0
+-1083 475 0
+-1083 599 0
+-1083 1073 -479 0
+-1083 -1073 479 0
+1083 -475 1073 479 -599 0
+1083 -475 -1073 -479 -599 0
+1085 475 -1073 0
+1085 -475 1073 0
+-1085 475 1073 0
+-1085 -475 -1073 0
+1084 479 -599 0
+1084 -479 599 0
+-1084 479 599 0
+-1084 -479 -599 0
+1086 -1084 0
+-1086 1084 0
+-1087 475 0
+-1087 1084 0
+1087 -475 -1084 0
+1088 475 -1084 0
+1088 -475 1084 0
+-1088 475 1084 0
+-1088 -475 -1084 0
+-1089 1090 0
+-1089 1088 0
+-1089 -475 0
+1089 -1090 475 -1088 0
+1090 -475 1088 0
+-1090 475 1088 0
+-1091 1088 0
+1090 -1091 -475 0
+-1090 -1091 475 0
+1090 1091 475 -1088 0
+-1090 1091 -475 -1088 0
+-1092 1088 0
+1090 -1092 475 0
+-1090 -1092 -475 0
+1090 1092 -475 -1088 0
+-1090 1092 475 -1088 0
+-1093 1090 0
+-1093 1088 0
+1093 -1090 -1088 0
+1094 1090 -1088 0
+1094 -1090 1088 0
+-1094 1090 1088 0
+-1094 -1090 -1088 0
+-1095 484 0
+-1095 599 0
+-1095 1085 -488 0
+-1095 -1085 488 0
+1095 -484 1085 488 -599 0
+1095 -484 -1085 -488 -599 0
+1097 484 -1085 0
+1097 -484 1085 0
+-1097 484 1085 0
+-1097 -484 -1085 0
+1096 488 -599 0
+1096 -488 599 0
+-1096 488 599 0
+-1096 -488 -599 0
+-1098 484 0
+-1098 1096 0
+1098 -484 -1096 0
+1099 484 -1096 0
+1099 -484 1096 0
+-1099 484 1096 0
+-1099 -484 -1096 0
+-1100 1101 0
+-1100 1099 0
+-1100 -484 0
+1100 -1101 484 -1099 0
+1101 -484 1099 0
+-1101 484 1099 0
+-1102 1099 0
+1101 -1102 -484 0
+-1101 -1102 484 0
+1101 1102 484 -1099 0
+-1101 1102 -484 -1099 0
+-1103 1099 0
+1101 -1103 484 0
+-1101 -1103 -484 0
+1101 1103 -484 -1099 0
+-1101 1103 484 -1099 0
+-1104 1101 0
+-1104 1099 0
+1104 -1101 -1099 0
+1105 1101 -1099 0
+1105 -1101 1099 0
+-1105 1101 1099 0
+-1105 -1101 -1099 0
+-1106 492 0
+-1106 599 0
+-1106 1097 -496 0
+-1106 -1097 496 0
+1106 -492 1097 496 -599 0
+1106 -492 -1097 -496 -599 0
+1108 492 -1097 0
+1108 -492 1097 0
+-1108 492 1097 0
+-1108 -492 -1097 0
+1107 496 -599 0
+1107 -496 599 0
+-1107 496 599 0
+-1107 -496 -599 0
+1109 -1107 0
+-1109 1107 0
+-1110 492 0
+-1110 1107 0
+1110 -492 -1107 0
+1111 492 -1107 0
+1111 -492 1107 0
+-1111 492 1107 0
+-1111 -492 -1107 0
+-1112 1113 0
+-1112 1111 0
+-1112 -492 0
+1112 -1113 492 -1111 0
+1113 -492 1111 0
+-1113 492 1111 0
+-1114 1111 0
+1113 -1114 -492 0
+-1113 -1114 492 0
+1113 1114 492 -1111 0
+-1113 1114 -492 -1111 0
+-1115 1111 0
+1113 -1115 492 0
+-1113 -1115 -492 0
+1113 1115 -492 -1111 0
+-1113 1115 492 -1111 0
+-1116 1113 0
+-1116 1111 0
+1116 -1113 -1111 0
+1117 1113 -1111 0
+1117 -1113 1111 0
+-1117 1113 1111 0
+-1117 -1113 -1111 0
+-1118 501 0
+-1118 599 0
+-1118 1108 -505 0
+-1118 -1108 505 0
+1118 -501 1108 505 -599 0
+1118 -501 -1108 -505 -599 0
+1120 501 -1108 0
+1120 -501 1108 0
+-1120 501 1108 0
+-1120 -501 -1108 0
+1119 505 -599 0
+1119 -505 599 0
+-1119 505 599 0
+-1119 -505 -599 0
+-1121 501 0
+-1121 1119 0
+1121 -501 -1119 0
+1122 501 -1119 0
+1122 -501 1119 0
+-1122 501 1119 0
+-1122 -501 -1119 0
+-1123 1124 0
+-1123 1122 0
+-1123 -501 0
+1123 -1124 501 -1122 0
+1124 -501 1122 0
+-1124 501 1122 0
+-1125 1122 0
+1124 -1125 -501 0
+-1124 -1125 501 0
+1124 1125 501 -1122 0
+-1124 1125 -501 -1122 0
+-1126 1122 0
+1124 -1126 501 0
+-1124 -1126 -501 0
+1124 1126 -501 -1122 0
+-1124 1126 501 -1122 0
+-1127 1124 0
+-1127 1122 0
+1127 -1124 -1122 0
+1128 1124 -1122 0
+1128 -1124 1122 0
+-1128 1124 1122 0
+-1128 -1124 -1122 0
+-1129 509 0
+-1129 599 0
+-1129 1120 -513 0
+-1129 -1120 513 0
+1129 -509 1120 513 -599 0
+1129 -509 -1120 -513 -599 0
+1131 509 -1120 0
+1131 -509 1120 0
+-1131 509 1120 0
+-1131 -509 -1120 0
+1130 513 -599 0
+1130 -513 599 0
+-1130 513 599 0
+-1130 -513 -599 0
+-1132 509 0
+-1132 1130 0
+1132 -509 -1130 0
+1133 509 -1130 0
+1133 -509 1130 0
+-1133 509 1130 0
+-1133 -509 -1130 0
+-1134 1135 0
+-1134 1133 0
+-1134 -509 0
+1134 -1135 509 -1133 0
+1135 -509 1133 0
+-1135 509 1133 0
+-1136 1133 0
+1135 -1136 -509 0
+-1135 -1136 509 0
+1135 1136 509 -1133 0
+-1135 1136 -509 -1133 0
+-1137 1133 0
+1135 -1137 509 0
+-1135 -1137 -509 0
+1135 1137 -509 -1133 0
+-1135 1137 509 -1133 0
+-1138 1135 0
+-1138 1133 0
+1138 -1135 -1133 0
+1139 1135 -1133 0
+1139 -1135 1133 0
+-1139 1135 1133 0
+-1139 -1135 -1133 0
+-1140 517 0
+-1140 599 0
+-1140 1131 -521 0
+-1140 -1131 521 0
+1140 -517 1131 521 -599 0
+1140 -517 -1131 -521 -599 0
+1142 517 -1131 0
+1142 -517 1131 0
+-1142 517 1131 0
+-1142 -517 -1131 0
+1141 521 -599 0
+1141 -521 599 0
+-1141 521 599 0
+-1141 -521 -599 0
+-1143 517 0
+-1143 1141 0
+1143 -517 -1141 0
+1144 517 -1141 0
+1144 -517 1141 0
+-1144 517 1141 0
+-1144 -517 -1141 0
+-1145 1146 0
+-1145 1144 0
+-1145 -517 0
+1145 -1146 517 -1144 0
+1146 -517 1144 0
+-1146 517 1144 0
+-1147 1144 0
+1146 -1147 -517 0
+-1146 -1147 517 0
+1146 1147 517 -1144 0
+-1146 1147 -517 -1144 0
+-1148 1144 0
+1146 -1148 517 0
+-1146 -1148 -517 0
+1146 1148 -517 -1144 0
+-1146 1148 517 -1144 0
+-1149 1146 0
+-1149 1144 0
+1149 -1146 -1144 0
+1150 1146 -1144 0
+1150 -1146 1144 0
+-1150 1146 1144 0
+-1150 -1146 -1144 0
+-1151 525 0
+-1151 599 0
+-1151 1142 -529 0
+-1151 -1142 529 0
+1151 -525 1142 529 -599 0
+1151 -525 -1142 -529 -599 0
+1153 525 -1142 0
+1153 -525 1142 0
+-1153 525 1142 0
+-1153 -525 -1142 0
+1152 529 -599 0
+1152 -529 599 0
+-1152 529 599 0
+-1152 -529 -599 0
+-1154 525 0
+-1154 1152 0
+1154 -525 -1152 0
+1155 525 -1152 0
+1155 -525 1152 0
+-1155 525 1152 0
+-1155 -525 -1152 0
+-1156 1157 0
+-1156 1155 0
+-1156 -525 0
+1156 -1157 525 -1155 0
+1157 -525 1155 0
+-1157 525 1155 0
+-1158 1155 0
+1157 -1158 -525 0
+-1157 -1158 525 0
+1157 1158 525 -1155 0
+-1157 1158 -525 -1155 0
+-1159 1155 0
+1157 -1159 525 0
+-1157 -1159 -525 0
+1157 1159 -525 -1155 0
+-1157 1159 525 -1155 0
+-1160 1157 0
+-1160 1155 0
+1160 -1157 -1155 0
+1161 1157 -1155 0
+1161 -1157 1155 0
+-1161 1157 1155 0
+-1161 -1157 -1155 0
+-1162 533 0
+-1162 599 0
+-1162 1153 -537 0
+-1162 -1153 537 0
+1162 -533 1153 537 -599 0
+1162 -533 -1153 -537 -599 0
+1164 533 -1153 0
+1164 -533 1153 0
+-1164 533 1153 0
+-1164 -533 -1153 0
+1163 537 -599 0
+1163 -537 599 0
+-1163 537 599 0
+-1163 -537 -599 0
+1165 -1163 0
+-1165 1163 0
+-1166 533 0
+-1166 1163 0
+1166 -533 -1163 0
+1167 533 -1163 0
+1167 -533 1163 0
+-1167 533 1163 0
+-1167 -533 -1163 0
+-1168 1169 0
+-1168 1167 0
+-1168 -533 0
+1168 -1169 533 -1167 0
+1169 -533 1167 0
+-1169 533 1167 0
+-1170 1167 0
+1169 -1170 -533 0
+-1169 -1170 533 0
+1169 1170 533 -1167 0
+-1169 1170 -533 -1167 0
+-1171 1167 0
+1169 -1171 533 0
+-1169 -1171 -533 0
+1169 1171 -533 -1167 0
+-1169 1171 533 -1167 0
+-1172 1169 0
+-1172 1167 0
+1172 -1169 -1167 0
+1173 1169 -1167 0
+1173 -1169 1167 0
+-1173 1169 1167 0
+-1173 -1169 -1167 0
+-1174 542 0
+-1174 599 0
+-1174 1164 -546 0
+-1174 -1164 546 0
+1174 -542 1164 546 -599 0
+1174 -542 -1164 -546 -599 0
+1176 542 -1164 0
+1176 -542 1164 0
+-1176 542 1164 0
+-1176 -542 -1164 0
+1175 546 -599 0
+1175 -546 599 0
+-1175 546 599 0
+-1175 -546 -599 0
+-1177 542 0
+-1177 1175 0
+1177 -542 -1175 0
+1178 542 -1175 0
+1178 -542 1175 0
+-1178 542 1175 0
+-1178 -542 -1175 0
+-1179 1180 0
+-1179 1178 0
+-1179 -542 0
+1179 -1180 542 -1178 0
+1180 -542 1178 0
+-1180 542 1178 0
+-1181 1178 0
+1180 -1181 -542 0
+-1180 -1181 542 0
+1180 1181 542 -1178 0
+-1180 1181 -542 -1178 0
+-1182 1178 0
+1180 -1182 542 0
+-1180 -1182 -542 0
+1180 1182 -542 -1178 0
+-1180 1182 542 -1178 0
+-1183 1180 0
+-1183 1178 0
+1183 -1180 -1178 0
+1184 1180 -1178 0
+1184 -1180 1178 0
+-1184 1180 1178 0
+-1184 -1180 -1178 0
+-1185 550 0
+-1185 599 0
+-1185 1176 -554 0
+-1185 -1176 554 0
+1185 -550 1176 554 -599 0
+1185 -550 -1176 -554 -599 0
+1187 550 -1176 0
+1187 -550 1176 0
+-1187 550 1176 0
+-1187 -550 -1176 0
+1186 554 -599 0
+1186 -554 599 0
+-1186 554 599 0
+-1186 -554 -599 0
+1188 -1186 0
+-1188 1186 0
+-1189 550 0
+-1189 1186 0
+1189 -550 -1186 0
+1190 550 -1186 0
+1190 -550 1186 0
+-1190 550 1186 0
+-1190 -550 -1186 0
+-1191 1192 0
+-1191 1190 0
+-1191 -550 0
+1191 -1192 550 -1190 0
+1192 -550 1190 0
+-1192 550 1190 0
+-1193 1190 0
+1192 -1193 -550 0
+-1192 -1193 550 0
+1192 1193 550 -1190 0
+-1192 1193 -550 -1190 0
+-1194 1190 0
+1192 -1194 550 0
+-1192 -1194 -550 0
+1192 1194 -550 -1190 0
+-1192 1194 550 -1190 0
+-1195 1192 0
+-1195 1190 0
+1195 -1192 -1190 0
+1196 1192 -1190 0
+1196 -1192 1190 0
+-1196 1192 1190 0
+-1196 -1192 -1190 0
+-1197 559 0
+-1197 599 0
+-1197 1187 -563 0
+-1197 -1187 563 0
+1197 -559 1187 563 -599 0
+1197 -559 -1187 -563 -599 0
+1199 559 -1187 0
+1199 -559 1187 0
+-1199 559 1187 0
+-1199 -559 -1187 0
+1198 563 -599 0
+1198 -563 599 0
+-1198 563 599 0
+-1198 -563 -599 0
+1200 -1198 0
+-1200 1198 0
+-1201 559 0
+-1201 1198 0
+1201 -559 -1198 0
+1202 559 -1198 0
+1202 -559 1198 0
+-1202 559 1198 0
+-1202 -559 -1198 0
+-1203 1204 0
+-1203 1202 0
+-1203 -559 0
+1203 -1204 559 -1202 0
+1204 -559 1202 0
+-1204 559 1202 0
+-1205 1202 0
+1204 -1205 -559 0
+-1204 -1205 559 0
+1204 1205 559 -1202 0
+-1204 1205 -559 -1202 0
+-1206 1202 0
+1204 -1206 559 0
+-1204 -1206 -559 0
+1204 1206 -559 -1202 0
+-1204 1206 559 -1202 0
+-1207 1204 0
+-1207 1202 0
+1207 -1204 -1202 0
+1208 1204 -1202 0
+1208 -1204 1202 0
+-1208 1204 1202 0
+-1208 -1204 -1202 0
+-1209 568 0
+-1209 599 0
+-1209 1199 -572 0
+-1209 -1199 572 0
+1209 -568 1199 572 -599 0
+1209 -568 -1199 -572 -599 0
+1211 568 -1199 0
+1211 -568 1199 0
+-1211 568 1199 0
+-1211 -568 -1199 0
+1210 572 -599 0
+1210 -572 599 0
+-1210 572 599 0
+-1210 -572 -599 0
+1212 -1210 0
+-1212 1210 0
+-1213 568 0
+-1213 1210 0
+1213 -568 -1210 0
+1214 568 -1210 0
+1214 -568 1210 0
+-1214 568 1210 0
+-1214 -568 -1210 0
+-1215 1216 0
+-1215 1214 0
+-1215 -568 0
+1215 -1216 568 -1214 0
+1216 -568 1214 0
+-1216 568 1214 0
+-1217 1214 0
+1216 -1217 -568 0
+-1216 -1217 568 0
+1216 1217 568 -1214 0
+-1216 1217 -568 -1214 0
+-1218 1214 0
+1216 -1218 568 0
+-1216 -1218 -568 0
+1216 1218 -568 -1214 0
+-1216 1218 568 -1214 0
+-1219 1216 0
+-1219 1214 0
+1219 -1216 -1214 0
+1220 1216 -1214 0
+1220 -1216 1214 0
+-1220 1216 1214 0
+-1220 -1216 -1214 0
+-1221 577 0
+-1221 599 0
+-1221 1211 -581 0
+-1221 -1211 581 0
+1221 -577 1211 581 -599 0
+1221 -577 -1211 -581 -599 0
+1223 577 -1211 0
+1223 -577 1211 0
+-1223 577 1211 0
+-1223 -577 -1211 0
+1222 581 -599 0
+1222 -581 599 0
+-1222 581 599 0
+-1222 -581 -599 0
+-1224 577 0
+-1224 1222 0
+1224 -577 -1222 0
+1225 577 -1222 0
+1225 -577 1222 0
+-1225 577 1222 0
+-1225 -577 -1222 0
+-1226 1227 0
+-1226 1225 0
+-1226 -577 0
+1226 -1227 577 -1225 0
+1227 -577 1225 0
+-1227 577 1225 0
+-1228 1225 0
+1227 -1228 -577 0
+-1227 -1228 577 0
+1227 1228 577 -1225 0
+-1227 1228 -577 -1225 0
+-1229 1225 0
+1227 -1229 577 0
+-1227 -1229 -577 0
+1227 1229 -577 -1225 0
+-1227 1229 577 -1225 0
+-1230 1227 0
+-1230 1225 0
+1230 -1227 -1225 0
+1231 1227 -1225 0
+1231 -1227 1225 0
+-1231 1227 1225 0
+-1231 -1227 -1225 0
+-1232 585 0
+-1232 599 0
+-1232 1223 -589 0
+-1232 -1223 589 0
+1232 -585 1223 589 -599 0
+1232 -585 -1223 -589 -599 0
+1234 585 -1223 0
+1234 -585 1223 0
+-1234 585 1223 0
+-1234 -585 -1223 0
+1233 589 -599 0
+1233 -589 599 0
+-1233 589 599 0
+-1233 -589 -599 0
+1235 -1233 0
+-1235 1233 0
+-1236 585 0
+-1236 1233 0
+1236 -585 -1233 0
+1237 585 -1233 0
+1237 -585 1233 0
+-1237 585 1233 0
+-1237 -585 -1233 0
+-1238 1239 0
+-1238 1237 0
+-1238 -585 0
+1238 -1239 585 -1237 0
+1239 -585 1237 0
+-1239 585 1237 0
+-1240 1237 0
+1239 -1240 -585 0
+-1239 -1240 585 0
+1239 1240 585 -1237 0
+-1239 1240 -585 -1237 0
+-1241 1237 0
+1239 -1241 585 0
+-1239 -1241 -585 0
+1239 1241 -585 -1237 0
+-1239 1241 585 -1237 0
+-1242 1239 0
+-1242 1237 0
+1242 -1239 -1237 0
+1243 1239 -1237 0
+1243 -1239 1237 0
+-1243 1239 1237 0
+-1243 -1239 -1237 0
+-607 0
+-619 0
+-623 0
+-630 0
+-634 0
+-642 0
+-646 0
+-653 0
+-657 0
+-665 0
+-669 0
+-677 0
+-681 0
+-688 0
+-692 0
+-700 0
+-704 0
+-712 0
+-716 0
+-723 0
+-727 0
+-735 0
+-739 0
+-747 0
+-751 0
+-758 0
+-762 0
+-769 0
+-773 0
+-781 0
+-785 0
+-792 0
+-796 0
+-803 0
+-807 0
+-814 0
+-818 0
+-825 0
+-829 0
+-836 0
+-840 0
+-848 0
+-852 0
+-859 0
+-863 0
+-870 0
+-874 0
+-882 0
+-886 0
+-894 0
+-898 0
+-905 0
+-909 0
+-916 0
+-920 0
+-928 0
+-932 0
+-939 0
+-943 0
+-950 0
+-954 0
+-962 0
+-966 0
+-973 0
+-977 0
+-984 0
+-988 0
+-995 0
+-999 0
+-1007 0
+-1011 0
+-1019 0
+-1023 0
+-1030 0
+-1034 0
+-1042 0
+-1046 0
+-1054 0
+-1058 0
+-1066 0
+-1070 0
+-1078 0
+-1082 0
+-1090 0
+-1094 0
+-1101 0
+-1105 0
+-1113 0
+-1117 0
+-1124 0
+-1128 0
+-1135 0
+-1139 0
+-1146 0
+-1150 0
+-1157 0
+-1161 0
+-1169 0
+-1173 0
+-1180 0
+-1184 0
+-1192 0
+-1196 0
+-1204 0
+-1208 0
+-1216 0
+-1220 0
+-1227 0
+-1231 0
+-1239 0
+-1243 0
+-1234 0
+-599 0
