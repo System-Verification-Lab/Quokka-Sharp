@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Empty circuit
+filename="basic_tests/empty.qasm"
+# Write the content to the file
+echo "OPENQASM 2.0;
+    include \"qelib1.inc\";
+    qreg q[1];" > "$filename"
+
+
 # Define the list of single qbit gates
 gates=("x" "y" "z" "s" "sdg" "t" "tdg" "h")
 
