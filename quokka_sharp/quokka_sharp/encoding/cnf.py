@@ -33,6 +33,7 @@ class Variables:
                 w = self.add_var()
                 self.cnf.add_clause([w], True)
                 self.cnf.add_weight(w, 1/math.pow(2,n))
+                self.cnf.add_weight(-w, 1)
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend)
             if self.computational_basis:
@@ -47,6 +48,7 @@ class Variables:
                 w = self.add_var()
                 self.cnf.add_clause([w], True)
                 self.cnf.add_weight(w, 1/2)
+                self.cnf.add_weight(-w, 1)
         else: 
             Exception("Please choose firstzero or allzero measurement")
             
