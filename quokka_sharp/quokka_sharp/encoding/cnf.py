@@ -173,8 +173,8 @@ class CNF:
         with open(cnf_file, 'w') as the_file:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             if syntesis_fomat:
-                the_file.write("c max " +''.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0")
-                the_file.write("c ind " +''.join([str(v) for v in range(self.vars.var) - self.syn_gate_picking_vars.keys()]) + " 0")
+                the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
+                the_file.write("c ind " +' '.join([str(v) for v in range(self.vars.var) - self.syn_gate_picking_vars.keys()]) + " 0\n")
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))
 
@@ -267,10 +267,19 @@ class CNF:
             self.syn_gate_layer += 1
             to_CNF.SynGate2CNF(self)
 
-    def get_syn_cuirct(self, assignment):
+    def get_syn_circuit(self, assignment):
+        layer = 0
+        s = ""
         for v in assignment:
-            if v > 0:
-                print(self.syn_gate_picking_vars[v])
+            if int(v) > 0:
+                gate = self.syn_gate_picking_vars[int(v)]
+                assert gate["layer"] in [layer, layer+1]
+                if gate["layer"] != layer:
+                    layer = gate["layer"]
+                    s += f"\n\tLayer {layer}:\t"
+                s += f"{gate['Name']}[{gate['bit']}]\t"
+        s += "\n"
+        return s
 
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
     cnf = CNF(circuit, computational_basis)

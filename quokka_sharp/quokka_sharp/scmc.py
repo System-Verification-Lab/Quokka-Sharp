@@ -20,6 +20,7 @@ def get_result(result, expexted_prob):
     weight = re.findall(r"o -?[0-9]+",result)
     if not weight: 
         return (False, 0, [])
+    weight = Decimal(float(weight[0][2:]))
     # get assignment
     assignment = re.findall(r"v [0-9\s\-]+ 0",result)
     assert assignment
@@ -29,9 +30,9 @@ def get_result(result, expexted_prob):
     assignment = assignment[1:-1]
 
     if abs(weight - expexted_prob) < (expexted_prob+1) * 1e-12:
-        return (False, weight, assignment)
-    else:
         return (True, weight, assignment)
+    else:
+        return (False, weight, assignment)
 
 def identity_check(cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
@@ -46,17 +47,18 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
     found = False
     weight = 0
     assignment = []
+    layer = 0
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
             if p is not None:
                 p.kill()
-            print(f"""
-                  result found: {found}
-                  max layers tried: {cnf.syn_gate_layer}
-                  weight achived: {weight}
-                  best assignment: {assignment} """)
+            print(f'''\
+                \n\tresult NOT found!\
+                \n\tmax layers tried: {layer}\
+                \n\tweight achived: {weight}\
+                \n\tbest assignment: {cnf.get_syn_circuit(assignment)}''')
             raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
@@ -70,7 +72,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             expected_prob = 2**cnf.n
         else:
             expected_prob = 4**cnf.n
-
+        
         while not found:
             cnf.add_syn_layer()
             file = identity_check(cnf, cnf_file_root)
@@ -81,8 +83,13 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 pid, _ = os.wait()
             res = p.communicate()
             found, weight, assignment = get_result(res[0], expected_prob)
+            layer = cnf.syn_gate_layer
         
-        return cnf.get_syn_cuirct(assignment)
+        
+        return f'''\
+            \n\tresult found (weight achived: {weight}):\
+            \n\tlayers: {layer}\
+            \n\tbest assignment: {cnf.get_syn_circuit(assignment)} '''
 
     except TimeoutException:
         return "TIMEOUT"

@@ -356,4 +356,6 @@ class cliffordt2cnf:
                 cnf.add_clause([ R[c],  Z[t], -czg[c][t], -x[t],  z[c], -z[t]])
             gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]
             cliffordt2cnf.AMO(cnf, gate_controlers)
+        cnf.vars.x = X
+        cnf.vars.z = Z
 

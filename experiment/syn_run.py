@@ -11,14 +11,14 @@ def main(tool_path, qasmfile, expected_res = None):
     circuit = qk.encoding.QASMparser(qasmfile, True)
 
     data = []
-    print_files = False
     cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
     glb_st = time.time()
     res = qk.Synthesys(tool_path, cnf)
     glb_et = time.time()
 
     if res == "TIMEOUT":
-        print("T", end="")
+        print(qasmfile)
+        print("T", end="\n")
     else:
         print(qasmfile)
         print(res)
