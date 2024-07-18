@@ -195,6 +195,7 @@ def main():
     print("        u = cnf.add_var()")
     to_py(	       str(Cu))
     print("        cnf.add_weight(u, str(Decimal(1/2).sqrt()))")
+    print("        cnf.add_weight(-u, 1)")
     print()   
     print("        cnf.vars.z[k] = Z")
     print()
@@ -227,6 +228,8 @@ def main():
     print("        u = cnf.add_var()")
     to_py(	       str(Cu))
     print("        cnf.add_weight(u, str(Decimal(1/2).sqrt()))")
+    print("        cnf.add_weight(-u, 1)")
+
     print()   
     print("        cnf.vars.z[k] = Z")
     print()

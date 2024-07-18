@@ -114,6 +114,7 @@ class cliffordt2cnf:
         cnf.add_clause([ u, -x[k]])
         cnf.add_clause([-u,  x[k]])
         cnf.add_weight(u, str(Decimal(1/2).sqrt()))
+        cnf.add_weight(-u, 1)
 
         cnf.vars.z[k] = Z
 
@@ -140,6 +141,7 @@ class cliffordt2cnf:
         cnf.add_clause([ u, -x[k]])
         cnf.add_clause([-u,  x[k]])
         cnf.add_weight(u, str(Decimal(1/2).sqrt()))
+        cnf.add_weight(-u, 1)
 
         cnf.vars.z[k] = Z
 
