@@ -396,27 +396,32 @@ def main():
     sg    = symbols('sg')
     tg    = symbols('tg')
 
-    Rk = symbols('R[k]')
     Xk = symbols('X[k]')
     Zk = symbols('Z[k]')
+    Rk = symbols('R[k]')
+    Uk = symbols('U[k]')
 
     I_r = idg >> Equivalent(Rk, False)
     I_x = idg >> Equivalent(Xk, x[k])
     I_z = idg >> Equivalent(Zk, z[k])
+    I_u = idg >> Equivalent(Uk, False)
 
     H_r = hg >> Equivalent(Rk, x[k] & z[k])
     H_x = hg >> Equivalent(Xk, z[k])
     H_z = hg >> Equivalent(Zk, x[k])
+    H_u = hg >> Equivalent(Uk, False)
 
     S_r = sg >> Equivalent(Rk, x[k] & z[k])
     S_x = sg >> Equivalent(Xk, x[k])
     S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
+    S_u = sg >> Equivalent(Uk, False)
 
     T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
     T_x = tg >> Equivalent(Xk, x[k])
     T_z = tg >> Equivalent(Zk, z[k]) | x[k]
+    T_u = sg >> Equivalent(Uk, x[k])
 
-    single_qb_gate_property = I_r & I_x & I_z & H_r & H_x & H_z & S_r & S_x & S_z & T_r & T_x & T_z
+    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, T_r, T_x, T_z, T_u]
     
 
     # dynamic two bit gate:
@@ -427,14 +432,20 @@ def main():
     Zc = symbols('Z[c]')
     Zt = symbols('Z[t]')
     Rc = symbols('R[c]')
+    Rt = symbols('R[t]')
+    Uc = symbols('U[c]')
+    Ut = symbols('U[t]')
 
-    CZ_r = czg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
     CZ_xc = czg_ct >> Equivalent(Xc, x[c])
     CZ_xt = czg_ct >> Equivalent(Xt, x[t])
     CZ_zc = czg_ct >> Equivalent(Zc, z[c] ^ x[t])
     CZ_zt = czg_ct >> Equivalent(Zt, z[t] ^ x[c])
+    CZ_rc = czg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
+    CZ_rt = czg_ct >> Equivalent(Rt, False)
+    CZ_uc = czg_ct >> Equivalent(Uc, False)
+    CZ_ut = czg_ct >> Equivalent(Ut, False)
 
-    double_qb_gate_property = CZ_r & CZ_xc & CZ_xt & CZ_zc & CZ_zt
+    double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
 
     print("    def AMO(cnf, var_list):")
     print("        assert None not in var_list")
@@ -450,7 +461,8 @@ def main():
     print("        X = [cnf.add_var() for _ in range(cnf.n)]")
     print("        Z = [cnf.add_var() for _ in range(cnf.n)]")
     print("        R = [cnf.add_var() for _ in range(cnf.n)]")
-    print("        [cnf.add_weight(-R[k], 1) for k in range(cnf.n)]")
+    print("        U = [cnf.add_var() for _ in range(cnf.n)]")
+    print("        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(cnf.n)]")
     print("        [cnf.add_weight(R[k], -1) for k in range(cnf.n)]")
     print("        czg = [[None]*cnf.n]*cnf.n")
     print("        for k in range(cnf.n):")
@@ -458,15 +470,18 @@ def main():
     print("            hg = cnf.add_var(syn_gate_pick = True, Name = 'H', bit = k)")
     print("            sg = cnf.add_var(syn_gate_pick = True, Name = 'S', bit = k)")
     print("            tg = cnf.add_var(syn_gate_pick = True, Name = 'T', bit = k)")
-    print("            # " + str(single_qb_gate_property))
-    to_py(	           str(to_cnf(single_qb_gate_property, True, True)), prefix="    ")
+    for p in single_qb_gate_properties:
+        print("        # " + str(p))
+        to_py(	       str(to_cnf(p, True, True)), prefix="    ")
     print("            c = k")
     print("            for t in range(c+1, cnf.n):")
     print("                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'CZ', bit = (c,t))")
-    print("                # " + str(double_qb_gate_property))
-    to_py(	               str(to_cnf(double_qb_gate_property, True, True)), prefix="        ")
+    for p in double_qb_gate_properties:
+        print("            # " + str(p))
+        to_py(	           str(to_cnf(p, True, True)), prefix="        ")
     print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]")
     print("            cliffordt2cnf.AMO(cnf, gate_controlers)")
+    print()
     print("        cnf.vars.x = X")
     print("        cnf.vars.z = Z")
     print()
