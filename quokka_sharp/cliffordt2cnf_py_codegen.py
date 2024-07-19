@@ -422,7 +422,7 @@ def main():
     T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
     T_x = tg >> Equivalent(Xk, x[k])
     T_z = tg >> Equivalent(Zk, z[k]) | x[k]
-    T_u = sg >> Equivalent(Uk, x[k])
+    T_u = tg >> Equivalent(Uk, x[k])
 
     single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, T_r, T_x, T_z, T_u]
     
@@ -465,8 +465,10 @@ def main():
     print("        Z = [cnf.add_var() for _ in range(cnf.n)]")
     print("        R = [cnf.add_var() for _ in range(cnf.n)]")
     print("        U = [cnf.add_var() for _ in range(cnf.n)]")
-    print("        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(cnf.n)]")
     print("        [cnf.add_weight(R[k], -1) for k in range(cnf.n)]")
+    print("        [cnf.add_weight(-R[k], 1) for k in range(cnf.n)]")
+    print("        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(cnf.n)]")
+    print("        [cnf.add_weight(-U[k], 1) for k in range(cnf.n)]")
     print("        czg = [[None]*cnf.n]*cnf.n")
     print("        for k in range(cnf.n):")
     print("            idg = cnf.add_var(syn_gate_pick = True, Name = 'I', bit = k)")
