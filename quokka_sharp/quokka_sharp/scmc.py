@@ -85,11 +85,11 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             found, weight, assignment = get_result(res[0], expected_prob)
             layer = cnf.syn_gate_layer
         
-        
-        return f'''\
+        print(f'''\
             \n\tresult found (weight achived: {weight}):\
             \n\tlayers: {layer}\
-            \n\tbest assignment: {cnf.get_syn_circuit(assignment)} '''
+            \n\tbest assignment: {cnf.get_syn_circuit(assignment)} ''')
+        return cnf.get_syn_qasm(assignment)
 
     except TimeoutException:
         return "TIMEOUT"
