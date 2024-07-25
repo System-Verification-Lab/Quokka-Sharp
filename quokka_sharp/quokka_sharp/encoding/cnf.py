@@ -188,7 +188,9 @@ class CNF:
 
         for element in circuit.circ:
             gate = element[0]
-            if gate == 'h':
+            if gate == 'id':
+                pass
+            elif gate == 'h':
                 k = int(element[1]) - 1
                 to_CNF.H2CNF(self,k)
             elif gate == 'x':
