@@ -4,16 +4,23 @@ import quokka_sharp as qk
 import traceback
 import sys
 import os.path as path
+import os
 import pandas as pd
 
-def main(tool_path, qasmfile, expected_res = None):
+from eq_run import main as eq_check
+
+def main(tool_path, qasmfile, eq_tool_path):
+    sol_file = qasmfile+".syn_sol.qasm"
     # Parse the circuits
     circuit = qk.encoding.QASMparser(qasmfile, True)
 
     data = []
     cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
     glb_st = time.time()
-    res = qk.Synthesys(tool_path, cnf)
+    folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0]
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    res = qk.Synthesys(tool_path, cnf, cnf_file_root=folder)
     glb_et = time.time()
 
     if res == "TIMEOUT":
@@ -21,7 +28,10 @@ def main(tool_path, qasmfile, expected_res = None):
         print("T", end="\n")
     else:
         print(qasmfile)
-        print(res)
+        print(".", end="\n")
+        with open(sol_file, "w") as file:
+            file.write(res)
+        eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res=True)
             
 
     # pandas dataframe for results
@@ -43,12 +53,13 @@ def main(tool_path, qasmfile, expected_res = None):
 if __name__ == '__main__':
     tool_path = sys.argv[1]
     circ = sys.argv[2]
+    eq_tool_path = sys.argv[3]
     try:
-        main(tool_path, circ)
+        main(tool_path, circ, eq_tool_path)
     except AssertionError:
         print(f"""\nAssertion Failed for call:\
-                \n   tool_path = \"{tool_path}\"\
-                \n   circ1 = \"{circ}\"
+                \n   tool_path=\"{tool_path}\"\
+                \n   circ=\"{circ}\"
                 """)
         print()
         print(traceback.format_exc())
@@ -61,8 +72,8 @@ if __name__ == '__main__':
         print("KeyboardInterrupt")
     except:
         print(f"""\nError for call:\
-                \n   tool_path = \"{tool_path}\"\
-                \n   circ1 = \"{circ}\"
+                \n   tool_path=\"{tool_path}\"\
+                \n   circ=\"{circ}\"
                 """)
         print()
         print(traceback.format_exc())
