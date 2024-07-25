@@ -54,11 +54,11 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         def timeout(signum, frame):
             if p is not None:
                 p.kill()
-            print(f'''\
-                \n\tresult NOT found!\
-                \n\tmax layers tried: {layer}\
-                \n\tweight achived: {weight}\
-                \n\tbest assignment: {cnf.get_syn_circuit(assignment)}''')
+            # print(f'''\
+            #     \n\tresult NOT found!\
+            #     \n\tmax layers tried: {layer}\
+            #     \n\tweight achived: {weight}\
+            #     \n\tbest assignment: {cnf.get_syn_circuit(assignment)}''')
             raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
@@ -85,10 +85,10 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             found, weight, assignment = get_result(res[0], expected_prob)
             layer = cnf.syn_gate_layer
         
-        print(f'''\
-            \n\tresult found (weight achived: {weight}):\
-            \n\tlayers: {layer}\
-            \n\tbest assignment: {cnf.get_syn_circuit(assignment)} ''')
+        # print(f'''\
+        #     \n\tresult found (weight achived: {weight}):\
+        #     \n\tlayers: {layer}\
+        #     \n\tbest assignment: {cnf.get_syn_circuit(assignment)} ''')
         return cnf.get_syn_qasm(assignment)
 
     except TimeoutException:
