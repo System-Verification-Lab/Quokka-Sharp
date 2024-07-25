@@ -5,7 +5,7 @@ from decimal import Decimal, getcontext
 # set the precision of rotation angles
 getcontext().prec = 32
 
-HermiGates = ['h', 'cx', 'cz', 'x', 'z', 'y', 'ccx']
+HermiGates = ['id', 'h', 'cx', 'cz', 'x', 'z', 'y', 'ccx']
 RotationGates = ['rx', 'ry', 'rz']
 NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 
                 'rx': 'rxdg', 'rx': 'rxdg', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
@@ -170,7 +170,7 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
                 qubitr = get_num(qubits[1]) 
             circuit.add_double(gate, qubitc, qubitr)
 
-        elif gate == 'z' or gate == 'y' or gate == 'x' or gate == 'h':
+        elif gate == 'id' or gate == 'z' or gate == 'y' or gate == 'x' or gate == 'h':
             qubit = get_num(line[1])
             circuit.add_single(gate, qubit)
 
