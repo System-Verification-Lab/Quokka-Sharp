@@ -9,7 +9,7 @@ echo "OPENQASM 2.0;
 
 
 # Define the list of single qbit gates
-gates=("x" "y" "z" "s" "sdg" "t" "tdg" "h")
+gates=("id" "x" "y" "z" "h" "s" "sdg" "t" "tdg")
 
 # Loop through each gate and create a file with the required content
 for g in "${gates[@]}"; do
@@ -17,8 +17,7 @@ for g in "${gates[@]}"; do
     filename="basic_tests/${g}_gate.qasm"
     
     # Write the content to the file
-    echo "// Used Gate Set: ['rz', 'sx', 'x', 'cx', 'measure']
-        OPENQASM 2.0;
+    echo "OPENQASM 2.0;
         include \"qelib1.inc\";
         qreg q[1];
         ${g} q[0] ;" > "$filename"
