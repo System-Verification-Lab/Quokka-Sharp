@@ -308,10 +308,10 @@ class cliffordt2cnf:
         [cnf.add_weight(-U[k], 1) for k in range(cnf.n)]
         czg = [[None]*cnf.n]*cnf.n
         for k in range(cnf.n):
-            idg = cnf.add_var(syn_gate_pick = True, Name = 'I', bit = k)
-            hg = cnf.add_var(syn_gate_pick = True, Name = 'H', bit = k)
-            sg = cnf.add_var(syn_gate_pick = True, Name = 'S', bit = k)
-            tg = cnf.add_var(syn_gate_pick = True, Name = 'T', bit = k)
+            idg = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])
+            hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])
+            sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])
+            tg = cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k])
         # Implies(idg, ~R[k])
             cnf.add_clause([-R[k], -idg])
         # Implies(idg, Equivalent(X[k], x[k]))
@@ -364,7 +364,7 @@ class cliffordt2cnf:
             cnf.add_clause([-U[k], -tg,  x[k]])
             c = k
             for t in range(c+1, cnf.n):
-                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'CZ', bit = (c,t))
+                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t])
             # Implies(czg[c][t], Equivalent(X[c], x[c]))
                 cnf.add_clause([ X[c], -czg[c][t], -x[c]])
                 cnf.add_clause([-X[c], -czg[c][t],  x[c]])

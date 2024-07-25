@@ -142,11 +142,11 @@ class CNF:
         if not self.locked:
             self.finalize() 
             
-    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bit = None):
+    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None):
         assert(not self.locked)
         var = self.vars.add_var()
         if syn_gate_pick:
-            self.syn_gate_picking_vars[var] = {"Name": Name, "bit": bit, "layer": self.syn_gate_layer}
+            self.syn_gate_picking_vars[var] = {"Name": Name, "bits": bits, "layer": self.syn_gate_layer}
         return var
 
     def add_clause(self, cons, prepend=False):
@@ -280,7 +280,26 @@ class CNF:
                 if gate["layer"] != layer:
                     layer = gate["layer"]
                     s += f"\n\tLayer {layer}:\t"
-                s += f"{gate['Name']}[{gate['bit']}]\t"
+                s += f"{gate['Name']}{gate['bits']}\t"
+        s += "\n"
+        return s
+
+    def get_syn_qasm(self, assignment):
+        layer = 0
+        s = "OPENQASM 2.0;\n"
+        s += "include \"qelib1.inc\";\n"
+        s += f"qreg q[{self.n}];\n"
+        for v in assignment:
+            if int(v) > 0:
+                gate = self.syn_gate_picking_vars[int(v)]
+                assert gate["layer"] in [layer, layer+1]
+                if gate["layer"] != layer:
+                    layer = gate["layer"]
+                    s += f"\n\\\\Layer {layer}:\n"
+                s += f"{gate['Name']}"
+                for b in gate['bits']:
+                     s += f" q[{b}]"
+                s += f" ;\n"
         s += "\n"
         return s
 
