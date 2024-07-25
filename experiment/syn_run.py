@@ -10,28 +10,31 @@ import pandas as pd
 from eq_run import main as eq_check
 
 def main(tool_path, qasmfile, eq_tool_path):
-    sol_file = qasmfile+".syn_sol.qasm"
     # Parse the circuits
     circuit = qk.encoding.QASMparser(qasmfile, True)
 
     data = []
     cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
     glb_st = time.time()
-    folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0]
-    if not os.path.exists(folder):
-        os.mkdir(folder)
-    res = qk.Synthesys(tool_path, cnf, cnf_file_root=folder)
+    helper_folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0]
+    if not os.path.exists(helper_folder):
+        os.mkdir(helper_folder)
+    res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder)
     glb_et = time.time()
 
     if res == "TIMEOUT":
-        print(qasmfile)
         print("T", end="\n")
-    else:
-        print(qasmfile)
-        print(".", end="\n")
-        with open(sol_file, "w") as file:
-            file.write(res)
-        eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res=True)
+        return
+    
+    print(".", end="\n")
+
+    sol_folder = '/'.join(qasmfile.split('/')[:-3]) + qasmfile.split('/')[-2]+"_syn_solutions/"
+    if not os.path.exists(sol_folder):
+        os.mkdir(sol_folder)
+    sol_file = sol_folder + qasmfile.split('/')[-1]
+    with open(sol_file, "w") as file:
+        file.write(res)
+    eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res=True)
             
 
     # pandas dataframe for results
