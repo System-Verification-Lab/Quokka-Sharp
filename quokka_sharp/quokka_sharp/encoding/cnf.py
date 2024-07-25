@@ -285,21 +285,17 @@ class CNF:
         return s
 
     def get_syn_qasm(self, assignment):
-        layer = 0
         s = "OPENQASM 2.0;\n"
         s += "include \"qelib1.inc\";\n"
         s += f"qreg q[{self.n}];\n"
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
-                assert gate["layer"] in [layer, layer+1]
-                if gate["layer"] != layer:
-                    layer = gate["layer"]
-                    s += f"\n\\\\Layer {layer}:\n"
-                s += f"{gate['Name']}"
-                for b in gate['bits']:
-                     s += f" q[{b}]"
-                s += f" ;\n"
+                if gate['Name'] != "id":
+                    s += f"{gate['Name']}"
+                    for b in gate['bits']:
+                        s += f" q[{b}]"
+                    s += f" ;\n"
         s += "\n"
         return s
 
