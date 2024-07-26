@@ -20,3 +20,5 @@ experiment/shortened_files/algorithm/
 experiment/shortened_files/
 experiment/temp_for_sim.cnf
 experiment/sim_test.py
+experiment/syn_cnf_files/
+experiment/basic_tests_syn_solutions/
