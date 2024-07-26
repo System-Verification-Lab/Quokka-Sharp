@@ -23,10 +23,13 @@ def main(tool_path, qasmfile, eq_tool_path):
     glb_et = time.time()
 
     if res == "TIMEOUT":
-        print("T", end="\n")
+        print("T", end="")
+        return
+    if res == "CONFLICT":
+        print("C", end="")
         return
     
-    print(".", end="\n")
+    print(".", end="")
 
     sol_folder = '/'.join(qasmfile.split('/')[:-3]) + qasmfile.split('/')[-2]+"_syn_solutions/"
     if not os.path.exists(sol_folder):
@@ -34,7 +37,7 @@ def main(tool_path, qasmfile, eq_tool_path):
     sol_file = sol_folder + qasmfile.split('/')[-1]
     with open(sol_file, "w") as file:
         file.write(res)
-    eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res=True)
+    eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", for_syn = True)
             
 
     # pandas dataframe for results
