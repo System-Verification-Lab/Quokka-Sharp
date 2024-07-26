@@ -19,7 +19,7 @@ def get_result(result, expexted_prob):
     # get weight
     weight = re.findall(r"o -?[0-9]+",result)
     if not weight: 
-        return (False, 0, [])
+        return (False, "CONFLICT", [])
     weight = Decimal(float(weight[0][2:]))
     # get assignment
     assignment = re.findall(r"v [0-9\s\-]+ 0",result)
@@ -59,7 +59,10 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             #     \n\tmax layers tried: {layer}\
             #     \n\tweight achived: {weight}\
             #     \n\tbest assignment: {cnf.get_syn_circuit(assignment)}''')
-            raise TimeoutException("TIMEOUT")
+            if weight == "CONFLICT":
+                raise TimeoutException("CONFLICT")
+            else:
+                raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
         sys.exit(1)
@@ -91,5 +94,5 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         #     \n\tbest assignment: {cnf.get_syn_circuit(assignment)} ''')
         return cnf.get_syn_qasm(assignment)
 
-    except TimeoutException:
-        return "TIMEOUT"
+    except TimeoutException as error:
+        return str(error)
