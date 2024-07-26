@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc -mode=1"
+tool_path="../../GPMC/bin/gpmc -mode=1"
 path=$PWD/benchmark
 # path=$PWD/shortened_files
 
