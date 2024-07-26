@@ -1,7 +1,7 @@
 #!/bin/bash
 
 tool_path="../../d4v2/build/d4 -m max#sat --float 1 -i"
-eq_tool_path="/Users/dekel/Desktop/Formal_Work/project/GPMC_bin/gpmc -mode=1"
+eq_tool_path="../../GPMC/bin/gpmc -mode=1"
 path=$PWD/benchmark
 # path=$PWD/shortened_files
 
