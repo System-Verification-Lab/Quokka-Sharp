@@ -6,22 +6,23 @@ import sys
 import os.path as path
 import pandas as pd
 
-def main(tool_path, qasmfile1, qasmfile2, expected_res = None):
+def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
     # Parse the circuits
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     circuit2 = qk.encoding.QASMparser(qasmfile2, True)
 
     # Get (circuit1)^dagger(circuit2)
-    circuit2.dagger()
+    if not for_syn:
+        circuit2.dagger()
     circuit1.append(circuit2)
 
     data = []
     print_files = False
-    for basis in ["comp", "paul"]:
+    for basis in (["comp", "paul"] if not for_syn else ["paul"]):
         # Get CNF for the merged circuit
         orig_cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
         
-        for check_type in ["id", "2n"]:
+        for check_type in (["id", "2n"] if not for_syn else ["2n"]):
             if basis == "comp" and check_type == "2n":
                 continue
             
