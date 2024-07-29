@@ -13,6 +13,8 @@ def main(tool_path, qasmfile, eq_tool_path):
     # Parse the circuits
     circuit = qk.encoding.QASMparser(qasmfile, True)
 
+    circuit.dagger()
+
     data = []
     cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
     glb_st = time.time()
