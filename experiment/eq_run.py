@@ -12,8 +12,7 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
     circuit2 = qk.encoding.QASMparser(qasmfile2, True)
 
     # Get (circuit1)^dagger(circuit2)
-    if not for_syn:
-        circuit2.dagger()
+    circuit2.dagger()
     circuit1.append(circuit2)
 
     data = []
