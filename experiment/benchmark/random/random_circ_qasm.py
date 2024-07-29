@@ -64,7 +64,7 @@ def generate_random_qasm_circuit(n, m, t_prob, SEED):
 def WriteFile(folder, filename, circuit_content):
     with open(folder + "/" + filename, 'w') as file:
         file.write("OPENQASM 2.0;\n")
-        file.write("include \"qelib1.inc\";\n\n")
+        file.write("include \"qelib1.inc\";\n")
         file.write(circuit_content)
 
 def Tscale(n,m):
