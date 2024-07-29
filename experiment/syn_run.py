@@ -31,7 +31,7 @@ def main(tool_path, qasmfile, eq_tool_path):
         print("C", end="")
         return
     
-    print(".", end="")
+    # print(".", end="")
 
     sol_folder = '/'.join(qasmfile.split('/')[:-3]) + qasmfile.split('/')[-2]+"_syn_solutions/"
     if not os.path.exists(sol_folder):
