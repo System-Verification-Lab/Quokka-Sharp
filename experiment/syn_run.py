@@ -33,12 +33,19 @@ def main(tool_path, qasmfile, eq_tool_path):
     
     # print(".", end="")
 
-    sol_folder = '/'.join(qasmfile.split('/')[:-3]) + qasmfile.split('/')[-2]+"_syn_solutions/"
+    sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
     if not os.path.exists(sol_folder):
         os.mkdir(sol_folder)
     sol_file = sol_folder + qasmfile.split('/')[-1]
     with open(sol_file, "w") as file:
         file.write(res)
+
+    with open(sol_file, "r") as file:
+        sol_lines = len(file.readlines())
+    with open(qasmfile, "r") as file:
+        org_lines = len(file.readlines())
+    print(org_lines-sol_lines, end="")
+
     eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", for_syn = True)
             
 
