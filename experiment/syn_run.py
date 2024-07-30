@@ -40,11 +40,9 @@ def main(tool_path, qasmfile, eq_tool_path):
     with open(sol_file, "w") as file:
         file.write(res)
 
-    with open(sol_file, "r") as file:
-        sol_lines = len(file.readlines())
-    with open(qasmfile, "r") as file:
-        org_lines = len(file.readlines())
-    print(org_lines-sol_lines, end="")
+    sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
+    org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
+    print(org_depth-sol_depth, end="")
 
     eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", for_syn = True)
             
