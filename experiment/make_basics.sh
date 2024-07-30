@@ -32,8 +32,7 @@ for g in "${gates[@]}"; do
     filename="basic_tests/${g}_gate.qasm"
     
     # Write the content to the file
-    echo "// Used Gate Set: ['rz', 'sx', 'x', 'cx', 'measure']
-        OPENQASM 2.0;
+    echo "OPENQASM 2.0;
         include \"qelib1.inc\";
         qreg q[1];
         ${g}(0.2*pi) q[0] ;" > "$filename"
@@ -49,8 +48,7 @@ for g in "${gates[@]}"; do
     filename="basic_tests/${g}_gate_0.qasm"
     
     # Write the content to the file
-    echo "// Used Gate Set: ['rz', 'sx', 'x', 'cx', 'measure']
-        OPENQASM 2.0;
+    echo "OPENQASM 2.0;
         include \"qelib1.inc\";
         qreg q[2];
         ${g} q[0] q[1] ;" > "$filename"
@@ -59,8 +57,7 @@ for g in "${gates[@]}"; do
     filename="basic_tests/${g}_gate_1.qasm"
 
     # Write the content to the file
-    echo "// Used Gate Set: ['rz', 'sx', 'x', 'cx', 'measure']
-        OPENQASM 2.0;
+    echo "OPENQASM 2.0;
         include \"qelib1.inc\";
         qreg q[2];
         ${g} q[1] q[0] ;" > "$filename"
