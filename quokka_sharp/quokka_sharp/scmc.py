@@ -8,6 +8,7 @@ import time
 from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF
+from .encoding.qasm_parser import Circuit, QASMparser
 from decimal import Decimal, getcontext
 getcontext().prec = 32
 
@@ -42,26 +43,20 @@ def identity_check(cnf:'CNF', cnf_file_root):
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()):
+def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), incremental = False):
     p = None
-    found = False
-    weight = 0
-    assignment = []
-    layer = 0
+    layers = 0
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
+            ## TODO: We can return best result so far instead?
             if p is not None:
                 p.kill()
-            # print(f'''\
-            #     \n\tresult NOT found!\
-            #     \n\tmax layers tried: {layer}\
-            #     \n\tweight achived: {weight}\
-            #     \n\tbest assignment: {cnf.get_syn_circuit(assignment)}''')
             if weight == "CONFLICT":
                 raise TimeoutException("CONFLICT")
             else:
+                print(layers, end="")
                 raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
@@ -76,9 +71,20 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         else:
             expected_prob = 4**cnf.n
         
+        found = False
+        weight = 0
+        assignment = []
+        circuit = Circuit(translate_ccx=True)
+        circuit.n = cnf.n
         while not found:
-            cnf.add_syn_layer()
-            file = identity_check(cnf, cnf_file_root)
+            layers+=1
+            if not incremental:
+                cnf.add_syn_layer()
+                file = identity_check(cnf, cnf_file_root)
+            else: 
+                cnf_copy = copy.deepcopy(cnf)
+                cnf_copy.add_syn_layer()
+                file = identity_check(cnf_copy, cnf_file_root)
             command = tool_invocation.split(' ') + [file]
             p = Popen(command, stdout= PIPE, stderr=PIPE)
             pid = None
@@ -86,13 +92,15 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 pid, _ = os.wait()
             res = p.communicate()
             found, weight, assignment = get_result(res[0], expected_prob)
-            layer = cnf.syn_gate_layer
+            if incremental:
+                circuit_inc = cnf_copy.get_syn_circuit(assignment, translate_ccx=True)
+                circuit.append(circuit_inc)
+                cnf.encode_circuit(circuit_inc)
         
-        # print(f'''\
-        #     \n\tresult found (weight achived: {weight}):\
-        #     \n\tlayers: {layer}\
-        #     \n\tbest assignment: {cnf.get_syn_circuit(assignment)} ''')
-        return cnf.get_syn_qasm(assignment)
+        if not incremental:
+            return cnf.get_syn_qasm(assignment)
+        else:
+            return circuit.to_qasm()
 
     except TimeoutException as error:
         return str(error)

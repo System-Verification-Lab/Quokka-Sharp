@@ -5,10 +5,10 @@ eq_tool_path="../../GPMC/bin/gpmc -mode=1"
 path=$PWD/benchmark
 
 dirs=(
-"algorithm"
-"random/randqubitscale"
-"random/randdepscale"
 "random/rand_small_circs"
+# "algorithm"
+# "random/randqubitscale"
+# "random/randdepscale"
 )
 
 
