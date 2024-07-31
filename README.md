@@ -29,6 +29,7 @@ Here are some simple walkthroughs to use the tool.
 
 ```python
 import quokka_sharp as qk
+import tempfile
 
 # the path of the WMC tool
 tool_invocation = "/Users/GPMC/bin/gpmc -mode=1"
@@ -60,7 +61,9 @@ circuit2.dagger()
 circuit1.append(circuit2)
 # Get CNF for the merged circuit
 cnf = qk.encoding.QASM2CNF(circuit1)
-res = qk.CheckEquivalence(tool_path, cnf)
+# Users can change the path for the cnf files by setting a different parameter to cnf_file_root, otherwise it would be in the tempfile.
+# Users can set a different number N of paralleling processes. The default value is 16.
+res = qk.CheckEquivalence(tool_path, cnf, cnf_file_root = tempfile.gettempdir(), N=16)
 ```
 
 - extention of the encodings
