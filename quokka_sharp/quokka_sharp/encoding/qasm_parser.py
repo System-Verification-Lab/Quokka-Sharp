@@ -74,6 +74,25 @@ class Circuit:
         self.n = self.n
         self.tgate = self.tgate + other.tgate
 
+    def to_qasm(self):
+        s = "OPENQASM 2.0;\n"
+        s += "include \"qelib1.inc\";\n"
+        s += f"qreg q[{self.n}];\n"
+        for gate in self.circ:
+            if gate[0] == "id":
+                continue
+            if gate[0] in RotationGates:
+                s += f"{gate[0]}"
+                s += f"({gate[1]})"
+                s += f" q[{gate[2]}]"
+                s += f" ;\n"
+            else:
+                s += f"{gate[0]}"
+                for b in gate[1:]:
+                    s += f" q[{b}]"
+                s += f" ;\n"
+        return s
+
 def get_num(s: str):
     num = ''
     idx1 = s.index('[')
