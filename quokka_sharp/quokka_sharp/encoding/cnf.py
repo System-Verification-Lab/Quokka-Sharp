@@ -270,19 +270,21 @@ class CNF:
             self.syn_gate_layer += 1
             to_CNF.SynGate2CNF(self)
 
-    def get_syn_circuit(self, assignment):
+    def get_syn_circuit(self, assignment, translate_ccx=True):
         layer = 0
-        s = ""
+        circuit = Circuit(translate_ccx)
+        circuit.n = self.n
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
                 assert gate["layer"] in [layer, layer+1]
-                if gate["layer"] != layer:
-                    layer = gate["layer"]
-                    s += f"\n\tLayer {layer}:\t"
-                s += f"{gate['Name']}{gate['bits']}\t"
-        s += "\n"
-        return s
+                if len(gate['bits'])==1:
+                    circuit.add_single(gate['Name'], gate['bits'][0])
+                elif len(gate['bits'])==2:
+                    circuit.add_double(gate['Name'], gate['bits'][0], gate['bits'][1])
+                else:
+                    assert False
+        return circuit
 
     def get_syn_qasm(self, assignment):
         s = "OPENQASM 2.0;\n"
@@ -296,7 +298,6 @@ class CNF:
                     for b in gate['bits']:
                         s += f" q[{b}]"
                     s += f" ;\n"
-        s += "\n"
         return s
 
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
