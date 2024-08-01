@@ -281,6 +281,8 @@ class CNF:
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
+                if gate['Name'] == "id":
+                    continue
                 if len(gate['bits'])==1:
                     circuit.add_single(gate['Name'], gate['bits'][0])
                 elif len(gate['bits'])==2:
@@ -296,11 +298,12 @@ class CNF:
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
-                if gate['Name'] != "id":
-                    s += f"{gate['Name']}"
-                    for b in gate['bits']:
-                        s += f" q[{b}]"
-                    s += f" ;\n"
+                if gate['Name'] == "id":
+                    continue
+                s += f"{gate['Name']}"
+                for b in gate['bits']:
+                    s += f" q[{b}]"
+                s += f" ;\n"
         return s
 
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
