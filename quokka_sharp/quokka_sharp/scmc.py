@@ -39,7 +39,7 @@ def identity_check(cnf:'CNF', cnf_file_root, layers):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses()
     
-    cnf_file = cnf_file_root + f"/quokka_syn_{layers}.cnf"
+    cnf_file = cnf_file_root + f"/quokka_syn.cnf" # _{layers}.cnf" overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
