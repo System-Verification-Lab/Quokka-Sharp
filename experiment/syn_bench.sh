@@ -14,7 +14,8 @@ dirs=(
 
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
-    # echo "syn_run: $i"
+    # echo
+    # echo "syn_run: i=$i"
     echo -n "/"
     python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" >&1;
 done
@@ -25,7 +26,8 @@ for i in "${dirs[@]}"; do
     DIR=$path/"$i"
     for file in $DIR/origin/*; do
         base_name=$(basename ${file})
-        # echo "syn_run: $base_name"
+        # echo
+        # echo "syn_run: file=$file"
         echo -n "/"
         python3 syn_run.py "$tool_path" "$file" "$eq_tool_path" >&1;
     done
