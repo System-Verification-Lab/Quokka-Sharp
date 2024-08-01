@@ -24,11 +24,11 @@ def get_result(result, expexted_prob):
     weight = Decimal(float(weight[0][2:]))
     # get assignment
     assignment = re.findall(r"v [0-9\s\-]+ 0",result)
-    assert assignment
-    assignment = assignment[0].split(" ")
-    assert assignment[0] == "v"
-    assert assignment[-1] == "0"
-    assignment = assignment[1:-1]
+    if assignment:
+        assignment = assignment[0].split(" ")
+        assert assignment[0] == "v"
+        assert assignment[-1] == "0"
+        assignment = assignment[1:-1]
 
     if abs(weight - expexted_prob) < (expexted_prob+1) * 1e-12:
         return (True, weight, assignment)
