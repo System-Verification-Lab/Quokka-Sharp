@@ -175,7 +175,7 @@ class CNF:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
-                the_file.write("c ind " +' '.join([str(v) for v in range(1, self.vars.var) - self.syn_gate_picking_vars.keys()]) + " 0\n")
+                the_file.write("c ind " +' '.join([str(v) for v in range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys()]) + " 0\n")
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))
 
@@ -284,9 +284,9 @@ class CNF:
                 gate = self.syn_gate_picking_vars[int(v)]
                 assert gate["layer"] in [layer, layer+1]
                 if len(gate['bits'])==1:
-                    circuit.add_single(gate['Name'], gate['bits'][0])
+                    circuit.add_single(gate['Name'], gate['bits'][0]+1)
                 elif len(gate['bits'])==2:
-                    circuit.add_double(gate['Name'], gate['bits'][0], gate['bits'][1])
+                    circuit.add_double(gate['Name'], gate['bits'][0]+1, gate['bits'][1]+1)
                 else:
                     assert False
         return circuit
@@ -301,7 +301,7 @@ class CNF:
                 if gate['Name'] != "id":
                     s += f"{gate['Name']}"
                     for b in gate['bits']:
-                        s += f" q[{b}]"
+                        s += f" q[{b+1}]"
                     s += f" ;\n"
         return s
 
