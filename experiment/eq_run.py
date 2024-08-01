@@ -12,7 +12,7 @@ def main(tool_path, qasmfile1, qasmfile2):
     circuit1.append(circuit2)
     # Get CNF for the merged circuit
     cnf = qk.encoding.QASM2CNF(circuit1)
-    res = qk.CheckEquivalence(tool_path, cnf, N=1)
+    res = qk.CheckEquivalence(tool_path, cnf, N=16)
     
     
     print(res)
