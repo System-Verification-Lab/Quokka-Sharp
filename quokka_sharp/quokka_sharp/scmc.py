@@ -74,6 +74,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         found = False
         weight = 0
         assignment = []
+        num_layers = 1
         circuit = Circuit(translate_ccx=True)
         circuit.n = cnf.n
         while not found:
@@ -81,9 +82,9 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if not incremental:
                 cnf.add_syn_layer()
                 file = identity_check(cnf, cnf_file_root, layers)
-            else: 
+            else:
                 cnf_copy = copy.deepcopy(cnf)
-                cnf_copy.add_syn_layer()
+                cnf_copy.add_syn_layer(num_layers)
                 file = identity_check(cnf_copy, cnf_file_root, layers)
             command = tool_invocation.split(' ') + [file]
             p = Popen(command, stdout= PIPE, stderr=PIPE)
@@ -91,11 +92,18 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             while pid == p.pid:
                 pid, _ = os.wait()
             res = p.communicate()
+            last_weight = weight
             found, weight, assignment = get_result(res[0], expected_prob)
             if incremental:
-                circuit_inc = cnf_copy.get_syn_circuit(assignment, translate_ccx=True)
-                circuit.append(circuit_inc)
-                cnf.encode_circuit(circuit_inc)
+                if weight - last_weight > 0: # TODO Might want to put here a margin error 
+                    # print(f"({num_layers})", end = "")
+                    num_layers = 1  
+                    circuit_inc = cnf_copy.get_syn_circuit(assignment, translate_ccx=True)
+                    circuit.append(circuit_inc)
+                    cnf.encode_circuit(circuit_inc)
+                else:
+                    num_layers += 1
+                    weight = last_weight
         
         if not incremental:
             return cnf.get_syn_qasm(assignment)
