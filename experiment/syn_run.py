@@ -47,19 +47,19 @@ def main(tool_path, qasmfile, eq_tool_path):
     eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", for_syn = True)
             
 
-    # pandas dataframe for results
-    data.append({'file': qasmfile, 
-                'global time': glb_et - glb_st,
-                'result': res
-                })
+    # # pandas dataframe for results
+    # data.append({'file': qasmfile, 
+    #             'global time': glb_et - glb_st,
+    #             'result': res
+    #             })
 
-    # convert data to pandas dataframe and add to file
-    df = pd.DataFrame(data)
-    pandas_file_name = 'syn_results.csv'
-    if path.exists(pandas_file_name):
-        df0 = pd.read_csv(pandas_file_name)
-        df = pd.concat([df0, df], ignore_index=True)
-    df.to_csv(pandas_file_name, index=False)
+    # # convert data to pandas dataframe and add to file
+    # df = pd.DataFrame(data)
+    # pandas_file_name = 'syn_results.csv'
+    # if path.exists(pandas_file_name):
+    #     df0 = pd.read_csv(pandas_file_name)
+    #     df = pd.concat([df0, df], ignore_index=True)
+    # df.to_csv(pandas_file_name, index=False)
 
 
 
