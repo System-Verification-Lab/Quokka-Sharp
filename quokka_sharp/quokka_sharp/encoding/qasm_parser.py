@@ -169,8 +169,8 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
             qreg = line[1][0:idx1]
             num = int(line[1][idx1+1:idx2])
             globals()[qreg] = [0] * num
-            for i in range(0, num):
-                globals()[qreg][i] = i + circuit.n + 1
+            for i in range(num):
+                globals()[qreg][i] = i + circuit.n
             circuit.n += num
 
         elif(line[0] == 'barrier' or line[0] == 'measure'):
