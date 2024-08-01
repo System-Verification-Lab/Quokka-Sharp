@@ -78,10 +78,10 @@ class Variables:
 
 
 class CNF:
-    def __init__(self, circuit:Circuit, computational_basis=False):
+    def __init__(self, n, computational_basis=False):
         self.clause = 0
-        self.n = circuit.n
-        self.circuit = circuit
+        self.n = n
+        self.circuit = None
         self.locked = False
         self.cons_list = []
         self.weight_list = io.StringIO()
@@ -180,6 +180,11 @@ class CNF:
             the_file.write(''.join(self.cons_list))
 
     def encode_circuit(self, circuit : Circuit):
+
+        if not self.circuit:
+            self.circuit = circuit
+        else:
+            self.circuit.append(circuit)
 
         if self.computational_basis:
             from .comput2cnf import comput2cnf as to_CNF 
@@ -301,6 +306,6 @@ class CNF:
         return s
 
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
-    cnf = CNF(circuit, computational_basis)
+    cnf = CNF(circuit.n, computational_basis)
     cnf.encode_circuit(circuit)
     return cnf
