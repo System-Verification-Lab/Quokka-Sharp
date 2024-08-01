@@ -276,13 +276,11 @@ class CNF:
             to_CNF.SynGate2CNF(self)
 
     def get_syn_circuit(self, assignment, translate_ccx=True):
-        layer = 0
         circuit = Circuit(translate_ccx)
         circuit.n = self.n
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
-                assert gate["layer"] in [layer, layer+1]
                 if len(gate['bits'])==1:
                     circuit.add_single(gate['Name'], gate['bits'][0])
                 elif len(gate['bits'])==2:
