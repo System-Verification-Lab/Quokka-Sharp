@@ -196,40 +196,40 @@ class CNF:
             if gate == 'id':
                 pass
             elif gate == 'h':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.H2CNF(self,k)
             elif gate == 'x':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.X2CNF(self,k)
             elif gate == 'y':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.Y2CNF(self,k)
             elif gate == 'z':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.Z2CNF(self,k)
             elif gate == 'cx':
-                j = int(element[1]) - 1
-                k = int(element[2]) - 1
+                j = int(element[1])
+                k = int(element[2])
                 to_CNF.CNOT2CNF(self,j,k)
             elif gate == 'cz':
-                j = int(element[1]) - 1
-                k = int(element[2]) - 1
+                j = int(element[1])
+                k = int(element[2])
                 to_CNF.CZ2CNF(self,j,k)            
             elif gate == 's':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.S2CNF(self,k)
             elif gate == 'tdg':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.Tdg2CNF(self,k)
             elif gate == 'sdg':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.Sdg2CNF(self,k)
             elif gate == 't':
-                k = int(element[1]) - 1
+                k = int(element[1])
                 to_CNF.T2CNF(self, k)
             elif gate[0] == 'r':
                 angle = element[1]
-                k = int(element[2]) - 1
+                k = int(element[2])
                 if gate == 'rx':
                     to_CNF.RX2CNF(self,k, angle)
                 elif gate == 'rz':
@@ -239,9 +239,9 @@ class CNF:
                 elif gate == 'rzdg':
                     to_CNF.RZ2CNF(self,k, -angle)
             elif gate == "ccx":
-                qubitc1 = int(element[1]) - 1
-                qubitc2 = int(element[2]) - 1
-                qubitr  = int(element[3]) - 1
+                qubitc1 = int(element[1])
+                qubitc2 = int(element[2])
+                qubitr  = int(element[3])
                 to_CNF.H2CNF(self,qubitr)
                 to_CNF.CNOT2CNF(self,qubitc2,qubitr)
                 to_CNF.Tdg2CNF(self,qubitr)
@@ -284,9 +284,9 @@ class CNF:
                 gate = self.syn_gate_picking_vars[int(v)]
                 assert gate["layer"] in [layer, layer+1]
                 if len(gate['bits'])==1:
-                    circuit.add_single(gate['Name'], gate['bits'][0]+1)
+                    circuit.add_single(gate['Name'], gate['bits'][0])
                 elif len(gate['bits'])==2:
-                    circuit.add_double(gate['Name'], gate['bits'][0]+1, gate['bits'][1]+1)
+                    circuit.add_double(gate['Name'], gate['bits'][0], gate['bits'][1])
                 else:
                     assert False
         return circuit
@@ -301,7 +301,7 @@ class CNF:
                 if gate['Name'] != "id":
                     s += f"{gate['Name']}"
                     for b in gate['bits']:
-                        s += f" q[{b+1}]"
+                        s += f" q[{b}]"
                     s += f" ;\n"
         return s
 
