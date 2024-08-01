@@ -40,23 +40,24 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
                 else:
                     print(".", end="")
                     
+            if not for_syn:
+                # pandas dataframe for results
+                data.append({'technic': check_type,
+                            'basis': basis,
+                            'file1': qasmfile1, 
+                            'file2': qasmfile2, 
+                            'global time': glb_et - glb_st,
+                            'result': res
+                            })
 
-            # pandas dataframe for results
-            data.append({'technic': check_type,
-                        'basis': basis,
-                        'file1': qasmfile1, 
-                        'file2': qasmfile2, 
-                        'global time': glb_et - glb_st,
-                        'result': res
-                        })
-
-    # convert data to pandas dataframe and add to file
-    df = pd.DataFrame(data)
-    pandas_file_name = 'eq_results.csv'
-    if path.exists(pandas_file_name):
-        df0 = pd.read_csv(pandas_file_name)
-        df = pd.concat([df0, df], ignore_index=True)
-    df.to_csv(pandas_file_name, index=False)
+    if not for_syn:
+        # convert data to pandas dataframe and add to file
+        df = pd.DataFrame(data)
+        pandas_file_name = 'eq_results.csv'
+        if path.exists(pandas_file_name):
+            df0 = pd.read_csv(pandas_file_name)
+            df = pd.concat([df0, df], ignore_index=True)
+        df.to_csv(pandas_file_name, index=False)
 
     if print_files:
         print(f"""\nFile dosn't match expected:\
