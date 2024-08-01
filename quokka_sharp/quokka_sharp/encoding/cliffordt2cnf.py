@@ -306,7 +306,7 @@ class cliffordt2cnf:
         [cnf.add_weight(-R[k], 1) for k in range(cnf.n)]
         [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(cnf.n)]
         [cnf.add_weight(-U[k], 1) for k in range(cnf.n)]
-        czg = [[None]*cnf.n]*cnf.n
+        czg = [[None for _ in range(cnf.n)] for _ in range(cnf.n)]
         for k in range(cnf.n):
             idg = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])
             hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])
