@@ -35,11 +35,11 @@ def get_result(result, expexted_prob):
     else:
         return (False, weight, assignment)
 
-def identity_check(cnf:'CNF', cnf_file_root):
+def identity_check(cnf:'CNF', cnf_file_root, layers):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses()
     
-    cnf_file = cnf_file_root + f"/quokka_syn_{cnf.syn_gate_layer}.cnf"
+    cnf_file = cnf_file_root + f"/quokka_syn_{layers}.cnf"
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
@@ -80,11 +80,11 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             layers+=1
             if not incremental:
                 cnf.add_syn_layer()
-                file = identity_check(cnf, cnf_file_root)
+                file = identity_check(cnf, cnf_file_root, layers)
             else: 
                 cnf_copy = copy.deepcopy(cnf)
                 cnf_copy.add_syn_layer()
-                file = identity_check(cnf_copy, cnf_file_root)
+                file = identity_check(cnf_copy, cnf_file_root, layers)
             command = tool_invocation.split(' ') + [file]
             p = Popen(command, stdout= PIPE, stderr=PIPE)
             pid = None
