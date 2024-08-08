@@ -16,12 +16,12 @@ def main(tool_path, qasmfile, eq_tool_path):
     circuit.dagger()
 
     data = []
-    cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
+    cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, double_and_entangle = True)
     glb_st = time.time()
     helper_folder = "./syn_cnf_files/" # + qasmfile.split('/')[-1].split('.')[0]
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
-    res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False)
+    res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False, inc_step=1)
     glb_et = time.time()
 
     if res == "TIMEOUT":
@@ -44,7 +44,7 @@ def main(tool_path, qasmfile, eq_tool_path):
     org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
     print(org_depth-sol_depth, end="")
 
-    eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", for_syn = True)
+    eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["doub"], check_types = ["id"])
             
 
     # # pandas dataframe for results

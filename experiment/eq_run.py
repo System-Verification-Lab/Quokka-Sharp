@@ -6,7 +6,7 @@ import sys
 import os.path as path
 import pandas as pd
 
-def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
+def main(tool_path, qasmfile1, qasmfile2, expected_res = None, bases = ["comp", "paul", "doub"], check_types = ["id", "2n"], add_to_csv=False):
     # Parse the circuits
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     circuit2 = qk.encoding.QASMparser(qasmfile2, True)
@@ -17,15 +17,19 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
 
     data = []
     print_files = False
-    for basis in (["comp", "paul"] if not for_syn else ["paul"]):
+
+    for basis in bases:
         # Get CNF for the merged circuit
-        orig_cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
+        orig_cnf = qk.encoding.QASM2CNF(circuit1,
+                                        computational_basis = (basis == "comp"),
+                                        double_and_entangle=(basis == "doub"))
         
-        for check_type in (["id", "2n"] if not for_syn else ["2n"]):
-            if basis == "comp" and check_type == "2n":
+        for check_type in check_types:
+            if basis in ["comp", "doub"] and check_type == "2n":
                 continue
             
             cnf =  copy.deepcopy(orig_cnf) 
+
             glb_st = time.time()
             res = qk.CheckEquivalence(tool_path, cnf, check = check_type)
             glb_et = time.time()
@@ -40,7 +44,7 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
                 else:
                     print(".", end="")
                     
-            if not for_syn:
+            if add_to_csv:
                 # pandas dataframe for results
                 data.append({'technic': check_type,
                             'basis': basis,
@@ -50,7 +54,7 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None, for_syn = False):
                             'result': res
                             })
 
-    if not for_syn:
+    if add_to_csv:
         # convert data to pandas dataframe and add to file
         df = pd.DataFrame(data)
         pandas_file_name = 'eq_results.csv'
