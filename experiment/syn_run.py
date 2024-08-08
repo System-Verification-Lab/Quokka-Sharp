@@ -18,7 +18,7 @@ def main(tool_path, qasmfile, eq_tool_path):
     data = []
     cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, double_and_entangle = True)
     glb_st = time.time()
-    helper_folder = "./syn_cnf_files/" # + qasmfile.split('/')[-1].split('.')[0]
+    helper_folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0] + "/"
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
     res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False, inc_step=1)
