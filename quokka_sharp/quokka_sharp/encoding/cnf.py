@@ -7,20 +7,35 @@ from .qasm_parser import Circuit
 class Variables:
     def __init__(self, cnf: 'CNF', computational_basis=False):
         self.cnf = cnf
-        self.n = cnf.n
+        self.n = 0
         self.var = 0
-        self.x = [0] * cnf.n
+        self.x = []
         if not computational_basis:
-            self.z = [0] * cnf.n
-        for i in range(cnf.n):
-            self.x[i] = self.add_var()
-            if not computational_basis:
-                self.z[i] = self.add_var()
+            self.z = []
         self.computational_basis = computational_basis
+        self.add_bits(cnf.n)
+
+    def copy(self) -> "Variables":
+        vars = Variables(self.cnf, self.computational_basis)
+        vars.cnf = self.cnf
+        vars.n = self.n
+        vars.var = self.var
+        vars.x = self.x.copy()
+        if not vars.computational_basis:
+            vars.z = self.z.copy()
+        vars.computational_basis = self.computational_basis
+        return vars
 
     def add_var(self):
         self.var += 1
         return self.var
+    
+    def add_bits(self, n):
+        for _ in range(n):
+            self.x.append(self.add_var())
+            if not self.computational_basis:
+                self.z.append(self.add_var())
+        self.n += n
 
     def measurement(self, basis, prepend=False):
         n = self.n
@@ -86,8 +101,7 @@ class CNF:
         self.cons_list = []
         self.weight_list = io.StringIO()
         self.vars = Variables(self, computational_basis) # variables at timestep m (end of circuit)
-        self.vars_init = copy.deepcopy(self.vars)      # variables at timestep 0
-        self.vars_init.cnf = self
+        self.vars_init = self.vars.copy()      # variables at timestep 0
         self.computational_basis = computational_basis
         self.square_result = False
         self.syn_gate_layer = 0
