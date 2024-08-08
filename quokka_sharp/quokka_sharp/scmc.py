@@ -66,7 +66,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         signal.signal(signal.SIGALRM, timeout)
         signal.alarm(TIMEOUT)
 
-        if cnf.computational_basis:
+        if cnf.computational_basis or cnf.double_and_entangle:
             expected_prob = 2**cnf.n
         else:
             expected_prob = 4**cnf.n

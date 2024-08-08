@@ -287,6 +287,19 @@ class cliffordt2cnf:
         cnf.add_weight(-R, 1)
         cnf.add_weight(R, -1)
 
+    def Entangle2CNF(cnf):
+        x = cnf.vars.x
+        z = cnf.vars.z
+        for k in range(cnf.n//2):
+
+            # Equivalent(x[k+cnf.n//2], x[k])
+            cnf.add_clause([ x[k+cnf.n//2], -x[k]])
+            cnf.add_clause([-x[k+cnf.n//2],  x[k]])
+
+            # Equivalent(z[k+cnf.n//2], z[k])
+            cnf.add_clause([ z[k+cnf.n//2], -z[k]])
+            cnf.add_clause([-z[k+cnf.n//2],  z[k]])
+
     def AMO(cnf, var_list):
         assert None not in var_list
         # at least one:
@@ -296,18 +309,19 @@ class cliffordt2cnf:
 
 
     def SynGate2CNF(cnf):
+        n = cnf.n if not cnf.double_and_entangle else cnf.n//2
         x = cnf.vars.x
         z = cnf.vars.z
-        X = [cnf.add_var() for _ in range(cnf.n)]
-        Z = [cnf.add_var() for _ in range(cnf.n)]
-        R = [cnf.add_var() for _ in range(cnf.n)]
-        U = [cnf.add_var() for _ in range(cnf.n)]
-        [cnf.add_weight(R[k], -1) for k in range(cnf.n)]
-        [cnf.add_weight(-R[k], 1) for k in range(cnf.n)]
-        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(cnf.n)]
-        [cnf.add_weight(-U[k], 1) for k in range(cnf.n)]
-        czg = [[None for _ in range(cnf.n)] for _ in range(cnf.n)]
-        for k in range(cnf.n):
+        X = [cnf.add_var() for _ in range(n)]
+        Z = [cnf.add_var() for _ in range(n)]
+        R = [cnf.add_var() for _ in range(n)]
+        U = [cnf.add_var() for _ in range(n)]
+        [cnf.add_weight(R[k], -1) for k in range(n)]
+        [cnf.add_weight(-R[k], 1) for k in range(n)]
+        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-U[k], 1) for k in range(n)]
+        czg = [[None for _ in range(n)] for _ in range(n)]
+        for k in range(n):
             idg = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])
             hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])
             sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])
@@ -363,7 +377,7 @@ class cliffordt2cnf:
             cnf.add_clause([ U[k], -tg, -x[k]])
             cnf.add_clause([-U[k], -tg,  x[k]])
             c = k
-            for t in range(c+1, cnf.n):
+            for t in range(c+1, n):
                 czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t])
             # Implies(czg[c][t], Equivalent(X[c], x[c]))
                 cnf.add_clause([ X[c], -czg[c][t], -x[c]])
@@ -394,9 +408,9 @@ class cliffordt2cnf:
                 cnf.add_clause([-U[c], -czg[c][t]])
             # Implies(czg[c][t], ~U[t])
                 cnf.add_clause([-U[t], -czg[c][t]])
-            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,cnf.n)]
+            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]
             cliffordt2cnf.AMO(cnf, gate_controlers)
 
-        cnf.vars.x = X
-        cnf.vars.z = Z
+        cnf.vars.x[:n] = X
+        cnf.vars.z[:n] = Z
 

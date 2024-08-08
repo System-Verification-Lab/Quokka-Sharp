@@ -71,7 +71,7 @@ class Circuit:
     def append(self, other: 'Circuit'):
         assert(self.translate_ccx == other.translate_ccx)
         self.circ.extend( other.circ )
-        assert self.n == other.n
+        self.n = max(self.n, other.n)
         self.tgate = self.tgate + other.tgate
 
     def to_qasm(self):
