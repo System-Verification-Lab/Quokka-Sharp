@@ -35,7 +35,7 @@ def get_result(result, expexted_prob):
     else:
         return (False, weight, assignment)
 
-def identity_check(cnf:'CNF', cnf_file_root, layers):
+def identity_check(cnf:'CNF', cnf_file_root, indx):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses()
     
@@ -43,9 +43,9 @@ def identity_check(cnf:'CNF', cnf_file_root, layers):
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), incremental = False):
+def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), incremental = False, inc_step = 1):
     p = None
-    layers = 0
+    it_counter = 0
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass 
@@ -56,7 +56,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if weight == "CONFLICT":
                 raise TimeoutException("CONFLICT")
             else:
-                print(layers, end="")
+                print(it_counter, end="")
                 raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
@@ -74,18 +74,19 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         found = False
         weight = 0
         assignment = []
-        num_layers = 1
+        if incremental:
+            num_layers = inc_step
         circuit = Circuit(translate_ccx=True)
         circuit.n = cnf.n
         while not found:
-            layers+=1
+            it_counter+=1
             if not incremental:
                 cnf.add_syn_layer()
-                file = identity_check(cnf, cnf_file_root, layers)
+                file = identity_check(cnf, cnf_file_root, it_counter)
             else:
                 cnf_copy = copy.deepcopy(cnf)
                 cnf_copy.add_syn_layer(num_layers)
-                file = identity_check(cnf_copy, cnf_file_root, layers)
+                file = identity_check(cnf_copy, cnf_file_root, it_counter)
             command = tool_invocation.split(' ') + [file]
             p = Popen(command, stdout= PIPE, stderr=PIPE)
             pid = None
@@ -97,7 +98,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if incremental:
                 if weight - last_weight > 0: # TODO Might want to put here a margin error 
                     # print(f"({num_layers})", end = "")
-                    num_layers = 1  
+                    num_layers = inc_step  
                     circuit_inc = cnf_copy.get_syn_circuit(assignment, translate_ccx=True)
                     circuit.append(circuit_inc)
                     cnf.encode_circuit(circuit_inc)
