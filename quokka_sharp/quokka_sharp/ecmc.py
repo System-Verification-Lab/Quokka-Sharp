@@ -73,7 +73,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         match check:
             case "id":
                 cnf_file_list.append(identity_check(cnf, cnf_file_root))
-                if cnf.computational_basis:
+                if cnf.computational_basis or cnf.double_and_entangle:
                     expected_prob = 2**cnf.n
                 else:
                     expected_prob = 4**cnf.n
