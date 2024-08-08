@@ -93,9 +93,12 @@ class Variables:
 
 
 class CNF:
-    def __init__(self, n, computational_basis=False):
+    def __init__(self, n, computational_basis=False, double_and_entangle = False):
         self.clause = 0
-        self.n = n
+        if not double_and_entangle: 
+            self.n = n
+        else:
+            self.n = 2*n
         self.circuit = None
         self.locked = False
         self.cons_list = []
@@ -106,6 +109,9 @@ class CNF:
         self.square_result = False
         self.syn_gate_layer = 0
         self.syn_gate_picking_vars = {}
+        if double_and_entangle: 
+            self.entangle()
+        self.double_and_entangle = double_and_entangle
     
     def finalize(self):
         self.locked = True
@@ -289,6 +295,15 @@ class CNF:
             self.syn_gate_layer += 1
             to_CNF.SynGate2CNF(self)
 
+    def entangle(self):
+
+        if self.computational_basis:
+            from .comput2cnf import comput2cnf as to_CNF 
+        else:
+            from .cliffordt2cnf import cliffordt2cnf as to_CNF
+        
+        to_CNF.Entangle2CNF(self)
+
     def get_syn_circuit(self, assignment, translate_ccx=True):
         circuit = Circuit(translate_ccx)
         circuit.n = self.n
@@ -320,7 +335,7 @@ class CNF:
                 s += f" ;\n"
         return s
 
-def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
-    cnf = CNF(circuit.n, computational_basis)
+def QASM2CNF(circuit: Circuit, computational_basis = False, double_and_entangle = False) -> CNF:
+    cnf = CNF(circuit.n, computational_basis, double_and_entangle = double_and_entangle)
     cnf.encode_circuit(circuit)
     return cnf
