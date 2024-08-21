@@ -15,36 +15,35 @@ def main(tool_path, qasmfile, eq_tool_path):
 
     circuit.dagger()
 
-    data = []
-    cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, double_and_entangle = True)
-    glb_st = time.time()
     helper_folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0] + "/"
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
-    res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False, inc_step=1)
-    glb_et = time.time()
+    data = []
+    for onehot in [False, True]:
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, double_and_entangle = False)
+        glb_st = time.time()
+        res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False, inc_step=1, onehot_xz = onehot)
+        glb_et = time.time()
 
-    if res == "TIMEOUT":
-        print("T", end="")
-        return
-    if res == "CONFLICT":
-        print("C", end="")
-        return
-    
-    # print(".", end="")
+        if res == "TIMEOUT":
+            print("T", end="")
+        elif res == "CONFLICT":
+            print("C", end="")
+        else:
+            # print(".", end="")
 
-    sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
-    if not os.path.exists(sol_folder):
-        os.mkdir(sol_folder)
-    sol_file = sol_folder + qasmfile.split('/')[-1]
-    with open(sol_file, "w") as file:
-        file.write(res)
+            sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
+            if not os.path.exists(sol_folder):
+                os.mkdir(sol_folder)
+            sol_file = sol_folder + qasmfile.split('/')[-1]
+            with open(sol_file, "w") as file:
+                file.write(res)
 
-    sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
-    org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
-    print(org_depth-sol_depth, end="")
+            sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
+            org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
+            print(org_depth-sol_depth, end="")
 
-    eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["doub"], check_types = ["id"])
+            eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["paul"], check_types = ["2n"])
             
 
     # # pandas dataframe for results
