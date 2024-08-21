@@ -6,7 +6,7 @@ import sys
 import os.path as path
 import pandas as pd
 
-def main(tool_path, qasmfile1, qasmfile2, expected_res = None, bases = ["comp", "paul", "doub"], check_types = ["id", "2n"], add_to_csv=False):
+def main(tool_path, qasmfile1, qasmfile2, expected_res = None, bases = ["comp", "paul"], check_types = ["id", "2n"], onehot_values = [False, True], add_to_csv=False):
     # Parse the circuits
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     circuit2 = qk.encoding.QASMparser(qasmfile2, True)
@@ -27,32 +27,37 @@ def main(tool_path, qasmfile1, qasmfile2, expected_res = None, bases = ["comp", 
         for check_type in check_types:
             if basis in ["comp", "doub"] and check_type == "2n":
                 continue
-            
-            cnf =  copy.deepcopy(orig_cnf) 
+            for onehot in onehot_values:
+                if check_type == "2n" and onehot:
+                    continue
+                if basis == "comp" and onehot:
+                    continue
+                
+                cnf =  copy.deepcopy(orig_cnf) 
 
-            glb_st = time.time()
-            res = qk.CheckEquivalence(tool_path, cnf, check = check_type)
-            glb_et = time.time()
+                glb_st = time.time()
+                res = qk.CheckEquivalence(tool_path, cnf, check = check_type, onehot_xz = onehot)
+                glb_et = time.time()
 
-            if res == "TIMEOUT":
-                print("T", end="")
-            else:
-                # assert(str(res) == expected_res), f"Result not as expected for basis {basis} and check type {check_type}: Got {res} instead of {expected_res}"
-                if str(res) != expected_res:
-                    print("W", end="")
-                    print_files = True
+                if res == "TIMEOUT":
+                    print("T", end="")
                 else:
-                    print(".", end="")
-                    
-            if add_to_csv:
-                # pandas dataframe for results
-                data.append({'technic': check_type,
-                            'basis': basis,
-                            'file1': qasmfile1, 
-                            'file2': qasmfile2, 
-                            'global time': glb_et - glb_st,
-                            'result': res
-                            })
+                    # assert(str(res) == expected_res), f"Result not as expected for basis {basis} and check type {check_type}: Got {res} instead of {expected_res}"
+                    if str(res) != expected_res:
+                        print("W", end="")
+                        print_files = True
+                    else:
+                        print(".", end="")
+                        
+                if add_to_csv:
+                    # pandas dataframe for results
+                    data.append({'technic': check_type,
+                                'basis': basis,
+                                'file1': qasmfile1, 
+                                'file2': qasmfile2, 
+                                'global time': glb_et - glb_st,
+                                'result': res
+                                })
 
     if add_to_csv:
         # convert data to pandas dataframe and add to file

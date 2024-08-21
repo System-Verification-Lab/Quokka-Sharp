@@ -43,15 +43,18 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def identity_check(cnf:'CNF', cnf_file_root):
+def identity_check(cnf:'CNF', cnf_file_root, onehot_xz = False):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.add_identity_clauses()
+    cnf_temp.add_identity_clauses(onehot_xz = onehot_xz)
     
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id"):
+def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id", onehot_xz = False):
+    DEBUG = False
+    if DEBUG: print()
+    if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}, onehot: {onehot_xz}")
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass 
@@ -72,8 +75,10 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         
         match check:
             case "id":
-                cnf_file_list.append(identity_check(cnf, cnf_file_root))
-                if cnf.computational_basis or cnf.double_and_entangle:
+                cnf_file_list.append(identity_check(cnf, cnf_file_root, onehot_xz = onehot_xz))
+                if onehot_xz:
+                    expected_prob = 2*cnf.n
+                elif cnf.computational_basis or cnf.double_and_entangle:
                     expected_prob = 2**cnf.n
                 else:
                     expected_prob = 4**cnf.n
@@ -89,10 +94,11 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                     expected_prob = 1
             case _:
                 raise ValueError("Invalid check type")
-        
+        if DEBUG: print(f"expected: {expected_prob}")
             
         result = True
         tool_command = tool_invocation.split(' ')
+        if DEBUG: print(" ".join(tool_command))
         # parallel processes
         N = 16
         while True:
