@@ -146,7 +146,7 @@ class CNF:
             self.finalize()
         self.vars.projectQBi(i, True)
 
-    def add_identity_clauses(self):
+    def add_identity_clauses(self, onehot_xz = False):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
             self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
@@ -154,8 +154,14 @@ class CNF:
             if not self.computational_basis:
                 self.add_clause([ self.vars.z[i], -self.vars_init.z[i]])
                 self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
+        if not self.computational_basis and onehot_xz:
+            self.add_onehot_XZ()
         if not self.locked:
             self.finalize() 
+
+    def add_onehot_XZ(self):
+        from .cliffordt2cnf import cliffordt2cnf as to_CNF
+        to_CNF.AMO(self, self.vars_init.x+self.vars_init.z)
 
     def add_measurement(self, basis):
         self.vars.measurement(basis, False) 

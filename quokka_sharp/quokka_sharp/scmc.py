@@ -35,15 +35,17 @@ def get_result(result, expexted_prob):
     else:
         return (False, weight, assignment)
 
-def identity_check(cnf:'CNF', cnf_file_root, indx):
+def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.add_identity_clauses()
+    cnf_temp.add_identity_clauses(onehot_xz = onehot_xz)
     
-    cnf_file = cnf_file_root + f"/quokka_syn.cnf" # _{layers}.cnf" overide files to reduce spaming
+    cnf_file = cnf_file_root + f"quokka_syn.cnf" # _{onehot_xz}_{indx}.cnf" # overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), incremental = False, inc_step = 1):
+def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), incremental = False, inc_step = 1, onehot_xz = False):
+    DEBUG = False
+    if DEBUG: print() 
     p = None
     it_counter = 0
     try:  
@@ -66,7 +68,9 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         signal.signal(signal.SIGALRM, timeout)
         signal.alarm(TIMEOUT)
 
-        if cnf.computational_basis or cnf.double_and_entangle:
+        if onehot_xz:
+            expected_prob = 2*cnf.n
+        elif cnf.computational_basis or cnf.double_and_entangle:
             expected_prob = 2**cnf.n
         else:
             expected_prob = 4**cnf.n
@@ -82,12 +86,13 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             it_counter+=1
             if not incremental:
                 cnf.add_syn_layer()
-                file = identity_check(cnf, cnf_file_root, it_counter)
+                file = identity_check(cnf, cnf_file_root, it_counter, onehot_xz = onehot_xz)
             else:
                 cnf_copy = copy.deepcopy(cnf)
                 cnf_copy.add_syn_layer(num_layers)
-                file = identity_check(cnf_copy, cnf_file_root, it_counter)
+                file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
             command = tool_invocation.split(' ') + [file]
+            if DEBUG: print(" ".join(command))
             p = Popen(command, stdout= PIPE, stderr=PIPE)
             pid = None
             while pid == p.pid:
@@ -97,7 +102,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             found, weight, assignment = get_result(res[0], expected_prob)
             if incremental:
                 if weight - last_weight > 0: # TODO Might want to put here a margin error 
-                    # print(f"({num_layers})", end = "")
+                    print(f"({num_layers})", end = "")
                     num_layers = inc_step  
                     circuit_inc = cnf_copy.get_syn_circuit(assignment, translate_ccx=True)
                     circuit.append(circuit_inc)
@@ -105,7 +110,10 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 else:
                     num_layers += 1
                     weight = last_weight
-        
+            if DEBUG: print(found, weight, assignment)
+            if DEBUG: print(cnf.get_syn_qasm(assignment))
+
+        if DEBUG: print()
         if not incremental:
             return cnf.get_syn_qasm(assignment)
         else:
