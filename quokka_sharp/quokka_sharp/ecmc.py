@@ -43,18 +43,18 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def identity_check(cnf:'CNF', cnf_file_root, onehot_xz = False):
+def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.add_identity_clauses(onehot_xz = onehot_xz)
+    cnf_temp.add_identity_clauses(constrain_2n = constrain_2n)
     
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id", onehot_xz = False):
+def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id"):
     DEBUG = False
     if DEBUG: print()
-    if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}, onehot: {onehot_xz}")
+    if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass 
@@ -75,13 +75,14 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         
         match check:
             case "id":
-                cnf_file_list.append(identity_check(cnf, cnf_file_root, onehot_xz = onehot_xz))
-                if onehot_xz:
-                    expected_prob = 2*cnf.n
-                elif cnf.computational_basis or cnf.double_and_entangle:
+                cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
+                if cnf.computational_basis:
                     expected_prob = 2**cnf.n
                 else:
                     expected_prob = 4**cnf.n
+            case "id_2n":
+                cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
+                expected_prob = 2*cnf.n
             case "2n":
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
