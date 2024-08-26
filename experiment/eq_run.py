@@ -10,6 +10,7 @@ def main(tool_path, qasmfile1, qasmfile2,
          expected_res = None, 
          bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"],
          add_to_csv=False):
+    
     # Parse the circuits
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     circuit2 = qk.encoding.QASMparser(qasmfile2, True)
@@ -18,19 +19,18 @@ def main(tool_path, qasmfile1, qasmfile2,
     circuit2.dagger()
     circuit1.append(circuit2)
 
+    # initial data
     data = []
-    print_files = False
+    no_match_to_expected = False
 
     for basis in bases:
-        # Get CNF for the merged circuit
-        orig_cnf = qk.encoding.QASM2CNF(circuit1,
-                                        computational_basis = (basis == "comp"))
-        
         for check_type in check_types:
             if basis in ["comp"] and check_type in ["2n", "id_2n", "id_noY"]:
                 continue
 
-            cnf =  copy.deepcopy(orig_cnf) 
+            # Get CNF for the merged circuit
+            cnf =  qk.encoding.QASM2CNF(circuit1,
+                        computational_basis = (basis == "comp"))
 
             glb_st = time.time()
             res = qk.CheckEquivalence(tool_path, cnf, check = check_type)
@@ -42,20 +42,26 @@ def main(tool_path, qasmfile1, qasmfile2,
                 if expected_res is not None:
                     if str(res) != expected_res:
                         print("W", end="")
-                        print_files = True
+                        no_match_to_expected = True
                     else:
                         print(".", end="")
                     
             if add_to_csv:
                 # pandas dataframe for results
-                data.append({'technic': check_type,
-                            'basis': basis,
+                data.append({'basis': basis,
+                            'technic': check_type,
                             'file1': qasmfile1, 
                             'file2': qasmfile2, 
                             'global time': glb_et - glb_st,
-                            'result': res
+                            'result': res,
+                            'expected_res': expected_res
                             })
 
+    if no_match_to_expected:
+        print(f"""\nFile dosn't match expected:\
+                \n   circ1 = \"{qasmfile1}\"\
+                \n   circ2 = \"{qasmfile2}\"""")
+        
     if add_to_csv:
         # convert data to pandas dataframe and add to file
         df = pd.DataFrame(data)
@@ -64,11 +70,6 @@ def main(tool_path, qasmfile1, qasmfile2,
             df0 = pd.read_csv(pandas_file_name)
             df = pd.concat([df0, df], ignore_index=True)
         df.to_csv(pandas_file_name, index=False)
-
-    if print_files:
-        print(f"""\nFile dosn't match expected:\
-                \n   circ1 = \"{qasmfile1}\"\
-                \n   circ2 = \"{qasmfile2}\"""")
 
 
 if __name__ == '__main__':
