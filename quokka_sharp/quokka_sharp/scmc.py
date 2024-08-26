@@ -37,7 +37,7 @@ def get_result(result, expexted_prob):
 
 def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.add_identity_clauses(onehot_xz = onehot_xz)
+    cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
     
     cnf_file = cnf_file_root + f"quokka_syn.cnf" # _{onehot_xz}_{indx}.cnf" # overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
@@ -70,7 +70,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
 
         if onehot_xz:
             expected_prob = 2*cnf.n
-        elif cnf.computational_basis or cnf.double_and_entangle:
+        elif cnf.computational_basis:
             expected_prob = 2**cnf.n
         else:
             expected_prob = 4**cnf.n

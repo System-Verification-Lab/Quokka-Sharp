@@ -93,12 +93,9 @@ class Variables:
 
 
 class CNF:
-    def __init__(self, n, computational_basis=False, double_and_entangle = False):
+    def __init__(self, n, computational_basis=False):
         self.clause = 0
-        if not double_and_entangle: 
-            self.n = n
-        else:
-            self.n = 2*n
+        self.n = n
         self.circuit = None
         self.locked = False
         self.cons_list = []
@@ -109,9 +106,6 @@ class CNF:
         self.square_result = False
         self.syn_gate_layer = 0
         self.syn_gate_picking_vars = {}
-        if double_and_entangle: 
-            self.entangle()
-        self.double_and_entangle = double_and_entangle
     
     def finalize(self):
         self.locked = True
@@ -146,7 +140,7 @@ class CNF:
             self.finalize()
         self.vars.projectQBi(i, True)
 
-    def add_identity_clauses(self, onehot_xz = False):
+    def add_identity_clauses(self, constrain_2n = False):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
             self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
@@ -154,8 +148,11 @@ class CNF:
             if not self.computational_basis:
                 self.add_clause([ self.vars.z[i], -self.vars_init.z[i]])
                 self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
-        if not self.computational_basis and onehot_xz:
-            self.add_onehot_XZ()
+        if constrain_2n:
+            if not self.computational_basis:
+                self.add_onehot_XZ()
+            else: 
+                assert False, f"constrain_2n for computational_basis not suported"
         if not self.locked:
             self.finalize() 
 
@@ -301,15 +298,6 @@ class CNF:
             self.syn_gate_layer += 1
             to_CNF.SynGate2CNF(self)
 
-    def entangle(self):
-
-        if self.computational_basis:
-            from .comput2cnf import comput2cnf as to_CNF 
-        else:
-            from .cliffordt2cnf import cliffordt2cnf as to_CNF
-        
-        to_CNF.Entangle2CNF(self)
-
     def get_syn_circuit(self, assignment, translate_ccx=True):
         circuit = Circuit(translate_ccx)
         circuit.n = self.n
@@ -341,7 +329,7 @@ class CNF:
                 s += f" ;\n"
         return s
 
-def QASM2CNF(circuit: Circuit, computational_basis = False, double_and_entangle = False) -> CNF:
-    cnf = CNF(circuit.n, computational_basis, double_and_entangle = double_and_entangle)
+def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
+    cnf = CNF(circuit.n, computational_basis)
     cnf.encode_circuit(circuit)
     return cnf

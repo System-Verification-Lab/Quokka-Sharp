@@ -20,7 +20,7 @@ def main(tool_path, qasmfile, eq_tool_path):
         os.mkdir(helper_folder)
     data = []
     for onehot in [False, True]:
-        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, double_and_entangle = False)
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
         glb_st = time.time()
         res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False, inc_step=1, onehot_xz = onehot)
         glb_et = time.time()
