@@ -25,15 +25,6 @@ def get_result(result, expexted_prob):
     else: 
         return False
 
-def comp_basis(i, cnf, cnf_file_root):
-    cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.rightProjectQBi(i)
-    cnf_temp.leftProjectQBi(i)
-    
-    cnf_file = cnf_file_root + "/quokka_eq_check_"+ str(i) + ".cnf"
-    cnf_temp.write_to_file(cnf_file)
-    return cnf_file
-
 def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.rightProjectZXi(Z_or_X, i)
@@ -69,7 +60,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
     try:
         signal.signal(signal.SIGALRM, timeout)
         signal.alarm(TIMEOUT)
-        #TODO: different number of qubits
+        
         cnf_file_list = []
         proclist = []
         
