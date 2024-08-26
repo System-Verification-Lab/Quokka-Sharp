@@ -7,13 +7,16 @@ from .qasm_parser import Circuit
 class Variables:
     def __init__(self, cnf: 'CNF', computational_basis=False):
         self.cnf = cnf
-        self.n = 0
+        self.n = cnf.n
         self.var = 0
-        self.x = []
-        if not computational_basis:
-            self.z = []
         self.computational_basis = computational_basis
-        self.add_bits(cnf.n)
+        self.x = []
+        if not self.computational_basis:
+            self.z = []
+        for _ in range(self.n):
+            self.x.append(self.add_var())
+            if not self.computational_basis:
+                self.z.append(self.add_var())
 
     def copy(self) -> "Variables":
         vars = Variables(self.cnf, self.computational_basis)
@@ -29,13 +32,6 @@ class Variables:
     def add_var(self):
         self.var += 1
         return self.var
-    
-    def add_bits(self, n):
-        for _ in range(n):
-            self.x.append(self.add_var())
-            if not self.computational_basis:
-                self.z.append(self.add_var())
-        self.n += n
 
     def measurement(self, basis, prepend=False):
         n = self.n
@@ -83,14 +79,6 @@ class Variables:
             else:
                 self.cnf.add_clause([-z[i]], prepend)
 
-    def projectQBi(self, idx, prepend=False):
-        assert(self.computational_basis)
-        for i in range(self.n):
-            if i == idx:
-                self.cnf.add_clause([self.x[i]], prepend)
-            else:
-                self.cnf.add_clause([-self.x[i]], prepend)
-
 
 class CNF:
     def __init__(self, n, computational_basis=False):
@@ -118,10 +106,6 @@ class CNF:
     def leftProjectZXi(self, Z_or_X, i):
         self.vars_init.projectZXi(Z_or_X, i, prepend=True)
 
-    # Left projections are initial states
-    def leftProjectQBi(self, i):
-        self.vars_init.projectQBi(i, True)
-
     # Right projections are measurements: we only allow measurements at the end. See self.lock
     def rightProjectAllZero(self):
         if not self.locked:
@@ -134,14 +118,12 @@ class CNF:
             self.finalize()
         self.vars.projectZXi(Z_or_X, i, prepend=True)
 
-    # Right projections are measurements: we only allow measurements at the end. See self.lock
-    def rightProjectQBi(self, i):
-        if not self.locked:
-            self.finalize()
-        self.vars.projectQBi(i, True)
-
+    # Add clauses dictating that the initial state matches the finel state
+    # constrain_2n = limit the initial states to the 2*n states of single X or single Z (the rest are I)
+    # constrain_no_Y = limit the initial state to I, X or Z (no Y, 3**n posible states instead of 4**n)
     def add_identity_clauses(self, constrain_2n = False, constrain_no_Y = False):
         assert(self.vars.n == self.vars_init.n)
+        assert not (constrain_2n and constrain_no_Y) # no sense using both
         for i in range(self.vars.n):
             self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
             self.add_clause([-self.vars.x[i],  self.vars_init.x[i]])
@@ -205,6 +187,7 @@ class CNF:
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))
 
+    # add to the cnf the gates as decribed in the circuit
     def encode_circuit(self, circuit : Circuit):
 
         if not self.circuit:
@@ -301,6 +284,7 @@ class CNF:
             self.syn_gate_layer += 1
             to_CNF.SynGate2CNF(self)
 
+    # convert an assignment for the syn variable to a coresponding Circuit object
     def get_syn_circuit(self, assignment, translate_ccx=True):
         circuit = Circuit(translate_ccx)
         circuit.n = self.n
@@ -317,7 +301,8 @@ class CNF:
                     assert False
         return circuit
 
-    def get_syn_qasm(self, assignment):
+    # convert an assignment for the syn variable to a coresponding qasm formt
+    def get_syn_qasm(self, assignment) -> str:
         s = "OPENQASM 2.0;\n"
         s += "include \"qelib1.inc\";\n"
         s += f"qreg q[{self.n}];\n"
@@ -332,6 +317,7 @@ class CNF:
                 s += f" ;\n"
         return s
 
+# construct a CNF object for a given Circuit, in the pauly or computational basis
 def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
     cnf = CNF(circuit.n, computational_basis)
     cnf.encode_circuit(circuit)
