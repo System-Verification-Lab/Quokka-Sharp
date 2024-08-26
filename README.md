@@ -19,13 +19,19 @@ pip install quokka_sharp
 Quokka# provides two kinds of funcionalities: one is to simulate a quantum circuit, 
 the other is to check the equivalence of two circuits.
 
-Please first export TIMEOUT as
+We work in one of two posible bases: Pauli or Computations.
+
+For equalty check we allow one of 4 tecnics for the Pauli basis: "2n", "id", "id_2n", "id_noY"
+For equalty check we allow one only 1 tecnics for the Computations basis: "id"
+
+Please first set the wanted timeout (in seconds) using export TIMEOUT, for example:
 ```
 export TIMEOUT=3600
 ```
 
 All the input circuits should be in [QASM format](https://openqasm.com/).
-Here are some simple walkthroughs to use the tool.
+Here are some simple walkthroughs to use the tool. 
+The eq_run.py and sim_run.py (used for the bencmarks) can be used to compare the diffrent variations of the tool and provide further examples. 
 
 ```python
 import quokka_sharp as qk
@@ -63,7 +69,7 @@ circuit2.dagger()
 circuit1.append(circuit2)
 # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-res = qk.CheckEquivalence(tool_path, cnf)
+res = qk.CheckEquivalence(tool_path, cnf, check = "id")
 ```
 
 - extention of the encodings
