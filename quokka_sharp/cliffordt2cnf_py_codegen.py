@@ -392,24 +392,6 @@ def main():
     
     # Synthesis
 
-    #Entangle
-    x_k_n = symbols("x[k+cnf.n//2]")
-    z_k_n = symbols("z[k+cnf.n//2]")
-    print("    def Entangle2CNF(cnf):")
-    print("        x = cnf.vars.x")
-    print("        z = cnf.vars.z")
-    print("        for k in range(cnf.n//2):")
-    print()
-    x_eq = Equivalent(x[k], x_k_n)
-    print("            # " + str(x_eq))
-    to_py(	           str(to_cnf(x_eq)), prefix="    ")
-    print()
-    z_eq = Equivalent(z[k], z_k_n)
-    print("            # " + str(z_eq))
-    to_py(	           str(to_cnf(z_eq)), prefix="    ")
-    print()
-
-
     # dynamic single bit gate:
 
     idg    = symbols('idg')
@@ -477,7 +459,7 @@ def main():
     print()
     print()
     print("    def SynGate2CNF(cnf):")
-    print("        n = cnf.n if not cnf.double_and_entangle else cnf.n//2")
+    print("        n = cnf.n")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        X = [cnf.add_var() for _ in range(n)]")

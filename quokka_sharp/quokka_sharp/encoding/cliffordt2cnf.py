@@ -287,19 +287,6 @@ class cliffordt2cnf:
         cnf.add_weight(-R, 1)
         cnf.add_weight(R, -1)
 
-    def Entangle2CNF(cnf):
-        x = cnf.vars.x
-        z = cnf.vars.z
-        for k in range(cnf.n//2):
-
-            # Equivalent(x[k+cnf.n//2], x[k])
-            cnf.add_clause([ x[k+cnf.n//2], -x[k]])
-            cnf.add_clause([-x[k+cnf.n//2],  x[k]])
-
-            # Equivalent(z[k+cnf.n//2], z[k])
-            cnf.add_clause([ z[k+cnf.n//2], -z[k]])
-            cnf.add_clause([-z[k+cnf.n//2],  z[k]])
-
     def AMO(cnf, var_list):
         assert None not in var_list
         # at least one:
@@ -309,7 +296,7 @@ class cliffordt2cnf:
 
 
     def SynGate2CNF(cnf):
-        n = cnf.n if not cnf.double_and_entangle else cnf.n//2
+        n = cnf.n
         x = cnf.vars.x
         z = cnf.vars.z
         X = [cnf.add_var() for _ in range(n)]
