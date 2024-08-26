@@ -8,7 +8,7 @@ import pandas as pd
 
 def main(tool_path, qasmfile1, qasmfile2, 
          expected_res = None, 
-         bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n"],
+         bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"],
          add_to_csv=False):
     # Parse the circuits
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
@@ -27,7 +27,7 @@ def main(tool_path, qasmfile1, qasmfile2,
                                         computational_basis = (basis == "comp"))
         
         for check_type in check_types:
-            if basis in ["comp"] and check_type in ["2n", "id_2n"]:
+            if basis in ["comp"] and check_type in ["2n", "id_2n", "id_noY"]:
                 continue
 
             cnf =  copy.deepcopy(orig_cnf) 
