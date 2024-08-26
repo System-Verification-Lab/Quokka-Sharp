@@ -43,9 +43,9 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False):
+def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_Y = False):
     cnf_temp = copy.deepcopy(cnf)
-    cnf_temp.add_identity_clauses(constrain_2n = constrain_2n)
+    cnf_temp.add_identity_clauses(constrain_2n = constrain_2n, constrain_no_Y = constrain_no_Y)
     
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
@@ -83,18 +83,19 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             case "id_2n":
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
                 expected_prob = 2*cnf.n
+            case "id_noY":
+                cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
+                expected_prob = 3**cnf.n
             case "2n":
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
-                    for i in range(cnf.n):
-                        cnf_file_list.append(comp_basis(i, cnf, cnf_file_root))
                 else:
                     for i in range(cnf.n):
                         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
                         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
                     expected_prob = 1
             case _:
-                raise ValueError("Invalid check type")
+                raise ValueError(f"Invalid check type {check}")
         if DEBUG: print(f"expected: {expected_prob}")
             
         result = True

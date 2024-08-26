@@ -140,7 +140,7 @@ class CNF:
             self.finalize()
         self.vars.projectQBi(i, True)
 
-    def add_identity_clauses(self, constrain_2n = False):
+    def add_identity_clauses(self, constrain_2n = False, constrain_no_Y = False):
         assert(self.vars.n == self.vars_init.n)
         for i in range(self.vars.n):
             self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
@@ -150,15 +150,18 @@ class CNF:
                 self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
         if constrain_2n:
             if not self.computational_basis:
-                self.add_onehot_XZ()
+                from .cliffordt2cnf import cliffordt2cnf as to_CNF
+                to_CNF.AMO(self, self.vars_init.x+self.vars_init.z)
             else: 
-                assert False, f"constrain_2n for computational_basis not suported"
+                assert False, f"ERROR: identity with constrain_2n for computational_basis not suported"
+        if constrain_no_Y:
+            if not self.computational_basis:
+                for i in range(self.vars.n):
+                    self.add_clause([-self.vars_init.x[i], -self.vars_init.z[i]])
+            else: 
+                assert False, f"ERROR: identity with constrain_no_Y for computational_basis not suported"
         if not self.locked:
             self.finalize() 
-
-    def add_onehot_XZ(self):
-        from .cliffordt2cnf import cliffordt2cnf as to_CNF
-        to_CNF.AMO(self, self.vars_init.x+self.vars_init.z)
 
     def add_measurement(self, basis):
         self.vars.measurement(basis, False) 
