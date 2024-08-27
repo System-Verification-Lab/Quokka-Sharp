@@ -21,8 +21,12 @@ the other is to check the equivalence of two circuits.
 
 We work in one of two posible bases: Pauli or Computations.
 
-For equalty check we allow one of 4 tecnics for the Pauli basis: "2n", "id", "id_2n", "id_noY"
-For equalty check we allow one only 1 tecnics for the Computations basis: "id"
+For equivalence checking we allow one of 4 techniques for the Pauli basis: "id", "id_2n", "id_noY", "2n"
+For equivalence checking check we allow one only 1 technique for the computational basis: "id"
+"id": creats a cyclic check, such that the final state is constraind to be identical to the initial state.
+"id_2n": uses "id" and add constraits on the initial state such that a basis of size 2*n is checked.
+"id_noY": uses "id" and add constraits on the initial state such that there will be no Y.
+"2n": makes 2*n independant calls, each checking one initial state in the 2n basis.
 
 Please first set the wanted timeout (in seconds) using export TIMEOUT, for example:
 ```
