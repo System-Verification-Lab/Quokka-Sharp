@@ -1,3 +1,4 @@
+import copy
 import re, os, sys
 from subprocess import Popen, PIPE, TimeoutExpired
 
@@ -29,9 +30,48 @@ def GPMC(tool_invocation, wmc_file):
         return "TIMEOUT"
 
 def Simulate(toolpath, cnf: "CNF"):
-    filename = "temp_for_sim.cnf"
-    cnf.write_to_file(filename)
-    result = GPMC(toolpath, filename)
-    if cnf.square_result and result != "TIMEOUT":
-        result = result * result
-    return result
+    DEBUG = False
+    if cnf.weighted:
+        filename = "temp_for_sim.cnf"
+        cnf.write_to_file(filename)
+        result = GPMC(toolpath, filename)
+        if result != "TIMEOUT":
+            if cnf.square_result:
+                result = result * result
+            result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
+        return result
+    else:
+        sum_results = 0
+        for s in ["p", "m"]:
+            for t in ["e", "o"]:
+                filename = f"temp_for_sim.cnf"
+                if DEBUG: print(filename)
+                cnf_copy = copy.deepcopy(cnf)
+                if s == "p":
+                    cnf_copy.add_clause([-cnf.vars.r])
+                else:
+                    cnf_copy.add_clause([cnf.vars.r])
+                if t == "e":
+                    cnf_copy.add_clause([-cnf.vars.u])
+                else:
+                    cnf_copy.add_clause([cnf.vars.u])
+                
+                cnf_copy.write_to_file(filename)
+                result = GPMC(toolpath, filename)
+                if result == "TIMEOUT":
+                    return result
+                
+                if DEBUG: print(f"initial: {result}")
+                if s == "m":
+                    result = -result
+                
+                if t == "e":
+                    result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
+                else:
+                    result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation-0.5))
+
+                sum_results += result
+                if DEBUG: print(f"fixed: {result} (num tgates: {cnf.circuit.tgate})")
+                if DEBUG: print(f"sum_results: {sum_results}")
+                
+        return sum_results

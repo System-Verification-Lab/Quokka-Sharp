@@ -17,17 +17,19 @@ class Variables:
             self.x.append(self.add_var())
             if not self.computational_basis:
                 self.z.append(self.add_var())
+        if not cnf.weighted:
+            self.r = self.add_var()
+            cnf.add_clause([-self.r])
+            self.u = self.add_var()
+            cnf.add_clause([-self.u])
 
-    def copy(self) -> "Variables":
-        vars = Variables(self.cnf, self.computational_basis)
-        vars.cnf = self.cnf
-        vars.n = self.n
-        vars.var = self.var
-        vars.x = self.x.copy()
-        if not vars.computational_basis:
-            vars.z = self.z.copy()
-        vars.computational_basis = self.computational_basis
-        return vars
+    def copy(self):
+        cnf = self.cnf
+        self.cnf = None
+        self_copy = copy.deepcopy(self)
+        self.cnf = cnf
+        self_copy.cnf = cnf
+        return self_copy
 
     def add_var(self):
         self.var += 1
@@ -41,10 +43,7 @@ class Variables:
             if self.computational_basis:
                 self.cnf.square_result = True
             else:
-                w = self.add_var()
-                self.cnf.add_clause([w], True)
-                self.cnf.add_weight(w, 1/math.pow(2,n))
-                self.cnf.add_weight(-w, 1)
+                self.cnf.power_two_normalisation += n
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend)
             if self.computational_basis:
@@ -55,11 +54,8 @@ class Variables:
             else:
                 for i in range(1, self.n):
                     self.cnf.add_clause([-self.x[i]], prepend)
-                    self.cnf.add_clause([-self.z[i]], prepend)   
-                w = self.add_var()
-                self.cnf.add_clause([w], True)
-                self.cnf.add_weight(w, 1/2)
-                self.cnf.add_weight(-w, 1)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.cnf.power_two_normalisation += 1
         else: 
             Exception("Please choose firstzero or allzero measurement")
             
@@ -81,15 +77,17 @@ class Variables:
 
 
 class CNF:
-    def __init__(self, n, computational_basis=False):
+    def __init__(self, n, computational_basis=False, weighted = True):
         self.clause = 0
         self.n = n
         self.circuit = None
         self.locked = False
         self.cons_list = []
+        self.weighted = weighted
         self.weight_list = io.StringIO()
+        self.power_two_normalisation = 0
         self.vars = Variables(self, computational_basis) # variables at timestep m (end of circuit)
-        self.vars_init = self.vars.copy()      # variables at timestep 0
+        self.vars_init = self.vars.copy()     # variables at timestep 0
         self.computational_basis = computational_basis
         self.square_result = False
         self.syn_gate_layer = 0
@@ -169,6 +167,7 @@ class CNF:
             self.cons_list.append(constr)
 
     def add_weight(self, var, weight, complex_weight=None):
+        assert self.weighted
         self.weight_list.write("c p weight ")
         self.weight_list.write(str(var))
         self.weight_list.write(" ")
@@ -318,7 +317,7 @@ class CNF:
         return s
 
 # construct a CNF object for a given Circuit, in the pauly or computational basis
-def QASM2CNF(circuit: Circuit, computational_basis = False) -> CNF:
-    cnf = CNF(circuit.n, computational_basis)
+def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True) -> CNF:
+    cnf = CNF(circuit.n, computational_basis = computational_basis, weighted = weighted)
     cnf.encode_circuit(circuit)
     return cnf
