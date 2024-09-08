@@ -18,6 +18,9 @@ class Variables:
             if not self.computational_basis:
                 self.z.append(self.add_var())
         if not cnf.weighted:
+            if computational_basis:
+                self.i = self.add_var()
+                cnf.add_clause([-self.i])
             self.r = self.add_var()
             cnf.add_clause([-self.r])
             self.u = self.add_var()
@@ -45,7 +48,7 @@ class Variables:
             else:
                 self.cnf.power_two_normalisation += n
         elif basis == "firstzero":
-            self.cnf.add_clause([-self.x[0]], prepend)
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
             if self.computational_basis:
                 circuit_copy = copy.deepcopy(self.cnf.circuit)
                 circuit_copy.dagger()
@@ -123,11 +126,11 @@ class CNF:
         assert(self.vars.n == self.vars_init.n)
         assert not (constrain_2n and constrain_no_Y) # no sense using both
         for i in range(self.vars.n):
-            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
-            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]])
+            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]], comment="id")
+            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]], comment="id")
             if not self.computational_basis:
-                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]])
-                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
+                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]], comment="id")
+                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]], comment="id")
         if constrain_2n:
             if not self.computational_basis:
                 from .cliffordt2cnf import cliffordt2cnf as to_CNF
@@ -155,12 +158,15 @@ class CNF:
             self.syn_gate_picking_vars[var] = {"Name": Name, "bits": bits, "layer": self.syn_gate_layer}
         return var
 
-    def add_clause(self, cons, prepend=False):
+    def add_clause(self, cons, prepend=False, comment=None):
         self.clause += 1
         constr = ''
         for i in range(len(cons)):
             constr += str(cons[i]) + " "
-        constr = constr + "0\n"
+        constr = constr + "0"
+        if comment:
+            constr = constr + "\t\t// " +comment
+        constr = constr + "\n"
         if prepend:
             self.cons_list.insert(0, constr)
         else:
@@ -190,9 +196,9 @@ class CNF:
     def encode_circuit(self, circuit : Circuit):
 
         if not self.circuit:
-            self.circuit = circuit
+            self.circuit = copy.deepcopy(circuit)
         else:
-            self.circuit.append(circuit)
+            self.circuit.append(copy.deepcopy(circuit))
 
         if self.computational_basis:
             from .comput2cnf import comput2cnf as to_CNF 
