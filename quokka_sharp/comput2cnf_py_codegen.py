@@ -1,28 +1,40 @@
 from sympy.logic.boolalg import *
 from sympy.logic import simplify_logic
 from sympy import symbols
+from sympy import true
 
 c = 0
 t = 1
 k = 2
 
-h    = symbols('h')
+i = symbols("i")
+I = symbols('I')
+r = symbols('r')
+R = symbols('R')
+u = symbols('u')
+U = symbols('U')
+D = symbols('D')
+
+w = symbols('w')
 
 x = [0,0,0]
 x[k] = symbols("x[k]")
 x[c] = symbols("x[c]")
 x[t] = symbols("x[t]")
-
 X    = symbols('X')
 Xc   = symbols('Xc')
 Xt   = symbols('Xt')
 
+
+
 def strstrip(item1):
     return item1.lstrip(' ()~')
 
-def to_py(s):
+def to_py(func, prefix="", simplify=True, force=True, comment=None):
+    print(prefix+"        # "+str(func))
+    s = str(to_cnf(func, simplify=simplify, force=force))
     for a in s.split("&"):
-        print("        cnf.add_clause([", end="")
+        print(prefix+"        cnf.add_clause([", end="")
         l = a.split("|")
         l.sort(key=strstrip)
         for x in l:
@@ -34,7 +46,50 @@ def to_py(s):
             print(b, end="")
             if x != l[-1]:
                 print(", ", end="")
-        print("])")
+        print("]", end="")
+        if comment: print(f", comment=\"{comment}\"", end="")
+        print(f")")
+
+def add_sign(func, prefix = "", comment=""):
+    print(prefix+f"        # adding sign if {func}")
+    print(prefix+"        R = cnf.add_var()")
+    print(prefix+"        if cnf.weighted: ")
+    print(prefix+"            cnf.add_weight(R, -1)")
+    print(prefix+"            cnf.add_weight(-R, 1)")
+    to_py(	                  Equivalent(R, func), prefix+"    ", comment="- "+comment)
+    print(prefix+"        else: ")
+    print(prefix+"            r = cnf.vars.r")
+    print(prefix+"            cnf.vars.r = R")
+    to_py(	                  Equivalent(R, r ^ func), prefix+"    ", comment="- "+comment)
+
+def add_i(func, prefix = "", comment=""):
+    print(prefix+f"        # adding i if {func}")
+    print(prefix+"        I = cnf.add_var()")
+    print(prefix+"        if cnf.weighted: ")
+    print(prefix+"            cnf.add_weight(I, 0, 1)")
+    print(prefix+"            cnf.add_weight(-I, 1, 0)")
+    to_py(	                  Equivalent(I, func), prefix+"    ", comment="i "+comment)
+    print(prefix+"        else: ")
+    print(prefix+"            i = cnf.vars.i")
+    to_py(	                  Equivalent(I, i ^ func), prefix+"    ", comment="i "+comment)
+    add_sign(i & ~I, prefix+"    ")
+    print(prefix+"            cnf.vars.i = I")
+
+def add_sqrt_half(func, prefix = "", comment=""):
+    print(prefix+"        U = cnf.add_var()")
+    print(prefix+"        if cnf.weighted: ")
+    print(prefix+"            cnf.add_weight(U, str(Decimal(1/2).sqrt()))")
+    print(prefix+"            cnf.add_weight(-U, 1)")
+    to_py(	                  Equivalent(U, func), prefix+"    ", comment="sqrt "+comment)
+    print(prefix+"        else: ")
+    print(prefix+"            cnf.power_two_normalisation += 0.5 ")
+    print(prefix+"            u = cnf.vars.u")
+    print(prefix+"            cnf.vars.u = U")
+    to_py(	                  Equivalent(U, u ^ ~func), prefix+"    ", comment="sqrt U update "+comment)
+    print()
+    print(prefix+"            D = cnf.add_var()")
+    print(prefix+f"            cnf.add_clause([D, cnf.add_var()], comment=\"sqrt D double {comment}\")")
+    to_py(	                  Equivalent(D, u & ~U), prefix+"    ", comment="sqrt D update "+comment)
 
 def main():
 
@@ -48,188 +103,164 @@ def main():
     print()
 
     # H:
-    F = Equivalent(h, (~x[k] | ~X) )
-    C = to_cnf(F, True, True)
-
     print("    def H2CNF(cnf, k):")
     print("        x = cnf.vars.x")
+    print()   
     print("        X = cnf.add_var()")
-    print("        h = cnf.add_var()")
+    print()   
+    add_sqrt_half(true)
     print()
-    print("        # "+ str(F))
-    to_py(      str(C))
+    add_sign(x[k] & X)
     print()
     print("        cnf.vars.x[k] = X")
     print()
-    print(f"        cnf.add_weight( h,  Decimal(math.sqrt(1/2)))")
-    print(f"        cnf.add_weight(-h, -Decimal(math.sqrt(1/2)))")
-    print()
-
-    # Y:
-    Fx = Equivalent(X, ~x[k])
-    Cx = to_cnf(Fx, True, True)
-
-    Fh = Equivalent(h, ~x[k])
-    Ch = to_cnf(Fh, True, True)
-
-    print("    def Y2CNF(cnf, k):")
-    print("        x = cnf.vars.x")
-    print("        X = cnf.add_var()")
-    print("        h = cnf.add_var()")
-    print()
-    print("        # "+ str(Fx))
-    to_py(      str(Cx))
-    print()
-    print("        # "+ str(Fh))
-    to_py(      str(Ch))
-    print()
-    print("        cnf.vars.x[k] = X")
-    print()
-    print(f"        cnf.add_weight( h, 0,  1)")
-    print(f"        cnf.add_weight(-h, 0, -1)")
-    print()
-
 
     #CNOT
-    Fc = Equivalent(Xc, x[c])
-    Cc = to_cnf(Fc, True, True)
-
-    Ft = Equivalent(Xt, (x[c] ^ x[t]))
-    Ct = to_cnf(Ft, True, True)
-
     print("    def CNOT2CNF(cnf, c, t):")
     print("        x = cnf.vars.x")
+    print()
     print("        Xc = cnf.add_var()")
+    to_py(	       Equivalent(Xc, x[c]))
+    print()
     print("        Xt = cnf.add_var()")
-    print()
-    print("        # "+ str(Fc))
-    to_py(	   str(Cc))
-    print()
-    print("        # "+ str(Ft))
-    to_py(	   str(Ct))
+    to_py(	       Equivalent(Xt, (x[c] ^ x[t])))
     print()
     print("        cnf.vars.x[c] = Xc")
     print("        cnf.vars.x[t] = Xt")
     print()
-  
-
-    #RZ(theta)
-    Fx = Equivalent(X, x[k])
-    Cx = to_cnf(Fx, True, True)
-
-    Frz = Equivalent(h, x[k])
-    Crz = to_cnf(Frz, True, True)
-
-    print("    def RZ2CNF(cnf, k, theta):")
-    print("        x = cnf.vars.x")
-    print("        X = cnf.add_var()")
-    print("        h = cnf.add_var()")
-    print()
-    print("        # "+ str(Fx))
-    to_py(	   str(Cx))
-    print()
-    print("        # "+ str(Frz))
-    to_py(	   str(Crz))
-    print()
-    print("        cnf.vars.x[k] = X")
-    print()
-    print(f"        cnf.add_weight(h, 1, 0)")
-    print(f"        cnf.add_weight(-h, Decimal(math.cos(theta)), -Decimal(math.sin(theta)))")
-    print()
 
     #Z
     print("    def Z2CNF(cnf, k):")
-    print("        comput2cnf.RZ2CNF(cnf, k, Decimal(math.pi))")
+    print("        x = cnf.vars.x")
+    print()
+    add_sign(x[k])
+    print()
+
+    #RZ(theta)
+    print("    def RZ2CNF(cnf, k, theta):")
+    print("        x = cnf.vars.x")
+    print()
+    print("        w = cnf.add_var()")
+    print("        cnf.add_weight(w, Decimal(math.cos(theta)), Decimal(math.sin(theta)))")
+    print("        cnf.add_weight(-w, 1, 0)")
+    to_py(	       Equivalent(w, x[k]), comment="w (RZ)")
     print()
 
     #S
     print("    def S2CNF(cnf, k):")
-    print("        comput2cnf.RZ2CNF(cnf, k, Decimal(math.pi/2))")
+    print("        x = cnf.vars.x")
     print()
+    add_i(x[k], comment="(S)")
+    print()
+
     #Sdg
     print("    def Sdg2CNF(cnf, k):")
-    print("        comput2cnf.RZ2CNF(cnf, k, Decimal(-math.pi/2))")
+    print("        x = cnf.vars.x") 
+    print("        if cnf.weighted: ")  # less variables 
+    print("            w = cnf.add_var()")
+    print("            cnf.add_weight(w, 0, -1)")
+    print("            cnf.add_weight(-w, 1, 0)")
+    to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Sdg)")
+    print("        else:")
+    add_i(x[k], prefix="    ", comment="(Sdg)")
+    print()
+    add_sign(x[k], prefix="    ", comment="(Sdg)")
     print()
 
     #T
     print("    def T2CNF(cnf, k):")
-    print("        comput2cnf.RZ2CNF(cnf, k, Decimal(math.pi/4))")
+    print("        x = cnf.vars.x")
+    print("        if cnf.weighted: ")    
+    print("            w = cnf.add_var()")
+    print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt()))")
+    print("            cnf.add_weight(-w, 1, 0)")
+    to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (T)")
+    print("        else:")
+    print("            i = cnf.vars.i")
     print()
+    print("            I = cnf.add_var()")
+    to_py(             x[k] | Equivalent(I, i), prefix="    ", comment="I (T)")
+    print()
+    add_sign(i & ~I, prefix="    ", comment="(T)")
+    print()
+    add_sqrt_half(x[k], prefix="    ", comment="(T)")
+    print()
+    print("            cnf.vars.i = I")
+
     #Tdg
     print("    def Tdg2CNF(cnf, k):")
-    print("        comput2cnf.RZ2CNF(cnf, k, Decimal(-math.pi/4))")
+    print("        x = cnf.vars.x")
+    print("        if cnf.weighted: ")    
+    print("            w = cnf.add_var()")
+    print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt()))")
+    print("            cnf.add_weight(-w, 1, 0)")
+    to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Tdg)")
+    print("        else:")
+    print("            i = cnf.vars.i")
     print()
+    print("            I = cnf.add_var()")
+    to_py(             x[k] | Equivalent(I, i), prefix="    ", comment="I (Tdg)")
+    print()
+    add_sign(~i & I, prefix="    ", comment="(Tdg)")
+    print()
+    add_sqrt_half(x[k], prefix="    ", comment="(Tdg)")
+    print()
+    print("            cnf.vars.i = I")
 
     # X:
-    F = Equivalent(X, ~x[k])
-    C = to_cnf(F, True, True)
-
     print("    def X2CNF(cnf, k):")
     print("        x = cnf.vars.x")
-    print("        X = cnf.add_var()")
     print()
-    print("        # "+ str(F))
-    to_py(      str(C))
+    print("        X = cnf.add_var()")
+    to_py(         Equivalent(X, ~x[k]))
+    print()
+    print("        cnf.vars.x[k] = X")
+    print()
+
+    # Y:
+
+    print("    def Y2CNF(cnf, k):")
+    print("        x = cnf.vars.x")
+    print()
+    print("        X = cnf.add_var()")
+    to_py(         Equivalent(X, ~x[k]), comment="Y gate")
+    print()
+    add_sign(x[k])
+    print()
+    add_i(true)
     print()
     print("        cnf.vars.x[k] = X")
     print()
 
     #RX(theta)
-    F = Equivalent(h, Equivalent(x[k], X) )
-    C = to_cnf(F, True, True)
-
     print("    def RX2CNF(cnf, k, theta):")
     print("        x = cnf.vars.x")
     print("        X = cnf.add_var()")
-    print("        h = cnf.add_var()")
     print()
-    print("        # "+ str(F))
-    to_py(      str(C))
+    print("        w = cnf.add_var()")
+    to_py(         Equivalent(w, Equivalent(x[k], X) ))
     print()
     print("        cnf.vars.x[k] = X")
     print()
-    print(f"        cnf.add_weight(h, Decimal(math.cos(theta/2)), 0)")
-    print(f"        cnf.add_weight(-h, 0, -Decimal(math.sin(theta/2)))")
-    # print("        comput2cnf.H2CNF(cnf, k)")
-    # print("        comput2cnf.RZ2CNF(cnf, k, theta)")
-    # print("        comput2cnf.H2CNF(cnf, k)")
+    print("        cnf.add_weight(w, Decimal(math.cos(theta/2)), 0)")
+    print("        cnf.add_weight(-w, 0, -Decimal(math.sin(theta/2)))")
     print()
-
-
 
     #CZ
-    Fc = Equivalent(Xc, x[c])
-    Cc = to_cnf(Fc, True, True)
-
-    Ft = Equivalent(Xt, x[t])
-    Ct = to_cnf(Ft, True, True)
-
-    Fh = Equivalent(h, (x[c] & x[t]))
-    Ch = to_cnf(Fh, True, True)
-
     print("    def CZ2CNF(cnf, c, t):")
     print("        x = cnf.vars.x")
+    print()
     print("        Xc = cnf.add_var()")
+    to_py(         Equivalent(Xc, x[c]))
+    print()
     print("        Xt = cnf.add_var()")
-    print("        h = cnf.add_var()")
-    print()
-    print("        # "+ str(Fc))
-    to_py(      str(Cc))
-    print()
-    print("        # "+ str(Ft))
-    to_py(      str(Ct))
-    print()
-    print("        # "+ str(Fh))
-    to_py(      str(Ch))
+    to_py(         Equivalent(Xt, x[t]))
     print()
     print("        cnf.vars.x[c] = Xc")
     print("        cnf.vars.x[t] = Xt")
     print()
-    print(f"        cnf.add_weight( h, 0, -1)")
-    print(f"        cnf.add_weight(-h, 0,  1)")
+    add_sign(x[c] & x[t])
     print()
-
-
 
 
 if __name__ == "__main__":

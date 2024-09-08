@@ -16,6 +16,7 @@ class Circuit:
         self.tgate: int = 0
         self.circ = []
         self.translate_ccx: bool = translate_ccx
+        self.has_rotations = False
     
     def depth(self):
         return len(self.circ)
@@ -30,6 +31,7 @@ class Circuit:
     
     def add_rotation(self, gate: str, angle: Decimal, qubit: int):
         self.circ.append([gate, angle, qubit])
+        self.has_rotations = True
     
     def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int):
         if self.translate_ccx:
