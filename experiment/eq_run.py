@@ -95,7 +95,7 @@ if __name__ == '__main__':
             # print(f"\tFile not found: {e.filename}")
             print(f"nf", end="")
         except KeyboardInterrupt:
-            print("KeyboardInterrupt")
+            raise KeyboardInterrupt
         except:
             print(f"""\nError for call:\
                     \n   tool_path = \"{tool_path}\"\
