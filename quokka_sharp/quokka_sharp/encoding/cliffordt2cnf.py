@@ -8,6 +8,7 @@ class cliffordt2cnf:
         x = cnf.vars.x
         z = cnf.vars.z
 
+        # adding sign if x[k] & z[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -40,6 +41,7 @@ class cliffordt2cnf:
         cnf.add_clause([-Z,  x[k],  z[k]])
         cnf.add_clause([-Z, -x[k], -z[k]])
 
+        # adding sign if x[k] & z[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -64,6 +66,7 @@ class cliffordt2cnf:
     def X2CNF(cnf, k):
         z = cnf.vars.z
 
+        # adding sign if z[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -84,6 +87,7 @@ class cliffordt2cnf:
         x = cnf.vars.x
         z = cnf.vars.z
 
+        # adding sign if x[k] ^ z[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -109,6 +113,7 @@ class cliffordt2cnf:
     def Z2CNF(cnf, k):
         x = cnf.vars.x
 
+        # adding sign if x[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -136,6 +141,7 @@ class cliffordt2cnf:
         cnf.add_clause([-Z,  x[k],  z[k]])
         cnf.add_clause([-Z, -x[k], -z[k]])
 
+        # adding sign if x[k] & ~z[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -166,6 +172,7 @@ class cliffordt2cnf:
         cnf.add_clause([ Z,  x[k], -z[k]])
         cnf.add_clause([-Z,  x[k],  z[k]])
 
+        # adding sqrt_half if x[k]
         U = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(U, str(Decimal(1/2).sqrt()))
@@ -190,6 +197,7 @@ class cliffordt2cnf:
             cnf.add_clause([-D, -U])
             cnf.add_clause([ D,  U, -u])
 
+        # adding sign if x[k] & z[k] & ~Z
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -223,6 +231,7 @@ class cliffordt2cnf:
         cnf.add_clause([ Z,  x[k], -z[k]])
         cnf.add_clause([-Z,  x[k],  z[k]])
 
+        # adding sqrt_half if x[k]
         U = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(U, str(Decimal(1/2).sqrt()))
@@ -247,6 +256,7 @@ class cliffordt2cnf:
             cnf.add_clause([-D, -U])
             cnf.add_clause([ D,  U, -u])
 
+        # adding sign if Z & x[k] & ~z[k]
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -289,6 +299,7 @@ class cliffordt2cnf:
         cnf.add_clause([-Z,  z[c],  z[t]])
         cnf.add_clause([-Z, -z[c], -z[t]])
 
+        # adding sign if x[c] & z[t] & (z[c] ^ ~x[t])
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -338,6 +349,7 @@ class cliffordt2cnf:
         cnf.add_clause([-Z2,  x[c],  z[t]])
         cnf.add_clause([-Z2, -x[c], -z[t]])
 
+        # adding sign if x[c] & x[t] & (z[c] ^ z[t])
         R = cnf.add_var()
         if cnf.weighted: 
             cnf.add_weight(R, -1)
@@ -369,83 +381,113 @@ class cliffordt2cnf:
         cnf.vars.z[c] = Z1
         cnf.vars.z[t] = Z2
 
-    # Equivalent(R, x[k] & z[k] & ~Z)
-    # x[k] | (Equivalent(Z, z[k]))
-    # Equivalent(u1, x[k] & ((Z & z[k]) | (~Z & ~z[k])))
-    # Equivalent(u2, x[k] & ((Z & ~z[k]) | (z[k] & ~Z)))
     def RZ2CNF(cnf, k, theta):
         x = cnf.vars.x
         z = cnf.vars.z
-        R = cnf.add_var()
-        Z = cnf.add_var()
-        cnf.add_clause([-R,  x[k]])
-        cnf.add_clause([-R,  z[k]])
-        cnf.add_clause([-R, -Z])
-        cnf.add_clause([ R,  Z, -x[k], -z[k]])
 
+        Z = cnf.add_var()
+        # x[k] | (Equivalent(Z, z[k]))
         cnf.add_clause([ Z,  x[k], -z[k]])
         cnf.add_clause([-Z,  x[k],  z[k]])
 
         u1 = cnf.add_var()
+        cnf.add_weight( u1, Decimal(math.cos(theta)))
+        cnf.add_weight(-u1, 1)
+        # Equivalent(u1, x[k] & ((Z & z[k]) | (~Z & ~z[k])))
         cnf.add_clause([-u1,  x[k]])
         cnf.add_clause([ Z, -u1, -z[k]])
         cnf.add_clause([-Z, -u1,  z[k]])
         cnf.add_clause([ Z,  u1, -x[k],  z[k]])
         cnf.add_clause([-Z,  u1, -x[k], -z[k]])
-        cnf.add_weight( u1, Decimal(math.cos(theta)))
-        cnf.add_weight(-u1, 1)
 
         u2 = cnf.add_var()
+        cnf.add_weight( u2, Decimal(math.sin(theta)))
+        cnf.add_weight(-u2, 1)
+        # Equivalent(u2, x[k] & ((Z & ~z[k]) | (z[k] & ~Z)))
         cnf.add_clause([-u2,  x[k]])
         cnf.add_clause([ Z, -u2,  z[k]])
         cnf.add_clause([-Z, -u2, -z[k]])
         cnf.add_clause([ Z,  u2, -x[k], -z[k]])
         cnf.add_clause([-Z,  u2, -x[k],  z[k]])
-        cnf.add_weight( u2, Decimal(math.sin(theta)))
-        cnf.add_weight(-u2, 1)
+
+        # adding sign if x[k] & z[k] & ~Z
+        R = cnf.add_var()
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # Equivalent(R, x[k] & z[k] & ~Z)
+            cnf.add_clause([-R,  x[k]])
+            cnf.add_clause([-R,  z[k]])
+            cnf.add_clause([-R, -Z])
+            cnf.add_clause([ R,  Z, -x[k], -z[k]])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, r ^ (x[k] & z[k] & ~Z))
+            cnf.add_clause([ R, -r,  x[k]])
+            cnf.add_clause([ R, -r,  z[k]])
+            cnf.add_clause([-R,  r,  x[k]])
+            cnf.add_clause([-R,  r,  z[k]])
+            cnf.add_clause([ R, -Z, -r])
+            cnf.add_clause([-R, -Z,  r])
+            cnf.add_clause([ R,  Z,  r, -x[k], -z[k]])
+            cnf.add_clause([-R,  Z, -r, -x[k], -z[k]])
+
         cnf.vars.z[k] = Z
 
-        cnf.add_weight(-R, 1)
-        cnf.add_weight(R, -1)
-
-    # Equivalent(R, X & z[k] & ~x[k])
-    # z[k] | (Equivalent(X, x[k]))
-    # Equivalent(u1, z[k] & ((X & x[k]) | (~X & ~x[k])))
-    # Equivalent(u2, z[k] & ((X & ~x[k]) | (x[k] & ~X)))
     def RX2CNF(cnf, k, theta):
         x = cnf.vars.x
         z = cnf.vars.z
-        R = cnf.add_var()
-        X = cnf.add_var()
-        cnf.add_clause([-R,  X])
-        cnf.add_clause([-R,  z[k]])
-        cnf.add_clause([-R, -x[k]])
-        cnf.add_clause([ R, -X,  x[k], -z[k]])
 
+        X = cnf.add_var()
+        # z[k] | (Equivalent(X, x[k]))
         cnf.add_clause([ X, -x[k],  z[k]])
         cnf.add_clause([-X,  x[k],  z[k]])
 
         u1 = cnf.add_var()
+        cnf.add_weight( u1, Decimal(math.cos(theta)))
+        cnf.add_weight(-u1, 1)
+        # Equivalent(u1, z[k] & ((X & x[k]) | (~X & ~x[k])))
         cnf.add_clause([-u1,  z[k]])
         cnf.add_clause([ X, -u1, -x[k]])
         cnf.add_clause([-X, -u1,  x[k]])
         cnf.add_clause([ X,  u1,  x[k], -z[k]])
         cnf.add_clause([-X,  u1, -x[k], -z[k]])
-        cnf.add_weight( u1, Decimal(math.cos(theta)))
-        cnf.add_weight(-u1, 1)
 
         u2 = cnf.add_var()
+        cnf.add_weight( u2, Decimal(math.sin(theta)))
+        cnf.add_weight(-u2, 1)
+        # Equivalent(u2, z[k] & ((X & ~x[k]) | (x[k] & ~X)))
         cnf.add_clause([-u2,  z[k]])
         cnf.add_clause([ X, -u2,  x[k]])
         cnf.add_clause([-X, -u2, -x[k]])
         cnf.add_clause([ X,  u2, -x[k], -z[k]])
         cnf.add_clause([-X,  u2,  x[k], -z[k]])
-        cnf.add_weight( u2, Decimal(math.sin(theta)))
-        cnf.add_weight(-u2, 1)
-        cnf.vars.x[k] = X
 
-        cnf.add_weight(-R, 1)
-        cnf.add_weight(R, -1)
+        # adding sign if X & z[k] & ~x[k]
+        R = cnf.add_var()
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # Equivalent(R, X & z[k] & ~x[k])
+            cnf.add_clause([-R,  X])
+            cnf.add_clause([-R,  z[k]])
+            cnf.add_clause([-R, -x[k]])
+            cnf.add_clause([ R, -X,  x[k], -z[k]])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, r ^ (X & z[k] & ~x[k]))
+            cnf.add_clause([ R,  X, -r])
+            cnf.add_clause([ R, -r,  z[k]])
+            cnf.add_clause([-R,  X,  r])
+            cnf.add_clause([-R,  r,  z[k]])
+            cnf.add_clause([ R, -r, -x[k]])
+            cnf.add_clause([-R,  r, -x[k]])
+            cnf.add_clause([ R, -X,  r,  x[k], -z[k]])
+            cnf.add_clause([-R, -X, -r,  x[k], -z[k]])
+
+        cnf.vars.x[k] = X
 
     def AMO(cnf, var_list):
         assert None not in var_list
@@ -473,87 +515,87 @@ class cliffordt2cnf:
             hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])
             sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])
             tg = cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k])
-        # Implies(idg, ~R[k])
+            # Implies(idg, ~R[k])
             cnf.add_clause([-R[k], -idg])
-        # Implies(idg, Equivalent(X[k], x[k]))
+            # Implies(idg, Equivalent(X[k], x[k]))
             cnf.add_clause([ X[k], -idg, -x[k]])
             cnf.add_clause([-X[k], -idg,  x[k]])
-        # Implies(idg, Equivalent(Z[k], z[k]))
+            # Implies(idg, Equivalent(Z[k], z[k]))
             cnf.add_clause([ Z[k], -idg, -z[k]])
             cnf.add_clause([-Z[k], -idg,  z[k]])
-        # Implies(idg, ~U[k])
+            # Implies(idg, ~U[k])
             cnf.add_clause([-U[k], -idg])
-        # Implies(hg, Equivalent(R[k], x[k] & z[k]))
+            # Implies(hg, Equivalent(R[k], x[k] & z[k]))
             cnf.add_clause([-R[k], -hg,  x[k]])
             cnf.add_clause([-R[k], -hg,  z[k]])
             cnf.add_clause([ R[k], -hg, -x[k], -z[k]])
-        # Implies(hg, Equivalent(X[k], z[k]))
+            # Implies(hg, Equivalent(X[k], z[k]))
             cnf.add_clause([ X[k], -hg, -z[k]])
             cnf.add_clause([-X[k], -hg,  z[k]])
-        # Implies(hg, Equivalent(Z[k], x[k]))
+            # Implies(hg, Equivalent(Z[k], x[k]))
             cnf.add_clause([ Z[k], -hg, -x[k]])
             cnf.add_clause([-Z[k], -hg,  x[k]])
-        # Implies(hg, ~U[k])
+            # Implies(hg, ~U[k])
             cnf.add_clause([-U[k], -hg])
-        # Implies(sg, Equivalent(R[k], x[k] & z[k]))
+            # Implies(sg, Equivalent(R[k], x[k] & z[k]))
             cnf.add_clause([-R[k], -sg,  x[k]])
             cnf.add_clause([-R[k], -sg,  z[k]])
             cnf.add_clause([ R[k], -sg, -x[k], -z[k]])
-        # Implies(sg, Equivalent(X[k], x[k]))
+            # Implies(sg, Equivalent(X[k], x[k]))
             cnf.add_clause([ X[k], -sg, -x[k]])
             cnf.add_clause([-X[k], -sg,  x[k]])
-        # Implies(sg, Equivalent(Z[k], x[k] ^ z[k]))
+            # Implies(sg, Equivalent(Z[k], x[k] ^ z[k]))
             cnf.add_clause([ Z[k], -sg,  x[k], -z[k]])
             cnf.add_clause([ Z[k], -sg, -x[k],  z[k]])
             cnf.add_clause([-Z[k], -sg,  x[k],  z[k]])
             cnf.add_clause([-Z[k], -sg, -x[k], -z[k]])
-        # Implies(sg, ~U[k])
+            # Implies(sg, ~U[k])
             cnf.add_clause([-U[k], -sg])
-        # Implies(tg, Equivalent(R[k], x[k] & z[k] & ~Z[k]))
+            # Implies(tg, Equivalent(R[k], x[k] & z[k] & ~Z[k]))
             cnf.add_clause([-R[k], -tg,  x[k]])
             cnf.add_clause([-R[k], -tg,  z[k]])
             cnf.add_clause([-R[k], -Z[k], -tg])
             cnf.add_clause([ R[k],  Z[k], -tg, -x[k], -z[k]])
-        # Implies(tg, Equivalent(X[k], x[k]))
+            # Implies(tg, Equivalent(X[k], x[k]))
             cnf.add_clause([ X[k], -tg, -x[k]])
             cnf.add_clause([-X[k], -tg,  x[k]])
-        # x[k] | (Implies(tg, Equivalent(Z[k], z[k])))
+            # x[k] | (Implies(tg, Equivalent(Z[k], z[k])))
             cnf.add_clause([ Z[k], -tg,  x[k], -z[k]])
             cnf.add_clause([-Z[k], -tg,  x[k],  z[k]])
-        # Implies(tg, Equivalent(U[k], x[k]))
+            # Implies(tg, Equivalent(U[k], x[k]))
             cnf.add_clause([ U[k], -tg, -x[k]])
             cnf.add_clause([-U[k], -tg,  x[k]])
             c = k
             for t in range(c+1, n):
                 czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t])
-            # Implies(czg[c][t], Equivalent(X[c], x[c]))
+                # Implies(czg[c][t], Equivalent(X[c], x[c]))
                 cnf.add_clause([ X[c], -czg[c][t], -x[c]])
                 cnf.add_clause([-X[c], -czg[c][t],  x[c]])
-            # Implies(czg[c][t], Equivalent(X[t], x[t]))
+                # Implies(czg[c][t], Equivalent(X[t], x[t]))
                 cnf.add_clause([ X[t], -czg[c][t], -x[t]])
                 cnf.add_clause([-X[t], -czg[c][t],  x[t]])
-            # Implies(czg[c][t], Equivalent(Z[c], x[t] ^ z[c]))
+                # Implies(czg[c][t], Equivalent(Z[c], x[t] ^ z[c]))
                 cnf.add_clause([ Z[c], -czg[c][t],  x[t], -z[c]])
                 cnf.add_clause([ Z[c], -czg[c][t], -x[t],  z[c]])
                 cnf.add_clause([-Z[c], -czg[c][t],  x[t],  z[c]])
                 cnf.add_clause([-Z[c], -czg[c][t], -x[t], -z[c]])
-            # Implies(czg[c][t], Equivalent(Z[t], x[c] ^ z[t]))
+                # Implies(czg[c][t], Equivalent(Z[t], x[c] ^ z[t]))
                 cnf.add_clause([ Z[t], -czg[c][t],  x[c], -z[t]])
                 cnf.add_clause([ Z[t], -czg[c][t], -x[c],  z[t]])
                 cnf.add_clause([-Z[t], -czg[c][t],  x[c],  z[t]])
                 cnf.add_clause([-Z[t], -czg[c][t], -x[c], -z[t]])
-            # Implies(czg[c][t], Equivalent(R[c], x[c] & x[t] & (z[c] ^ z[t])))
+                # Implies(czg[c][t], Equivalent(R[c], x[c] & x[t] & (z[c] ^ z[t])))
                 cnf.add_clause([-R[c], -czg[c][t],  x[c]])
                 cnf.add_clause([-R[c], -czg[c][t],  x[t]])
                 cnf.add_clause([-R[c], -czg[c][t],  z[c],  z[t]])
                 cnf.add_clause([-R[c], -czg[c][t], -z[c], -z[t]])
                 cnf.add_clause([ R[c], -czg[c][t], -x[c], -x[t],  z[c], -z[t]])
                 cnf.add_clause([ R[c], -czg[c][t], -x[c], -x[t], -z[c],  z[t]])
-            # Implies(czg[c][t], ~R[t])
+                # Implies(czg[c][t], ~R[t])
                 cnf.add_clause([-R[t], -czg[c][t]])
-            # Implies(czg[c][t], ~U[c])
+                # Implies(czg[c][t], ~U[c])
                 cnf.add_clause([-U[c], -czg[c][t]])
-            # Implies(czg[c][t], ~U[t])
+                # Implies(czg[c][t], ~U[t])
                 cnf.add_clause([-U[t], -czg[c][t]])
             gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]
             cliffordt2cnf.AMO(cnf, gate_controlers)

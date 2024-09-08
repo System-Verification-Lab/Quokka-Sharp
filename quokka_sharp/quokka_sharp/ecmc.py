@@ -91,7 +91,6 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             
         result = True
         tool_command = tool_invocation.split(' ')
-        if DEBUG: print(" ".join(tool_command))
         # parallel processes
         N = 16
         while True:
@@ -100,6 +99,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             for i in range(min(N, length)):        
                 cnf_file = cnf_file_list[i]
                 tool_file_command = tool_command + [cnf_file]
+                if DEBUG: print(" ".join(tool_file_command))
                 p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
                 proclist.append(p)
             if len(proclist) == 0:
