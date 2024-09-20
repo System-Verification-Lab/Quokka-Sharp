@@ -1,7 +1,12 @@
+from collections import Counter
+import linecache
+import os
+from datetime import datetime
 from queue import Queue, Empty
 from resource import getrusage, RUSAGE_SELF
 from threading import Thread
 from time import sleep
+import signal
 
 class ReturnValueThread(Thread):
     def __init__(self, *args, **kwargs):
@@ -117,7 +122,25 @@ def interpreter_quasimodo(args):
 
     return p
 
+def timeout_qua(args):
+    try:
+        TIMEOUT = int(os.environ["TIMEOUT"])
+        class TimeoutException(Exception): pass
+        def timeout(signum, frame):
+            raise TimeoutException("TIMEOUT")        
+    except KeyError: 
+        print ("Please set the environment variable TIMEOUT")
+        sys.exit(1)
+    try:
+        signal.signal(signal.SIGALRM, timeout)
+        signal.alarm(TIMEOUT) 
+        p = interpreter_quasimodo(args)
+        return p
+    except TimeoutException:
+        return 99999
+
 def main(args):
+
     # start monitor thread for measuring mem
     queue = Queue()
     poll_interval = 0.1
@@ -127,25 +150,52 @@ def main(args):
     sleep(.5)
     
     # start quasimodo interpreter
-    start = time.time()
-    p = interpreter_quasimodo(args)
-    end = time.time()
-    
+    start_time = time.time()
+    prob = timeout_qua(args)
+    end_time = time.time()
+        
     # stop monitor thread for measuring mem
     queue.put('stop')
     max_rss = monitor_thread.join()
-    print(args.filename.split("/")[-1], args.seed,
-            ' time:', (end - start),
-            ' prob:', p,
-            ' Max RSS:', max_rss / 1024 / 1024, "MB")
+    max_rss = str(max_rss / 1024 / 1024) + "MB"
+    filename = args.filename.split("/")[-1]
+    s = '{' + f'"file": "{filename}", "time": "{end_time - start_time}", "prob": "{prob}", "Max RSS": "{max_rss}"' + '}'
+    print(s)
 
 
 
 import sys, io
 import argparse
 import math
-from encoding.qasm_parser import qasm_parser
-from encoding.qasm2cnf import convert_to_float
+from qasm_parser import qasm_parser
+
+def convert_to_float(frac_str):
+    sign = 0
+    if "-" in frac_str:
+        sign = 1
+        frac_str = frac_str.replace("-",'')
+    try:
+        return float(frac_str)
+    except:
+        try:
+            num, denom = frac_str.split('/')
+        except:
+            num = frac_str.split('/')[0]
+            denom = 1
+        piflag = 0
+        denom = float(denom)
+        if num == "pi":
+            piflag = 1
+            num = 1
+        elif "pi" in num:
+            piflag = 1
+            num = num.replace("pi",'')
+            num = num.replace("*",'')
+            num = float(num)
+        if piflag == 1:
+            return math.pow(-1,sign) * num / denom * math.pi
+        else:
+            return math.pow(-1,sign) * num / denom
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate CFLOBDD python binding code.')
