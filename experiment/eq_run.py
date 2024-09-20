@@ -19,7 +19,9 @@ def main(tool_path, qasmfile1, qasmfile2):
     
 
 if __name__ == '__main__':
-        tool_path = sys.argv[1]
-        circ1 = sys.argv[2]
-        circ2 = sys.argv[3]
+        tool_path = "/Users/meij/Desktop/coding/qc2cnf/tools/GPMC/bin/gpmc -mode=1"
+        # circ1 = sys.argv[1]
+        # circ2 = sys.argv[2]
+        circ1 = "test.qasm"
+        circ2 = "test.qasm"
         main(tool_path, circ1, circ2)
