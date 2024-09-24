@@ -6,8 +6,8 @@ import sys
 import os.path as path
 import pandas as pd
 
-def main(tool_path, qasmfile1, qasmfile2, 
-         expected_res = None, 
+def main(tool_path, qasmfile1, qasmfile2,
+         expected_res = None,
          bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"],
          add_to_csv=False):
     
@@ -33,7 +33,7 @@ def main(tool_path, qasmfile1, qasmfile2,
                         computational_basis = (basis == "comp"))
 
             glb_st = time.time()
-            res = qk.CheckEquivalence(tool_path, cnf, check = check_type)
+            res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=16)
             glb_et = time.time()
 
             if res == "TIMEOUT":
@@ -45,13 +45,13 @@ def main(tool_path, qasmfile1, qasmfile2,
                         no_match_to_expected = True
                     else:
                         print(".", end="")
-                    
+
             if add_to_csv:
                 # pandas dataframe for results
                 data.append({'basis': basis,
                             'technic': check_type,
-                            'file1': qasmfile1, 
-                            'file2': qasmfile2, 
+                            'file1': qasmfile1,
+                            'file2': qasmfile2,
                             'global time': glb_et - glb_st,
                             'result': res,
                             'expected_res': expected_res
@@ -61,7 +61,7 @@ def main(tool_path, qasmfile1, qasmfile2,
         print(f"""\nFile dosn't match expected:\
                 \n   circ1 = \"{qasmfile1}\"\
                 \n   circ2 = \"{qasmfile2}\"""")
-        
+
     if add_to_csv:
         # convert data to pandas dataframe and add to file
         df = pd.DataFrame(data)

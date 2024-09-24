@@ -1,11 +1,11 @@
 import copy
 import os
 import re
-import signal
 import sys
 import tempfile
 import time
 from subprocess import PIPE, Popen
+import signal
 
 from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
@@ -22,7 +22,7 @@ def get_result(result, expexted_prob):
     prob = (abs(real)**2 + abs(imag)**2).sqrt()
     if abs(prob - expexted_prob) < (expexted_prob+1) * 1e-12:
         return True
-    else: 
+    else:
         return False
 
 def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
@@ -34,10 +34,10 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_Y = False):
+def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_Y = False, N=16):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = constrain_2n, constrain_no_Y = constrain_no_Y)
-    
+
     cnf_file = cnf_file_root + "/quokka_eq_check_identity.cnf"
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
@@ -46,24 +46,24 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
     DEBUG = False
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
-    try:  
+    try:
         TIMEOUT = int(os.environ["TIMEOUT"])
-        class TimeoutException(Exception): pass 
+        class TimeoutException(Exception): pass
         def timeout(signum, frame):
             for proc in proclist:
                 procdict[proc.pid].kill()
             raise TimeoutException("TIMEOUT")
-    except KeyError: 
+    except KeyError:
         print ("Please set the environment variable TIMEOUT")
         sys.exit(1)
 
     try:
         signal.signal(signal.SIGALRM, timeout)
         signal.alarm(TIMEOUT)
-        
+
         cnf_file_list = []
         proclist = []
-        
+
         match check:
             case "id":
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
@@ -88,15 +88,15 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             case _:
                 raise ValueError(f"Invalid check type {check}")
         if DEBUG: print(f"expected: {expected_prob}")
-            
+
         result = True
         tool_command = tool_invocation.split(' ')
         # parallel processes
-        N = 16
+        # N = 16
         while True:
             proclist = []
             length = len(cnf_file_list)
-            for i in range(min(N, length)):        
+            for i in range(min(N, length)):
                 cnf_file = cnf_file_list[i]
                 tool_file_command = tool_command + [cnf_file]
                 if DEBUG: print(" ".join(tool_file_command))
@@ -125,10 +125,10 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 cnf_file_list = cnf_file_list[N: length]
             else:
                 break
-        
+
         for pid in watched_pids:
             procdict[pid].kill()
-        
+
         return result
     except TimeoutException:
         return "TIMEOUT"

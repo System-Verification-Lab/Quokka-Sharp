@@ -1,8 +1,10 @@
 import os, sys
-from .settings import *
 from queue import Queue
 from time import sleep
-from .memory import ReturnValueThread, memory_monitor
+from memory import ReturnValueThread, memory_monitor
+
+QuiZX_PATH_multi = "/Users/meij/quizx/quizx/target/debug/measure_multi"
+QuiZX_PATH_single = "/Users/meij/quizx/quizx/target/debug/measure_single"
 
 def ZX(filename, multi_or_single):
     if multi_or_single == "multi":
