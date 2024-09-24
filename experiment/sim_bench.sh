@@ -2,7 +2,6 @@
 
 tool_path="../../GPMC/bin/gpmc -mode=1"
 path=$PWD/benchmark
-# path=$PWD/shortened_files
 
 dirs=(
 "algorithm"
