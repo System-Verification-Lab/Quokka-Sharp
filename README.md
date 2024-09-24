@@ -39,6 +39,7 @@ The eq_run.py and sim_run.py (used for the bencmarks) can be used to compare the
 
 ```python
 import quokka_sharp as qk
+import tempfile
 
 # the path of the WMC tool
 tool_invocation = "/Users/GPMC/bin/gpmc -mode=1"
@@ -73,7 +74,9 @@ circuit2.dagger()
 circuit1.append(circuit2)
 # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-res = qk.CheckEquivalence(tool_path, cnf, check = "id")
+# Users can change the path for the cnf files by setting a different parameter to cnf_file_root, otherwise it would be in the tempfile.
+# Users can set a different number N of paralleling processes. The default value is 16.
+res = qk.CheckEquivalence(tool_path, cnf, check = "id", cnf_file_root = tempfile.gettempdir(), N=16)
 ```
 
 - extention of the encodings
