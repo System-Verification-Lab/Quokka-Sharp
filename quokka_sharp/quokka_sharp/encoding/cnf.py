@@ -133,7 +133,7 @@ class CNF:
                 self.add_clause([-self.vars.z[i],  self.vars_init.z[i]], comment="id")
         if constrain_2n:
             if not self.computational_basis:
-                from .cliffordt2cnf import cliffordt2cnf as to_CNF
+                from .pauli2cnf import pauli2cnf as to_CNF
                 to_CNF.AMO(self, self.vars_init.x+self.vars_init.z)
             else: 
                 assert False, f"ERROR: identity with constrain_2n for computational_basis not suported"
@@ -203,7 +203,7 @@ class CNF:
         if self.computational_basis:
             from .comput2cnf import comput2cnf as to_CNF 
         else:
-            from .cliffordt2cnf import cliffordt2cnf as to_CNF
+            from .pauli2cnf import pauli2cnf as to_CNF
 
         for element in circuit.circ:
             gate = element[0]
@@ -283,7 +283,7 @@ class CNF:
         if self.computational_basis:
             from .comput2cnf import comput2cnf as to_CNF 
         else:
-            from .cliffordt2cnf import cliffordt2cnf as to_CNF
+            from .pauli2cnf import pauli2cnf as to_CNF
         
         for _ in range(n):
             self.syn_gate_layer += 1
