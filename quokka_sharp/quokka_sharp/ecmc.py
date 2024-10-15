@@ -42,7 +42,7 @@ def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id"):
+def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id", N=16):
     DEBUG = False
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
