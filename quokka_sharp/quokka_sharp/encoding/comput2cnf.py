@@ -70,15 +70,13 @@ class comput2cnf:
         x = cnf.vars.x
 
         Xt = cnf.add_var()
-        # Equivalent(Xt, x[c] ^ x[k] ^ x[t])
-        cnf.add_clause([ Xt,  x[c],  x[k], -x[t]])
-        cnf.add_clause([ Xt,  x[c], -x[k],  x[t]])
-        cnf.add_clause([ Xt, -x[c],  x[k],  x[t]])
-        cnf.add_clause([-Xt,  x[c],  x[k],  x[t]])
-        cnf.add_clause([ Xt, -x[c], -x[k], -x[t]])
-        cnf.add_clause([-Xt,  x[c], -x[k], -x[t]])
-        cnf.add_clause([-Xt, -x[c],  x[k], -x[t]])
-        cnf.add_clause([-Xt, -x[c], -x[k],  x[t]])
+        # Equivalent(Xt, x[t] ^ (x[c] & x[k]))
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt,  x[k], -x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[k],  x[t]])
+        cnf.add_clause([ Xt, -x[c], -x[k],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[k], -x[t]])
 
         cnf.vars.x[t] = Xt
 

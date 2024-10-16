@@ -130,7 +130,7 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        Xt = cnf.add_var()")
-    to_py(	       Equivalent(Xt, (x[k] ^ x[c] ^ x[t])))
+    to_py(	       Equivalent(Xt, ((x[k] & x[c]) ^ x[t])))
     print()
     print("        cnf.vars.x[t] = Xt")
     print()
