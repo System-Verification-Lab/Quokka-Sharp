@@ -9,7 +9,7 @@ def wmc(qasmfile1, tool_invocation, meas, basis):
     # Parse the circuit
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     # Encode the circuit
-    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "com"))
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
     cnf.leftProjectAllZero()
     cnf.add_measurement(meas)
     prob = qk.Simulate(tool_invocation, cnf)
@@ -43,6 +43,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Simulating quantum circuits with WMC')
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'], default='firstzero')
-    parser.add_argument('-b', '--basis', choices=['com', 'pauli'])
+    parser.add_argument('-b', '--basis', choices=['comp', 'pauli'])
     args = parser.parse_args()
     main(args)
