@@ -17,7 +17,7 @@ def wmc(qasmfile1, tool_invocation, meas, basis):
     
 def main(args):
     qasmfile        = args.filename
-    tool_invocation = '/Users/meij/Desktop/coding/COM-GPMC/GPMC/bin/gpmc -mode=1'
+    tool_invocation = '../../../GPMC/bin/gpmc -mode=1'
     basis           = args.basis
     meas            = args.measurement
     # start monitor thread for measuring mem
