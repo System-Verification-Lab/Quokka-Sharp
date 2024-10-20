@@ -5,7 +5,12 @@ from time import sleep, time
 from memory import ReturnValueThread, memory_monitor
 import argparse
 
-def main(tool_path, qasmfile1, qasmfile2):
+def main(args):
+
+    qasmfile1       = args.filename1
+    qasmfile2       = args.filename2
+    tool_path       = '../../../GPMC/bin/gpmc -mode=1'
+    basis           = args.basis
     
     # start monitor thread for measuring mem
     queue = Queue()
@@ -25,9 +30,9 @@ def main(tool_path, qasmfile1, qasmfile2):
         circuit2.dagger()
         circuit1.append(circuit2)
         # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
-        cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
+        cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "com"))
         # "id" or "2n"
-        res = qk.CheckEquivalence(tool_path, cnf, check = "2n")
+        res = qk.CheckEquivalence(tool_path, cnf, check = "id" if (basis == "com") else "2n")
     except FileNotFoundError:
         res = "FILE_NOT_FOUND"
     
@@ -44,9 +49,11 @@ def main(tool_path, qasmfile1, qasmfile2):
     
 
 if __name__ == '__main__':
-        tool_path = "../../../GPMC/bin/gpmc -mode=1"
-        circ1 = sys.argv[1]
-        circ2 = sys.argv[2]
-        main(tool_path, circ1, circ2)
+    parser = argparse.ArgumentParser(description='Check equality of quantum circuits with WMC')
+    parser.add_argument('filename1')
+    parser.add_argument('filename2')
+    parser.add_argument('-b', '--basis', choices=['com', 'pauli'])
+    args = parser.parse_args()
+    main(args)
 
         
