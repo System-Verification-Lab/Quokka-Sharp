@@ -1,0 +1,47 @@
+{"file1": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm","file2": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm.opt.qasm", "time": "23.987517595291138", "res": "True", "Max RSS": "0.020748138427734375MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm.opt.qasm", "time": "0.5731770992279053", "res": "True", "Max RSS": "0.019153594970703125MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm.opt.qasm", "time": "0.18191194534301758", "res": "True", "Max RSS": "0.016101837158203125MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm.opt.qasm", "time": "0.5698788166046143", "res": "True", "Max RSS": "0.017597198486328125MB"}
+{"file1": "qft_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qft_nativegates_ibm_qiskit_opt0_2.qasm.opt.qasm", "time": "0.023842334747314453", "res": "True", "Max RSS": "0.014129638671875MB"}
+{"file1": "qnn_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qnn_nativegates_ibm_qiskit_opt0_2.qasm.opt.qasm", "time": "0.06243014335632324", "res": "True", "Max RSS": "0.01432037353515625MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_10.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_10.qasm.opt.qasm", "time": "1.0634114742279053", "res": "True", "Max RSS": "0.01727294921875MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_15.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_15.qasm.opt.qasm", "time": "6.1789350509643555", "res": "True", "Max RSS": "0.019977569580078125MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_5.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_5.qasm.opt.qasm", "time": "0.12952923774719238", "res": "True", "Max RSS": "0.015346527099609375MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_16.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_16.qasm.opt.qasm", "time": "0.589259147644043", "res": "True", "Max RSS": "0.019077301025390625MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_32.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_32.qasm.opt.qasm", "time": "2.363389730453491", "res": "True", "Max RSS": "0.025417327880859375MB"}
+
+{"file1": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm","file2": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm.gm.qasm", "time": "13.85413932800293", "res": "False", "Max RSS": "0.02082061767578125MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm.gm.qasm", "time": "0.31178760528564453", "res": "False", "Max RSS": "0.019023895263671875MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm.gm.qasm", "time": "0.12556719779968262", "res": "False", "Max RSS": "0.016021728515625MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm.gm.qasm", "time": "0.24074125289916992", "res": "False", "Max RSS": "0.0174713134765625MB"}
+{"file1": "qft_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qft_nativegates_ibm_qiskit_opt0_2.qasm.gm.qasm", "time": "0.015743494033813477", "res": "False", "Max RSS": "0.014080047607421875MB"}
+{"file1": "qnn_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qnn_nativegates_ibm_qiskit_opt0_2.qasm.gm.qasm", "time": "0.05273032188415527", "res": "False", "Max RSS": "0.01422882080078125MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_10.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_10.qasm.gm.qasm", "time": "0.33134961128234863", "res": "False", "Max RSS": "0.017436981201171875MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_15.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_15.qasm.gm.qasm", "time": "0.41568827629089355", "res": "False", "Max RSS": "0.02002716064453125MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_5.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_5.qasm.gm.qasm", "time": "0.07438063621520996", "res": "False", "Max RSS": "0.014133453369140625MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_16.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_16.qasm.gm.qasm", "time": "0.4618220329284668", "res": "False", "Max RSS": "0.019012451171875MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_32.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_32.qasm.gm.qasm", "time": "1.6463088989257812", "res": "False", "Max RSS": "0.02556610107421875MB"}
+
+{"file1": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm","file2": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm.fp.qasm", "time": "0.2840769290924072", "res": "False", "Max RSS": "0.01955413818359375MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm.fp.qasm", "time": "0.31017327308654785", "res": "False", "Max RSS": "0.0189971923828125MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm.fp.qasm", "time": "0.14435911178588867", "res": "False", "Max RSS": "0.016246795654296875MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm.fp.qasm", "time": "0.2333207130432129", "res": "False", "Max RSS": "0.0174713134765625MB"}
+{"file1": "qft_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qft_nativegates_ibm_qiskit_opt0_2.qasm.fp.qasm", "time": "0.01578831672668457", "res": "False", "Max RSS": "0.013874053955078125MB"}
+{"file1": "qnn_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qnn_nativegates_ibm_qiskit_opt0_2.qasm.fp.qasm", "time": "0.051045894622802734", "res": "False", "Max RSS": "0.014400482177734375MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_10.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_10.qasm.fp.qasm", "time": "0.20444297790527344", "res": "False", "Max RSS": "0.01738739013671875MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_15.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_15.qasm.fp.qasm", "time": "0.40520739555358887", "res": "False", "Max RSS": "0.020233154296875MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_5.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_5.qasm.fp.qasm", "time": "0.07645344734191895", "res": "False", "Max RSS": "0.01392364501953125MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_16.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_16.qasm.fp.qasm", "time": "0.35013818740844727", "res": "False", "Max RSS": "0.01911163330078125MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_32.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_32.qasm.fp.qasm", "time": "1.4155325889587402", "res": "False", "Max RSS": "0.0274810791015625MB"}
+
+{"file1": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm","file2": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm.ps4.qasm", "time": "13.758622646331787", "res": "False", "Max RSS": "0.02108001708984375MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm.ps4.qasm", "time": "0.32889223098754883", "res": "False", "Max RSS": "0.019229888916015625MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm.ps4.qasm", "time": "0.1452791690826416", "res": "False", "Max RSS": "0.016155242919921875MB"}
+{"file1": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm","file2": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm.ps4.qasm", "time": "0.25325703620910645", "res": "False", "Max RSS": "0.01779937744140625MB"}
+{"file1": "qft_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qft_nativegates_ibm_qiskit_opt0_2.qasm.ps4.qasm", "time": "0.023479938507080078", "res": "False", "Max RSS": "0.01422119140625MB"}
+{"file1": "qnn_nativegates_ibm_qiskit_opt0_2.qasm","file2": "qnn_nativegates_ibm_qiskit_opt0_2.qasm.ps4.qasm", "time": "0.05477333068847656", "res": "False", "Max RSS": "0.0141143798828125MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_10.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_10.qasm.ps4.qasm", "time": "0.3687326908111572", "res": "False", "Max RSS": "0.0174560546875MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_15.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_15.qasm.ps4.qasm", "time": "0.46215224266052246", "res": "False", "Max RSS": "0.020343780517578125MB"}
+{"file1": "vqe_nativegates_ibm_qiskit_opt0_5.qasm","file2": "vqe_nativegates_ibm_qiskit_opt0_5.qasm.ps4.qasm", "time": "0.09187054634094238", "res": "False", "Max RSS": "0.013927459716796875MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_16.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_16.qasm.ps4.qasm", "time": "0.3782994747161865", "res": "False", "Max RSS": "0.019260406494140625MB"}
+{"file1": "wstate_nativegates_ibm_qiskit_opt0_32.qasm","file2": "wstate_nativegates_ibm_qiskit_opt0_32.qasm.ps4.qasm", "time": "1.5267348289489746", "res": "False", "Max RSS": "0.025299072265625MB"}
