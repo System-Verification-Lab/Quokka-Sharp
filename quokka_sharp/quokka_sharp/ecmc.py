@@ -64,29 +64,28 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         cnf_file_list = []
         proclist = []
 
-        match check:
-            case "id":
-                cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
-                if cnf.computational_basis:
-                    expected_prob = 2**cnf.n
-                else:
-                    expected_prob = 4**cnf.n
-            case "id_2n":
-                cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
-                expected_prob = 2*cnf.n
-            case "id_noY":
-                cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
-                expected_prob = 3**cnf.n
-            case "2n":
-                if cnf.computational_basis:
-                    assert False, "2n check is not supported for computational basis"
-                else:
-                    for i in range(cnf.n):
-                        cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
-                        cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
-                    expected_prob = 1
-            case _:
-                raise ValueError(f"Invalid check type {check}")
+        if check == "id":
+            cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
+            if cnf.computational_basis:
+                expected_prob = 2**cnf.n
+            else:
+                expected_prob = 4**cnf.n
+        elif check == "id_2n":
+            cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
+            expected_prob = 2*cnf.n
+        elif check == "id_noY":
+            cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
+            expected_prob = 3**cnf.n
+        elif check == "2n":
+            if cnf.computational_basis:
+                assert False, "2n check is not supported for computational basis"
+            else:
+                for i in range(cnf.n):
+                    cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
+                    cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+                expected_prob = 1
+        else:
+            raise ValueError(f"Invalid check type {check}")
         if DEBUG: print(f"expected: {expected_prob}")
 
         result = True
