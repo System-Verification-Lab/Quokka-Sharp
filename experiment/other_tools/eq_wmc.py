@@ -30,9 +30,9 @@ def main(args):
         circuit2.dagger()
         circuit1.append(circuit2)
         # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
-        cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "com"))
+        cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
         # "id" or "2n"
-        res = qk.CheckEquivalence(tool_path, cnf, check = "id" if (basis == "com") else "2n")
+        res = qk.CheckEquivalence(tool_path, cnf, check = "id" if (basis == "comp") else "2n")
     except FileNotFoundError:
         res = "FILE_NOT_FOUND"
     
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Check equality of quantum circuits with WMC')
     parser.add_argument('filename1')
     parser.add_argument('filename2')
-    parser.add_argument('-b', '--basis', choices=['com', 'pauli'])
+    parser.add_argument('-b', '--basis', choices=['comp', 'pauli'])
     args = parser.parse_args()
     main(args)
 
