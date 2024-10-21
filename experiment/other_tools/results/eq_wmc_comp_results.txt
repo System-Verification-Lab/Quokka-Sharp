@@ -1,1 +1,0 @@
-{"file1": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm","file2": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm.opt.qasm", "time": "17.867506504058838", "res": "True", "Max RSS": "0.016292572021484375MB"}
