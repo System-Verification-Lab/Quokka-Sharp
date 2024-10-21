@@ -41,7 +41,7 @@ def main(args):
     end_time = time()
     queue.put('stop')
     max_rss = monitor_thread.join()
-    max_rss = str(max_rss / 1024 / 1024) + "MB"
+    max_rss = str(max_rss / 1024) + "MB"
     filename1 = qasmfile1.split("/")[-1]
     filename2 = qasmfile2.split("/")[-1]
     s = '{' + f'"file1": "{filename1}","file2": "{filename2}", "time": "{end_time - start_time}", "res": "{res}", "Max RSS": "{max_rss}"' + '}'
