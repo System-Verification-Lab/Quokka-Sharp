@@ -19,8 +19,8 @@ options=(
 
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
-    # echo "sim_run: $i"
-    echo -n "/"
+    echo -e -n "\n\tsim_run: $i \t"
+    # echo -n "/"
     python3 eq_run.py "$tool_path" "$i" "$i" "True" >&1;
 done
 echo -e "\n"
