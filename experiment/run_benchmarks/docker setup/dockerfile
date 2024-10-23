@@ -61,11 +61,12 @@ RUN ./build.sh r
 
 # Quokka Install
 WORKDIR ${workdir}
-RUN git clone -b complex https://github.com/System-Verification-Lab/Quokka-Sharp.git
+RUN git clone -b main https://github.com/System-Verification-Lab/Quokka-Sharp.git
 WORKDIR ${workdir}/Quokka-Sharp/
 ARG CACHEBUST=$(date +%s)
 RUN git pull
 RUN pip install ./quokka_sharp --force-reinstall 
+RUN rm -r /wmc_benchmarks/
 WORKDIR ${workdir}/Quokka-Sharp/experiment/run_benchmarks
 # RUN ./run_all_wmc.sh benchmarks_list_sample.txt 5
 # RUN ./run_all_wmc.sh benchmarks_list_full.txt 300
