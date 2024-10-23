@@ -63,7 +63,7 @@ RUN ./build.sh r
 WORKDIR ${workdir}
 RUN git clone -b complex https://github.com/System-Verification-Lab/Quokka-Sharp.git
 WORKDIR ${workdir}/Quokka-Sharp/
-RUN echo `date +%Y%m%d%H%M%S`
+ARG CACHEBUST=$(date +%s)
 RUN git pull
 RUN pip install ./quokka_sharp --force-reinstall 
 WORKDIR ${workdir}/Quokka-Sharp/experiment/run_bechmarks
