@@ -7,7 +7,7 @@ mkdir -p results/
 
 # get eq test results for a sample of the benchmarks
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' start running eq check in pauli basis'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in pauli basis'
 ./run_eq_wmc.sh $1 pauli $2 > results/eq_wmc_pauli_results.txt
 
 echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in comp basis'
