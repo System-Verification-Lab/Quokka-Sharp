@@ -9,7 +9,7 @@ def wmc(qasmfile1, tool_invocation, meas, basis):
     # Parse the circuit
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     # Encode the circuit
-    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "com"))
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
     cnf.leftProjectAllZero()
     cnf.add_measurement(meas)
     prob = qk.Simulate(tool_invocation, cnf)
@@ -17,7 +17,7 @@ def wmc(qasmfile1, tool_invocation, meas, basis):
     
 def main(args):
     qasmfile        = args.filename
-    tool_invocation = '/Users/meij/Desktop/coding/COM-GPMC/GPMC/bin/gpmc -mode=1'
+    tool_invocation = '../../../GPMC/bin/gpmc -mode=1'
     basis           = args.basis
     meas            = args.measurement
     # start monitor thread for measuring mem
@@ -34,7 +34,7 @@ def main(args):
     end_time = time()
     queue.put('stop')
     max_rss = monitor_thread.join()
-    max_rss = str(max_rss / 1024 / 1024) + "MB"
+    max_rss = str(max_rss / 1024) + "MB"
     filename = qasmfile.split("/")[-1]
     s = '{' + f'"file": "{filename}", "time": "{end_time - start_time}", "prob": "{prob}", "Max RSS": "{max_rss}"' + '}'
     print(s)
@@ -43,6 +43,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Simulating quantum circuits with WMC')
     parser.add_argument('filename')
     parser.add_argument('-m', '--measurement', choices=['firstzero', 'allzero'], default='firstzero')
-    parser.add_argument('-b', '--basis', choices=['com', 'pauli'])
+    parser.add_argument('-b', '--basis', choices=['comp', 'pauli'])
     args = parser.parse_args()
     main(args)

@@ -86,12 +86,12 @@ If you want to add direct encoding of other gates, you should first install the 
 pip install sympy
 ```
 
-and add new encoding in ./encoding/cliffordt2cnf_py_codegen.py 
+and add new encoding in ./encoding/pauli2cnf_py_codegen.py 
 or in ./encoding/comput2cnf_py_codegen.py, depending on the base used.
 then run one of the following comands corespondingly:
 
 ```
-python3 cliffordt2cnf_py_codegen.py>cliffordt2cnf.py
+python3 pauli2cnf_py_codegen.py>pauli2cnf.py
 ```
 or
 ```
