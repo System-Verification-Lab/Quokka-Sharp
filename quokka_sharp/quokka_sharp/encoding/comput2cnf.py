@@ -57,11 +57,6 @@ class comput2cnf:
     def CNOT2CNF(cnf, c, t):
         x = cnf.vars.x
 
-        Xc = cnf.add_var()
-        # Equivalent(Xc, x[c])
-        cnf.add_clause([ Xc, -x[c]])
-        cnf.add_clause([-Xc,  x[c]])
-
         Xt = cnf.add_var()
         # Equivalent(Xt, x[c] ^ x[t])
         cnf.add_clause([ Xt,  x[c], -x[t]])
@@ -69,7 +64,20 @@ class comput2cnf:
         cnf.add_clause([-Xt,  x[c],  x[t]])
         cnf.add_clause([-Xt, -x[c], -x[t]])
 
-        cnf.vars.x[c] = Xc
+        cnf.vars.x[t] = Xt
+
+    def CCX2CNF(cnf, k, c, t):
+        x = cnf.vars.x
+
+        Xt = cnf.add_var()
+        # Equivalent(Xt, x[t] ^ (x[c] & x[k]))
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt,  x[k], -x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[k],  x[t]])
+        cnf.add_clause([ Xt, -x[c], -x[k],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[k], -x[t]])
+
         cnf.vars.x[t] = Xt
 
     def Z2CNF(cnf, k):
