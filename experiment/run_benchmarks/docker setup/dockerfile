@@ -61,9 +61,9 @@ RUN ./build.sh r
 
 # Quokka Install
 WORKDIR ${workdir}
+ARG CACHEBUST=$(date +%s)
 RUN git clone -b main https://github.com/System-Verification-Lab/Quokka-Sharp.git
 WORKDIR ${workdir}/Quokka-Sharp/
-ARG CACHEBUST=$(date +%s)
 RUN git pull
 RUN pip install ./quokka_sharp --force-reinstall 
 RUN rm -r /wmc_benchmarks/
