@@ -11,11 +11,10 @@ NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's',
                 'rx': 'rxdg', 'rx': 'rxdg', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
 
 class Circuit:
-    def __init__(self, translate_ccx):
+    def __init__(self):
         self.n: int = 0
         self.tgate: int = 0
         self.circ = []
-        self.translate_ccx: bool = translate_ccx
         self.has_rotations = False
     
     def depth(self):
@@ -33,8 +32,8 @@ class Circuit:
         self.circ.append([gate, angle, qubit])
         self.has_rotations = True
     
-    def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int):
-        if self.translate_ccx:
+    def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int, translate_ccx:bool):
+        if translate_ccx:
             self.add_single('h',    qubitr)
             self.add_double('cx',   qubitc2, qubitr)
             self.add_single('tdg',  qubitr)
@@ -71,7 +70,6 @@ class Circuit:
                 raise Exception("Gate "+ gate[0] +" dagger not supported.")
 
     def append(self, other: 'Circuit'):
-        assert(self.translate_ccx == other.translate_ccx)
         self.circ.extend( other.circ )
         self.n = max(self.n, other.n)
         self.tgate = self.tgate + other.tgate
@@ -158,7 +156,7 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
         for line in qasm:
             qasm_list.append(line.rsplit())
 
-    circuit = Circuit(translate_ccx)
+    circuit = Circuit()
     
     for line in qasm_list:
         if len(line) == 0:
@@ -225,7 +223,7 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
                 qubitc1 = get_num(qubits[0])
                 qubitc2 = get_num(qubits[1]) 
                 qubitr = get_num(qubits[2])                
-            circuit.add_ccx(qubitc1, qubitc2, qubitr)
+            circuit.add_ccx(qubitc1, qubitc2, qubitr, translate_ccx)
 
         elif len(gate) > 4 and gate[0:2] in RotationGates:
             # TODO: gate exception

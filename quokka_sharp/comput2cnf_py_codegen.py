@@ -119,13 +119,19 @@ def main():
     print("    def CNOT2CNF(cnf, c, t):")
     print("        x = cnf.vars.x")
     print()
-    print("        Xc = cnf.add_var()")
-    to_py(	       Equivalent(Xc, x[c]))
-    print()
     print("        Xt = cnf.add_var()")
     to_py(	       Equivalent(Xt, (x[c] ^ x[t])))
     print()
-    print("        cnf.vars.x[c] = Xc")
+    print("        cnf.vars.x[t] = Xt")
+    print()
+
+    #TOFFOLI
+    print("    def CCX2CNF(cnf, k, c, t):")
+    print("        x = cnf.vars.x")
+    print()
+    print("        Xt = cnf.add_var()")
+    to_py(	       Equivalent(Xt, ((x[k] & x[c]) ^ x[t])))
+    print()
     print("        cnf.vars.x[t] = Xt")
     print()
 
@@ -207,7 +213,7 @@ def main():
     print()
     print("            cnf.vars.i = I")
 
-    # X:
+    #X
     print("    def X2CNF(cnf, k):")
     print("        x = cnf.vars.x")
     print()
@@ -217,8 +223,7 @@ def main():
     print("        cnf.vars.x[k] = X")
     print()
 
-    # Y:
-
+    #Y
     print("    def Y2CNF(cnf, k):")
     print("        x = cnf.vars.x")
     print()
