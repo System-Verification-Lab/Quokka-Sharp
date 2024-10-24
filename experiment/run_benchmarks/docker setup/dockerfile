@@ -61,14 +61,15 @@ RUN ./build.sh r
 
 # Quokka Install
 WORKDIR ${workdir}/Quokka-Sharp/
-RUN git init
-RUN git remote add -f origin https://github.com/System-Verification-Lab/Quokka-Sharp.git 
-RUN git config core.sparseCheckout true
-RUN echo "quokka_sharp/" >> .git/info/sparse-checkout
-RUN echo "experiment/" >> .git/info/sparse-checkout
 ARG CACHEBUST=$(date +%s)
-RUN git pull origin main
-RUN pip install ./quokka_sharp --force-reinstall
+RUN git init && \
+    git remote add -f origin https://github.com/System-Verification-Lab/Quokka-Sharp.git && \
+    git config core.sparseCheckout true && \
+    echo "quokka_sharp/" >> .git/info/sparse-checkout && \
+    echo "experiment/" >> .git/info/sparse-checkout && \
+    git pull origin main && \
+    pip install ./quokka_sharp --force-reinstall && \
+    rm -r ./.git
 
 WORKDIR ${workdir}/Quokka-Sharp/experiment/run_benchmarks
 # RUN ./run_all_wmc.sh benchmarks_list_sample.txt 5
