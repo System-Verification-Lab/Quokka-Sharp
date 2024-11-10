@@ -20,7 +20,7 @@ def get_result(result, expexted_prob):
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
     prob = (abs(real)**2 + abs(imag)**2).sqrt()
-    if abs(prob - expexted_prob) < (expexted_prob+1) * 1e-12:
+    if abs(prob - expexted_prob) < (expexted_prob+1) * Decimal(1e-12):
         return True
     else:
         return False
@@ -67,15 +67,15 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         if check == "id":
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
             if cnf.computational_basis:
-                expected_prob = 2**cnf.n
+                expected_prob = Decimal(2**cnf.n)
             else:
-                expected_prob = 4**cnf.n
+                expected_prob = Decimal(4**cnf.n)
         elif check == "id_2n":
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
-            expected_prob = 2*cnf.n
+            expected_prob = Decimal(2*cnf.n)
         elif check == "id_noY":
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
-            expected_prob = 3**cnf.n
+            expected_prob = Decimal(3**cnf.n)
         elif check == "2n":
             if cnf.computational_basis:
                 assert False, "2n check is not supported for computational basis"
