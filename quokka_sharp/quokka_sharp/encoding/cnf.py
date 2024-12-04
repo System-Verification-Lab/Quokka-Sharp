@@ -72,11 +72,11 @@ class Variables:
         if not Z_or_X:
             z = self.x; x = self.z
         for i in range(self.n):
-            self.cnf.add_clause([-x[i]], prepend)
+            self.cnf.add_clause([-x[i]], prepend, comment=f"project not {'x' if Z_or_X else 'z'}")
             if i == idx:
-                self.cnf.add_clause([z[i]], prepend)
+                self.cnf.add_clause([z[i]], prepend, comment=f"project yes {'z' if Z_or_X else 'x'}")
             else:
-                self.cnf.add_clause([-z[i]], prepend)
+                self.cnf.add_clause([-z[i]], prepend, comment=f"project not {'z' if Z_or_X else 'x'}")
 
 
 class CNF:

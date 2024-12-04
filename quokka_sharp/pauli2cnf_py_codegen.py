@@ -33,7 +33,7 @@ Z    = symbols('Z')
 def strstrip(item1):
     return item1.lstrip(' ()~')
 
-def to_py(func, prefix="", simplify=True, force=True):
+def to_py(func, prefix="", simplify=True, force=True, comment=""):
     print(prefix+"        # "+str(func))
     s = str(to_cnf(func, simplify=simplify, force=force))
     for a in s.split("&"):
@@ -49,7 +49,9 @@ def to_py(func, prefix="", simplify=True, force=True):
             print(b, end="")
             if x != l[-1]:
                 print(", ", end="")
-        print("])")
+        print("]", end="")
+        if comment: print(f", comment=\"{comment}\"", end="")
+        print(f")")
 
 def add_sign(func, prefix = ""):
     print(prefix+f"        # adding sign if {func}")

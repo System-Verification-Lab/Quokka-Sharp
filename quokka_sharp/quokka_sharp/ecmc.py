@@ -63,6 +63,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
 
         cnf_file_list = []
         proclist = []
+        if DEBUG: proc_cmd = {}
 
         match check:
             case "id":
@@ -99,9 +100,9 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             for i in range(min(N, length)):
                 cnf_file = cnf_file_list[i]
                 tool_file_command = tool_command + [cnf_file]
-                if DEBUG: print(" ".join(tool_file_command))
                 p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
                 proclist.append(p)
+                if DEBUG: proc_cmd[p.pid] = " ".join(tool_file_command)
             if len(proclist) == 0:
                 break
             procdict = {proc.pid: proc for proc in proclist}
@@ -112,6 +113,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                     res = procdict[pid].communicate()
                     result = get_result(res[0], expected_prob)
                     if result == False:
+                        if DEBUG: print(proc_cmd[pid])
                         break
                     else:
                         watched_pids.remove(pid)
