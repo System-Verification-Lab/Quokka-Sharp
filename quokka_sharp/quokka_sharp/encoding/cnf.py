@@ -96,6 +96,15 @@ class CNF:
         self.syn_gate_layer = 0
         self.syn_gate_picking_vars = {}
     
+    def copy(self):
+        self.vars.cnf = None
+        self.vars_init.cnf = None
+        new = copy.deepcopy(self)
+        self.vars.cnf = self
+        self.vars_init.cnf = self
+        new.vars.cnf = new
+        new.vars_init.cnf = new
+
     def finalize(self):
         self.locked = True
 
@@ -264,8 +273,11 @@ class CNF:
             else:
                 raise Exception(str(gate) + " undefined."+ str(element))
             
-    def add_syn_layer(self, n=1):
+    def encode_composition(self, composition_dictionary):
+        from .pauli2cnf import pauli2cnf as to_CNF
+        to_CNF.Composition2CNF(self, composition_dictionary)
 
+    def add_syn_layer(self, n=1):
         if self.computational_basis:
             from .comput2cnf import comput2cnf as to_CNF 
         else:
@@ -273,7 +285,7 @@ class CNF:
         
         for _ in range(n):
             self.syn_gate_layer += 1
-            to_CNF.SynGate2CNF(self)
+            to_CNF.SynLayer2CNF(self)
 
     # convert an assignment for the syn variable to a coresponding Circuit object
     def get_syn_circuit(self, assignment, translate_ccx=True):
@@ -312,4 +324,10 @@ class CNF:
 def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True) -> CNF:
     cnf = CNF(circuit.n, computational_basis = computational_basis, weighted = weighted)
     cnf.encode_circuit(circuit)
+    return cnf
+
+# construct a CNF object for a given PauliStrings Composition, in the pauly basis with weights
+def Composition2CNF(composition_dictionary) -> CNF:
+    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, weighted = True)
+    cnf.encode_composition(composition_dictionary)
     return cnf

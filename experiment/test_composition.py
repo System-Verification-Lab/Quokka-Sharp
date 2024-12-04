@@ -1,0 +1,195 @@
+import numpy as np
+
+I = np.matrix([[1, 0], [0, 1]])
+X = np.matrix([[0, 1], [1, 0]])
+Z = np.matrix([[1, 0], [0, -1]])
+Y = np.matrix([[0, 1j], [-1j, 0]])
+
+P_char_to_mat = {
+    "I": I,
+    "X": X,
+    "Y": Y,
+    "Z": Z,
+}
+
+def dot2(A, B):
+    return np.tensordot(A,B, axes=1)
+def dot3(A, B, C):
+    return np.tensordot(np.tensordot(A,B, axes=1), C, axes=1)
+
+P=[X,Y,Z]
+for i in range(3):
+    prod = 1j*dot2(P[(i+1)%3],P[(i+2)%3])
+    assert(np.all(P[i]==prod))
+    
+    prod = -1j*dot2(P[(i+2)%3],P[(i+1)%3])
+    assert(np.all(P[i]==prod))
+    
+    prod = -1*dot3(P[(i+1)%3], P[i], P[(i+1)%3])
+    assert(np.all(P[i]==prod))
+    
+    prod = -1*dot3(P[(i+2)%3], P[i], P[(i+2)%3])
+    assert(np.all(P[i]==prod))
+    
+    prod = dot3(P[i], P[(i+1)%3], P[(i+2)%3])
+    assert(np.all(-1j*I==prod))
+    
+    prod = dot3(P[(i+2)%3], P[i], P[i])
+    assert(np.all(P[(i+2)%3]==prod))
+
+    prod = dot3(P[(i+1)%3], P[i], P[i])
+    assert(np.all(P[(i+1)%3]==prod))
+    
+    prod = dot3(P[i], P[i], P[(i+2)%3])
+    assert(np.all(P[(i+2)%3]==prod))
+
+    prod = dot3(P[i], P[i], P[(i+1)%3])
+    assert(np.all(P[(i+1)%3]==prod))
+
+
+
+import json
+
+with open('./pauli_compositions.json', 'r') as file:
+    comp_dicts = json.load(file)
+
+for d in comp_dicts.values():
+    qubits = d["qubits"]
+    gate = np.zeros([2**qubits, 2**qubits])
+    for p_str, alpha in d["composition"].items():
+        assert(len(p_str) == qubits)
+        m = 1
+        for p_char in p_str:
+            p_mat = P_char_to_mat[p_char]
+            m = np.kron(m, p_mat)
+        gate += alpha*m
+    if "matrix" in d.keys():
+        assert(np.all(d['matrix'] == gate))
+    else:
+        print(f"gate: {d['gate']}")
+        print(f"matrix: {np.array2string(gate, separator=', ', floatmode='unique')}")
+
+
+U = Z + X
+print(dot3(U,X,U))
+
+# CCX = np.zeros([8,8])
+# for i in [0,1,2, 4,5,6 ]: 
+#     CCX[i,i] =1
+# CCX[3,7] =1
+# CCX[7,3] =1
+
+# CX = np.zeros([4,4])
+# for i in [0,2]: 
+#     CX[i,i] =1
+# CX[1,3] =1
+# CX[3,1] =1
+# ccx_states = []
+# ccx_states.append(      np.kron(np.kron(I, I), I))
+# ccx_states.append( 0.25*np.kron(np.kron(X, I), I))
+# ccx_states.append(-0.25*np.kron(np.kron(X, I), Z))
+# ccx_states.append(-0.25*np.kron(np.kron(X, Z), I))
+# ccx_states.append( 0.25*np.kron(np.kron(X, Z), Z))
+# ccx_states.append(-0.25*np.kron(np.kron(I, I), I))
+# ccx_states.append( 0.25*np.kron(np.kron(I, I), Z))
+# ccx_states.append( 0.25*np.kron(np.kron(I, Z), I))
+# ccx_states.append(-0.25*np.kron(np.kron(I, Z), Z))
+# # ccx_states.append(1/4 * np.kron(np.kron(X-I, I-Z), I-Z))
+# print(np.all(CCX==np.sum(ccx_states, axis=0)))
+
+
+# CCX = IxIxI + 1/4 (X-I)x(I-Z)x(I-Z) 
+# CXX XZxXZxXZ CXX = XZxXZxXZ + 1/4 (X(-Z)-XZ)x(XZ-(-X)Z)x(XZ-(-X)Z)
+#                                       Z           X          X
+# CXX XZxXZxXZ CXX = XZxXZxXZ + 1/4   (-2XZ)    x(+2XZ)    x(+2XZ)
+# if Z X X:
+# CXX XZxXZxXZ CXX = -XZxXZxXZ 
+# else :
+# Id
+
+# q_states = [I, X, Z]
+# for A in q_states:
+#     for B in q_states:
+#         for C in q_states:
+#             s = np.kron(np.kron(A, B), C)
+#             result = np.tensordot(np.tensordot(CCX, s, axes=1), CCX, axes=1)
+#             # Equivalent(X, x[t] ^ (x[c] & x[k]))
+#             if np.all(B==X) and np.all(C==X):
+#                 At = I
+#                 assert np.all(s==-result)
+#             else:
+#                 print(A)
+#                 print(B)
+#                 print(C)
+#                 print(s)
+#                 print(result)
+#                 assert np.all(s==result)
+
+            
+
+out_states = []
+
+# in_state = np.kron(np.kron(X, X), X)
+# out_states.append(1/2 * np.kron(np.kron(I+X, X), X))
+# out_states.append(1/2 * np.kron(np.kron(I-X, Y), Y))
+
+# in_state = np.kron(np.kron(Z, Z), Z)
+# out_states.append(1/2 *np.kron(np.kron(Z, I+Z), I+Z))
+# out_states.append(-np.kron(np.kron(Z, I), I))
+
+# in_state = np.kron(np.kron(I, I), I)
+# out_states.append(np.kron(np.kron(I, I), I))
+
+# in_state = np.kron(np.kron(I, I), X)
+# out_states.append(1/2 * np.kron(np.kron(I, I+Z), X))
+# out_states.append(1/2 * np.kron(np.kron(X, I-Z), X))
+
+# in_state = np.kron(np.kron(I, X), I)
+# out_states.append(1/2 * np.kron(np.kron(I, X), I+Z))
+# out_states.append(1/2 * np.kron(np.kron(X, X), I-Z))
+
+# in_state = np.kron(np.kron(X, I), I)
+# out_states.append(np.kron(np.kron(X, I), I))
+
+# in_state = np.kron(np.kron(Z, I), I)
+# out_states.append( 1/2*np.kron(np.kron(Z, I), I))
+# out_states.append( 1/2*np.kron(np.kron(Z, I), Z))
+# out_states.append( 1/2*np.kron(np.kron(Z, Z), I))
+# out_states.append(-1/2*np.kron(np.kron(Z, Z), Z))
+
+# in_state = np.kron(np.kron(I, I), Z)
+# out_states.append(np.kron(np.kron(I, I), Z))
+
+# in_state = np.kron(np.kron(I, Z), I)
+# out_states.append(np.kron(np.kron(I, Z), I))
+
+# in_state = np.kron(np.kron(I, Z), Z)
+# out_states.append(np.kron(np.kron(I, Z), Z))
+
+# result = np.tensordot(np.tensordot(CCX, in_state, axes=1), CCX, axes=1)
+# print(result)
+# sum = np.zeros([8,8])
+# for out in out_states:
+#     print(out)
+#     sum = np.add(sum, out)
+# print(sum)
+# print(np.all(result==np.sum(out_states, axis=0)))
+
+
+# out_states = []
+
+# in_state = np.kron(np.kron(I, I), X)
+# out_states.append(1/2 * np.kron(np.kron(I, I+Z), X))
+# out_states.append(1/2 * np.kron(np.kron(X, I-Z), X))
+
+# in_state = np.kron(I, X)
+# out_states.append(np.kron(X, X))
+
+# result = np.tensordot(np.tensordot(CX, in_state, axes=1), CX, axes=1)
+# print(result)
+# sum = np.zeros([4,4])
+# for out in out_states:
+#     print(out)
+#     sum = np.add(sum, out)
+# print(sum)
+# print(np.all(result==np.sum(out_states, axis=0)))
