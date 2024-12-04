@@ -489,15 +489,143 @@ class pauli2cnf:
 
         cnf.vars.x[k] = X
 
+
+
+ 
+    def Composition(cnf, composition_dictionary):
+        x, z = zip(*[(cnf.add_var(), cnf.add_var()) for _ in range(cnf.n)])
+        weights = []
+        for pauli_str, alpha in composition_dictionary["composition"].items():
+            if alpha == 0:
+                continue
+
+            # pauli conditions
+            conditions = []
+            for i in range(len(pauli_str)):
+                if pauli_str[i] in ["I", "Z"]:
+                    conditions.append(-x[i])
+                else:
+                    conditions.append( x[i])
+                if pauli_str[i] in ["I", "X"]:
+                    conditions.append(-z[i])
+                else:
+                    conditions.append( z[i])
+
+            # condition weight
+            w = cnf.add_var()
+            cnf.add_weight(w, alpha)
+            cnf.add_weight(-w, 1)
+            weights.append(w)
+
+            # w iff pauli_str
+            cnf.add_clause([-w]+conditions)
+
+        # [at least] one of the weights (more than one is a contradiction of the conditions)
+        cnf.add_clause(weights)
+        return x,z
+
+    def Composition2CNF(cnf, composition_dictionary):
+        assert composition_dictionary["qubits"] == cnf.n
+        lx, lz = pauli2cnf.Composition(cnf, composition_dictionary)
+        rx, rz = pauli2cnf.Composition(cnf, composition_dictionary)
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        # applying the conditions
+        for k in range(cnf.n):
+            X = cnf.add_var()
+            Z = cnf.add_var()
+    
+            # Equivalent(X, lx[k] ^ rx[k] ^ x[k])
+            cnf.add_clause([ X,  lx[k],  rx[k], -x[k]])
+            cnf.add_clause([ X,  lx[k], -rx[k],  x[k]])
+            cnf.add_clause([ X, -lx[k],  rx[k],  x[k]])
+            cnf.add_clause([-X,  lx[k],  rx[k],  x[k]])
+            cnf.add_clause([ X, -lx[k], -rx[k], -x[k]])
+            cnf.add_clause([-X,  lx[k], -rx[k], -x[k]])
+            cnf.add_clause([-X, -lx[k],  rx[k], -x[k]])
+            cnf.add_clause([-X, -lx[k], -rx[k],  x[k]])
+            # Equivalent(Z, lz[k] ^ rz[k] ^ z[k])
+            cnf.add_clause([ Z,  lz[k],  rz[k], -z[k]])
+            cnf.add_clause([ Z,  lz[k], -rz[k],  z[k]])
+            cnf.add_clause([ Z, -lz[k],  rz[k],  z[k]])
+            cnf.add_clause([-Z,  lz[k],  rz[k],  z[k]])
+            cnf.add_clause([ Z, -lz[k], -rz[k], -z[k]])
+            cnf.add_clause([-Z,  lz[k], -rz[k], -z[k]])
+            cnf.add_clause([-Z, -lz[k],  rz[k], -z[k]])
+            cnf.add_clause([-Z, -lz[k], -rz[k],  z[k]])
+            # adding sign if (lx[k] | lz[k]) & (x[k] | z[k]) & ((lx[k] & rx[k] & ~x[k]) | (lz[k] & rz[k] & ~z[k]) | (x[k] & ~lx[k] & ~rx[k]) | (z[k] & ~lz[k] & ~rz[k]))
+            R = cnf.add_var()
+            if cnf.weighted: 
+                cnf.add_weight(R, -1)
+                cnf.add_weight(-R, 1)
+                # Equivalent(R, (lx[k] | lz[k]) & (x[k] | z[k]) & ((lx[k] & rx[k] & ~x[k]) | (lz[k] & rz[k] & ~z[k]) | (x[k] & ~lx[k] & ~rx[k]) | (z[k] & ~lz[k] & ~rz[k])))
+                cnf.add_clause([-R,  lx[k],  lz[k]])
+                cnf.add_clause([-R,  lx[k],  x[k]])
+                cnf.add_clause([-R,  lz[k],  z[k]])
+                cnf.add_clause([-R,  x[k],  z[k]])
+                cnf.add_clause([ R,  lx[k], -lz[k],  rx[k], -x[k]])
+                cnf.add_clause([ R, -lx[k],  lz[k],  rz[k], -z[k]])
+                cnf.add_clause([ R, -lx[k], -rx[k],  x[k], -z[k]])
+                cnf.add_clause([ R, -lz[k], -rz[k], -x[k],  z[k]])
+                cnf.add_clause([-R, -lx[k], -lz[k],  rx[k],  rz[k]])
+                cnf.add_clause([-R, -lx[k],  rx[k], -rz[k], -z[k]])
+                cnf.add_clause([-R, -lz[k], -rx[k],  rz[k], -x[k]])
+                cnf.add_clause([-R, -rx[k], -rz[k], -x[k], -z[k]])
+            else: 
+                r = cnf.vars.r
+                cnf.vars.r = R
+                # Equivalent(R, r ^ ((lx[k] | lz[k]) & (x[k] | z[k]) & ((lx[k] & rx[k] & ~x[k]) | (lz[k] & rz[k] & ~z[k]) | (x[k] & ~lx[k] & ~rx[k]) | (z[k] & ~lz[k] & ~rz[k]))))
+                cnf.add_clause([ R,  lx[k],  lz[k], -r])
+                cnf.add_clause([ R,  lx[k], -r,  x[k]])
+                cnf.add_clause([ R,  lz[k], -r,  z[k]])
+                cnf.add_clause([ R, -r,  x[k],  z[k]])
+                cnf.add_clause([-R,  lx[k],  lz[k],  r])
+                cnf.add_clause([-R,  lx[k],  r,  x[k]])
+                cnf.add_clause([-R,  lz[k],  r,  z[k]])
+                cnf.add_clause([-R,  r,  x[k],  z[k]])
+                cnf.add_clause([ R,  lx[k], -lz[k],  r,  rx[k], -x[k]])
+                cnf.add_clause([ R, -lx[k],  lz[k],  r,  rz[k], -z[k]])
+                cnf.add_clause([ R, -lx[k],  r, -rx[k],  x[k], -z[k]])
+                cnf.add_clause([ R, -lz[k],  r, -rz[k], -x[k],  z[k]])
+                cnf.add_clause([ R, -lx[k], -lz[k], -r,  rx[k],  rz[k]])
+                cnf.add_clause([-R, -lx[k], -lz[k],  r,  rx[k],  rz[k]])
+                cnf.add_clause([ R, -lx[k], -r,  rx[k], -rz[k], -z[k]])
+                cnf.add_clause([ R, -lz[k], -r, -rx[k],  rz[k], -x[k]])
+                cnf.add_clause([-R,  lx[k], -lz[k], -r,  rx[k], -x[k]])
+                cnf.add_clause([-R, -lx[k],  lz[k], -r,  rz[k], -z[k]])
+                cnf.add_clause([-R, -lx[k],  r,  rx[k], -rz[k], -z[k]])
+                cnf.add_clause([-R, -lz[k],  r, -rx[k],  rz[k], -x[k]])
+                cnf.add_clause([ R, -r, -rx[k], -rz[k], -x[k], -z[k]])
+                cnf.add_clause([-R,  r, -rx[k], -rz[k], -x[k], -z[k]])
+                cnf.add_clause([-R, -lx[k], -r, -rx[k],  x[k], -z[k]])
+                cnf.add_clause([-R, -lz[k], -r, -rz[k], -x[k],  z[k]])
+            # ((Equivalent(lx[k], rx[k])) & (Equivalent(lz[k], rz[k]))) | ((Equivalent(lx[k], x[k])) & (Equivalent(lz[k], z[k]))) | ((Equivalent(rx[k], x[k])) & (Equivalent(rz[k], z[k])))
+            cnf.add_clause([ lx[k],  lz[k],  rx[k], -rz[k], -x[k]])
+            cnf.add_clause([ lx[k],  lz[k], -rx[k],  rz[k], -z[k]])
+            cnf.add_clause([ lx[k], -lz[k], -rx[k],  x[k],  z[k]])
+            cnf.add_clause([-lx[k],  lz[k], -rz[k],  x[k],  z[k]])
+            cnf.add_clause([-lx[k],  rx[k],  rz[k],  x[k], -z[k]])
+            cnf.add_clause([-lz[k],  rx[k],  rz[k], -x[k],  z[k]])
+            cnf.add_clause([ lx[k], -lz[k],  rz[k], -x[k], -z[k]])
+            cnf.add_clause([ lx[k], -rx[k], -rz[k], -x[k],  z[k]])
+            cnf.add_clause([-lx[k],  lz[k],  rx[k], -x[k], -z[k]])
+            cnf.add_clause([ lz[k], -rx[k], -rz[k],  x[k], -z[k]])
+            cnf.add_clause([-lx[k], -lz[k],  rx[k], -rz[k],  z[k]])
+            cnf.add_clause([-lx[k], -lz[k], -rx[k],  rz[k],  x[k]])
+
+
+
     def AMO(cnf, var_list):
         assert None not in var_list
         # at least one:
         cnf.add_clause(var_list)
         # at most one:
         [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
+    
 
 
-    def SynGate2CNF(cnf):
+    def SynLayer2CNF(cnf):
         n = cnf.n
         x = cnf.vars.x
         z = cnf.vars.z
