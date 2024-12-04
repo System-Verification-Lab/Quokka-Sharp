@@ -258,8 +258,79 @@ def main():
     print()
     print("        cnf.vars.x[k] = X")
     print()
+    print()
   
-  
+    # composiotion layer
+    print(f'''
+ 
+    def Composition(cnf, composition_dictionary):
+        x, z = zip(*[(cnf.add_var(), cnf.add_var()) for _ in range(cnf.n)])
+        weights = []
+        for pauli_str, alpha in composition_dictionary["composition"].items():
+            if alpha == 0:
+                continue
+
+            # pauli conditions
+            conditions = []
+            for i in range(len(pauli_str)):
+                if pauli_str[i] in ["I", "Z"]:
+                    conditions.append(-x[i])
+                else:
+                    conditions.append( x[i])
+                if pauli_str[i] in ["I", "X"]:
+                    conditions.append(-z[i])
+                else:
+                    conditions.append( z[i])
+
+            # condition weight
+            w = cnf.add_var()
+            cnf.add_weight(w, alpha)
+            cnf.add_weight(-w, 1)
+            weights.append(w)
+
+            # w iff pauli_str
+            cnf.add_clause([-w]+conditions)
+
+        # [at least] one of the weights (more than one is a contradiction of the conditions)
+        cnf.add_clause(weights)
+        return x,z
+
+    def Composition2CNF(cnf, composition_dictionary):
+        assert composition_dictionary["qubits"] == cnf.n
+        lx, lz = pauli2cnf.Composition(cnf, composition_dictionary)
+        rx, rz = pauli2cnf.Composition(cnf, composition_dictionary)
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        # applying the conditions
+        for k in range(cnf.n):
+            X = cnf.add_var()
+            Z = cnf.add_var()
+    ''')
+    lx = symbols('lx[k]')
+    lz = symbols('lz[k]')
+    rx = symbols('rx[k]')
+    rz = symbols('rz[k]')
+
+    to_py(Equivalent(X, lx^x[k]^rx), prefix="    ")
+    to_py(Equivalent(Z, lz^z[k]^rz), prefix="    ")
+
+    add_sign(And(Or((  lx & ~x[k] &  rx),
+                    ( ~lx &  x[k] & ~rx),
+                    (  lz & ~z[k] &  rz),
+                    ( ~lz &  z[k]& ~rz)),
+                 Or(lx, lz),
+                 Or(x[k], z[k])), prefix="    ")
+    
+    to_py(Or(And(Equivalent(lx,x[k]),
+                 Equivalent(lz,z[k])),
+             And(Equivalent(rx,x[k]),
+                 Equivalent(rz,z[k])),
+             And(Equivalent(lx,rx),
+                 Equivalent(lz,rz))), prefix="    ")
+    print()
+    print()
+
 
     # Synthesis
 
@@ -321,15 +392,18 @@ def main():
 
     double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
 
-    print("    def AMO(cnf, var_list):")
-    print("        assert None not in var_list")
-    print("        # at least one:")
-    print("        cnf.add_clause(var_list)")
-    print("        # at most one:")
-    print("        [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]")
+    
+    print('''
+    def AMO(cnf, var_list):
+        assert None not in var_list
+        # at least one:
+        cnf.add_clause(var_list)
+        # at most one:
+        [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
+    ''')
     print()
     print()
-    print("    def SynGate2CNF(cnf):")
+    print("    def SynLayer2CNF(cnf):")
     print("        n = cnf.n")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")

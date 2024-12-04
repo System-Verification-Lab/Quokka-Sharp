@@ -9,11 +9,11 @@ import pandas as pd
 def main(tool_path, qasmfile1, qasmfile2,
          expected_res = None,
          bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"],
-         add_to_csv=False):
+         to_csv=True):
     
     # Parse the circuits
-    circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-    circuit2 = qk.encoding.QASMparser(qasmfile2, True)
+    circuit1 = qk.encoding.QASMparser(qasmfile1, translate_ccx=True)
+    circuit2 = qk.encoding.QASMparser(qasmfile2, translate_ccx=True)
 
     # Get (circuit1)^dagger(circuit2)
     circuit2.dagger()
@@ -21,7 +21,7 @@ def main(tool_path, qasmfile1, qasmfile2,
 
     # initial data
     data = []
-    no_match_to_expected = False
+    no_match_to_expected = []
 
     for basis in bases:
         for check_type in check_types:
@@ -37,21 +37,25 @@ def main(tool_path, qasmfile1, qasmfile2,
             glb_et = time.time()
 
             if res == "TIMEOUT":
-                print("T", end="")
+                # print("T", end="")
+                pass
             else:
                 if expected_res is not None:
                     if str(res) != expected_res:
-                        print("W", end="")
-                        no_match_to_expected = True
+                        # print("W", end="")
+                        no_match_to_expected.append((basis, check_type))
                     else:
-                        print(".", end="")
+                        # print(".", end="")
+                        pass
 
-            if add_to_csv:
+            if to_csv:
                 # pandas dataframe for results
-                data.append({'basis': basis,
+                data.append({
+                            'match ex': 'match' if str(res) == expected_res else 'ERROR',
+                            'basis': basis,
                             'technic': check_type,
-                            'file1': qasmfile1,
-                            'file2': qasmfile2,
+                            'file1': qasmfile1.split("/")[-1],
+                            'file2': qasmfile2.split("/")[-1],
                             'global time': glb_et - glb_st,
                             'result': res,
                             'expected_res': expected_res
@@ -60,17 +64,13 @@ def main(tool_path, qasmfile1, qasmfile2,
     if no_match_to_expected:
         print(f"""\nFile dosn't match expected:\
                 \n   circ1 = \"{qasmfile1}\"\
-                \n   circ2 = \"{qasmfile2}\"""")
+                \n   circ2 = \"{qasmfile2}\"\
+                \n  for checkes: {no_match_to_expected}""")
 
-    if add_to_csv:
+    if to_csv:
         # convert data to pandas dataframe and add to file
         df = pd.DataFrame(data)
-        pandas_file_name = 'eq_results.csv'
-        if path.exists(pandas_file_name):
-            df0 = pd.read_csv(pandas_file_name)
-            df = pd.concat([df0, df], ignore_index=True)
-        df.to_csv(pandas_file_name, index=False)
-
+        print(df.to_csv(index=False, header=False, sep='\t'))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -93,7 +93,8 @@ if __name__ == '__main__':
         except FileNotFoundError:
             # print(f"\tCalled with: \n\t\t {circ1} \n\t\t {circ2})")
             # print(f"\tFile not found: {e.filename}")
-            print(f"nf", end="")
+            # print(f"nf", end="")
+            pass
         except KeyboardInterrupt:
             raise KeyboardInterrupt
         except:

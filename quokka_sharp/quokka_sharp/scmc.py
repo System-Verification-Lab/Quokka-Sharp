@@ -80,7 +80,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         assignment = []
         if incremental:
             num_layers = inc_step
-        circuit = Circuit(translate_ccx=True)
+        circuit = Circuit()
         circuit.n = cnf.n
         while not found:
             it_counter+=1
