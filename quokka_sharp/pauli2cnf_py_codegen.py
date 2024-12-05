@@ -266,6 +266,7 @@ def main():
     def Composition(cnf, composition_dictionary):
         x, z = zip(*[(cnf.add_var(), cnf.add_var()) for _ in range(cnf.n)])
         weights = []
+        sum_weights = 0
         for pauli_str, alpha in composition_dictionary["composition"].items():
             if alpha == 0:
                 continue
@@ -273,26 +274,35 @@ def main():
             # pauli conditions
             conditions = []
             for i in range(len(pauli_str)):
-                if pauli_str[i] in ["I", "Z"]:
+                P = pauli_str[cnf.n-1-i]
+                if P in ["I", "Z"]:
                     conditions.append(-x[i])
                 else:
                     conditions.append( x[i])
-                if pauli_str[i] in ["I", "X"]:
+                if P in ["I", "X"]:
                     conditions.append(-z[i])
                 else:
                     conditions.append( z[i])
 
             # condition weight
             w = cnf.add_var()
-            cnf.add_weight(w, alpha)
+            cnf.add_weight(w, alpha, comment=pauli_str)
             cnf.add_weight(-w, 1)
             weights.append(w)
+            sum_weights += alpha**2
 
-            # w iff pauli_str
-            cnf.add_clause([-w]+conditions)
+            # w => pauli_str
+            [cnf.add_clause([-w, c]) for c in conditions]
 
-        # [at least] one of the weights (more than one is a contradiction of the conditions)
+        # [at least] one of the weights (more than one will lead to a contradiction of the conditions)
         cnf.add_clause(weights)
+        if sum_weights != 1:
+            # WARNNING: not normalized
+            w = cnf.add_var()
+            cnf.add_weight(w, str(Decimal(1/sum_weights).sqrt()), comment="normalize")
+            cnf.add_weight(-w, 1)
+            cnf.add_clause([w])
+          
         return x,z
 
     def Composition2CNF(cnf, composition_dictionary):
