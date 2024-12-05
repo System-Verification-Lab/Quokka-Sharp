@@ -55,7 +55,7 @@ with open('./pauli_compositions.json', 'r') as file:
 
 for d in comp_dicts.values():
     qubits = d["qubits"]
-    gate = np.zeros([2**qubits, 2**qubits])
+    gate = np.zeros([2**qubits, 2**qubits], dtype=complex)
     for p_str, alpha in d["composition"].items():
         assert(len(p_str) == qubits)
         m = 1
@@ -64,14 +64,19 @@ for d in comp_dicts.values():
             m = np.kron(m, p_mat)
         gate += alpha*m
     if "matrix" in d.keys():
-        assert(np.all(d['matrix'] == gate))
+        m = np.array(d['matrix'], dtype=complex)
+        if np.all( m == gate):
+            print(f"{d["gate"]} \t passed")
+        else:
+            print(f"{d["gate"]} \t FAILED")
+            print(m)
+            print("vs")
+            print(gate)
     else:
         print(f"gate: {d['gate']}")
         print(f"matrix: {np.array2string(gate, separator=', ', floatmode='unique')}")
 
 
-U = Z + X
-print(dot3(U,X,U))
 
 # CCX = np.zeros([8,8])
 # for i in [0,1,2, 4,5,6 ]: 

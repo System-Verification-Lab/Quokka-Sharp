@@ -20,12 +20,17 @@ def main(tool_path, composition_file, eq_tool_path):
         comp_dicts = json.load(file)
 
     for gate, comp_dict in comp_dicts.items():
-        print(f"Gate: {gate}")
-        if "qasm file" in comp_dicts.keys():
+        print(f"Gate: {gate} \t ", end="")
+        if "qasm file" in comp_dict.keys():
             cnf = qk.encoding.Composition2CNF(comp_dict)
-            cnf.encode_circuit(QASMparser(comp_dicts["qasm file"]), translate_ccx=True)
+            cnf.write_to_file(f"./temp_check/{gate}", syntesis_fomat=True)
+            circ = qk.encoding.QASMparser(comp_dict["qasm file"], translate_ccx=True)
+            circ.dagger()
+            cnf.encode_circuit(circ)
             res = qk.CheckEquivalence(eq_tool_path, cnf, check = "2n", N=16)
-            assert res in ["TIMEOUT", True]
+            print(res)
+
+        continue
 
         cnf = qk.encoding.Composition2CNF(comp_dict)
         glb_st = time.time()

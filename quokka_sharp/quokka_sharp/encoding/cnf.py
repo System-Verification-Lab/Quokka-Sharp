@@ -181,7 +181,7 @@ class CNF:
         else:
             self.cons_list.append(constr)
 
-    def add_weight(self, var, weight, complex_weight=None):
+    def add_weight(self, var, weight, complex_weight=None, comment=None):
         assert self.weighted
         self.weight_list.write("c p weight ")
         self.weight_list.write(str(var))
@@ -190,7 +190,10 @@ class CNF:
         if (complex_weight != None):
             self.weight_list.write(" ")
             self.weight_list.write(str(complex_weight))
-        self.weight_list.write(" 0\n")
+        self.weight_list.write(" 0")
+        if comment:
+            self.weight_list.write("\t\t// " + comment)
+        self.weight_list.write("\n")
 
     def write_to_file(self, cnf_file, syntesis_fomat = False):
         with open(cnf_file, 'w') as the_file:

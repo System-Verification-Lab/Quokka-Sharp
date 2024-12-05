@@ -1,19 +1,97 @@
 {
+	"I":
+	{
+		"gate": "I",
+		"qasm file": "./basic_tests/id_gate.qasm",
+		"eq": "I",
+		"qubits": 1,
+		"composition": {
+			"I":  1
+		},
+		"matrix":  [[1, 0],
+					[0, 1]]
+	},
+	"X":
+	{
+		"gate": "X",
+		"qasm file": "./basic_tests/x_gate.qasm",
+		"eq": "X",
+		"qubits": 1,
+		"composition": {
+			"X":  1
+		},
+		"matrix":  [[0, 1],
+					[1, 0]]
+	},
+	"Y":
+	{
+		"gate": "Y",
+		"qasm file": "./basic_tests/y_gate.qasm",
+		"eq": "Y",
+		"qubits": 1,
+		"composition": {
+			"Y":  1
+		},
+		"matrix":  [[0, "1j"],
+					["-1j", 0]]
+	},
+	"Z":
+	{
+		"gate": "Z",
+		"qasm file": "./basic_tests/z_gate.qasm",
+		"eq": "Z",
+		"qubits": 1,
+		"composition": {
+			"Z":  1
+		},
+		"matrix":  [[1, 0],
+					[0, -1]]
+	},
+	"H":
+	{
+		"gate": "H",
+		"qasm file": "./basic_tests/h_gate.qasm",
+		"eq": "H",
+		"qubits": 1,
+		"composition": {
+			"X":  1,
+			"Z":  1
+		},
+		"matrix":  [[1, 1],
+					[1, -1]]
+	},
+	"CX":
+	{
+		"gate": "CX",
+		"qasm file": "./basic_tests/cx_gate_0.qasm",
+		"eq": " 0.5 I(I+Z) + 0.5 X(I-Z)",
+		"qubits": 2,
+		"composition": {
+			"II":  0.5,
+			"IZ":  0.5,
+			"XI":  0.5,
+			"XZ": -0.5
+		},
+		"matrix":  [[1, 0, 0, 0],
+					[0, 0, 0, 1],
+					[0, 0, 1, 0],
+					[0, 1, 0, 0]]
+	},
 	"CCX":
 	{
 		"gate": "CCX",
-		"qasm file": "./basic_tests/ccz_gate_0.qasm",
-		"eq": "0.75 III + 0.25 XII - 0.25 XIZ - 0.25 XZI + 0.25 XZZ",
+		"qasm file": "./basic_tests/ccx_gate_0.qasm",
+		"eq": "0.25 I(I+Z)(I+Z) + 0.25 I(I-Z)(I+Z) + 0.25 I(I+Z)(I-Z) + 0.25 X(I-Z)(I-Z)",
 		"qubits": 3,
 		"composition": {
-			"III": 0.75,
-			"IIZ": 0.25,
-			"IZI": 0.25,
+			"III":  0.75,
+			"IIZ":  0.25,
+			"IZI":  0.25,
 			"IZZ": -0.25,
-			"XII": 0.25,
+			"XII":  0.25,
 			"XIZ": -0.25,
 			"XZI": -0.25,
-			"XZZ": 0.25
+			"XZZ":  0.25
 		},
 		"matrix":  [[1, 0, 0, 0, 0, 0, 0, 0],
 					[0, 1, 0, 0, 0, 0, 0, 0],
