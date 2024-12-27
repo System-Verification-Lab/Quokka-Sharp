@@ -135,11 +135,11 @@ class CNF:
         assert(self.vars.n == self.vars_init.n)
         assert not (constrain_2n and constrain_no_Y) # no sense using both
         for i in range(self.vars.n):
-            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]], comment="id")
-            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]], comment="id")
+            self.add_clause([ self.vars.x[i], -self.vars_init.x[i]])
+            self.add_clause([-self.vars.x[i],  self.vars_init.x[i]])
             if not self.computational_basis:
-                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]], comment="id")
-                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]], comment="id")
+                self.add_clause([ self.vars.z[i], -self.vars_init.z[i]])
+                self.add_clause([-self.vars.z[i],  self.vars_init.z[i]])
         if constrain_2n:
             if not self.computational_basis:
                 from .pauli2cnf import pauli2cnf as to_CNF
