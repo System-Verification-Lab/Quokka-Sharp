@@ -5,6 +5,7 @@ import signal
 import sys
 import tempfile
 import time
+import datetime
 from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF
@@ -20,7 +21,7 @@ def get_result(result, expexted_prob):
     # get weight
     weight = re.findall(r"o -?[0-9]+",result)
     if not weight: 
-        return (False, "CONFLICT", [])
+        return (False, "CONFLICT", result)
     weight = Decimal(float(weight[0][2:]))
     # get assignment
     assignment = re.findall(r"v [0-9\s\-]+ 0",result)
@@ -30,11 +31,9 @@ def get_result(result, expexted_prob):
         assert assignment[-1] == "0"
         assignment = assignment[1:-1]
 
-    if abs(weight - expexted_prob) < (expexted_prob+1) * 1e-12:
-        return (True, weight, assignment)
-    else:
-        return (False, weight, assignment)
-
+    prec = Decimal(float(weight/expexted_prob))
+    return (prec > (1-1e-12), prec, assignment)
+    
 def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
@@ -43,16 +42,16 @@ def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), incremental = False, inc_step = 1, onehot_xz = False):
-    DEBUG = False
+def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), bin_search=True, initial_depth=0, onehot_xz = False):
+    DEBUG = True
     if DEBUG: print() 
     p = None
     it_counter = 0
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
+        if DEBUG: print(f"TIMEOUT set to: {TIMEOUT}") 
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
-            ## TODO: We can return best result so far instead?
             if p is not None:
                 p.kill()
             if weight == "CONFLICT":
@@ -75,49 +74,75 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         else:
             expected_prob = 4**cnf.n
         
-        found = False
+        done = False
+        bin_lb = 0
+        bin_ub = None
+        bin_ub_results = None
         weight = 0
         assignment = []
-        if incremental:
-            num_layers = inc_step
-        circuit = Circuit()
-        circuit.n = cnf.n
-        while not found:
+        num_layers = 1
+        cnf_copy = copy.deepcopy(cnf)
+        if initial_depth:
+            cnf_copy.add_syn_layer(initial_depth)
+        while not done:
+            if DEBUG: print() 
             it_counter+=1
-            if not incremental:
-                cnf.add_syn_layer()
-                file = identity_check(cnf, cnf_file_root, it_counter, onehot_xz = onehot_xz)
-            else:
+            if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
+            start = time.time()
+            if DEBUG: print(f"iteration: {it_counter}")
+            if bin_search:
                 cnf_copy = copy.deepcopy(cnf)
-                cnf_copy.add_syn_layer(num_layers)
+                cnf_copy.add_syn_layer(initial_depth+num_layers)
                 file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
+            else:
+                cnf_copy.add_syn_layer()
+                file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
+            if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
             command = tool_invocation.split(' ') + [file]
-            if DEBUG: print(" ".join(command))
+            # if DEBUG: print(" ".join(command))
             p = Popen(command, stdout= PIPE, stderr=PIPE)
             pid = None
             while pid == p.pid:
                 pid, _ = os.wait()
             res = p.communicate()
-            last_weight = weight
             found, weight, assignment = get_result(res[0], expected_prob)
-            if incremental:
-                if weight - last_weight > 0: # TODO Might want to put here a margin error 
-                    print(f"({num_layers})", end = "")
-                    num_layers = inc_step  
-                    circuit_inc = cnf_copy.get_syn_circuit(assignment, translate_ccx=True)
-                    circuit.append(circuit_inc)
-                    cnf.encode_circuit(circuit_inc)
+            # if DEBUG: print(found, weight, assignment)
+            # if DEBUG: print(cnf_copy.get_syn_qasm(assignment))
+            if weight == "CONFLICT":
+                return "CONFLICT", 0, assignment
+
+            if bin_search:
+                if found:
+                    bin_ub = num_layers
+                    bin_ub_results = (weight, cnf_copy.get_syn_qasm(assignment))
+                else: 
+                    bin_lb = num_layers
+                
+                if DEBUG: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
+
+                if bin_lb + 1 == bin_ub:
+                    if found == False:
+                        weight, qasm = bin_ub_results
+                    else:
+                        qasm = cnf_copy.get_syn_qasm(assignment)
+                    done = True
+
+                if bin_ub:
+                    num_layers = int((bin_lb + bin_ub) / 2)
                 else:
-                    num_layers += 1
-                    weight = last_weight
-            if DEBUG: print(found, weight, assignment)
-            if DEBUG: print(cnf.get_syn_qasm(assignment))
+                    num_layers = int(bin_lb*2)
+            else:
+                if found:
+                    qasm = cnf_copy.get_syn_qasm(assignment)
+                    done = True
+            if DEBUG: print(f"Run Time: {time.time()-start}")
 
         if DEBUG: print()
-        if not incremental:
-            return cnf.get_syn_qasm(assignment)
-        else:
-            return circuit.to_qasm()
+        if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
+        return "FOUND", weight, qasm
 
     except TimeoutException as error:
-        return str(error)
+        if DEBUG: print(f"TIMEOUT expiered")
+        if bin_ub_results:
+            return str(error), weight, cnf_copy.get_syn_qasm(assignment)
+        return str(error), weight, cnf_copy.get_syn_qasm(assignment)
