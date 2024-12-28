@@ -494,11 +494,15 @@ class pauli2cnf:
  
     def Composition(cnf, composition_dictionary):
         x, z = zip(*[(cnf.add_var(), cnf.add_var()) for _ in range(cnf.n)])
+        comp = cnf.add_var()
         weights = []
         sum_weights = 0
         for pauli_str, alpha in composition_dictionary["composition"].items():
-            if alpha == 0:
+            a = complex(alpha)
+            if a == 0:
                 continue
+            a_r = a.real
+            a_i = a.imag
 
             # pauli conditions
             conditions = []
@@ -514,14 +518,21 @@ class pauli2cnf:
                     conditions.append( z[i])
 
             # condition weight
-            w = cnf.add_var()
-            cnf.add_weight(w, alpha, comment=pauli_str)
-            cnf.add_weight(-w, 1)
-            weights.append(w)
+            wr = cnf.add_var()
+            wi = cnf.add_var()
+            cnf.add_weight(wr, a_r, comment=pauli_str)
+            cnf.add_weight(-wr, 1)
+            weights.append(wr)
+            cnf.add_weight(wi, a_i, comment=pauli_str)
+            cnf.add_weight(-wi, 1)
+            weights.append(wi)
             sum_weights += alpha**2
 
             # w => pauli_str
-            [cnf.add_clause([-w, c]) for c in conditions]
+            [cnf.add_clause([-wr, c]) for c in conditions]
+            [cnf.add_clause([-wi, c]) for c in conditions]
+            cnf.add_clause([-wi, comp])
+            cnf.add_clause([-wr, comp])
 
         # [at least] one of the weights (more than one will lead to a contradiction of the conditions)
         cnf.add_clause(weights)
@@ -532,19 +543,22 @@ class pauli2cnf:
             cnf.add_weight(-w, 1)
             cnf.add_clause([w])
           
-        return x,z
+        return x,z,comp
+    
 
     def Composition2CNF(cnf, composition_dictionary):
         assert composition_dictionary["qubits"] == cnf.n
-        lx, lz = pauli2cnf.Composition(cnf, composition_dictionary)
-        rx, rz = pauli2cnf.Composition(cnf, composition_dictionary)
+        lx, lz, lc = pauli2cnf.Composition(cnf, composition_dictionary)
+        rx, rz, rc = pauli2cnf.Composition(cnf, composition_dictionary)
         x = cnf.vars.x
         z = cnf.vars.z
+        Xs = [cnf.add_var() for _ in range(cnf.n)]
+        Zs = [cnf.add_var() for _ in range(cnf.n)]
 
         # applying the conditions
         for k in range(cnf.n):
-            X = cnf.add_var()
-            Z = cnf.add_var()
+            X = Xs[k]
+            Z = Zs[k]
     
             # Equivalent(X, lx[k] ^ rx[k] ^ x[k])
             cnf.add_clause([ X,  lx[k],  rx[k], -x[k]])
@@ -623,6 +637,13 @@ class pauli2cnf:
             cnf.add_clause([ lz[k], -rx[k], -rz[k],  x[k], -z[k]])
             cnf.add_clause([-lx[k], -lz[k],  rx[k], -rz[k],  z[k]])
             cnf.add_clause([-lx[k], -lz[k], -rx[k],  rz[k],  x[k]])
+        # Equivalent(lc, rc)
+        cnf.add_clause([ lc, -rc])
+        cnf.add_clause([-lc,  rc])
+
+        cnf.vars.x = Xs
+        cnf.vars.z = Zs
+    
 
 
 

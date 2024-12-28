@@ -20,7 +20,7 @@ def get_result(result, expexted_prob):
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
     prob = (abs(real)**2 + abs(imag)**2).sqrt()
-    if abs(prob - expexted_prob) < (expexted_prob+1) * Decimal(1e-12):
+    if abs(prob - expexted_prob) < (expexted_prob * Decimal(1e-12)):
         return True
     else:
         return False
@@ -29,7 +29,7 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.rightProjectZXi(Z_or_X, i)
     cnf_temp.leftProjectZXi(Z_or_X, i)
-    
+
     cnf_file = cnf_file_root + "/quokka_eq_check_"+ ("Z" if Z_or_X else "X") + str(i) + ".cnf"
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
