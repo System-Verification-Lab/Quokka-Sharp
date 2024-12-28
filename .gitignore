@@ -24,3 +24,5 @@ experiment/syn_cnf_files/
 experiment/basic_tests_syn_solutions/
 experiment/benchmark/random/rand_small_circs/origin/
 experiment/benchmark/random/rand_small_circs/origin_syn_solutions/
+experiment/temp_check/
+experiment/_syn_composition_solutions/

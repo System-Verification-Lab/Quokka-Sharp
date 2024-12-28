@@ -3,9 +3,7 @@ import time
 import quokka_sharp as qk
 import traceback
 import sys
-import os.path as path
 import os
-import pandas as pd
 import json
 
 from eq_run import main as eq_check
@@ -23,24 +21,22 @@ def main(tool_path, composition_file, eq_tool_path):
         print(f"Gate: {gate} \t ", end="")
         if "qasm file" in comp_dict.keys():
             cnf = qk.encoding.Composition2CNF(comp_dict)
-            cnf.write_to_file(f"./temp_check/{gate}", syntesis_fomat=True)
+            tmp_file = f"./temp_check/{gate}"
+            cnf.write_to_file(tmp_file, syntesis_fomat=True)
             circ = qk.encoding.QASMparser(comp_dict["qasm file"], translate_ccx=True)
             circ.dagger()
             cnf.encode_circuit(circ)
             res = qk.CheckEquivalence(eq_tool_path, cnf, check = "2n", N=16)
-            print(res)
+            print(res, end="")
 
-        continue
 
         cnf = qk.encoding.Composition2CNF(comp_dict)
         glb_st = time.time()
-        res = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, incremental=False, inc_step=1, onehot_xz=True)
+        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=True, onehot_xz=True)
         glb_et = time.time()
 
         if res == "TIMEOUT":
-            print("T", end="")
-        elif res == "CONFLICT":
-            print("C", end="")
+            print("\tT")
         else:
             # print(".", end="")
 
@@ -48,30 +44,22 @@ def main(tool_path, composition_file, eq_tool_path):
             if not os.path.exists(sol_folder):
                 os.mkdir(sol_folder)
             sol_file = sol_folder + gate
-            with open(sol_file, "w") as file:
-                file.write(res)
 
-            if "qasm file" in comp_dicts.keys():
-                eq_check(eq_tool_path, qasmfile1=comp_dicts["qasm file"], qasmfile2=sol_file, expected_res="True", bases = ["paul"], check_types = ["2n"])
+            if res == "CONFLICT":
+                with open(sol_file, "wb") as file:
+                    file.write(sol)
+                print(f"\tC \t {sol_file}")
+            elif res[:5] == "ERROR":
+                with open(sol_file, "wb") as file:
+                    file.write(sol)
+                print(f"\t{res} \t {sol_file}")
             else:
+                with open(sol_file, "w") as file:
+                    file.write(sol)
                 cnf = qk.encoding.Composition2CNF(comp_dict)
-                cnf.encode_circuit(QASMparser(sol_file), translate_ccx=True)
+                cnf.encode_circuit(qk.encoding.QASMparser(sol_file, translate_ccx=True))
                 res = qk.CheckEquivalence(eq_tool_path, cnf, check = "2n", N=16)
-                assert res in ["TIMEOUT", True]
-
-    # # pandas dataframe for results
-    # data.append({'file': qasmfile, 
-    #             'global time': glb_et - glb_st,
-    #             'result': res
-    #             })
-
-    # # convert data to pandas dataframe and add to file
-    # df = pd.DataFrame(data)
-    # pandas_file_name = 'syn_results.csv'
-    # if path.exists(pandas_file_name):
-    #     df0 = pd.read_csv(pandas_file_name)
-    #     df = pd.concat([df0, df], ignore_index=True)
-    # df.to_csv(pandas_file_name, index=False)
+                print(f"\t {res}")
 
 
 if __name__ == '__main__':
