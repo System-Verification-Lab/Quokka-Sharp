@@ -265,11 +265,15 @@ def main():
  
     def Composition(cnf, composition_dictionary):
         x, z = zip(*[(cnf.add_var(), cnf.add_var()) for _ in range(cnf.n)])
+        comp = cnf.add_var()
         weights = []
         sum_weights = 0
         for pauli_str, alpha in composition_dictionary["composition"].items():
-            if alpha == 0:
+            a = complex(alpha)
+            if a == 0:
                 continue
+            a_r = a.real
+            a_i = a.imag
 
             # pauli conditions
             conditions = []
@@ -285,14 +289,21 @@ def main():
                     conditions.append( z[i])
 
             # condition weight
-            w = cnf.add_var()
-            cnf.add_weight(w, alpha, comment=pauli_str)
-            cnf.add_weight(-w, 1)
-            weights.append(w)
+            wr = cnf.add_var()
+            wi = cnf.add_var()
+            cnf.add_weight(wr, a_r, comment=pauli_str)
+            cnf.add_weight(-wr, 1)
+            weights.append(wr)
+            cnf.add_weight(wi, a_i, comment=pauli_str)
+            cnf.add_weight(-wi, 1)
+            weights.append(wi)
             sum_weights += alpha**2
 
             # w => pauli_str
-            [cnf.add_clause([-w, c]) for c in conditions]
+            [cnf.add_clause([-wr, c]) for c in conditions]
+            [cnf.add_clause([-wi, c]) for c in conditions]
+            cnf.add_clause([-wi, comp])
+            cnf.add_clause([-wr, comp])
 
         # [at least] one of the weights (more than one will lead to a contradiction of the conditions)
         cnf.add_clause(weights)
@@ -303,19 +314,23 @@ def main():
             cnf.add_weight(-w, 1)
             cnf.add_clause([w])
           
-        return x,z
+        return x,z,comp
+    ''')
 
+    print(f'''
     def Composition2CNF(cnf, composition_dictionary):
         assert composition_dictionary["qubits"] == cnf.n
-        lx, lz = pauli2cnf.Composition(cnf, composition_dictionary)
-        rx, rz = pauli2cnf.Composition(cnf, composition_dictionary)
+        lx, lz, lc = pauli2cnf.Composition(cnf, composition_dictionary)
+        rx, rz, rc = pauli2cnf.Composition(cnf, composition_dictionary)
         x = cnf.vars.x
         z = cnf.vars.z
+        Xs = [cnf.add_var() for _ in range(cnf.n)]
+        Zs = [cnf.add_var() for _ in range(cnf.n)]
 
         # applying the conditions
         for k in range(cnf.n):
-            X = cnf.add_var()
-            Z = cnf.add_var()
+            X = Xs[k]
+            Z = Zs[k]
     ''')
     lx = symbols('lx[k]')
     lz = symbols('lz[k]')
@@ -328,7 +343,7 @@ def main():
     add_sign(And(Or((  lx & ~x[k] &  rx),
                     ( ~lx &  x[k] & ~rx),
                     (  lz & ~z[k] &  rz),
-                    ( ~lz &  z[k]& ~rz)),
+                    ( ~lz &  z[k] & ~rz)),
                  Or(lx, lz),
                  Or(x[k], z[k])), prefix="    ")
     
@@ -338,6 +353,16 @@ def main():
                  Equivalent(rz,z[k])),
              And(Equivalent(lx,rx),
                  Equivalent(lz,rz))), prefix="    ")
+    
+    rc = symbols('rc')
+    lc = symbols('lc')
+    to_py(Equivalent(rc, lc), prefix="")
+
+    print(f'''
+        cnf.vars.x = Xs
+        cnf.vars.z = Zs
+    ''')
+
     print()
     print()
 

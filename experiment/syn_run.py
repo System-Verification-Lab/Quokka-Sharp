@@ -30,15 +30,18 @@ def main(tool_path, qasmfile, eq_tool_path):
         if not os.path.exists(sol_folder):
             os.mkdir(sol_folder)
         sol_file = sol_folder + qasmfile.split('/')[-1]
-        with open(sol_file, "w") as file:
-            file.write(sol)
 
         if res == "CONFLICT":
+            with open(sol_file, "wb") as file:
+                file.write(sol)
             print("C", end="")
             print()
             print(sol_file)
             print()
             continue
+
+        with open(sol_file, "w") as file:
+            file.write(sol)
 
         sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
         org_depth = qk.encoding.QASMparser(qasmfile, True).depth()

@@ -173,8 +173,8 @@ class CNF:
         for i in range(len(cons)):
             constr += str(cons[i]) + " "
         constr = constr + "0"
-        if comment:
-            constr = constr + "\t\t// " +comment
+        # if comment:  disabled since it causes problems with cnf solvers
+        #     constr = constr + "\t\t// " +comment
         constr = constr + "\n"
         if prepend:
             self.cons_list.insert(0, constr)
@@ -191,8 +191,8 @@ class CNF:
             self.weight_list.write(" ")
             self.weight_list.write(str(complex_weight))
         self.weight_list.write(" 0")
-        if comment:
-            self.weight_list.write("\t\t// " + comment)
+        # if comment: disabled since it causes problems with cnf solvers
+        #     self.weight_list.write("\t\t// " + comment)
         self.weight_list.write("\n")
 
     def write_to_file(self, cnf_file, syntesis_fomat = False):

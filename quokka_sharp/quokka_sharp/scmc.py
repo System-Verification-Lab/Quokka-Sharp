@@ -17,14 +17,14 @@ getcontext().prec = 32
 
 def get_result(result, expexted_prob):
     ''' return (found, weight, assignment)'''
-    result = str(result)
+    result_str = str(result)
     # get weight
-    weight = re.findall(r"o -?[0-9]+",result)
+    weight = re.findall(r"o -?[0-9]+",result_str)
     if not weight: 
         return (False, "CONFLICT", result)
     weight = Decimal(float(weight[0][2:]))
     # get assignment
-    assignment = re.findall(r"v [0-9\s\-]+ 0",result)
+    assignment = re.findall(r"v [0-9\s\-]+ 0",result_str)
     if assignment:
         assignment = assignment[0].split(" ")
         assert assignment[0] == "v"
@@ -52,10 +52,10 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         if DEBUG: print(f"TIMEOUT set to: {TIMEOUT}") 
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
+            if DEBUG: print(f"TIMEOUT expiered")
+            print(f"Run Time: {time.time()-start}")
             if p is not None:
                 p.kill()
-            if weight == "CONFLICT":
-                raise TimeoutException("CONFLICT")
             else:
                 print(it_counter, end="")
                 raise TimeoutException("TIMEOUT")
@@ -89,7 +89,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             it_counter+=1
             if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
-            if DEBUG: print(f"iteration: {it_counter}")
+            if DEBUG: print(f"Iteration: {it_counter}")
             if bin_search:
                 cnf_copy = copy.deepcopy(cnf)
                 cnf_copy.add_syn_layer(initial_depth+num_layers)
@@ -102,14 +102,21 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             # if DEBUG: print(" ".join(command))
             p = Popen(command, stdout= PIPE, stderr=PIPE)
             pid = None
+            err = 0
             while pid == p.pid:
-                pid, _ = os.wait()
-            res = p.communicate()
-            found, weight, assignment = get_result(res[0], expected_prob)
+                pid, err = os.wait()
+            res, cerr = p.communicate()
+            if err:
+                return f"ERROR{err}", 0, res
+            if cerr:
+                return f"ERROR{cerr}", 0, res
+            found, weight, assignment = get_result(res, expected_prob)
             # if DEBUG: print(found, weight, assignment)
-            # if DEBUG: print(cnf_copy.get_syn_qasm(assignment))
             if weight == "CONFLICT":
+                print(err, cerr)
                 return "CONFLICT", 0, assignment
+            
+            # if DEBUG: print(cnf_copy.get_syn_qasm(assignment))
 
             if bin_search:
                 if found:
@@ -142,7 +149,9 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         return "FOUND", weight, qasm
 
     except TimeoutException as error:
-        if DEBUG: print(f"TIMEOUT expiered")
         if bin_ub_results:
+            return str(error), bin_ub_results[0], cnf_copy.get_syn_qasm(bin_ub_results[0])
+        elif weight == "CONFLICT":
+            return str(error), weight, assignment
+        else:
             return str(error), weight, cnf_copy.get_syn_qasm(assignment)
-        return str(error), weight, cnf_copy.get_syn_qasm(assignment)
