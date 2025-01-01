@@ -4,8 +4,8 @@
 filename="basic_tests/empty.qasm"
 # Write the content to the file
 echo "OPENQASM 2.0;
-    include \"qelib1.inc\";
-    qreg q[1];" > "$filename"
+include \"qelib1.inc\";
+qreg q[1];" > "$filename"
 
 
 # Define the list of single qbit gates
@@ -18,9 +18,9 @@ for g in "${gates[@]}"; do
     
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[1];
-        ${g} q[0] ;" > "$filename"
+include \"qelib1.inc\";
+qreg q[1];
+${g} q[0] ;" > "$filename"
 done
 
 # Define the list of rotation gates
@@ -33,9 +33,9 @@ for g in "${gates[@]}"; do
     
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[1];
-        ${g}(0.2*pi) q[0] ;" > "$filename"
+include \"qelib1.inc\";
+qreg q[1];
+${g}(0.2*pi) q[0] ;" > "$filename"
 done
 
 
@@ -49,18 +49,18 @@ for g in "${gates[@]}"; do
     
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[2];
-        ${g} q[0] q[1] ;" > "$filename"
+include \"qelib1.inc\";
+qreg q[2];
+${g} q[0] q[1] ;" > "$filename"
 
     # Create the file name dynamically based on the gate name
     filename="basic_tests/${g}_gate_1.qasm"
 
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[2];
-        ${g} q[1] q[0] ;" > "$filename"
+include \"qelib1.inc\";
+qreg q[2];
+${g} q[1] q[0] ;" > "$filename"
 done
 
 
@@ -74,25 +74,25 @@ for g in "${gates[@]}"; do
     
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[3];
-        ${g} q[0] q[1] q[2];" > "$filename"
+include \"qelib1.inc\";
+qreg q[3];
+${g} q[0] q[1] q[2];" > "$filename"
 
     # Create the file name dynamically based on the gate name
     filename="basic_tests/${g}_gate_1.qasm"
 
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[3];
-        ${g} q[1] q[2] q[0] ;" > "$filename"
+include \"qelib1.inc\";
+qreg q[3];
+${g} q[1] q[2] q[0] ;" > "$filename"
 
     # Create the file name dynamically based on the gate name
     filename="basic_tests/${g}_gate_2.qasm"
 
     # Write the content to the file
     echo "OPENQASM 2.0;
-        include \"qelib1.inc\";
-        qreg q[3];
-        ${g} q[2] q[0] q[1] ;" > "$filename"
+include \"qelib1.inc\";
+qreg q[3];
+${g} q[2] q[0] q[1] ;" > "$filename"
 done
