@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tool_path="../../d4v2/build/d4 -m max#sat --maxsharpsat-option-and-dig false --float 1 -i"
+tool_path="../../d4v2/build/d4 -m max#sat --maxsharpsat-option-and-dig false --float 1"
 eq_tool_path="../../GPMC/bin/gpmc -mode=1"
 path=$PWD/benchmark
 
@@ -14,12 +14,14 @@ dirs=(
 
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
-    # echo
-    # echo "syn_run: i=$i"
-    echo -n "/"
+    echo
+    echo "syn_run: i=$i"
+    # echo -n "/"
     python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" >&1;
 done
 echo -e "\n"
+
+exit 
 
 for i in "${dirs[@]}"; do
     echo -e -n "\n$i:\t"
