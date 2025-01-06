@@ -11,6 +11,11 @@ from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
 getcontext().prec = 32
 
+# define Python user-defined exceptions
+class InvalidProcessNumException(Exception):
+    "Raised when the process number is invalid"
+    pass
+
 # TODO: information for arguments in functions
 
 def get_result(result, expexted_prob):
@@ -65,15 +70,21 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         proclist = []
 
         if check == "id":
+            if N > 1:
+                raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
             if cnf.computational_basis:
                 expected_prob = Decimal(2**cnf.n)
             else:
                 expected_prob = Decimal(4**cnf.n)
         elif check == "id_2n":
+            if N > 1:
+                raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
             expected_prob = Decimal(2*cnf.n)
         elif check == "id_noY":
+            if N > 1:
+                raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
             expected_prob = Decimal(3**cnf.n)
         elif check == "2n":
