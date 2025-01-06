@@ -18,13 +18,13 @@ def main(tool_path, qasmfile, eq_tool_path):
     helper_folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0] + "/"
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
-    data = []
-    for onehot in [False, True]:
+    for onehot in [True]:
         cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
         glb_st = time.time()
-        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=True, initial_depth=0, onehot_xz = onehot)
+        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=True, initial_depth=9, onehot_xz = onehot)
         glb_et = time.time()
 
+        print(f"  ***\t Time: {glb_et-glb_st:.2f} \t", end="")
 
         sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
         if not os.path.exists(sol_folder):
@@ -32,12 +32,9 @@ def main(tool_path, qasmfile, eq_tool_path):
         sol_file = sol_folder + qasmfile.split('/')[-1]
 
         if res == "CONFLICT":
-            with open(sol_file, "wb") as file:
-                file.write(sol)
-            print("C", end="")
-            print()
-            print(sol_file)
-            print()
+            # with open(sol_file, "wb") as file:
+            #     file.write(sol)
+            print(f"C", end="")
             continue
 
         with open(sol_file, "w") as file:
@@ -45,29 +42,18 @@ def main(tool_path, qasmfile, eq_tool_path):
 
         sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
         org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
-        if res == "FOUND":
-            print(f"F{org_depth-sol_depth}({weight:.2f})", end="")
-            eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["paul"], check_types = ["2n"], to_csv=False)
-        elif res == "TIMEOUT":
-            print(f"T{org_depth-sol_depth}({weight:.2f})", end="")
-        else:
-            print(f"ERROR - unrecognised result", end="")
+        # if res == "FOUND":
+        #     print(f"FOUND \t weight: {weight:.2f} ", end="")
+        #     eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["paul"], check_types = ["2n"], to_csv=False)
+        # elif res == "TIMEOUT":
+        #     print(f"TIMEOUT \t best weight: {weight:.2f}", end="")
+        # elif res == "CONFLICT":
+        #     print(f"CONFLICT \t best weight: {weight:.2f}", end="")
+        # else:
+        #     print(f"ERROR - unrecognised result", end="")
 
-            
-
-    # # pandas dataframe for results
-    # data.append({'file': qasmfile, 
-    #             'global time': glb_et - glb_st,
-    #             'result': res
-    #             })
-
-    # # convert data to pandas dataframe and add to file
-    # df = pd.DataFrame(data)
-    # pandas_file_name = 'syn_results.csv'
-    # if path.exists(pandas_file_name):
-    #     df0 = pd.read_csv(pandas_file_name)
-    #     df = pd.concat([df0, df], ignore_index=True)
-    # df.to_csv(pandas_file_name, index=False)
+    print(f"\t {res} \t best weight: {weight:.2f} \t solution: {sol_file}", end="")
+    print()
 
 
 
