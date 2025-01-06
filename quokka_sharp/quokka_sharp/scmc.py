@@ -15,16 +15,22 @@ getcontext().prec = 32
 
 # TODO: information for arguments in functions
 
-def get_result(result, expexted_prob):
+def get_result(result_file, expexted_prob):
     ''' return (found, weight, assignment)'''
-    result_str = str(result)
+
+    with open(result_file, 'r') as file:
+        result_str = file.read()
+
     # get weight
-    weight = re.findall(r"o -?[0-9]+",result_str)
-    if not weight: 
-        return (False, "CONFLICT", result)
-    weight = Decimal(float(weight[0][2:]))
+    if re.findall(r"r SATISFIABLE",result_str):
+        weight = re.findall(r"s ?[0-9\.]+",result_str)
+    else:
+        weight = re.findall(r"o -?[0-9]+",result_str) + re.findall(r"k -?[0-9]+",result_str)
+        if not weight: 
+            return (False, "CONFLICT", [])
     # get assignment
     assignment = re.findall(r"v [0-9\s\-]+ 0",result_str)
+    weight = Decimal(float(weight[0][2:]))
     if assignment:
         assignment = assignment[0].split(" ")
         assert assignment[0] == "v"
@@ -53,12 +59,12 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
             if DEBUG: print(f"TIMEOUT expiered")
-            print(f"Run Time: {time.time()-start}")
+            if DEBUG: print(f"Run Time: {time.time()-start}")
             if p is not None:
                 p.kill()
             else:
-                print(it_counter, end="")
-                raise TimeoutException("TIMEOUT")
+                if DEBUG: print(it_counter, end="")
+            raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
         sys.exit(1)
@@ -98,9 +104,15 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 cnf_copy.add_syn_layer()
                 file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
             if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
-            command = tool_invocation.split(' ') + [file]
-            # if DEBUG: print(" ".join(command))
-            p = Popen(command, stdout= PIPE, stderr=PIPE)
+            command = tool_invocation.split(' ') + ["--maxsharpsat-threshold", str(expected_prob), "-i", file]
+            if DEBUG: print(" ".join(command))
+            out_file = cnf_file_root+f"d4_i{it_counter}.out"
+            err_file = cnf_file_root+f"d4_i{it_counter}.err"
+            if DEBUG: print(f"Out file: {out_file}")
+            if DEBUG: print(f"Err file: {err_file}")
+            with open(out_file, 'w') as out:
+                with open(err_file, 'w') as err:
+                    p = Popen(command, stdout=out, stderr=err)
             pid = None
             err = 0
             while pid == p.pid:
@@ -110,10 +122,10 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 return f"ERROR{err}", 0, res
             if cerr:
                 return f"ERROR{cerr}", 0, res
-            found, weight, assignment = get_result(res, expected_prob)
-            # if DEBUG: print(found, weight, assignment)
+            found, weight, assignment = get_result(out_file, expected_prob)
+            if DEBUG: print(f"found:{found}, weight:{weight}")
             if weight == "CONFLICT":
-                print(err, cerr)
+                if DEBUG: print(err, cerr)
                 return "CONFLICT", 0, assignment
             
             # if DEBUG: print(cnf_copy.get_syn_qasm(assignment))
@@ -149,9 +161,14 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         return "FOUND", weight, qasm
 
     except TimeoutException as error:
+        t_found, t_weight, t_assignment = get_result(out_file, expected_prob)
+        if t_found:
+            return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment)
         if bin_ub_results:
-            return str(error), bin_ub_results[0], cnf_copy.get_syn_qasm(bin_ub_results[0])
+            return str(error), bin_ub_results[0], bin_ub_results[1]
         elif weight == "CONFLICT":
             return str(error), weight, assignment
         else:
-            return str(error), weight, cnf_copy.get_syn_qasm(assignment)
+            if t_weight > weight:
+                return str(error), t_weight, cnf_copy.get_syn_qasm(t_assignment)
+            return str(error), weight, qasm

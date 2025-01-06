@@ -375,6 +375,7 @@ def main():
     hg    = symbols('hg')
     sg    = symbols('sg')
     tg    = symbols('tg')
+    td    = symbols('td')
 
     Xk = symbols('X[k]')
     Zk = symbols('Z[k]')
@@ -397,11 +398,13 @@ def main():
     S_u = sg >> Equivalent(Uk, False)
 
     T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
-    T_x = tg >> Equivalent(Xk, x[k])
-    T_z = tg >> Equivalent(Zk, z[k]) | x[k]
-    T_u = tg >> Equivalent(Uk, x[k])
+    Tdg_r = td >> Equivalent(Rk, x[k] & ~z[k] & Zk)
+    T_x = (tg | td) >> Equivalent(Xk, x[k])
+    T_z = (tg | td) >> Equivalent(Zk, z[k]) | x[k]
+    T_u = (tg | td) >> Equivalent(Uk, x[k])
 
-    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, T_r, T_x, T_z, T_u]
+    # single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, T_r, T_x, T_z, T_u]
+    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, Tdg_r, T_r, T_x, T_z, T_u]
     
 
     # dynamic two bit gate:
@@ -454,7 +457,8 @@ def main():
     print("        for k in range(n):")
     print("            idg = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])")
     print("            hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])")
-    print("            sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])")
+    # print("            sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])")
+    print("            td = cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k])")
     print("            tg = cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k])")
     for p in single_qb_gate_properties:
         to_py(	       p, prefix="    ")
@@ -462,8 +466,9 @@ def main():
     print("            for t in range(c+1, n):")
     print("                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t])")
     for p in double_qb_gate_properties:
-        to_py(	           p, prefix="        ")
-    print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]")
+        to_py(	           p, prefix="        ")    
+    # print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]")
+    print("            gate_controlers = [idg, hg, td, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]")
     print("            pauli2cnf.AMO(cnf, gate_controlers)")
     print()
     print("        cnf.vars.x[:n] = X")
