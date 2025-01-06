@@ -4,6 +4,10 @@ I = np.matrix([[1, 0], [0, 1]])
 X = np.matrix([[0, 1], [1, 0]])
 Z = np.matrix([[1, 0], [0, -1]])
 Y = np.matrix([[0, 1j], [-1j, 0]])
+H = np.matrix([[1, 1], [1, -1]]) /np.sqrt(2)
+S = np.matrix([[1, 0], [0, np.exp(1j*np.pi/2)]])
+T = np.matrix([[1, 0], [0, np.exp(1j*np.pi/4)]])
+
 
 P_char_to_mat = {
     "I": I,
