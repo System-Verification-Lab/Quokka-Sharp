@@ -46,20 +46,21 @@ tool_invocation = "/Users/GPMC/bin/gpmc -mode=1"
 '''
 Simulation
 '''
-# Parse the circuit
-circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-# Set the input state to be all zero state.
-cnf.leftProjectAllZero()
+qasmfile1 = "test.qasm"
+# Parse the circuit where the encoding will decompose ccx gate into clifford+t.
+circuit1 = qk.encoding.QASMparser(qasmfile1, translate_ccx = True)
 # Encode the circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-# Choose firstzero or allzero
+# Set the input state to be all-zero state |0...0>.
+cnf.leftProjectAllZero()
+# Choose firstzero or allzero measurement 
 cnf.add_measurement("firstzero")
 # Export to benchmarks
 cnf.write_to_file("circ.cnf")
-prob = qk.Simulate(tool_invocation, "circ.cnf")
-prob = abs(prob) # since the tool returns a complex number
-## if `computational_basis = True` add
-# prob = prob*prob
+prob = qk.Simulate(tool_invocation, cnf)
+prob = abs(prob)    # since the tool returns a complex number
+                    # if`computational_basis = True` add
+                    # prob = prob*prob
 print(prob)
 
 '''
@@ -69,14 +70,14 @@ Equivalence checking
 circuit1 = qk.encoding.QASMparser(qasmfile1, True)
 # Parse another circuit
 circuit2 = qk.encoding.QASMparser(qasmfile2, True)
-# Get (circuit1)^dagger(circuit2)
+# Get (circuit1)(circuit2)^dagger
 circuit2.dagger()
 circuit1.append(circuit2)
-# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
+# Get CNF for the merged circuit (for computational base instaed of pauli, use `computational_basis = True`)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Users can change the path for the cnf files by setting a different parameter to cnf_file_root, otherwise it would be in the tempfile.
-# Users can set a different number N of paralleling processes. The default value is 16.
-res = qk.CheckEquivalence(tool_path, cnf, check = "id", cnf_file_root = tempfile.gettempdir(), N=16)
+# Users can set a different number N of paralleling processes when the check mode is "2n". The default value would be 16. For other modes, the "N" should be 1.
+res = qk.CheckEquivalence(tool_path, cnf, check = "2n", cnf_file_root = tempfile.gettempdir(), N=16)
 ```
 
 - extention of the encodings
