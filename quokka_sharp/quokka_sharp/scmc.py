@@ -44,7 +44,7 @@ def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
     
-    cnf_file = cnf_file_root + f"quokka_syn.cnf" # _{onehot_xz}_{indx}.cnf" # overide files to reduce spaming
+    cnf_file = cnf_file_root + f"quokka_syn_{onehot_xz}_{indx}.cnf" # overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
@@ -86,6 +86,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         bin_ub_results = None
         weight = 0
         assignment = []
+        qasm = ""
         num_layers = 1
         cnf_copy = copy.deepcopy(cnf)
         if initial_depth:
@@ -104,10 +105,12 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 cnf_copy.add_syn_layer()
                 file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
             if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
+            if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancilas}")
             command = tool_invocation.split(' ') + ["--maxsharpsat-threshold", str(expected_prob), "-i", file]
             if DEBUG: print(" ".join(command))
             out_file = cnf_file_root+f"d4_i{it_counter}.out"
             err_file = cnf_file_root+f"d4_i{it_counter}.err"
+            res_file = cnf_file_root+f"d4_i{it_counter}.res"
             if DEBUG: print(f"Out file: {out_file}")
             if DEBUG: print(f"Err file: {err_file}")
             with open(out_file, 'w') as out:
@@ -126,14 +129,17 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if DEBUG: print(f"found:{found}, weight:{weight}")
             if weight == "CONFLICT":
                 if DEBUG: print(err, cerr)
-                return "CONFLICT", 0, assignment
+                return "CONFLICT", 0, ""
             
-            # if DEBUG: print(cnf_copy.get_syn_qasm(assignment))
+            qasm = cnf_copy.get_syn_qasm(assignment)
+            with open(res_file, "w") as f:
+                f.write(qasm)
+                if DEBUG: print(f"Res file: {res_file}")
 
             if bin_search:
                 if found:
                     bin_ub = num_layers
-                    bin_ub_results = (weight, cnf_copy.get_syn_qasm(assignment))
+                    bin_ub_results = (weight, qasm)
                 else: 
                     bin_lb = num_layers
                 
@@ -142,8 +148,6 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 if bin_lb + 1 == bin_ub:
                     if found == False:
                         weight, qasm = bin_ub_results
-                    else:
-                        qasm = cnf_copy.get_syn_qasm(assignment)
                     done = True
 
                 if bin_ub:
@@ -152,7 +156,6 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                     num_layers = int(bin_lb*2)
             else:
                 if found:
-                    qasm = cnf_copy.get_syn_qasm(assignment)
                     done = True
             if DEBUG: print(f"Run Time: {time.time()-start}")
 
@@ -167,8 +170,8 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         if bin_ub_results:
             return str(error), bin_ub_results[0], bin_ub_results[1]
         elif weight == "CONFLICT":
-            return str(error), weight, assignment
+            return str(error), weight, qasm
         else:
-            if t_weight > weight:
+            if t_weight!="CONFLICT" and t_weight > weight:
                 return str(error), t_weight, cnf_copy.get_syn_qasm(t_assignment)
             return str(error), weight, qasm

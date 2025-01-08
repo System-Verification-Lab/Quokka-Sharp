@@ -28,15 +28,18 @@ def main(tool_path, composition_file, eq_tool_path):
             cnf.encode_circuit(circ)
             res = qk.CheckEquivalence(eq_tool_path, cnf, check = "2n", N=16)
             print(res, end="")
+        else:
+            print("N/A", end="")
 
 
         cnf = qk.encoding.Composition2CNF(comp_dict)
         glb_st = time.time()
         res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, onehot_xz=True)
         glb_et = time.time()
+        print(f"\tRuntime: {glb_et-glb_st:.2f}", end="")
 
         if res == "TIMEOUT":
-            print("\tT")
+            print("\tTIMEOUT")
         else:
             # print(".", end="")
 
@@ -46,20 +49,24 @@ def main(tool_path, composition_file, eq_tool_path):
             sol_file = sol_folder + gate
 
             if res == "CONFLICT":
-                with open(sol_file, "wb") as file:
+                with open(sol_file, "w") as file:
                     file.write(sol)
-                print(f"\tC \t {sol_file}")
+                print(f"\tCONFLICT \t {sol_file}")
             elif res[:5] == "ERROR":
-                with open(sol_file, "wb") as file:
+                with open(sol_file, "w") as file:
                     file.write(sol)
                 print(f"\t{res} \t {sol_file}")
             else:
                 with open(sol_file, "w") as file:
                     file.write(sol)
                 cnf = qk.encoding.Composition2CNF(comp_dict)
-                cnf.encode_circuit(qk.encoding.QASMparser(sol_file, translate_ccx=True))
+                circuit = qk.encoding.QASMparser(sol_file, translate_ccx=True)
+                cnf.encode_circuit(circuit)
                 res = qk.CheckEquivalence(eq_tool_path, cnf, check = "2n", N=16)
-                print(f"\t {res}")
+                print(f"\t {res} \t Depth:{circuit.depth()} \t Solution: {sol_file}")
+
+    print()
+    print()
 
 
 if __name__ == '__main__':
