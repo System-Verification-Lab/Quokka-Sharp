@@ -18,30 +18,26 @@ def main(tool_path, qasmfile, eq_tool_path):
     helper_folder = "./syn_cnf_files/" + qasmfile.split('/')[-1].split('.')[0] + "/"
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
-    for onehot in [True]:
-        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
+    for onehot in [False]:
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancilas=0)
         glb_st = time.time()
-        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=True, initial_depth=9, onehot_xz = onehot)
+        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0, onehot_xz = onehot)
         glb_et = time.time()
 
-        print(f"  ***\t Time: {glb_et-glb_st:.2f} \t", end="")
+        print(f"\n *** *** ***\t Time: {glb_et-glb_st:.2f} \t Result: {res} \t best weight: {weight:.2f} \t", end="")
 
         sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
         if not os.path.exists(sol_folder):
             os.mkdir(sol_folder)
         sol_file = sol_folder + qasmfile.split('/')[-1]
 
-        if res == "CONFLICT":
-            # with open(sol_file, "wb") as file:
-            #     file.write(sol)
-            print(f"C", end="")
-            continue
-
         with open(sol_file, "w") as file:
             file.write(sol)
 
-        sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
-        org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
+        if weight:
+            sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
+            org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
+            print(f"Depth: {qk.encoding.QASMparser(sol_file, True).depth()} (org:{circuit.depth()})", end="")
         # if res == "FOUND":
         #     print(f"FOUND \t weight: {weight:.2f} ", end="")
         #     eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["paul"], check_types = ["2n"], to_csv=False)
@@ -52,7 +48,7 @@ def main(tool_path, qasmfile, eq_tool_path):
         # else:
         #     print(f"ERROR - unrecognised result", end="")
 
-    print(f"\t {res} \t best weight: {weight:.2f} \t solution: {sol_file}", end="")
+    print(f"\t solution: {sol_file}", end="")
     print()
 
 

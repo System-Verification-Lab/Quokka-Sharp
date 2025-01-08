@@ -77,7 +77,7 @@ class Circuit:
     def to_qasm(self):
         s = "OPENQASM 2.0;\n"
         s += "include \"qelib1.inc\";\n"
-        s += f"qreg q[{self.n}];\n"
+        s += f"qreg q[{self.n + self.ancilas}];\n"
         for gate in self.circ:
             if gate[0] == "id":
                 continue

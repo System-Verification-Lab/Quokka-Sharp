@@ -15,7 +15,7 @@ dirs=(
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
     echo
-    echo "syn_run: i=$i"
+    echo "syn_run on file: $i"
     # echo -n "/"
     python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" >&1;
 done
