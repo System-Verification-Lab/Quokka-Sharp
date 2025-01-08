@@ -7,6 +7,20 @@ Y = np.matrix([[0, 1j], [-1j, 0]])
 H = np.matrix([[1, 1], [1, -1]]) /np.sqrt(2)
 S = np.matrix([[1, 0], [0, np.exp(1j*np.pi/2)]])
 T = np.matrix([[1, 0], [0, np.exp(1j*np.pi/4)]])
+Tdg = np.matrix([[1, 0], [0, np.exp(-1j*np.pi/4)]])
+
+CCX = np.zeros([8,8])
+for i in [0,1,2,3,4,5 ]: 
+    CCX[i,i] =1
+CCX[6,7] =1
+CCX[7,6] =1
+
+
+def dot2(A, B):
+    return np.tensordot(A,B, axes=1)
+def dot3(A, B, C):
+    return np.tensordot(np.tensordot(A,B, axes=1), C, axes=1)
+
 
 
 P_char_to_mat = {
@@ -15,11 +29,6 @@ P_char_to_mat = {
     "Y": Y,
     "Z": Z,
 }
-
-def dot2(A, B):
-    return np.tensordot(A,B, axes=1)
-def dot3(A, B, C):
-    return np.tensordot(np.tensordot(A,B, axes=1), C, axes=1)
 
 P=[X,Y,Z]
 for i in range(3):

@@ -7,7 +7,7 @@ from .qasm_parser import Circuit
 class Variables:
     def __init__(self, cnf: 'CNF', computational_basis=False):
         self.cnf = cnf
-        self.n = cnf.n
+        self.n = cnf.n + cnf.ancilas
         self.var = 0
         self.computational_basis = computational_basis
         self.x = []
@@ -80,9 +80,10 @@ class Variables:
 
 
 class CNF:
-    def __init__(self, n, computational_basis=False, weighted = True):
+    def __init__(self, n, ancilas=0, computational_basis=False, weighted = True):
         self.clause = 0
         self.n = n
+        self.ancilas = ancilas
         self.circuit = None
         self.locked = False
         self.cons_list = []
@@ -94,6 +95,7 @@ class CNF:
         self.computational_basis = computational_basis
         self.square_result = False
         self.syn_gate_layer = 0
+        self.syn_gate_picking_vars_by_layer_and_gate = {}
         self.syn_gate_picking_vars = {}
     
     def copy(self):
@@ -165,12 +167,27 @@ class CNF:
         var = self.vars.add_var()
         if syn_gate_pick:
             self.syn_gate_picking_vars[var] = {"Name": Name, "bits": bits, "layer": self.syn_gate_layer}
+            if Name not in self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer]:
+                self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer][Name] = {}
+            if len(bits) == 1:
+                self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer][Name][bits[0]] = var
+            else:
+                if bits[0] not in self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer][Name]:
+                    self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer][Name][bits[0]] = {}
+                self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer][Name][bits[0]][bits[1]] = var
         return var
+    
+    def get_syn_var_last_layer(self, Name ="UnNamed", bit = None):
+        if self.syn_gate_layer == 1:
+            return None
+        return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-1][Name][bit]
+
 
     def add_clause(self, cons, prepend=False, comment=None):
         self.clause += 1
         constr = ''
         for i in range(len(cons)):
+            assert type(cons[i]) is int
             constr += str(cons[i]) + " "
         constr = constr + "0"
         # if comment:  disabled since it causes problems with cnf solvers
@@ -288,6 +305,7 @@ class CNF:
         
         for _ in range(n):
             self.syn_gate_layer += 1
+            self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer] = {}
             to_CNF.SynLayer2CNF(self)
 
     # convert an assignment for the syn variable to a coresponding Circuit object
@@ -311,7 +329,7 @@ class CNF:
     def get_syn_qasm(self, assignment) -> str:
         s = "OPENQASM 2.0;\n"
         s += "include \"qelib1.inc\";\n"
-        s += f"qreg q[{self.n}];\n"
+        s += f"qreg q[{self.n + + self.ancilas}];\n"
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
@@ -324,8 +342,8 @@ class CNF:
         return s
 
 # construct a CNF object for a given Circuit, in the pauly or computational basis
-def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True) -> CNF:
-    cnf = CNF(circuit.n, computational_basis = computational_basis, weighted = weighted)
+def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancilas = 0) -> CNF:
+    cnf = CNF(circuit.n, ancilas = ancilas, computational_basis = computational_basis, weighted = weighted)
     cnf.encode_circuit(circuit)
     return cnf
 

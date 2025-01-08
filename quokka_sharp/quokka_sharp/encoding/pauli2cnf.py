@@ -657,7 +657,7 @@ class pauli2cnf:
 
 
     def SynLayer2CNF(cnf):
-        n = cnf.n
+        n = cnf.n + cnf.ancilas
         x = cnf.vars.x
         z = cnf.vars.z
         X = [cnf.add_var() for _ in range(n)]
@@ -668,22 +668,23 @@ class pauli2cnf:
         [cnf.add_weight(-R[k], 1) for k in range(n)]
         [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
         [cnf.add_weight(-U[k], 1) for k in range(n)]
-        czg = [[None for _ in range(n)] for _ in range(n)]
+        cg = [[None for _ in range(n)] for _ in range(n)]
+        idg = [None for _ in range(n)]
         for k in range(n):
-            idg = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])
+            idg[k] = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])
             hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])
             td = cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k])
             tg = cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k])
-            # Implies(idg, ~R[k])
-            cnf.add_clause([-R[k], -idg])
-            # Implies(idg, Equivalent(X[k], x[k]))
-            cnf.add_clause([ X[k], -idg, -x[k]])
-            cnf.add_clause([-X[k], -idg,  x[k]])
-            # Implies(idg, Equivalent(Z[k], z[k]))
-            cnf.add_clause([ Z[k], -idg, -z[k]])
-            cnf.add_clause([-Z[k], -idg,  z[k]])
-            # Implies(idg, ~U[k])
-            cnf.add_clause([-U[k], -idg])
+            # Implies(idg[k], ~R[k])
+            cnf.add_clause([-R[k], -idg[k]])
+            # Implies(idg[k], Equivalent(X[k], x[k]))
+            cnf.add_clause([ X[k], -idg[k], -x[k]])
+            cnf.add_clause([-X[k], -idg[k],  x[k]])
+            # Implies(idg[k], Equivalent(Z[k], z[k]))
+            cnf.add_clause([ Z[k], -idg[k], -z[k]])
+            cnf.add_clause([-Z[k], -idg[k],  z[k]])
+            # Implies(idg[k], ~U[k])
+            cnf.add_clause([-U[k], -idg[k]])
             # Implies(hg, Equivalent(R[k], x[k] & z[k]))
             cnf.add_clause([-R[k], -hg,  x[k]])
             cnf.add_clause([-R[k], -hg,  z[k]])
@@ -722,39 +723,58 @@ class pauli2cnf:
             cnf.add_clause([-U[k], -td,  x[k]])
             cnf.add_clause([-U[k], -tg,  x[k]])
             c = k
-            for t in range(c+1, n):
-                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t])
-                # Implies(czg[c][t], Equivalent(X[c], x[c]))
-                cnf.add_clause([ X[c], -czg[c][t], -x[c]])
-                cnf.add_clause([-X[c], -czg[c][t],  x[c]])
-                # Implies(czg[c][t], Equivalent(X[t], x[t]))
-                cnf.add_clause([ X[t], -czg[c][t], -x[t]])
-                cnf.add_clause([-X[t], -czg[c][t],  x[t]])
-                # Implies(czg[c][t], Equivalent(Z[c], x[t] ^ z[c]))
-                cnf.add_clause([ Z[c], -czg[c][t],  x[t], -z[c]])
-                cnf.add_clause([ Z[c], -czg[c][t], -x[t],  z[c]])
-                cnf.add_clause([-Z[c], -czg[c][t],  x[t],  z[c]])
-                cnf.add_clause([-Z[c], -czg[c][t], -x[t], -z[c]])
-                # Implies(czg[c][t], Equivalent(Z[t], x[c] ^ z[t]))
-                cnf.add_clause([ Z[t], -czg[c][t],  x[c], -z[t]])
-                cnf.add_clause([ Z[t], -czg[c][t], -x[c],  z[t]])
-                cnf.add_clause([-Z[t], -czg[c][t],  x[c],  z[t]])
-                cnf.add_clause([-Z[t], -czg[c][t], -x[c], -z[t]])
-                # Implies(czg[c][t], Equivalent(R[c], x[c] & x[t] & (z[c] ^ z[t])))
-                cnf.add_clause([-R[c], -czg[c][t],  x[c]])
-                cnf.add_clause([-R[c], -czg[c][t],  x[t]])
-                cnf.add_clause([-R[c], -czg[c][t],  z[c],  z[t]])
-                cnf.add_clause([-R[c], -czg[c][t], -z[c], -z[t]])
-                cnf.add_clause([ R[c], -czg[c][t], -x[c], -x[t],  z[c], -z[t]])
-                cnf.add_clause([ R[c], -czg[c][t], -x[c], -x[t], -z[c],  z[t]])
-                # Implies(czg[c][t], ~R[t])
-                cnf.add_clause([-R[t], -czg[c][t]])
-                # Implies(czg[c][t], ~U[c])
-                cnf.add_clause([-U[c], -czg[c][t]])
-                # Implies(czg[c][t], ~U[t])
-                cnf.add_clause([-U[t], -czg[c][t]])
-            gate_controlers = [idg, hg, td, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]
+            for t in range(n):
+                if t!=c:
+                    cg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t])
+                    # Implies(cg[c][t], Equivalent(X[c], x[c]))
+                    cnf.add_clause([ X[c], -cg[c][t], -x[c]])
+                    cnf.add_clause([-X[c], -cg[c][t],  x[c]])
+                    # Implies(cg[c][t], Equivalent(X[t], x[c] ^ x[t]))
+                    cnf.add_clause([ X[t], -cg[c][t],  x[c], -x[t]])
+                    cnf.add_clause([ X[t], -cg[c][t], -x[c],  x[t]])
+                    cnf.add_clause([-X[t], -cg[c][t],  x[c],  x[t]])
+                    cnf.add_clause([-X[t], -cg[c][t], -x[c], -x[t]])
+                    # Implies(cg[c][t], Equivalent(Z[c], z[c] ^ z[t]))
+                    cnf.add_clause([ Z[c], -cg[c][t],  z[c], -z[t]])
+                    cnf.add_clause([ Z[c], -cg[c][t], -z[c],  z[t]])
+                    cnf.add_clause([-Z[c], -cg[c][t],  z[c],  z[t]])
+                    cnf.add_clause([-Z[c], -cg[c][t], -z[c], -z[t]])
+                    # Implies(cg[c][t], Equivalent(Z[t], z[t]))
+                    cnf.add_clause([ Z[t], -cg[c][t], -z[t]])
+                    cnf.add_clause([-Z[t], -cg[c][t],  z[t]])
+                    # Implies(cg[c][t], Equivalent(R[c], x[c] & z[t] & (z[c] ^ ~x[t])))
+                    cnf.add_clause([-R[c], -cg[c][t],  x[c]])
+                    cnf.add_clause([-R[c], -cg[c][t],  z[t]])
+                    cnf.add_clause([-R[c], -cg[c][t],  x[t], -z[c]])
+                    cnf.add_clause([-R[c], -cg[c][t], -x[t],  z[c]])
+                    cnf.add_clause([ R[c], -cg[c][t], -x[c],  x[t],  z[c], -z[t]])
+                    cnf.add_clause([ R[c], -cg[c][t], -x[c], -x[t], -z[c], -z[t]])
+                    # Implies(cg[c][t], ~R[t])
+                    cnf.add_clause([-R[t], -cg[c][t]])
+                    # Implies(cg[c][t], ~U[c])
+                    cnf.add_clause([-U[c], -cg[c][t]])
+                    # Implies(cg[c][t], ~U[t])
+                    cnf.add_clause([-U[t], -cg[c][t]])
+        for k in range(n):
+            gate_controlers = [idg[k], hg, td, tg]+[cg[i][k] for i in range(n) if i!=k]+[cg[k][i] for i in range(n) if i!=k]
             pauli2cnf.AMO(cnf, gate_controlers)
+
+            l_idg = cnf.get_syn_var_last_layer(Name ='id', bit = k)
+            l_hg = cnf.get_syn_var_last_layer(Name ='h', bit = k)
+            l_tg = cnf.get_syn_var_last_layer(Name ='t', bit = k)
+            l_td = cnf.get_syn_var_last_layer(Name ='tdg', bit = k)
+
+            if cnf.syn_gate_layer>1:
+                assert None not in [l_idg, idg[k], l_hg, l_tg, l_td]
+                cgs = [cg[k][i] for i in range(n) if i!=k]
+                assert None not in cgs
+                cnf.add_clause(cgs + [idg[k], -l_idg])
+                # Implies(l_hg, ~hg)
+                cnf.add_clause([-hg, -l_hg])
+                # Implies(l_tg, ~td)
+                cnf.add_clause([-l_tg, -td])
+                # Implies(l_td, ~tg)
+                cnf.add_clause([-l_td, -tg])
 
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z

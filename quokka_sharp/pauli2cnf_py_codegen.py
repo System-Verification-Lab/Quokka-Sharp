@@ -371,9 +371,9 @@ def main():
 
     # dynamic single bit gate:
 
-    idg   = symbols('idg')
+    idg   = symbols('idg[k]')
     hg    = symbols('hg')
-    sg    = symbols('sg')
+    # sg    = symbols('sg')
     tg    = symbols('tg')
     td    = symbols('td')
 
@@ -392,10 +392,10 @@ def main():
     H_z = hg >> Equivalent(Zk, x[k])
     H_u = hg >> Equivalent(Uk, False)
 
-    S_r = sg >> Equivalent(Rk, x[k] & z[k])
-    S_x = sg >> Equivalent(Xk, x[k])
-    S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
-    S_u = sg >> Equivalent(Uk, False)
+    # S_r = sg >> Equivalent(Rk, x[k] & z[k])
+    # S_x = sg >> Equivalent(Xk, x[k])
+    # S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
+    # S_u = sg >> Equivalent(Uk, False)
 
     T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
     Tdg_r = td >> Equivalent(Rk, x[k] & ~z[k] & Zk)
@@ -409,7 +409,7 @@ def main():
 
     # dynamic two bit gate:
 
-    czg_ct    = symbols('czg[c][t]')
+    cg_ct    = symbols('cg[c][t]')
     Xc = symbols('X[c]')
     Xt = symbols('X[t]')
     Zc = symbols('Z[c]')
@@ -419,17 +419,39 @@ def main():
     Uc = symbols('U[c]')
     Ut = symbols('U[t]')
 
-    CZ_xc = czg_ct >> Equivalent(Xc, x[c])
-    CZ_xt = czg_ct >> Equivalent(Xt, x[t])
-    CZ_zc = czg_ct >> Equivalent(Zc, z[c] ^ x[t])
-    CZ_zt = czg_ct >> Equivalent(Zt, z[t] ^ x[c])
-    CZ_rc = czg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
-    CZ_rt = czg_ct >> Equivalent(Rt, False)
-    CZ_uc = czg_ct >> Equivalent(Uc, False)
-    CZ_ut = czg_ct >> Equivalent(Ut, False)
+    CX_xc = cg_ct >> Equivalent(Xc, x[c])
+    CX_xt = cg_ct >> Equivalent(Xt, x[t] ^ x[c])
+    CX_zc = cg_ct >> Equivalent(Zc, z[t] ^ z[c])
+    CX_zt = cg_ct >> Equivalent(Zt, z[t])
+    CX_rc = cg_ct >> Equivalent(Rc, x[c] & z[t] & (~x[t] ^ z[c]))
+    CX_rt = cg_ct >> Equivalent(Rt, False)
+    CX_uc = cg_ct >> Equivalent(Uc, False)
+    CX_ut = cg_ct >> Equivalent(Ut, False)
 
-    double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
+    double_qb_gate_properties = [CX_xc, CX_xt, CX_zc, CX_zt, CX_rc, CX_rt, CX_uc, CX_ut]
 
+    # CZ_xc = cg_ct >> Equivalent(Xc, x[c])
+    # CZ_xt = cg_ct >> Equivalent(Xt, x[t])
+    # CZ_zc = cg_ct >> Equivalent(Zc, z[c] ^ x[t])
+    # CZ_zt = cg_ct >> Equivalent(Zt, z[t] ^ x[c])
+    # CZ_rc = cg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
+    # CZ_rt = cg_ct >> Equivalent(Rt, False)
+    # CZ_uc = cg_ct >> Equivalent(Uc, False)
+    # CZ_ut = cg_ct >> Equivalent(Ut, False)
+
+    # double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
+
+
+    l_idg   = symbols('l_idg')
+    l_hg    = symbols('l_hg')
+    l_tg    = symbols('l_tg')
+    l_td    = symbols('l_td')
+    l_cg    = symbols('l_cg')
+
+    E_hg = l_hg >> ~hg
+    E_tg = l_tg >> ~td
+    E_td = l_td >> ~tg
+    efficiency_properties = [E_hg, E_tg, E_td]
     
     print('''
     def AMO(cnf, var_list):
@@ -442,7 +464,7 @@ def main():
     print()
     print()
     print("    def SynLayer2CNF(cnf):")
-    print("        n = cnf.n")
+    print("        n = cnf.n + cnf.ancilas")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print("        X = [cnf.add_var() for _ in range(n)]")
@@ -453,9 +475,10 @@ def main():
     print("        [cnf.add_weight(-R[k], 1) for k in range(n)]")
     print("        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]")
     print("        [cnf.add_weight(-U[k], 1) for k in range(n)]")
-    print("        czg = [[None for _ in range(n)] for _ in range(n)]")
+    print("        cg = [[None for _ in range(n)] for _ in range(n)]")
+    print("        idg = [None for _ in range(n)]")
     print("        for k in range(n):")
-    print("            idg = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])")
+    print("            idg[k] = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])")
     print("            hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])")
     # print("            sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])")
     print("            td = cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k])")
@@ -463,13 +486,28 @@ def main():
     for p in single_qb_gate_properties:
         to_py(	       p, prefix="    ")
     print("            c = k")
-    print("            for t in range(c+1, n):")
-    print("                czg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t])")
+    print("            for t in range(n):")
+    print("                if t!=c:")
+    print("                    cg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t])")
     for p in double_qb_gate_properties:
-        to_py(	           p, prefix="        ")    
-    # print("            gate_controlers = [idg, hg, sg, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]")
-    print("            gate_controlers = [idg, hg, td, tg]+[czg[i][k] for i in range(k)]+[czg[k][i] for i in range(k+1,n)]")
+        to_py(	           p, prefix="            ")    
+    print("        for k in range(n):")
+    # print("            gate_controlers = [idg, hg, sg, tg]+[cg[i][k] for i in range(k)]+[cg[k][i] for i in range(k+1,n)]")
+    print("            gate_controlers = [idg[k], hg, td, tg]+[cg[i][k] for i in range(n) if i!=k]+[cg[k][i] for i in range(n) if i!=k]")
     print("            pauli2cnf.AMO(cnf, gate_controlers)")
+    print()
+    print("            l_idg = cnf.get_syn_var_last_layer(Name ='id', bit = k)")
+    print("            l_hg = cnf.get_syn_var_last_layer(Name ='h', bit = k)")
+    print("            l_tg = cnf.get_syn_var_last_layer(Name ='t', bit = k)")
+    print("            l_td = cnf.get_syn_var_last_layer(Name ='tdg', bit = k)")
+    print()
+    print("            if cnf.syn_gate_layer>1:")
+    print("                assert None not in [l_idg, idg[k], l_hg, l_tg, l_td]")
+    print("                cgs = [cg[k][i] for i in range(n) if i!=k]")
+    print("                assert None not in cgs")
+    print("                cnf.add_clause(cgs + [idg[k], -l_idg])")
+    for p in efficiency_properties:
+        to_py(	           p, prefix="        ")    
     print()
     print("        cnf.vars.x[:n] = X")
     print("        cnf.vars.z[:n] = Z")
