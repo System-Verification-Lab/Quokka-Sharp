@@ -60,6 +60,74 @@
 		"matrix":  [[1, 1],
 					[1, -1]]
 	},
+	"CX0":
+	{
+		"gate": "CX0",
+		"qasm file": "./basic_tests/cx_gate_0.qasm",
+		"eq": " 0.5 I(I+Z) + 0.5 X(I-Z)",
+		"qubits": 2,
+		"composition": {
+			"II":  0.5,
+			"IZ":  0.5,
+			"XI":  0.5,
+			"XZ": -0.5
+		},
+		"matrix":  [[1, 0, 0, 0],
+					[0, 0, 0, 1],
+					[0, 0, 1, 0],
+					[0, 1, 0, 0]]
+	},
+	"CX1":
+	{
+		"gate": "CX1",
+		"qasm file": "./basic_tests/cx_gate_1.qasm",
+		"eq": " 0.5 (I+Z)I + 0.5 (I-Z)X",
+		"qubits": 2,
+		"composition": {
+			"II":  0.5,
+			"ZI":  0.5,
+			"IX":  0.5,
+			"ZX": -0.5
+		},
+		"matrix":  [[1, 0, 0, 0],
+					[0, 1, 0, 0],
+					[0, 0, 0, 1],
+					[0, 0, 1, 0]]
+	},
+	"CZ0":
+	{
+		"gate": "CZ0",
+		"qasm file": "./basic_tests/cz_gate_0.qasm",
+		"eq": " 0.5 I(I+Z) + 0.5 Z(I-Z)",
+		"qubits": 2,
+		"composition": {
+			"II":  0.5,
+			"IZ":  0.5,
+			"ZI":  0.5,
+			"ZZ": -0.5
+		},
+		"matrix":  [[1, 0, 0, 0],
+					[0, 1, 0, 0],
+					[0, 0, 1, 0],
+					[0, 0, 0, -1]]
+	},
+	"CZ1":
+	{
+		"gate": "CZ1",
+		"qasm file": "./basic_tests/cz_gate_1.qasm",
+		"eq": " 0.5 (I+Z)I + 0.5 (I-Z)Z",
+		"qubits": 2,
+		"composition": {
+			"II":  0.5,
+			"ZI":  0.5,
+			"IZ":  0.5,
+			"ZZ": -0.5
+		},
+		"matrix":  [[1, 0, 0, 0],
+					[0, 1, 0, 0],
+					[0, 0, 1, 0],
+					[0, 0, 0, -1]]
+	},
 	"CH":
 	{
 		"gate": "CH",
