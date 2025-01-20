@@ -6,31 +6,34 @@ import sys
 import os
 import json
 
-from eq_run import main as eq_check
-
 def main(tool_path, composition_file, eq_tool_path):
-    helper_folder = "./syn_cnf_files/" # + composition_file.split('/')[-1].split('.')[0] + "/"
-    if not os.path.exists(helper_folder):
-        os.mkdir(helper_folder)
     
     print(composition_file)
     with open(composition_file, 'r') as file:
         comp_dicts = json.load(file)
 
     for gate, comp_dict in comp_dicts.items():
-        print(f"Gate: {gate} \t ", end="")
+        print(f"\n\nGate: {gate} \t ", end="")
+        helper_folder = "./syn_cnf_files/" + gate + "/"
+        if not os.path.exists(helper_folder):
+            os.mkdir(helper_folder)
         if "qasm file" in comp_dict.keys():
-            cnf = qk.encoding.Composition2CNF(comp_dict)
+            cnf = qk.encoding.Composition2CNF(comp_dict, ancillas=0)
             tmp_file = f"./temp_check/{gate}"
             cnf.write_to_file(tmp_file, syntesis_fomat=True)
             circ = qk.encoding.QASMparser(comp_dict["qasm file"], translate_ccx=True)
+            tmp_file_ref = f"./temp_check/{gate}_ref"
+            cnf_ref = qk.encoding.QASM2CNF(circ, False, True, 0)
+            print(cnf_ref.vars)
+            cnf_ref.write_to_file(tmp_file_ref, syntesis_fomat=True)
             circ.dagger()
             cnf.encode_circuit(circ)
-            res = qk.CheckEquivalence(eq_tool_path, cnf, check = "2n", N=16)
+            res = qk.CheckEquivalence(eq_tool_path, cnf, check = "id", N=1, cnf_file_root = helper_folder[:-1])
             print(res, end="")
         else:
             print("N/A", end="")
-
+        
+        continue
 
         cnf = qk.encoding.Composition2CNF(comp_dict)
         glb_st = time.time()

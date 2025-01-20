@@ -30,12 +30,13 @@ def main(tool_path, qasmfile1, qasmfile2,
 
             # Get CNF for the merged circuit
             cnf =  qk.encoding.QASM2CNF(circuit1,
-                        computational_basis = (basis == "comp"))
+                        computational_basis = (basis == "comp"), ancillas=1)
 
             glb_st = time.time()
-            res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=16)
+            res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=(16 if check_type=="2n" else 1))
             glb_et = time.time()
 
+            # print(" eq_check: ", end='')
             if res == "TIMEOUT":
                 # print("T", end="")
                 pass
@@ -54,8 +55,8 @@ def main(tool_path, qasmfile1, qasmfile2,
                             'match ex': 'match' if str(res) == expected_res else 'ERROR',
                             'basis': basis,
                             'technic': check_type,
-                            'file1': qasmfile1.split("/")[-1],
-                            'file2': qasmfile2.split("/")[-1],
+                            'file1': qasmfile1, #.split("/")[-1],
+                            'file2': qasmfile2, #.split("/")[-1],
                             'global time': glb_et - glb_st,
                             'result': res,
                             'expected_res': expected_res
@@ -70,7 +71,8 @@ def main(tool_path, qasmfile1, qasmfile2,
     if to_csv:
         # convert data to pandas dataframe and add to file
         df = pd.DataFrame(data)
-        print(df.to_csv(index=False, header=False, sep='\t'))
+        # print()
+        # print(df.to_csv(index=False, header=False, sep='\t'))
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
