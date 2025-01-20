@@ -78,6 +78,18 @@ class Variables:
             else:
                 self.cnf.add_clause([-z[i]], prepend)
 
+# currently only on Pauli basis
+
+    def projector(self, qubitset, prepend):
+        x = self.x; z = self.z
+        
+        for i in range(self.n):
+            self.cnf.add_clause([-x[i]], prepend)
+        if i in qubitset:
+            pass
+        else:
+            self.cnf.add_clause([-z[i]], prepend)            
+    
 
 class CNF:
     def __init__(self, n, ancilas=0, computational_basis=False, weighted = True):
@@ -130,6 +142,12 @@ class CNF:
             self.finalize()
         self.vars.projectZXi(Z_or_X, i, prepend=True)
 
+    def precondition(self, qubitset):
+        self.vars_init.projector(qubitset, prepend=True)
+    
+    def postcondition(self, qubitset):
+        self.vars.projector(qubitset, prepend=False)
+
     # Add clauses dictating that the initial state matches the finel state
     # constrain_2n = limit the initial states to the 2*n states of single X or single Z (the rest are I)
     # constrain_no_Y = limit the initial state to I, X or Z (no Y, 3**n posible states instead of 4**n)
@@ -161,7 +179,8 @@ class CNF:
         self.vars.measurement(basis, False) 
         if not self.locked:
             self.finalize() 
-            
+    
+    
     def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None):
         assert(not self.locked)
         var = self.vars.add_var()
