@@ -76,17 +76,17 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             if cnf.computational_basis:
                 expected_prob = Decimal(2**cnf.n)
             else:
-                expected_prob = Decimal(4**cnf.n)
+                expected_prob = Decimal(4**cnf.n * 2**cnf.ancillas)
         elif check == "id_2n":
             if N > 1:
                 raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
-            expected_prob = Decimal(2*cnf.n)
+            expected_prob = Decimal(2*cnf.n + cnf.ancillas)
         elif check == "id_noY":
             if N > 1:
                 raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
-            expected_prob = Decimal(3**cnf.n)
+            expected_prob = Decimal(3**cnf.n * 2**cnf.ancillas)
         elif check == "2n":
             if cnf.computational_basis:
                 assert False, "2n check is not supported for computational basis"
@@ -94,6 +94,8 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 for i in range(cnf.n):
                     cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
                     cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
+                for i in range(cnf.ancillas):
+                    cnf_file_list.append(basis(cnf.n + i, True, cnf, cnf_file_root))
                 expected_prob = 1
         else:
             raise ValueError(f"Invalid check type {check}")

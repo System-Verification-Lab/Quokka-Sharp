@@ -19,7 +19,7 @@ def main(tool_path, qasmfile, eq_tool_path):
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
     for onehot in [False]:
-        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancilas=0)
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancillas=1)
         glb_st = time.time()
         res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0, onehot_xz = onehot)
         glb_et = time.time()
@@ -37,10 +37,11 @@ def main(tool_path, qasmfile, eq_tool_path):
         if weight:
             sol_depth = qk.encoding.QASMparser(sol_file, True).depth()
             org_depth = qk.encoding.QASMparser(qasmfile, True).depth()
-            print(f"Depth: {qk.encoding.QASMparser(sol_file, True).depth()} (org:{circuit.depth()})", end="")
-        # if res == "FOUND":
+            print(f"Depth: {qk.encoding.QASMparser(sol_file, True).depth()} (org:{circuit.depth()}) \t", end="")
+        if res == "FOUND":
         #     print(f"FOUND \t weight: {weight:.2f} ", end="")
-        #     eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True", bases = ["paul"], check_types = ["2n"], to_csv=False)
+            eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True",
+             bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"], to_csv=False)
         # elif res == "TIMEOUT":
         #     print(f"TIMEOUT \t best weight: {weight:.2f}", end="")
         # elif res == "CONFLICT":

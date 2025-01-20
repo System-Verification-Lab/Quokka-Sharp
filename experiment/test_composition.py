@@ -9,6 +9,19 @@ S = np.matrix([[1, 0], [0, np.exp(1j*np.pi/2)]])
 T = np.matrix([[1, 0], [0, np.exp(1j*np.pi/4)]])
 Tdg = np.matrix([[1, 0], [0, np.exp(-1j*np.pi/4)]])
 
+
+CX = np.zeros([4,4])
+for i in [0,1]: 
+    CX[i,i] =1
+CX[2,3] =1
+CX[3,2] =1
+
+XC = np.zeros([4,4])
+for i in [0,2]: 
+    XC[i,i] =1
+XC[1,3] =1
+XC[3,1] =1
+
 CCX = np.zeros([8,8])
 for i in [0,1,2,3,4,5 ]: 
     CCX[i,i] =1
@@ -22,13 +35,42 @@ def dot3(A, B, C):
     return np.tensordot(np.tensordot(A,B, axes=1), C, axes=1)
 
 
-
 P_char_to_mat = {
     "I": I,
     "X": X,
     "Y": Y,
     "Z": Z,
 }
+P2_char_to_mat_plus = {A+B: np.kron(a, b) for A,a in P_char_to_mat.items() for B,b in P_char_to_mat.items()}
+P2_char_to_mat_minus = {"-"+A+B: -np.kron(a, b) for A,a in P_char_to_mat.items() for B,b in P_char_to_mat.items()}
+P2_char_to_mat = {**P2_char_to_mat_plus, **P2_char_to_mat_minus}
+
+in_mat = "XX"
+comps = ["II", "IZ", "ZI", "-ZZ"]
+sum = np.zeros([4,4])
+sum_string = ""
+for l in comps:
+    for r in comps:
+        print(f"{l}*{in_mat}*{r} = ", end="")
+        res = dot3(P2_char_to_mat[l], P2_char_to_mat[in_mat], P2_char_to_mat[r])
+        # print(res)
+        res_str = "unknown"
+        for P, p in P2_char_to_mat_plus.items():
+            if np.all(res == p):
+                res_str = P
+            if np.all(res == -p):
+                res_str = "-"+P
+            if np.all(res == 1j * p):
+                res_str = "j"+P
+            if np.all(res == -1j * p):
+                res_str = "-j"+P
+        print(res_str)
+        sum += res
+print(sum)
+print(sum_string)
+        
+                
+
 
 P=[X,Y,Z]
 for i in range(3):
@@ -70,12 +112,13 @@ for d in comp_dicts.values():
     qubits = d["qubits"]
     gate = np.zeros([2**qubits, 2**qubits], dtype=complex)
     for p_str, alpha in d["composition"].items():
+        a = complex(alpha)
         assert(len(p_str) == qubits)
         m = 1
         for p_char in p_str:
             p_mat = P_char_to_mat[p_char]
             m = np.kron(m, p_mat)
-        gate += alpha*m
+        gate += a*m
     if "matrix" in d.keys():
         m = np.array(d['matrix'], dtype=complex)
         if np.all( m == gate):
