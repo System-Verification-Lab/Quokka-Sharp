@@ -16,6 +16,7 @@ class Circuit:
         self.tgate: int = 0
         self.circ = []
         self.has_rotations = False
+        self.ancillas = 0
     
     def depth(self):
         return len(self.circ)
@@ -71,7 +72,8 @@ class Circuit:
 
     def append(self, other: 'Circuit'):
         self.circ.extend( other.circ )
-        self.n = max(self.n, other.n)
+        self.n = min(self.n, other.n)
+        self.ancillas = max(self.n, other.n) - min(self.n, other.n)
         self.tgate = self.tgate + other.tgate
 
     def to_qasm(self):
