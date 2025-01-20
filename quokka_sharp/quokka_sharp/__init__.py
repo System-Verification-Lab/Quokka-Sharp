@@ -7,3 +7,9 @@ from .encoding import CNF
 from .encoding import Variables
 from .encoding import QASMparser
 from .encoding import QASM2CNF
+
+from .extend import ExactEqcheck
+from .extend import Fidelity
+from .extend import ApproxEqcheck
+from .extend import Verify
+from .extend import Ancilla
