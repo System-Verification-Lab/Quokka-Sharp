@@ -85,10 +85,10 @@ class Variables:
         
         for i in range(self.n):
             self.cnf.add_clause([-x[i]], prepend)
-        if i in qubitset:
-            pass
-        else:
-            self.cnf.add_clause([-z[i]], prepend)            
+            if i in qubitset:
+                pass
+            else:
+                self.cnf.add_clause([-z[i]], prepend)            
     
 
 class CNF:
@@ -144,6 +144,8 @@ class CNF:
 
     def precondition(self, qubitset):
         self.vars_init.projector(qubitset, prepend=True)
+        # normalization
+        self.power_two_normalisation = len(qubitset)
     
     def postcondition(self, qubitset):
         self.vars.projector(qubitset, prepend=False)
