@@ -26,3 +26,4 @@ experiment/benchmark/random/rand_small_circs/origin/
 experiment/benchmark/random/rand_small_circs/origin_syn_solutions/
 experiment/temp_check/
 experiment/_syn_composition_solutions/
+experiment/*.out

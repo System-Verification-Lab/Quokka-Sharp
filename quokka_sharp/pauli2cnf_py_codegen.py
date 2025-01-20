@@ -261,11 +261,10 @@ def main():
     print()
   
     # composiotion layer
-    print(f'''
+    print('''
  
     def Composition(cnf, composition_dictionary):
         x, z = zip(*[(cnf.add_var(), cnf.add_var()) for _ in range(cnf.n)])
-        comp = cnf.add_var()
         weights = []
         sum_weights = 0
         for pauli_str, alpha in composition_dictionary["composition"].items():
@@ -278,7 +277,7 @@ def main():
             # pauli conditions
             conditions = []
             for i in range(len(pauli_str)):
-                P = pauli_str[cnf.n-1-i]
+                P = pauli_str[i]
                 if P in ["I", "Z"]:
                     conditions.append(-x[i])
                 else:
@@ -289,44 +288,60 @@ def main():
                     conditions.append( z[i])
 
             # condition weight
+            comp = cnf.add_var()
             wr = cnf.add_var()
             wi = cnf.add_var()
-            cnf.add_weight(wr, a_r, comment=pauli_str)
-            cnf.add_weight(-wr, 1)
-            weights.append(wr)
-            cnf.add_weight(wi, a_i, comment=pauli_str)
-            cnf.add_weight(-wi, 1)
-            weights.append(wi)
-            sum_weights += alpha**2
+          
+            if a_r != 0:
+                cnf.add_weight(wr, a_r, comment=pauli_str)
+                cnf.add_weight(-wr, 1)
+                weights.append(wr)
+                # w => pauli_str
+                [cnf.add_clause([-wr, c]) for c in conditions]
+                cnf.add_clause([-wr, -comp])
+            if a_r == 0:
+                cnf.add_clause([-wr])
+                cnf.add_clause([comp])
+          
+            if a_i != 0:
+                cnf.add_weight(wi, a_i, comment=pauli_str)
+                cnf.add_weight(-wi, 1)
+                weights.append(wi)
+                # w => pauli_str
+                [cnf.add_clause([-wi, c]) for c in conditions]
+                cnf.add_clause([-wi, comp])
+            if a_i == 0:
+                cnf.add_clause([-wi])
+                cnf.add_clause([-comp])
+          
+            sum_weights += abs(a)**2
 
-            # w => pauli_str
-            [cnf.add_clause([-wr, c]) for c in conditions]
-            [cnf.add_clause([-wi, c]) for c in conditions]
-            cnf.add_clause([-wi, comp])
-            cnf.add_clause([-wr, comp])
 
         # [at least] one of the weights (more than one will lead to a contradiction of the conditions)
         cnf.add_clause(weights)
-        if sum_weights != 1:
-            # WARNNING: not normalized
-            w = cnf.add_var()
-            cnf.add_weight(w, str(Decimal(1/sum_weights).sqrt()), comment="normalize")
-            cnf.add_weight(-w, 1)
-            cnf.add_clause([w])
+        # if sum_weights != 1:
+        #     print(f'\\n\\tWARNNING: not normalized, sum of squared weights is {sum_weights}  ', end='')
+        #     w = cnf.add_var()
+        #     cnf.add_weight(w, str(Decimal(1/sum_weights).sqrt()), comment="normalize")
+        #     cnf.add_weight(-w, 1)
+        #     cnf.add_clause([w])
           
         return x,z,comp
     ''')
 
-    print(f'''
+    print('''
     def Composition2CNF(cnf, composition_dictionary):
         assert composition_dictionary["qubits"] == cnf.n
+        if cnf.n > 1:
+          print("\\n Warning! For more than 1 quibit, composition has bugs!")
         lx, lz, lc = pauli2cnf.Composition(cnf, composition_dictionary)
         rx, rz, rc = pauli2cnf.Composition(cnf, composition_dictionary)
         x = cnf.vars.x
         z = cnf.vars.z
         Xs = [cnf.add_var() for _ in range(cnf.n)]
         Zs = [cnf.add_var() for _ in range(cnf.n)]
-
+        print(Xs, Zs)
+          
         # applying the conditions
         for k in range(cnf.n):
             X = Xs[k]
@@ -352,7 +367,7 @@ def main():
              And(Equivalent(rx,x[k]),
                  Equivalent(rz,z[k])),
              And(Equivalent(lx,rx),
-                 Equivalent(lz,rz))), prefix="    ")
+                 Equivalent(lz,rz))    ), prefix="    ")
     
     rc = symbols('rc')
     lc = symbols('lc')
@@ -372,10 +387,10 @@ def main():
     # dynamic single bit gate:
 
     idg   = symbols('idg[k]')
-    hg    = symbols('hg')
-    # sg    = symbols('sg')
-    tg    = symbols('tg')
-    td    = symbols('td')
+    hg    = symbols('hg[k]')
+    # sg    = symbols('sg[k]')
+    tg    = symbols('tg[k]')
+    tdg    = symbols('tdg[k]')
 
     Xk = symbols('X[k]')
     Zk = symbols('Z[k]')
@@ -398,10 +413,10 @@ def main():
     # S_u = sg >> Equivalent(Uk, False)
 
     T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
-    Tdg_r = td >> Equivalent(Rk, x[k] & ~z[k] & Zk)
-    T_x = (tg | td) >> Equivalent(Xk, x[k])
-    T_z = (tg | td) >> Equivalent(Zk, z[k]) | x[k]
-    T_u = (tg | td) >> Equivalent(Uk, x[k])
+    Tdg_r = tdg >> Equivalent(Rk, x[k] & ~z[k] & Zk)
+    T_x = (tg | tdg) >> Equivalent(Xk, x[k])
+    T_z = (tg | tdg) >> Equivalent(Zk, z[k]) | x[k]
+    T_u = (tg | tdg) >> Equivalent(Uk, x[k])
 
     # single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, T_r, T_x, T_z, T_u]
     single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, Tdg_r, T_r, T_x, T_z, T_u]
@@ -441,17 +456,6 @@ def main():
 
     # double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
 
-
-    l_idg   = symbols('l_idg')
-    l_hg    = symbols('l_hg')
-    l_tg    = symbols('l_tg')
-    l_td    = symbols('l_td')
-    l_cg    = symbols('l_cg')
-
-    E_hg = l_hg >> ~hg
-    E_tg = l_tg >> ~td
-    E_td = l_td >> ~tg
-    efficiency_properties = [E_hg, E_tg, E_td]
     
     print('''
     def AMO(cnf, var_list):
@@ -463,55 +467,68 @@ def main():
     ''')
     print()
     print()
-    print("    def SynLayer2CNF(cnf):")
-    print("        n = cnf.n + cnf.ancilas")
-    print("        x = cnf.vars.x")
-    print("        z = cnf.vars.z")
-    print("        X = [cnf.add_var() for _ in range(n)]")
-    print("        Z = [cnf.add_var() for _ in range(n)]")
-    print("        R = [cnf.add_var() for _ in range(n)]")
-    print("        U = [cnf.add_var() for _ in range(n)]")
-    print("        [cnf.add_weight(R[k], -1) for k in range(n)]")
-    print("        [cnf.add_weight(-R[k], 1) for k in range(n)]")
-    print("        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]")
-    print("        [cnf.add_weight(-U[k], 1) for k in range(n)]")
-    print("        cg = [[None for _ in range(n)] for _ in range(n)]")
-    print("        idg = [None for _ in range(n)]")
-    print("        for k in range(n):")
-    print("            idg[k] = cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k])")
-    print("            hg = cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k])")
-    # print("            sg = cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k])")
-    print("            td = cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k])")
-    print("            tg = cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k])")
+    print('''
+    def SynLayer2CNF(cnf):
+        n = cnf.n + cnf.ancillas
+        x = cnf.vars.x
+        z = cnf.vars.z
+        X = [cnf.add_var() for _ in range(n)]
+        Z = [cnf.add_var() for _ in range(n)]
+        R = [cnf.add_var() for _ in range(n)]
+        U = [cnf.add_var() for _ in range(n)]
+        [cnf.add_weight(R[k], -1) for k in range(n)]
+        [cnf.add_weight(-R[k], 1) for k in range(n)]
+        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-U[k], 1) for k in range(n)]
+        idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
+        hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
+        tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
+        tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
+        cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+        for k in range(n):
+    ''')
     for p in single_qb_gate_properties:
-        to_py(	       p, prefix="    ")
-    print("            c = k")
-    print("            for t in range(n):")
-    print("                if t!=c:")
-    print("                    cg[c][t] = cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t])")
+        to_py(	       p, prefix="    ")  
+    print('''
+            c = k
+            for t in range(n):
+                if t==c:
+                    continue
+    ''')
     for p in double_qb_gate_properties:
-        to_py(	           p, prefix="            ")    
-    print("        for k in range(n):")
-    # print("            gate_controlers = [idg, hg, sg, tg]+[cg[i][k] for i in range(k)]+[cg[k][i] for i in range(k+1,n)]")
-    print("            gate_controlers = [idg[k], hg, td, tg]+[cg[i][k] for i in range(n) if i!=k]+[cg[k][i] for i in range(n) if i!=k]")
-    print("            pauli2cnf.AMO(cnf, gate_controlers)")
-    print()
-    print("            l_idg = cnf.get_syn_var_last_layer(Name ='id', bit = k)")
-    print("            l_hg = cnf.get_syn_var_last_layer(Name ='h', bit = k)")
-    print("            l_tg = cnf.get_syn_var_last_layer(Name ='t', bit = k)")
-    print("            l_td = cnf.get_syn_var_last_layer(Name ='tdg', bit = k)")
-    print()
-    print("            if cnf.syn_gate_layer>1:")
-    print("                assert None not in [l_idg, idg[k], l_hg, l_tg, l_td]")
-    print("                cgs = [cg[k][i] for i in range(n) if i!=k]")
-    print("                assert None not in cgs")
-    print("                cnf.add_clause(cgs + [idg[k], -l_idg])")
-    for p in efficiency_properties:
-        to_py(	           p, prefix="        ")    
-    print()
-    print("        cnf.vars.x[:n] = X")
-    print("        cnf.vars.z[:n] = Z")
-    print()
+        to_py(	           p, prefix="        ")   
+    print('''
+          
+            cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
+            gate_controlers = [idg[k], hg[k], tdg[k], tg[k]]+cgs_k
+            pauli2cnf.AMO(cnf, gate_controlers)
+          
+            if cnf.syn_gate_layer<=1:
+                continue
+        
+            # H -> !l_H
+            cnf.add_clause([-hg[k],  -cnf.get_syn_var_last_layer(Name ='h', bit = k)])
+            # T -> !l_Tdg
+            cnf.add_clause([-tg[k],  -cnf.get_syn_var_last_layer(Name ='tdg', bit = k)])
+            # Tdg -> !l_T
+            cnf.add_clause([-tdg[k], -cnf.get_syn_var_last_layer(Name ='t', bit = k)])
+
+            c = k
+            for t in range(n):
+                if c==t:
+                    continue
+                # CX(c,t) -> !past(CX(c,t))
+                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='cx', bit = [c,t])])
+                # CX(c,t) -> !past(I(c)) or !past(I(t))
+                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='id', bit = c), -cnf.get_syn_var_last_layer(Name ='id', bit = t)])
+                # I -> I until CX
+                cnf.add_clause([-cnf.get_syn_var_last_layer(Name ='id', bit = c), idg[c]] + cgs_k)
+          
+        cnf.vars.x[:n] = X
+        cnf.vars.z[:n] = Z
+    
+    
+    ''')
 
 
 
