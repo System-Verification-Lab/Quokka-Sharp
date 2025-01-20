@@ -49,7 +49,7 @@ def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
     return cnf_file
 
 def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), bin_search=True, initial_depth=0, onehot_xz = False):
-    DEBUG = True
+    DEBUG = False
     if DEBUG: print() 
     p = None
     it_counter = 0
@@ -74,11 +74,11 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         signal.alarm(TIMEOUT)
 
         if onehot_xz:
-            expected_prob = 2*cnf.n
+            expected_prob = 2*cnf.n + cnf.ancillas
         elif cnf.computational_basis:
             expected_prob = 2**cnf.n
         else:
-            expected_prob = 4**cnf.n
+            expected_prob = 4**cnf.n * 2**cnf.ancillas
         
         done = False
         bin_lb = 0
@@ -105,7 +105,7 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 cnf_copy.add_syn_layer()
                 file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
             if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
-            if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancilas}")
+            if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             command = tool_invocation.split(' ') + ["--maxsharpsat-threshold", str(expected_prob), "-i", file]
             if DEBUG: print(" ".join(command))
             out_file = cnf_file_root+f"d4_i{it_counter}.out"

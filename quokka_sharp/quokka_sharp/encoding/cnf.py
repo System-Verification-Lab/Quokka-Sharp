@@ -7,16 +7,18 @@ from .qasm_parser import Circuit
 class Variables:
     def __init__(self, cnf: 'CNF', computational_basis=False):
         self.cnf = cnf
-        self.n = cnf.n + cnf.ancilas
+        self.n = cnf.n + cnf.ancillas
         self.var = 0
         self.computational_basis = computational_basis
         self.x = []
         if not self.computational_basis:
             self.z = []
-        for _ in range(self.n):
+        for i in range(self.n):
             self.x.append(self.add_var())
             if not self.computational_basis:
                 self.z.append(self.add_var())
+            if i >= cnf.n: # ancilla init 0
+                cnf.add_clause([-self.x[-1]])
         if not cnf.weighted:
             if computational_basis:
                 self.i = self.add_var()
@@ -92,10 +94,10 @@ class Variables:
     
 
 class CNF:
-    def __init__(self, n, ancilas=0, computational_basis=False, weighted = True):
+    def __init__(self, n, ancillas=0, computational_basis=False, weighted = True):
         self.clause = 0
         self.n = n
-        self.ancilas = ancilas
+        self.ancillas = ancillas
         self.circuit = None
         self.locked = False
         self.cons_list = []
@@ -142,12 +144,6 @@ class CNF:
             self.finalize()
         self.vars.projectZXi(Z_or_X, i, prepend=True)
 
-    def precondition(self, qubitset):
-        self.vars_init.projector(qubitset, prepend=True)
-    
-    def postcondition(self, qubitset):
-        self.vars.projector(qubitset, prepend=False)
-
     # Add clauses dictating that the initial state matches the finel state
     # constrain_2n = limit the initial states to the 2*n states of single X or single Z (the rest are I)
     # constrain_no_Y = limit the initial state to I, X or Z (no Y, 3**n posible states instead of 4**n)
@@ -168,7 +164,7 @@ class CNF:
                 assert False, f"ERROR: identity with constrain_2n for computational_basis not suported"
         if constrain_no_Y:
             if not self.computational_basis:
-                for i in range(self.vars.n):
+                for i in range(self.n):
                     self.add_clause([-self.vars_init.x[i], -self.vars_init.z[i]])
             else: 
                 assert False, f"ERROR: identity with constrain_no_Y for computational_basis not suported"
@@ -179,11 +175,13 @@ class CNF:
         self.vars.measurement(basis, False) 
         if not self.locked:
             self.finalize() 
-    
-    
-    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None):
+            
+    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None, ancilla = False):
         assert(not self.locked)
+        assert( not syn_gate_pick or not ancilla)
         var = self.vars.add_var()
+        if ancilla:
+            self.ancilla_vars.add(var)
         if syn_gate_pick:
             self.syn_gate_picking_vars[var] = {"Name": Name, "bits": bits, "layer": self.syn_gate_layer}
             if Name not in self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer]:
@@ -199,7 +197,10 @@ class CNF:
     def get_syn_var_last_layer(self, Name ="UnNamed", bit = None):
         if self.syn_gate_layer == 1:
             return None
-        return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-1][Name][bit]
+        if type(bit) is int:
+            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-1][Name][bit]
+        if type(bit) is list:
+            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-1][Name][bit[0]][bit[1]]
 
 
     def add_clause(self, cons, prepend=False, comment=None):
@@ -236,7 +237,8 @@ class CNF:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
-                the_file.write("c ind " +' '.join([str(v) for v in range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys()]) + " 0\n")
+                ancilla_vars = set(self.vars.x[self.n:] + self.vars.z[self.n:]) 
+                the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys())]) + " 0\n") # - ancilla_vars 
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))
 
@@ -348,7 +350,7 @@ class CNF:
     def get_syn_qasm(self, assignment) -> str:
         s = "OPENQASM 2.0;\n"
         s += "include \"qelib1.inc\";\n"
-        s += f"qreg q[{self.n + + self.ancilas}];\n"
+        s += f"qreg q[{self.n + + self.ancillas}];\n"
         for v in assignment:
             if int(v) > 0:
                 gate = self.syn_gate_picking_vars[int(v)]
@@ -361,13 +363,13 @@ class CNF:
         return s
 
 # construct a CNF object for a given Circuit, in the pauly or computational basis
-def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancilas = 0) -> CNF:
-    cnf = CNF(circuit.n, ancilas = ancilas, computational_basis = computational_basis, weighted = weighted)
+def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancillas = 0) -> CNF:
+    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, weighted = weighted)
     cnf.encode_circuit(circuit)
     return cnf
 
 # construct a CNF object for a given PauliStrings Composition, in the pauly basis with weights
-def Composition2CNF(composition_dictionary) -> CNF:
-    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, weighted = True)
+def Composition2CNF(composition_dictionary, ancillas = 0) -> CNF:
+    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, weighted = True, ancillas=ancillas)
     cnf.encode_composition(composition_dictionary)
     return cnf
