@@ -61,8 +61,10 @@ class Variables:
                     self.cnf.add_clause([-self.x[i]], prepend)
                     self.cnf.add_clause([-self.z[i]], prepend)
                 self.cnf.power_two_normalisation += 1
-        else: 
-            Exception("Please choose firstzero or allzero measurement")
+        elif type(basis) == list:
+            self.projector(basis, prepend=False)
+        else:
+            Exception("Please choose firstzero, allzero or a list of qubits measurement")
             
     def projectAllZero(self, prepend=False):
         for i in range(self.n):
@@ -83,14 +85,27 @@ class Variables:
 # currently only on Pauli basis
 
     def projector(self, qubitset, prepend):
-        x = self.x; z = self.z
-        
-        for i in range(self.n):
-            self.cnf.add_clause([-x[i]], prepend)
-            if i in qubitset:
-                pass
+        x = self.x
+        if self.computational_basis:
+            # precondition
+            if prepend:
+                for i in qubitset: 
+                    self.cnf.add_clause([-x[i]], prepend)
             else:
-                self.cnf.add_clause([-z[i]], prepend)            
+                for i in qubitset:
+                    self.cnf.add_clause([-x[i]], prepend)
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+        else:
+            z = self.z
+            for i in range(self.n):
+                self.cnf.add_clause([-x[i]], prepend)
+                if i in qubitset:
+                    pass
+                else:
+                    self.cnf.add_clause([-z[i]], prepend)            
     
 
 class CNF:
@@ -147,7 +162,10 @@ class CNF:
     def precondition(self, qubitset):
         self.vars_init.projector(qubitset, prepend=True)
         # normalization
-        self.power_two_normalisation = len(qubitset)
+        if self.computational_basis:
+            self.power_two_normalisation += self.n - len(qubitset)
+        else:
+            self.power_two_normalisation += len(qubitset)
     
     def postcondition(self, qubitset):
         self.vars.projector(qubitset, prepend=False)
