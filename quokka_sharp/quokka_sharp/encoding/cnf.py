@@ -17,8 +17,10 @@ class Variables:
             self.x.append(self.add_var())
             if not self.computational_basis:
                 self.z.append(self.add_var())
-            if i >= cnf.n: # ancilla init 0
+            if i >= cnf.n: # ancilla init I
                 cnf.add_clause([-self.x[-1]])
+                if not self.computational_basis:
+                    cnf.add_clause([-self.z[-1]])
         if not cnf.weighted:
             if computational_basis:
                 self.i = self.add_var()
@@ -111,6 +113,7 @@ class CNF:
         self.syn_gate_layer = 0
         self.syn_gate_picking_vars_by_layer_and_gate = {}
         self.syn_gate_picking_vars = {}
+        self.syn_projection_vars = set()
     
     def copy(self):
         self.vars.cnf = None
@@ -164,7 +167,7 @@ class CNF:
                 assert False, f"ERROR: identity with constrain_2n for computational_basis not suported"
         if constrain_no_Y:
             if not self.computational_basis:
-                for i in range(self.n):
+                for i in range(self.vars.n):
                     self.add_clause([-self.vars_init.x[i], -self.vars_init.z[i]])
             else: 
                 assert False, f"ERROR: identity with constrain_no_Y for computational_basis not suported"
@@ -176,12 +179,12 @@ class CNF:
         if not self.locked:
             self.finalize() 
             
-    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None, ancilla = False):
-        assert(not self.locked)
-        assert( not syn_gate_pick or not ancilla)
+    def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None, projection_var = False):
+        assert not self.locked
+        assert not (syn_gate_pick and projection_var)
         var = self.vars.add_var()
-        if ancilla:
-            self.ancilla_vars.add(var)
+        if projection_var:
+            self.syn_projection_vars.add(var)
         if syn_gate_pick:
             self.syn_gate_picking_vars[var] = {"Name": Name, "bits": bits, "layer": self.syn_gate_layer}
             if Name not in self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer]:
@@ -237,8 +240,7 @@ class CNF:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
-                ancilla_vars = set(self.vars.x[self.n:] + self.vars.z[self.n:]) 
-                the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys())]) + " 0\n") # - ancilla_vars 
+                the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys() - self.syn_projection_vars)]) + " 0\n") 
             the_file.write(self.weight_list.getvalue())
             the_file.write(''.join(self.cons_list))
 
