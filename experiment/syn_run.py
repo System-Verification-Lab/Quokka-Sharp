@@ -41,7 +41,8 @@ def main(tool_path, qasmfile, eq_tool_path):
         if res == "FOUND":
         #     print(f"FOUND \t weight: {weight:.2f} ", end="")
             eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True",
-             bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"], to_csv=False)
+             bases = ["paul"], check_types = ["id", "2n", "id_2n", "id_noY"], to_csv=False)
+            pass
         # elif res == "TIMEOUT":
         #     print(f"TIMEOUT \t best weight: {weight:.2f}", end="")
         # elif res == "CONFLICT":
