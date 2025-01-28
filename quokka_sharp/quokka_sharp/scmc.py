@@ -74,11 +74,11 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         signal.alarm(TIMEOUT)
 
         if onehot_xz:
-            expected_prob = 2*cnf.n + cnf.ancillas
+            expected_prob = 2*cnf.n
         elif cnf.computational_basis:
             expected_prob = 2**cnf.n
         else:
-            expected_prob = 4**cnf.n * 2**cnf.ancillas
+            expected_prob = 4**cnf.n
         
         done = False
         bin_lb = 0

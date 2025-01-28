@@ -36,17 +36,17 @@ def main(tool_path, qasmfile1, qasmfile2,
             res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=(16 if check_type=="2n" else 1))
             glb_et = time.time()
 
-            # print(" eq_check: ", end='')
+            print(" eq_check: ", end='')
             if res == "TIMEOUT":
-                # print("T", end="")
+                print("T", end="")
                 pass
             else:
                 if expected_res is not None:
                     if str(res) != expected_res:
-                        # print("W", end="")
+                        print("W", end="")
                         no_match_to_expected.append((basis, check_type))
                     else:
-                        # print(".", end="")
+                        print(".", end="")
                         pass
 
             if to_csv:
