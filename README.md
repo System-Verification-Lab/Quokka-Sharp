@@ -16,8 +16,8 @@ pip install quokka_sharp
 
 ## Usage
 
-Quokka# provides two kinds of funcionalities: one is to simulate a quantum circuit, 
-the other is to check the equivalence of two circuits.
+Quokka# provides three kinds of funcionalities: one is to simulate a quantum circuit, 
+the second is to check the equivalence of two circuits, and the last is to synthesis a circuit based on a spesification.
 
 We work in one of two posible bases: Pauli or Computations.
 
@@ -28,6 +28,8 @@ For equivalence checking check we allow one only 1 technique for the computation
 "id_noY": uses "id" and add constraits on the initial state such that there will be no Y.
 "2n": makes 2*n independant calls, each checking one initial state in the 2n basis.
 
+Synthsis workes only in the Pauli base. 
+
 Please first set the wanted timeout (in seconds) using export TIMEOUT, for example:
 ```
 export TIMEOUT=3600
@@ -35,7 +37,7 @@ export TIMEOUT=3600
 
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs to use the tool. 
-The eq_run.py and sim_run.py (used for the bencmarks) can be used to compare the diffrent variations of the tool and provide further examples. 
+The eq_run.py, sim_run.py and syn_run.py (used for the bencmarks) can be used to compare the diffrent variations of the tool and provide further examples. 
 
 ```python
 import quokka_sharp as qk
@@ -78,6 +80,22 @@ cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Users can change the path for the cnf files by setting a different parameter to cnf_file_root, otherwise it would be in the tempfile.
 # Users can set a different number N of paralleling processes when the check mode is "2n". The default value would be 16. For other modes, the "N" should be 1.
 res = qk.CheckEquivalence(tool_path, cnf, check = "2n", cnf_file_root = tempfile.gettempdir(), N=16)
+
+'''
+Synthesis
+'''
+# Parse the circuits
+circuit = qk.encoding.QASMparser(qasmfile, True)
+# Get (circuit1)^dagger
+circuit.dagger()
+# Get CNF for the circuit in Pauli basis
+cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
+# Users can change the path for the cnf files by setting a different parameter to cnf_file_root, otherwise it would be in the tempfile.
+res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root = tempfile.gettempdir())
+# The res will be "FOUND" is a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and  if the tool ran out of time.
+# In the case of "TIMEOUT" the best solution found will be returned.
+# The weight will give the acived fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found cuircet.
+# Sol will be a string in a qasm file format describing the (best) cuircet found, achiving the mentioned weight.
 ```
 
 - extention of the encodings
