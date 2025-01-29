@@ -27,7 +27,7 @@ def get_result(result_file, expexted_prob):
     else:
         weight = re.findall(r"o -?[0-9]+",result_str) + re.findall(r"k -?[0-9]+",result_str)
         if not weight: 
-            return (False, "CONFLICT", [])
+            return (False, "CRASH", [])
     # get assignment
     assignment = re.findall(r"v [0-9\s\-]+ 0",result_str)
     weight = Decimal(float(weight[0][2:]))
@@ -127,9 +127,9 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 return f"ERROR{cerr}", 0, res
             found, weight, assignment = get_result(out_file, expected_prob)
             if DEBUG: print(f"found:{found}, weight:{weight}")
-            if weight == "CONFLICT":
+            if weight == "CRASH":
                 if DEBUG: print(err, cerr)
-                return "CONFLICT", 0, ""
+                return "CRASH", 0, ""
             
             qasm = cnf_copy.get_syn_qasm(assignment)
             with open(res_file, "w") as f:
@@ -169,9 +169,9 @@ def Synthesys(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment)
         if bin_ub_results:
             return str(error), bin_ub_results[0], bin_ub_results[1]
-        elif weight == "CONFLICT":
+        elif weight == "CRASH":
             return str(error), weight, qasm
         else:
-            if t_weight!="CONFLICT" and t_weight > weight:
+            if t_weight!="CRASH" and t_weight > weight:
                 return str(error), t_weight, cnf_copy.get_syn_qasm(t_assignment)
             return str(error), weight, qasm

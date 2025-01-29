@@ -45,8 +45,8 @@ def main(tool_path, qasmfile, eq_tool_path):
             pass
         # elif res == "TIMEOUT":
         #     print(f"TIMEOUT \t best weight: {weight:.2f}", end="")
-        # elif res == "CONFLICT":
-        #     print(f"CONFLICT \t best weight: {weight:.2f}", end="")
+        # elif res == "CRASH":
+        #     print(f"CRASH \t best weight: {weight:.2f}", end="")
         # else:
         #     print(f"ERROR - unrecognised result", end="")
 
