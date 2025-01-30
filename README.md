@@ -94,8 +94,8 @@ cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
 res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root = tempfile.gettempdir())
 # The res will be "FOUND" is a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and  if the tool ran out of time.
 # In the case of "TIMEOUT" the best solution found will be returned.
-# The weight will give the acived fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found cuircet.
-# Sol will be a string in a qasm file format describing the (best) cuircet found, achiving the mentioned weight.
+# The weight will give the achieved fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found circuit.
+# Sol will be a string in a qasm file format describing the (best) circuit found, achieving the mentioned weight.
 ```
 
 - extention of the encodings
