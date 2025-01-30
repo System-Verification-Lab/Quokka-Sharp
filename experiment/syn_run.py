@@ -19,9 +19,9 @@ def main(tool_path, qasmfile, eq_tool_path):
     if not os.path.exists(helper_folder):
         os.mkdir(helper_folder)
     for onehot in [False]:
-        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancillas=1)
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancillas=0)
         glb_st = time.time()
-        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0, onehot_xz = onehot)
+        res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0, onehot_xz = onehot)
         glb_et = time.time()
 
         print(f"\n *** *** ***\t Time: {glb_et-glb_st:.2f} \t Result: {res} \t best weight: {weight:.2f} \t", end="")
