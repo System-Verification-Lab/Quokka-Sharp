@@ -37,7 +37,7 @@ def main(tool_path, composition_file, eq_tool_path):
 
         cnf = qk.encoding.Composition2CNF(comp_dict)
         glb_st = time.time()
-        res, weight, sol = qk.Synthesys(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, onehot_xz=True)
+        res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, onehot_xz=True)
         glb_et = time.time()
         print(f"\tRuntime: {glb_et-glb_st:.2f}", end="")
 
