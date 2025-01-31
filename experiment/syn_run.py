@@ -9,7 +9,7 @@ import pandas as pd
 
 from eq_run import main as eq_check
 
-def main(tool_path, qasmfile, eq_tool_path):
+def main(tool_path, qasmfile, eq_tool_path=None):
     # Parse the circuits
     circuit = qk.encoding.QASMparser(qasmfile, True)
 
@@ -40,9 +40,9 @@ def main(tool_path, qasmfile, eq_tool_path):
             print(f"Depth: {qk.encoding.QASMparser(sol_file, True).depth()} (org:{circuit.depth()}) \t", end="")
         if res == "FOUND":
         #     print(f"FOUND \t weight: {weight:.2f} ", end="")
-            eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True",
-             bases = ["paul"], check_types = ["id", "2n", "id_2n", "id_noY"], to_csv=False)
-            pass
+            if eq_tool_path is not None:
+                eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True",
+                bases = ["paul"], check_types = ["id", "2n", "id_2n", "id_noY"], to_csv=False)
         # elif res == "TIMEOUT":
         #     print(f"TIMEOUT \t best weight: {weight:.2f}", end="")
         # elif res == "CRASH":
@@ -58,7 +58,10 @@ def main(tool_path, qasmfile, eq_tool_path):
 if __name__ == '__main__':
     tool_path = sys.argv[1]
     circ = sys.argv[2]
-    eq_tool_path = sys.argv[3]
+    if len(sys.argv)>3:
+        eq_tool_path = sys.argv[3] 
+    else:
+        eq_tool_path = None
     try:
         main(tool_path, circ, eq_tool_path)
     except AssertionError:
