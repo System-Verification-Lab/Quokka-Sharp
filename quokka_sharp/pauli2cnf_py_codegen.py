@@ -465,6 +465,23 @@ def main():
         # at most one:
         [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
     ''')
+
+    # # AMO using a cnt picker instead of directly one-hot
+    # print('''
+    # def AMO(cnf, var_list):
+    #     picker = [cnf.add_var() for _ in range(math.ceil(math.log(len(var_list), 2)))]
+    #     for cnt in range(2**len(picker)):
+    #       clause = []
+    #       bin_str = format(cnt, f'{len(picker)}b')
+    #       for i in range(len(picker)):
+    #           clause.append(-picker[i] if bin_str[i]=="1" else picker[i])
+    #       if cnt < len(var_list):
+    #           for v in clause:
+    #               cnf.add_clause([-var_list[cnt], -v])
+    #           clause.append(var_list[cnt])
+    #       cnf.add_clause(clause)
+    # ''')
+
     print()
     print()
     print('''
