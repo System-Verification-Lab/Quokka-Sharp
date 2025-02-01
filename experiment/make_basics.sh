@@ -40,7 +40,7 @@ done
 
 
 # Define the list of controled gates
-gates=("cx" "cz")
+gates=("cx" "cz" "cs" "csdg")
 
 # Loop through each gate and create a file with the required content
 for g in "${gates[@]}"; do
