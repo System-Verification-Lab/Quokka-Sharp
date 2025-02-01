@@ -30,39 +30,6 @@ class pauli2cnf:
 
         x[k], z[k] = z[k], x[k]
 
-    def S2CNF(cnf, k):
-        x = cnf.vars.x
-        z = cnf.vars.z
-
-        Z = cnf.add_var()
-        # Equivalent(Z, x[k] ^ z[k])
-        cnf.add_clause([ Z,  x[k], -z[k]])
-        cnf.add_clause([ Z, -x[k],  z[k]])
-        cnf.add_clause([-Z,  x[k],  z[k]])
-        cnf.add_clause([-Z, -x[k], -z[k]])
-
-        # adding sign if x[k] & z[k]
-        R = cnf.add_var()
-        if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
-            # Equivalent(R, x[k] & z[k])
-            cnf.add_clause([-R,  x[k]])
-            cnf.add_clause([-R,  z[k]])
-            cnf.add_clause([ R, -x[k], -z[k]])
-        else: 
-            r = cnf.vars.r
-            cnf.vars.r = R
-            # Equivalent(R, r ^ (x[k] & z[k]))
-            cnf.add_clause([ R, -r,  x[k]])
-            cnf.add_clause([ R, -r,  z[k]])
-            cnf.add_clause([-R,  r,  x[k]])
-            cnf.add_clause([-R,  r,  z[k]])
-            cnf.add_clause([ R,  r, -x[k], -z[k]])
-            cnf.add_clause([-R, -r, -x[k], -z[k]])
-
-        cnf.vars.z[k] = Z
-
     def X2CNF(cnf, k):
         z = cnf.vars.z
 
@@ -129,6 +96,39 @@ class pauli2cnf:
             cnf.add_clause([ R, -r,  x[k]])
             cnf.add_clause([-R,  r,  x[k]])
             cnf.add_clause([-R, -r, -x[k]])
+
+    def S2CNF(cnf, k):
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        Z = cnf.add_var()
+        # Equivalent(Z, x[k] ^ z[k])
+        cnf.add_clause([ Z,  x[k], -z[k]])
+        cnf.add_clause([ Z, -x[k],  z[k]])
+        cnf.add_clause([-Z,  x[k],  z[k]])
+        cnf.add_clause([-Z, -x[k], -z[k]])
+
+        # adding sign if x[k] & z[k]
+        R = cnf.add_var()
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # Equivalent(R, x[k] & z[k])
+            cnf.add_clause([-R,  x[k]])
+            cnf.add_clause([-R,  z[k]])
+            cnf.add_clause([ R, -x[k], -z[k]])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, r ^ (x[k] & z[k]))
+            cnf.add_clause([ R, -r,  x[k]])
+            cnf.add_clause([ R, -r,  z[k]])
+            cnf.add_clause([-R,  r,  x[k]])
+            cnf.add_clause([-R,  r,  z[k]])
+            cnf.add_clause([ R,  r, -x[k], -z[k]])
+            cnf.add_clause([-R, -r, -x[k], -z[k]])
+
+        cnf.vars.z[k] = Z
 
     def Sdg2CNF(cnf, k):
         x = cnf.vars.x
@@ -335,19 +335,19 @@ class pauli2cnf:
         x = cnf.vars.x
         z = cnf.vars.z
 
-        Z1 = cnf.add_var()
-        # Equivalent(Z1, x[t] ^ z[c])
-        cnf.add_clause([ Z1,  x[t], -z[c]])
-        cnf.add_clause([ Z1, -x[t],  z[c]])
-        cnf.add_clause([-Z1,  x[t],  z[c]])
-        cnf.add_clause([-Z1, -x[t], -z[c]])
+        Zc = cnf.add_var()
+        # Equivalent(Zc, x[t] ^ z[c])
+        cnf.add_clause([ Zc,  x[t], -z[c]])
+        cnf.add_clause([ Zc, -x[t],  z[c]])
+        cnf.add_clause([-Zc,  x[t],  z[c]])
+        cnf.add_clause([-Zc, -x[t], -z[c]])
 
-        Z2 = cnf.add_var()
-        # Equivalent(Z2, x[c] ^ z[t])
-        cnf.add_clause([ Z2,  x[c], -z[t]])
-        cnf.add_clause([ Z2, -x[c],  z[t]])
-        cnf.add_clause([-Z2,  x[c],  z[t]])
-        cnf.add_clause([-Z2, -x[c], -z[t]])
+        Zt = cnf.add_var()
+        # Equivalent(Zt, x[c] ^ z[t])
+        cnf.add_clause([ Zt,  x[c], -z[t]])
+        cnf.add_clause([ Zt, -x[c],  z[t]])
+        cnf.add_clause([-Zt,  x[c],  z[t]])
+        cnf.add_clause([-Zt, -x[c], -z[t]])
 
         # adding sign if x[c] & x[t] & (z[c] ^ z[t])
         R = cnf.add_var()
@@ -378,8 +378,224 @@ class pauli2cnf:
             cnf.add_clause([-R, -r, -x[c], -x[t],  z[c], -z[t]])
             cnf.add_clause([-R, -r, -x[c], -x[t], -z[c],  z[t]])
 
-        cnf.vars.z[c] = Z1
-        cnf.vars.z[t] = Z2
+        cnf.vars.z[c] = Zc
+        cnf.vars.z[t] = Zt
+
+    def CS2CNF(cnf, c, t):
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        Zc = cnf.add_var()
+        # x[c] | x[t] | (Equivalent(Zc, z[c]))
+        cnf.add_clause([ Zc,  x[c],  x[t], -z[c]])
+        cnf.add_clause([-Zc,  x[c],  x[t],  z[c]])
+
+        Zt = cnf.add_var()
+        # x[c] | x[t] | (Equivalent(Zt, z[t]))
+        cnf.add_clause([ Zt,  x[c],  x[t], -z[t]])
+        cnf.add_clause([-Zt,  x[c],  x[t],  z[t]])
+
+        # adding sign if (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t]))
+        R = cnf.add_var()
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # Equivalent(R, (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([-R,  Zc,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zc,  z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  x[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  z[t]])
+            cnf.add_clause([-R, -Zt,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  x[t], -z[c]])
+            cnf.add_clause([-R, -Zt,  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -z[c]])
+            cnf.add_clause([ R,  Zc,  Zt, -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  x[c], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  x[c],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zt, -x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc, -x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zt, -x[c], -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -x[c],  x[t],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc,  Zt,  x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -x[c], -z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -x[c], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -x[t], -z[c], -z[t]])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, r ^ (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([ R,  Zc, -r,  x[t],  z[c]])
+            cnf.add_clause([ R,  Zc, -r,  z[c],  z[t]])
+            cnf.add_clause([ R,  Zt, -r,  x[c],  z[t]])
+            cnf.add_clause([-R,  Zc,  r,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zc,  r,  z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  r,  x[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -r,  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  r,  z[t]])
+            cnf.add_clause([ R, -Zt, -r,  x[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -r,  x[t], -z[c]])
+            cnf.add_clause([ R, -Zt, -r,  z[c], -z[t]])
+            cnf.add_clause([-R, -Zt,  r,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  r,  x[t], -z[c]])
+            cnf.add_clause([-R, -Zt,  r,  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -r, -z[c]])
+            cnf.add_clause([-R, -Zc, -Zt,  r, -z[c]])
+            cnf.add_clause([ R,  Zc,  Zt,  r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r,  x[c], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r,  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r,  x[c],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r,  x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zt, -r, -x[c], -x[t],  z[c]])
+            cnf.add_clause([-R, -Zt,  r, -x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc,  r, -x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -r, -x[c],  x[t],  z[t]])
+            cnf.add_clause([ R,  Zt,  r, -x[c], -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -r,  x[c], -x[t],  z[c]])
+            cnf.add_clause([-R,  Zc, -Zt,  r, -x[c],  x[t],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  r,  x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc,  Zt,  r,  x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt, -r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt, -r, -x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r, -x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt,  r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt,  r, -x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r,  x[c], -z[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r,  x[t],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r,  x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r,  x[t],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -r, -x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt, -r, -x[c], -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r,  x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r, -x[t], -z[c], -z[t]])
+
+        u = cnf.add_var()
+        cnf.add_weight( u, Decimal(1/2))
+        cnf.add_weight(-u, 1)
+        # Equivalent(u, x[c] | x[t])
+        cnf.add_clause([ u, -x[c]])
+        cnf.add_clause([ u, -x[t]])
+        cnf.add_clause([-u,  x[c],  x[t]])
+
+        cnf.vars.z[c] = Zc
+        cnf.vars.z[t] = Zt
+
+    def CSdg2CNF(cnf, c, t):
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        Zc = cnf.add_var()
+        # x[c] | x[t] | (Equivalent(Zc, z[c]))
+        cnf.add_clause([ Zc,  x[c],  x[t], -z[c]])
+        cnf.add_clause([-Zc,  x[c],  x[t],  z[c]])
+
+        Zt = cnf.add_var()
+        # x[c] | x[t] | (Equivalent(Zt, z[t]))
+        cnf.add_clause([ Zt,  x[c],  x[t], -z[t]])
+        cnf.add_clause([-Zt,  x[c],  x[t],  z[t]])
+
+        # adding sign if (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t]))
+        R = cnf.add_var()
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # Equivalent(R, (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([-R,  Zc,  Zt,  z[c]])
+            cnf.add_clause([-R,  Zc,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zt,  x[c],  z[t]])
+            cnf.add_clause([-R,  Zt, -z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -z[t]])
+            cnf.add_clause([-R, -Zt,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  x[t], -z[c]])
+            cnf.add_clause([-R, -Zc, -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  x[c], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -x[c], -x[t], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt, -x[c],  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  x[c],  x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -x[t],  z[c],  z[t]])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, r ^ (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([ R,  Zc,  Zt, -r,  z[c]])
+            cnf.add_clause([ R,  Zc, -r,  x[t],  z[c]])
+            cnf.add_clause([ R,  Zt, -r,  x[c],  z[t]])
+            cnf.add_clause([-R,  Zc,  Zt,  r,  z[c]])
+            cnf.add_clause([-R,  Zc,  r,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zt,  r,  x[c],  z[t]])
+            cnf.add_clause([ R,  Zt, -r, -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  r, -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -r, -z[t]])
+            cnf.add_clause([ R, -Zt, -r,  x[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -r,  x[t], -z[c]])
+            cnf.add_clause([-R,  Zc, -Zt,  r, -z[t]])
+            cnf.add_clause([-R, -Zt,  r,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  r,  x[t], -z[c]])
+            cnf.add_clause([ R, -Zc, -r, -z[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  r, -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  r,  x[c], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  r,  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r,  x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r,  x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -r, -x[c], -x[t], -z[t]])
+            cnf.add_clause([-R,  Zc,  r, -x[c], -x[t], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -r,  x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R,  Zt, -r, -x[c],  x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  r,  x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  r, -x[c],  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r,  x[c],  x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r, -x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r, -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r,  x[c], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r,  x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r,  x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r,  x[c],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt,  r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt,  r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r,  x[c],  x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r, -x[c],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r, -x[t], -z[c],  z[t]])
+
+        u = cnf.add_var()
+        cnf.add_weight( u, Decimal(1/2))
+        cnf.add_weight(-u, 1)
+        # Equivalent(u, x[c] | x[t])
+        cnf.add_clause([ u, -x[c]])
+        cnf.add_clause([ u, -x[t]])
+        cnf.add_clause([-u,  x[c],  x[t]])
+
+        cnf.vars.z[c] = Zc
+        cnf.vars.z[t] = Zt
 
     def RZ2CNF(cnf, k, theta):
         x = cnf.vars.x

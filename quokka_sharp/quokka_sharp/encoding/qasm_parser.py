@@ -7,7 +7,7 @@ getcontext().prec = 32
 
 HermiGates = ['id', 'h', 'cx', 'cz', 'x', 'z', 'y', 'ccx']
 RotationGates = ['rx', 'ry', 'rz']
-NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 
+NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 'cs': 'csdg', 'csdg': 'cs',  
                 'rx': 'rxdg', 'rx': 'rxdg', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
 
 class Circuit:
@@ -181,7 +181,7 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
         elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include' or line[0] == 'creg':
             continue
 
-        elif gate == 'cx' or gate == 'cz':
+        elif gate == 'cx' or gate == 'cz' or gate == 'cs' or gate == 'csdg':
             if(line[1].count('[') == 1):
                 qubitc = get_num(line[1])
                 qubitr = get_num(line[2])
