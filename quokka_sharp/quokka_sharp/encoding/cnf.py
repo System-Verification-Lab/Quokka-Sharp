@@ -298,7 +298,19 @@ class CNF:
                 to_CNF.Y2CNF(self,k)
             elif gate == 'z':
                 k = int(element[1])
-                to_CNF.Z2CNF(self,k)
+                to_CNF.Z2CNF(self,k)           
+            elif gate == 's':
+                k = int(element[1])
+                to_CNF.S2CNF(self,k)
+            elif gate == 'sdg':
+                k = int(element[1])
+                to_CNF.Sdg2CNF(self,k)
+            elif gate == 't':
+                k = int(element[1])
+                to_CNF.T2CNF(self, k)
+            elif gate == 'tdg':
+                k = int(element[1])
+                to_CNF.Tdg2CNF(self,k)
             elif gate == 'cx':
                 j = int(element[1])
                 k = int(element[2])
@@ -306,19 +318,15 @@ class CNF:
             elif gate == 'cz':
                 j = int(element[1])
                 k = int(element[2])
-                to_CNF.CZ2CNF(self,j,k)            
-            elif gate == 's':
-                k = int(element[1])
-                to_CNF.S2CNF(self,k)
-            elif gate == 'tdg':
-                k = int(element[1])
-                to_CNF.Tdg2CNF(self,k)
-            elif gate == 'sdg':
-                k = int(element[1])
-                to_CNF.Sdg2CNF(self,k)
-            elif gate == 't':
-                k = int(element[1])
-                to_CNF.T2CNF(self, k)
+                to_CNF.CZ2CNF(self,j,k)  
+            elif gate == 'cs':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CS2CNF(self,j,k)  
+            elif gate == 'csdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSdg2CNF(self,j,k) 
             elif gate[0] == 'r':
                 angle = element[1]
                 k = int(element[2])
