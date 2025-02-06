@@ -11,6 +11,10 @@ from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
 getcontext().prec = 32
 
+global FPE
+FPE = 1e-12
+
+
 # define Python user-defined exceptions
 class InvalidProcessNumException(Exception):
     "Raised when the process number is invalid"
@@ -25,7 +29,7 @@ def get_result(result, expexted_prob):
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
     prob = (abs(real)**2 + abs(imag)**2).sqrt()
-    if abs(prob - expexted_prob) < (expexted_prob * Decimal(1e-12)):
+    if abs(prob - expexted_prob) < (expexted_prob * Decimal(FPE)):
         return True
     else:
         return False

@@ -1,6 +1,6 @@
 from .encoding.qasm_parser import QASMparser
 from .encoding.cnf import QASM2CNF
-from .ecmc import CheckEquivalence
+from .ecmc import CheckEquivalence, FPE
 from .qcmc import Simulate
 
 def circuit_encode(qasmfile1, qasmfile2):
@@ -37,7 +37,7 @@ def Verify(qasmfile, tool_path, precons, postcons, basis = "paul"):
     cnf.precondition(precons)
     cnf.postcondition(postcons)
     prob = Simulate(tool_path, cnf)
-    if prob == 1:
+    if abs(prob - 1) < FPE:
         print("True")
     else:
         print("False")
