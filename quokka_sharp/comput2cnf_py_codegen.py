@@ -178,6 +178,7 @@ def main():
     print("        x = cnf.vars.x")
     print("        if cnf.weighted: ")    
     print("            w = cnf.add_var()")
+    # QUESTION: Why here is 1/sqrt(2) + 1/sqrt(2) i not 1/sqrt(2) - 1/sqrt(2) i?
     print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt()))")
     print("            cnf.add_weight(-w, 1, 0)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (T)")
@@ -266,6 +267,163 @@ def main():
     print()
     add_sign(x[c] & x[t])
     print()
+
+ # Synthesis
+
+    # dynamic single bit gate:
+
+    idg   = symbols('idg[k]')
+    hg    = symbols('hg[k]')
+    # sg    = symbols('sg[k]')
+    tg    = symbols('tg[k]')
+    tdg    = symbols('tdg[k]')
+
+    Xk = symbols('X[k]')
+    Rk = symbols('R[k]')    
+    Uk = symbols('U[k]')
+    Wk = symbols('W[k]')
+
+    I_x = idg >> Equivalent(Xk, x[k])
+    I_r = idg >> Equivalent(Rk, False)
+    I_u = idg >> Equivalent(Uk, False)
+    I_w = idg >> Equivalent(Wk, False)
+
+    H_r = hg >> Equivalent(Rk, x[k] & X)
+    H_u = hg >> Equivalent(Uk, True)
+    H_w = hg >> Equivalent(Wk, False)
+
+    T_x = tg >> Equivalent(Xk, x[k])
+    T_r = tg >> Equivalent(Rk, False)
+    T_u = tg >> Equivalent(Uk, False)
+    T_w = tg >> Equivalent(Wk, x[k])
+
+    single_qb_gate_properties = [I_x, I_r, I_u, I_w, H_r, H_u, H_w, T_x, T_r, T_u, T_w]
+    
+    # dynamic two bit gate:
+
+    cg_ct    = symbols('cg[c][t]')
+    Xcc = symbols('X[c]')
+    Xtt = symbols('X[t]')
+    Rc = symbols('R[c]')
+    Rt = symbols('R[t]')
+    Uc = symbols('U[c]')
+    Ut = symbols('U[t]')
+    Wc = symbols('W[c]')
+    Wt = symbols('W[t]')
+
+    CX_xc = cg_ct >> Equivalent(Xcc, x[c])
+    CX_xt = cg_ct >> Equivalent(Xtt, x[t] ^ x[c])
+    CX_rc = cg_ct >> Equivalent(Rc, False)
+    CX_rt = cg_ct >> Equivalent(Rt, False)
+    CX_uc = cg_ct >> Equivalent(Uc, False)
+    CX_ut = cg_ct >> Equivalent(Ut, False)
+    CX_wc = cg_ct >> Equivalent(Wc, False)
+    CX_wt = cg_ct >> Equivalent(Wt, False)
+
+    double_qb_gate_properties = [CX_xc, CX_xt, CX_rc, CX_rt, CX_uc, CX_ut, CX_wc, CX_wt]
+
+    # CZ_xc = cg_ct >> Equivalent(Xc, x[c])
+    # CZ_xt = cg_ct >> Equivalent(Xt, x[t])
+    # CZ_zc = cg_ct >> Equivalent(Zc, z[c] ^ x[t])
+    # CZ_zt = cg_ct >> Equivalent(Zt, z[t] ^ x[c])
+    # CZ_rc = cg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
+    # CZ_rt = cg_ct >> Equivalent(Rt, False)
+    # CZ_uc = cg_ct >> Equivalent(Uc, False)
+    # CZ_ut = cg_ct >> Equivalent(Ut, False)
+
+    # double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
+
+    
+    # print('''
+    # def AMO(cnf, var_list):
+    #     assert None not in var_list
+    #     # at least one:
+    #     cnf.add_clause(var_list)
+    #     # at most one:
+    #     [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
+    # ''')
+
+    # # AMO using a cnt picker instead of directly one-hot
+    # print('''
+    # def AMO(cnf, var_list):
+    #     picker = [cnf.add_var() for _ in range(math.ceil(math.log(len(var_list), 2)))]
+    #     for cnt in range(2**len(picker)):
+    #       clause = []
+    #       bin_str = format(cnt, f'{len(picker)}b')
+    #       for i in range(len(picker)):
+    #           clause.append(-picker[i] if bin_str[i]=="1" else picker[i])
+    #       if cnt < len(var_list):
+    #           for v in clause:
+    #               cnf.add_clause([-var_list[cnt], -v])
+    #           clause.append(var_list[cnt])
+    #       cnf.add_clause(clause)
+    # ''')
+
+    print()
+    print()
+    print('''
+    def SynLayer2CNF(cnf):
+        n = cnf.n
+        x = cnf.vars.x
+        X = [cnf.add_var() for _ in range(n)]
+        R = [cnf.add_var() for _ in range(n)]
+        U = [cnf.add_var() for _ in range(n)]
+        W = [cnf.add_var() for _ in range(n)]
+        [cnf.add_weight(R[k], -1) for k in range(n)]
+        [cnf.add_weight(-R[k], 1) for k in range(n)]
+        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-U[k], 1) for k in range(n)]
+        [cnf.add_weight(W[k], str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-W[k], 1, 0) for k in range(n)]
+        
+        idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
+        hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
+        tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
+        cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+        for k in range(n):
+    ''')
+    for p in single_qb_gate_properties:
+        to_py(	       p, prefix="    ")  
+    print('''
+            c = k
+            for t in range(n):
+                if t==c:
+                    continue
+    ''')
+    for p in double_qb_gate_properties:
+        to_py(	           p, prefix="        ")   
+    print('''
+          
+            cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
+            gate_controlers = [idg[k], hg[k], tg[k]]+cgs_k
+            pauli2cnf.AMO(cnf, gate_controlers)
+          
+            if cnf.syn_gate_layer<=1:
+                continue
+        
+            # H -> !l_H
+            cnf.add_clause([-hg[k],  -cnf.get_syn_var_last_layer(Name ='h', bit = k)])
+            # T -> !l_Tdg
+            # cnf.add_clause([-tg[k],  -cnf.get_syn_var_last_layer(Name ='tdg', bit = k)])
+            # Tdg -> !l_T
+            # cnf.add_clause([-tdg[k], -cnf.get_syn_var_last_layer(Name ='t', bit = k)])
+
+            c = k
+            for t in range(n):
+                if c==t:
+                    continue
+                # CX(c,t) -> !past(CX(c,t))
+                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='cx', bit = [c,t])])
+                # CX(c,t) -> !past(I(c)) or !past(I(t))
+                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='id', bit = c), -cnf.get_syn_var_last_layer(Name ='id', bit = t)])
+                # I -> I until CX
+                cnf.add_clause([-cnf.get_syn_var_last_layer(Name ='id', bit = c), idg[c]] + cgs_k)
+          
+        cnf.vars.x[:n] = X
+    
+    
+    ''')
+
 
 
 if __name__ == "__main__":
