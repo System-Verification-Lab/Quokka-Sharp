@@ -11,6 +11,10 @@ from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
 getcontext().prec = 32
 
+global FPE
+FPE = 1e-12
+
+
 # define Python user-defined exceptions
 class InvalidProcessNumException(Exception):
     "Raised when the process number is invalid"
@@ -25,7 +29,7 @@ def get_result(result, expexted_prob):
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
     prob = (abs(real)**2 + abs(imag)**2).sqrt()
-    if abs(prob - expexted_prob) < (expexted_prob * Decimal(1e-12)):
+    if abs(prob - expexted_prob) < (expexted_prob * Decimal(FPE)):
         return True
     else:
         return False
@@ -47,7 +51,7 @@ def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "id", N=16):
+def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "cyclic", N=16):
     DEBUG = False
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
@@ -69,7 +73,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         cnf_file_list = []
         proclist = []
 
-        if check == "id":
+        if check == "cyclic":
             if N > 1:
                 raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
@@ -77,17 +81,17 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 expected_prob = Decimal(2**cnf.n)
             else:
                 expected_prob = Decimal(4**cnf.n)
-        elif check == "id_2n":
+        elif check == "cyclic_linear":
             if N > 1:
                 raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
             expected_prob = Decimal(2*cnf.n)
-        elif check == "id_noY":
+        elif check == "cyclic_noY":
             if N > 1:
                 raise InvalidProcessNumException
             cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
             expected_prob = Decimal(3**cnf.n)
-        elif check == "2n":
+        elif check == "linear":
             if cnf.computational_basis:
                 assert False, "2n check is not supported for computational basis"
             else:
