@@ -223,19 +223,20 @@ class CNF:
                 self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer][Name][bits[0]][bits[1]] = var
         return var
     
-    def get_syn_var_last_layer(self, Name ="UnNamed", bit = None):
+    def get_syn_var_past_layer(self, Name ="UnNamed", bit = None, past=1):
         if self.syn_gate_layer == 1:
             return None
         if type(bit) is int:
-            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-1][Name][bit]
+            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-past][Name][bit]
         if type(bit) is list:
-            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-1][Name][bit[0]][bit[1]]
+            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-past][Name][bit[0]][bit[1]]
 
 
     def add_clause(self, cons, prepend=False, comment=None):
         self.clause += 1
         constr = ''
         for i in range(len(cons)):
+            assert cons[i] is not None
             assert type(cons[i]) is int
             constr += str(cons[i]) + " "
         constr = constr + "0"
