@@ -24,7 +24,7 @@ def main(tool_path, qasmfile, eq_tool_path=None):
         res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0, onehot_xz = onehot)
         glb_et = time.time()
 
-        print(f"\n *** *** ***\t Time: {glb_et-glb_st:.2f} \t Result: {res} \t best weight: {weight:.2f} \t", end="")
+        print(f"\n *** *** ***\t Time: {glb_et-glb_st:.2f} \t Result: {res} \t best weight: {weight:.5f} \t", end="")
 
         sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
         if not os.path.exists(sol_folder):

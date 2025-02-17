@@ -23,9 +23,9 @@ def get_result(result_file, expexted_prob):
 
     # get weight
     if re.findall(r"r SATISFIABLE",result_str):
-        weight = re.findall(r"s ?[0-9\.]+",result_str)
+        weight = re.findall(r"s -?[0-9\.]+",result_str)
     else:
-        weight = re.findall(r"o -?[0-9]+",result_str) + re.findall(r"k -?[0-9]+",result_str)
+        weight = re.findall(r"o -?[0-9\.]+",result_str) + re.findall(r"k -?[0-9]+",result_str)
         if not weight: 
             return (False, "CRASH", [])
     # get assignment
@@ -79,6 +79,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             expected_prob = 2**cnf.n
         else:
             expected_prob = 4**cnf.n
+        expected_prob = expected_prob * fidelity
         
         done = False
         bin_lb = 0
@@ -126,7 +127,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if cerr:
                 return f"ERROR{cerr}", 0, res
             found, weight, assignment = get_result(out_file, expected_prob)
-            if DEBUG: print(f"found:{found}, weight:{weight}")
+            if DEBUG: print(f"found:{found}, weight:{weight:.10f}")
             if weight == "CRASH":
                 if DEBUG: print(err, cerr)
                 return "CRASH", 0, ""
