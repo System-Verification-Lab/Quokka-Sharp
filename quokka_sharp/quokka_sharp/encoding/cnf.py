@@ -63,14 +63,16 @@ class Variables:
                     self.cnf.add_clause([-self.x[i]], prepend)
                     self.cnf.add_clause([-self.z[i]], prepend)
                 self.cnf.power_two_normalisation += 1
-        elif type(basis) == list:
+        elif type(basis) == dict:
             self.projector(basis, prepend=False)
+            if self.computational_basis == False:
+                self.cnf.power_two_normalisation += len(basis)
         else:
             Exception("Please choose firstzero, allzero or a list of qubits measurement")
             
     def projectAllZero(self, prepend=False):
         for i in range(self.n):
-            self.cnf.add_clause([-self.x[i]], prepend)   
+            self.cnf.add_clause([-self.x[i]], prepend)
 
     def projectZXi(self, Z_or_X, idx, prepend=False):
         assert(not self.computational_basis)
@@ -86,16 +88,26 @@ class Variables:
 
 # currently only on Pauli basis
 
-    def projector(self, qubitset, prepend):
+# specifications are in the form of {1:0, 1:1}
+# add weight to z variables in Pauli basis to encode |1>
+
+    def projector(self, spec, prepend):
         x = self.x
+        qubitset = list(spec.keys())
         if self.computational_basis:
             # precondition
             if prepend:
                 for i in qubitset: 
-                    self.cnf.add_clause([-x[i]], prepend)
+                    if spec[i] == 0: 
+                        self.cnf.add_clause([-x[i]], prepend)
+                    else:
+                        self.cnf.add_clause([x[i]], prepend)
             else:
                 for i in qubitset:
-                    self.cnf.add_clause([-x[i]], prepend)
+                    if spec[i] == 0: 
+                        self.cnf.add_clause([-x[i]], prepend)
+                    else:
+                        self.cnf.add_clause([x[i]], prepend)
                 circuit_copy = copy.deepcopy(self.cnf.circuit)
                 circuit_copy.dagger()
                 self.cnf.encode_circuit(circuit_copy)
@@ -105,7 +117,9 @@ class Variables:
             for i in range(self.n):
                 self.cnf.add_clause([-x[i]], prepend)
                 if i in qubitset:
-                    pass
+                    if spec[i] == 1:
+                        self.cnf.add_weight(z[i], -1)
+                        self.cnf.add_weight(-z[i], 1)                          
                 else:
                     self.cnf.add_clause([-z[i]], prepend)            
     
@@ -162,16 +176,16 @@ class CNF:
             self.finalize()
         self.vars.projectZXi(Z_or_X, i, prepend=True)
 
-    def precondition(self, qubitset):
-        self.vars_init.projector(qubitset, prepend=True)
+    def precondition(self, spec):
+        self.vars_init.projector(spec, prepend=True)
         # normalization
         if self.computational_basis:
-            self.power_two_normalisation += self.n - len(qubitset)
+            self.power_two_normalisation += self.n - len(spec)
         else:
-            self.power_two_normalisation += len(qubitset)
+            self.power_two_normalisation += len(spec)
     
-    def postcondition(self, qubitset):
-        self.vars.projector(qubitset, prepend=False)
+    def postcondition(self, spec):
+        self.vars.projector(spec, prepend=False)
 
     # Add clauses dictating that the initial state matches the finel state
     # constrain_2n = limit the initial states to the 2*n states of single X or single Z (the rest are I)
