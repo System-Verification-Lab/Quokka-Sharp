@@ -9,6 +9,19 @@ import pandas as pd
 
 from eq_run import main as eq_check
 
+def comp_syn(qasmfile):
+    circuit = qk.encoding.QASMparser(qasmfile, True)
+    circuit.dagger()
+    cnf = qk.encoding.QASM2CNF(circuit, computational_basis = True, ancillas=0)
+    helper_folder = "./syn_comp_cnf_files/" + qasmfile.split('/')[-1].split('.')[0] + "/"
+    print(helper_folder)
+    if not os.path.exists(helper_folder):
+        os.mkdir(helper_folder)
+        
+    glb_st = time.time()
+    file = qk.Synthesis("", cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0)
+    glb_et = time.time()
+
 def main(tool_path, qasmfile, eq_tool_path=None):
     # Parse the circuits
     circuit = qk.encoding.QASMparser(qasmfile, True)
