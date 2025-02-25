@@ -272,7 +272,7 @@ class CNF:
         if (complex_weight != None):
             self.weight_list.write(" ")
             # support ganak complex format
-            if self.ganak:
+            if not self.ganak:
                 self.weight_list.write(str(complex_weight))
             else: 
                 self.weight_list.write(" + ")
