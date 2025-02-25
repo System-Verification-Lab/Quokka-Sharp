@@ -21,10 +21,10 @@ def main(tool_path, qasmfile, eq_tool_path=None):
     for onehot in [False]:
         cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancillas=0)
         glb_st = time.time()
-        res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root=helper_folder, bin_search=False, initial_depth=0, onehot_xz = onehot)
+        res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root=helper_folder, fidelity_threshold=0.99, bin_search=False, initial_depth=0, onehot_xz = onehot)
         glb_et = time.time()
 
-        print(f"\n *** *** ***\t Time: {glb_et-glb_st:.2f} \t Result: {res} \t best weight: {weight:.2f} \t", end="")
+        print(f"\n *** *** ***\t Time: {glb_et-glb_st:.2f} \t Result: {res} \t best weight: {weight:.5f} \t", end="")
 
         sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
         if not os.path.exists(sol_folder):
@@ -42,7 +42,7 @@ def main(tool_path, qasmfile, eq_tool_path=None):
         #     print(f"FOUND \t weight: {weight:.2f} ", end="")
             if eq_tool_path is not None:
                 eq_check(eq_tool_path, qasmfile1=qasmfile, qasmfile2=sol_file, expected_res="True",
-                bases = ["paul"], check_types = ["id", "2n", "id_2n", "id_noY"], to_csv=False)
+                bases = ["paul"], check_types = ["cyclic", "linear", "cyclic_linear", "cyclic_noY"], to_csv=False)
         # elif res == "TIMEOUT":
         #     print(f"TIMEOUT \t best weight: {weight:.2f}", end="")
         # elif res == "CRASH":

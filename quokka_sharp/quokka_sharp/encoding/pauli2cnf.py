@@ -999,23 +999,30 @@ class pauli2cnf:
                 continue
         
             # H -> !l_H
-            cnf.add_clause([-hg[k],  -cnf.get_syn_var_last_layer(Name ='h', bit = k)])
+            cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
             # T -> !l_Tdg
-            cnf.add_clause([-tg[k],  -cnf.get_syn_var_last_layer(Name ='tdg', bit = k)])
+            cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
             # Tdg -> !l_T
-            cnf.add_clause([-tdg[k], -cnf.get_syn_var_last_layer(Name ='t', bit = k)])
+            cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+          
+            if cnf.syn_gate_layer>2:
+                
+                # T -> !l_T | !ll_T
+                cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='t', bit = k), -cnf.get_syn_var_past_layer(Name ='t', bit = k, past=2)])
+                # Tdg -> !l_Tdg | !ll_Tdg
+                cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='tdg', bit = k), -cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=2)])
 
             c = k
             for t in range(n):
-                if c==t:
-                    continue
-                # CX(c,t) -> !past(CX(c,t))
-                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='cx', bit = [c,t])])
-                # CX(c,t) -> !past(I(c)) or !past(I(t))
-                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='id', bit = c), -cnf.get_syn_var_last_layer(Name ='id', bit = t)])
                 # I -> I until CX
-                cnf.add_clause([-cnf.get_syn_var_last_layer(Name ='id', bit = c), idg[c]] + cgs_k)
-          
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = c), idg[c]] + cgs_k)
+
+                if c!=t:
+                    # CX(c,t) -> !past(CX(c,t))
+                    cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
+                    # CX(c,t) -> !past(I(c)) or !past(I(t))
+                    cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+        
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z
     
