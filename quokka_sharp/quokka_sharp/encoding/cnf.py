@@ -143,6 +143,7 @@ class CNF:
         self.syn_gate_picking_vars_by_layer_and_gate = {}
         self.syn_gate_picking_vars = {}
         self.syn_projection_vars = set()
+        self.ganak = False
     
     def copy(self):
         self.vars.cnf = None
@@ -269,7 +270,13 @@ class CNF:
         self.weight_list.write(str(weight))
         if (complex_weight != None):
             self.weight_list.write(" ")
-            self.weight_list.write(str(complex_weight))
+            # support ganak complex format
+            if self.ganak:
+                self.weight_list.write(str(complex_weight))
+            else: 
+                self.weight_list.write(" + ")
+                self.weight_list.write(str(complex_weight))
+                self.weight_list.write("i")
         self.weight_list.write(" 0")
         # if comment: disabled since it causes problems with cnf solvers
         #     self.weight_list.write("\t\t// " + comment)
