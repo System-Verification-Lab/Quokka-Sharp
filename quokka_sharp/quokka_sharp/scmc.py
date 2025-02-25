@@ -92,12 +92,17 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         cnf_copy = copy.deepcopy(cnf)
         if initial_depth:
             cnf_copy.add_syn_layer(initial_depth)
+        # QUESTION: add two synthesis layers?
         while not done:
             if DEBUG: print() 
             it_counter+=1
             if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
             if DEBUG: print(f"Iteration: {it_counter}")
+            if cnf.computational_basis:
+                cnf_copy.add_syn_layer()
+                file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
+                return file
             if bin_search:
                 cnf_copy = copy.deepcopy(cnf)
                 cnf_copy.add_syn_layer(initial_depth+num_layers)
