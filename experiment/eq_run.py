@@ -8,7 +8,7 @@ import pandas as pd
 
 def main(tool_path, qasmfile1, qasmfile2,
          expected_res = None,
-         bases = ["comp", "paul"], check_types = ["id", "2n", "id_2n", "id_noY"],
+         bases = ["comp", "paul"], check_types = ["cyclic", "linear", "cyclic_linear", "cyclic_noY"],
          to_csv=True):
     
     # Parse the circuits
@@ -25,7 +25,7 @@ def main(tool_path, qasmfile1, qasmfile2,
 
     for basis in bases:
         for check_type in check_types:
-            if basis in ["comp"] and check_type in ["2n", "id_2n", "id_noY"]:
+            if basis in ["comp"] and check_type in ["linear", "cyclic_linear", "cyclic_noY"]:
                 continue
 
             # Get CNF for the merged circuit
@@ -33,7 +33,7 @@ def main(tool_path, qasmfile1, qasmfile2,
                         computational_basis = (basis == "comp"), ancillas=1)
 
             glb_st = time.time()
-            res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=(16 if check_type=="2n" else 1))
+            res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=(16 if check_type=="linear" else 1))
             glb_et = time.time()
 
             print(" eq_check: ", end='')
