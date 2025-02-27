@@ -2,6 +2,7 @@
 from decimal import Decimal
 import math
 from decimal import Decimal, getcontext
+from .pauli2cnf import pauli2cnf
 getcontext().prec = 32
 
 class comput2cnf:
@@ -490,10 +491,10 @@ class comput2cnf:
             cnf.add_clause([-U[k], -idg[k]])
             # Implies(idg[k], ~W[k])
             cnf.add_clause([-W[k], -idg[k]])
-            # Implies(hg[k], Equivalent(R[k], X & x[k]))
-            cnf.add_clause([-R[k],  X, -hg[k]])
+            # Implies(hg[k], Equivalent(R[k], X[k] & x[k]))
+            cnf.add_clause([-R[k],  X[k], -hg[k]])
             cnf.add_clause([-R[k], -hg[k],  x[k]])
-            cnf.add_clause([ R[k], -X, -hg[k], -x[k]])
+            cnf.add_clause([ R[k], -X[k], -hg[k], -x[k]])
             # Implies(hg[k], U[k])
             cnf.add_clause([ U[k], -hg[k]])
             # Implies(hg[k], ~W[k])
