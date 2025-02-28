@@ -30,13 +30,13 @@ def main(tool_path, qasmfile1, qasmfile2,
 
             # Get CNF for the merged circuit
             cnf =  qk.encoding.QASM2CNF(circuit1,
-                        computational_basis = (basis == "comp"), ancillas=1)
+                        computational_basis = (basis == "comp"), ancillas=0)
 
+            root = "temp/"+qasmfile1.split('.')[0].split('/')[-1]+"/"
             glb_st = time.time()
             res = qk.CheckEquivalence(tool_path, cnf, check = check_type, N=(16 if check_type=="linear" else 1))
             glb_et = time.time()
 
-            print(" eq_check: ", end='')
             if res == "TIMEOUT":
                 print("T", end="")
                 pass
