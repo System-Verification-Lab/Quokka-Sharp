@@ -9,14 +9,22 @@ class Variables:
         self.cnf = cnf
         self.n = cnf.n + cnf.ancillas
         self.var = 0
+        self.XVar = []
+        self.ZVar = []
+        self.RVar = []
+        self.UVar = []
         self.computational_basis = computational_basis
         self.x = []
         if not self.computational_basis:
             self.z = []
         for i in range(self.n):
-            self.x.append(self.add_var())
+            xnew = self.add_var()
+            self.x.append(xnew)
+            self.XVar.append(xnew)
             if not self.computational_basis:
-                self.z.append(self.add_var())
+                znew = self.add_var()
+                self.z.append(znew)
+                self.ZVar.append(znew)
             if i >= cnf.n: # ancilla init I
                 cnf.add_clause([-self.x[-1]])
                 if not self.computational_basis:
@@ -125,7 +133,7 @@ class Variables:
     
 
 class CNF:
-    def __init__(self, n, ancillas=0, computational_basis=False, weighted = True):
+    def __init__(self, n, ancillas=0, computational_basis=False, weighted = True, ganak = False):
         self.clause = 0
         self.n = n
         self.ancillas = ancillas
@@ -143,6 +151,7 @@ class CNF:
         self.syn_gate_picking_vars_by_layer_and_gate = {}
         self.syn_gate_picking_vars = {}
         self.syn_projection_vars = set()
+        self.ganak = ganak
     
     def copy(self):
         self.vars.cnf = None
@@ -270,15 +279,26 @@ class CNF:
         self.weight_list.write(str(weight))
         if (complex_weight != None):
             self.weight_list.write(" ")
-            self.weight_list.write(str(complex_weight))
+            # support ganak complex format
+            if not self.ganak:
+                self.weight_list.write(str(complex_weight))
+            else: 
+                self.weight_list.write(" + ")
+                self.weight_list.write(str(complex_weight))
+                self.weight_list.write("i")
         self.weight_list.write(" 0")
         # if comment: disabled since it causes problems with cnf solvers
         #     self.weight_list.write("\t\t// " + comment)
         self.weight_list.write("\n")
 
-    def write_to_file(self, cnf_file, syntesis_fomat = False):
+    def ProjectionSet(self, VarList):
+        return ' '.join([str(v) for vars in VarList for v in vars])
+
+    def write_to_file(self, cnf_file, syntesis_fomat = False, projectionset = []):
         with open(cnf_file, 'w') as the_file:
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
+            if len(projectionset) > 0:
+                the_file.writelines("c p show " + self.ProjectionSet(projectionset) + " 0\n")
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
                 the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys() - self.syn_projection_vars)]) + " 0\n") 
@@ -414,8 +434,8 @@ class CNF:
         return s
 
 # construct a CNF object for a given Circuit, in the pauly or computational basis
-def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancillas = 0) -> CNF:
-    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, weighted = weighted)
+def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancillas = 0, ganak = False) -> CNF:
+    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, weighted = weighted, ganak = ganak)
     cnf.encode_circuit(circuit)
     return cnf
 

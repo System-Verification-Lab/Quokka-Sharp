@@ -288,7 +288,7 @@ def main():
     I_u = idg >> Equivalent(Uk, False)
     I_w = idg >> Equivalent(Wk, False)
 
-    H_r = hg >> Equivalent(Rk, x[k] & X)
+    H_r = hg >> Equivalent(Rk, x[k] & Xk)
     H_u = hg >> Equivalent(Uk, True)
     H_w = hg >> Equivalent(Wk, False)
 
