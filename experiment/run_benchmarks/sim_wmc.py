@@ -9,7 +9,7 @@ def wmc(qasmfile1, tool_invocation, meas, basis):
     # Parse the circuit
     circuit1 = qk.encoding.QASMparser(qasmfile1, True)
     # Encode the circuit
-    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"), weighted=True)
     cnf.leftProjectAllZero()
     cnf.add_measurement(meas)
     prob = qk.Simulate(tool_invocation, cnf)
