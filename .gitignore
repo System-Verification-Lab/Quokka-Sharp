@@ -28,3 +28,6 @@ experiment/temp_check/
 experiment/_syn_composition_solutions/
 experiment/*.out
 experiment/run_benchmarks/temp_for_sim.cnf
+experiment/test2.cnf
+experiment/temp.cnf
+experiment/test2.qasm
