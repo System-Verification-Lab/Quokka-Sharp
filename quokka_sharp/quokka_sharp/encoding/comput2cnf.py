@@ -2,7 +2,6 @@
 from decimal import Decimal
 import math
 from decimal import Decimal, getcontext
-from .pauli2cnf import pauli2cnf
 getcontext().prec = 32
 
 class comput2cnf:
