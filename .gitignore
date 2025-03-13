@@ -30,3 +30,6 @@ experiment/*.out
 experiment/run_benchmarks/temp_for_sim.cnf
 experiment/syn_files/*
 experiment/basic_to_run*
+experiment/test2.cnf
+experiment/temp.cnf
+experiment/test2.qasm
