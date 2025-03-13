@@ -12,12 +12,27 @@ dirs=(
 )
 
 
+echo -e -n "\nbasic_to_run:\t"
+for i in ./basic_to_run/*; do
+    echo
+    filename_with_ext=$(basename "$i")
+    filename="${filename_with_ext%.*}"
+    target="./syn_files/$filename/syn_run.out"
+    python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" | tee $target >&1 ;
+    echo $target
+done
+echo -e "\n"
+
+exit 
+
 echo -e -n "\nbasic_tests:\t"
 for i in ./basic_tests/*; do
     echo
-    echo "syn_run on file: $i"
-    # echo -n "/"
-    python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" >&1;
+    filename_with_ext=$(basename "$i")
+    filename="${filename_with_ext%.*}"
+    target="./syn_files/$filename/syn_run.out"
+    python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" | tee $target >&1 ;
+    echo $target
 done
 echo -e "\n"
 
