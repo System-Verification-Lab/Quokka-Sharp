@@ -1042,12 +1042,12 @@ class pauli2cnf:
             # Tdg -> !l_T
             cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
           
-            if cnf.syn_gate_layer>2:
+            if cnf.syn_gate_layer>5:
                 
-                # T -> !l_T | !ll_T
-                cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='t', bit = k), -cnf.get_syn_var_past_layer(Name ='t', bit = k, past=2)])
-                # Tdg -> !l_Tdg | !ll_Tdg
-                cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='tdg', bit = k), -cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=2)])
+                # T -> !l_T | !ll_T | !lll_T | !llll_T
+                cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
+                # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
+                cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
 
             c = k
             for t in range(n):
