@@ -171,6 +171,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         return "FOUND", weight, qasm
 
     except TimeoutException as error:
+        if DEBUG: print(f"Run Time: {time.time()-start}")
         t_found, t_weight, t_assignment = get_result(out_file, expected_prob)
         if t_found:
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment)
