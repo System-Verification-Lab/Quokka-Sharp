@@ -26,20 +26,20 @@ def main(tool_path, qasmfile, eq_tool_path=None):
     helper_folder = "./syn_files/" + qasmfile.split('/')[-1].split('.')[0] + "/"
     if not os.path.exists(helper_folder):
         os.makedirs(helper_folder, exist_ok=True)
-    for onehot in [True, False]:
+    for comp_basis, onehot in [(True, False)]: #, (False, False), (False, True)]:
         glb_st = time.time()
 
         # Parse the circuits
         circuit = qk.encoding.QASMparser(qasmfile, True)
         circuit.dagger()
-        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False, ancillas=0)
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis = comp_basis, ancillas=0)
 
         res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root=helper_folder, fidelity_threshold=1, bin_search=False, initial_depth=0, onehot_xz = onehot)
         
         sol_folder = '/'.join(qasmfile.split('/')[:-2]) + "/" + qasmfile.split('/')[-2]+"_syn_solutions/"
         if not os.path.exists(sol_folder):
             os.mkdir(sol_folder)
-        sol_file = sol_folder + f"onehot{onehot}_" + qasmfile.split('/')[-1] 
+        sol_file = sol_folder + ("comp" if comp_basis else "pauli") + "_" + ("1hot" if onehot else "full") + "_" + qasmfile.split('/')[-1] 
 
         with open(sol_file, "w") as file:
             file.write(sol)
@@ -64,6 +64,7 @@ def main(tool_path, qasmfile, eq_tool_path=None):
         #     print(f"ERROR - unrecognised result", end="")
 
         print(f"\t solution: {sol_file}", end="")
+        print(f"\t origin: {qasmfile}", end="")
         print()
         print()
 

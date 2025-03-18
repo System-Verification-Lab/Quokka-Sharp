@@ -595,6 +595,8 @@ def main():
             cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
             # Tdg -> !l_T
             cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+            # I -> I until CX
+            cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
           
             if cnf.syn_gate_layer>5:
                 
@@ -605,8 +607,6 @@ def main():
 
             c = k
             for t in range(n):
-                # I -> I until CX
-                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = c), idg[c]] + cgs_k)
 
                 if c!=t:
                     # CX(c,t) -> !past(CX(c,t))

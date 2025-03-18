@@ -37,14 +37,15 @@ def get_result(result_file, expexted_prob):
         assert assignment[-1] == "0"
         assignment = assignment[1:-1]
 
+    print( f"achived: {weight}/{Decimal(expexted_prob)}")
     prec = Decimal(weight/Decimal(expexted_prob))
     return (prec > (1-1e-12), prec, assignment)
     
-def identity_check(cnf:'CNF', cnf_file_root, indx, onehot_xz = False):
+def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = False):
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
     
-    cnf_file = cnf_file_root + f"{"onehotXZ" if onehot_xz else "fullP"}_{indx}_quokka_syn.cnf" # overide files to reduce spaming
+    cnf_file = cnf_file_root + f"{files_prefix}_{indx}_quokka_syn.cnf" # overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
@@ -89,35 +90,39 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         weight = 0
         assignment = []
         qasm = ""
-        num_layers = 1
+        if bin_search:
+            num_layers = 1
         cnf_copy = copy.deepcopy(cnf)
         if initial_depth:
             cnf_copy.add_syn_layer(initial_depth)
         # QUESTION: add two synthesis layers?
+        skip_first = True
         while not done:
             if DEBUG: print() 
-            it_counter+=1
             if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
             if DEBUG: print(f"Iteration: {it_counter}")
-            if cnf.computational_basis:
-                cnf_copy.add_syn_layer()
-                file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
-                return file
+            files_prefix = ("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp"
             if bin_search:
+                it_counter+=1
                 cnf_copy = copy.deepcopy(cnf)
                 cnf_copy.add_syn_layer(initial_depth+num_layers)
-                file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
+                file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
             else:
-                cnf_copy.add_syn_layer()
-                file = identity_check(cnf_copy, cnf_file_root, it_counter, onehot_xz = onehot_xz)
+                if skip_first:
+                    skip_first = False
+                else:
+                    cnf_copy.add_syn_layer()
+                    it_counter+=1
+                file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
             if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
             if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
-            command = tool_invocation.split(' ') + ["--maxsharpsat-threshold", str(expected_prob * fidelity_threshold), "-i", file]
+            # "--maxsharpsat-threshold", str(expected_prob * fidelity_threshold),
+            command = tool_invocation.split(' ') + [ "-i", file]
             if DEBUG: print(" ".join(command))
-            out_file = cnf_file_root+f"{"onehotXZ" if onehot_xz else "fullP"}_{it_counter}_d4.out"
-            err_file = cnf_file_root+f"{"onehotXZ" if onehot_xz else "fullP"}_{it_counter}_d4.err"
-            res_file = cnf_file_root+f"{"onehotXZ" if onehot_xz else "fullP"}_{it_counter}_d4.res"
+            out_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.out"
+            err_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.err"
+            res_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.res"
             if DEBUG: print(f"Out file: {out_file}")
             if DEBUG: print(f"Err file: {err_file}")
             with open(out_file, 'w') as out:

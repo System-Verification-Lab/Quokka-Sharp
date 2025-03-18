@@ -3,6 +3,7 @@ from decimal import Decimal
 import math
 from decimal import Decimal, getcontext
 getcontext().prec = 32
+from .pauli2cnf import pauli2cnf
 
 class comput2cnf:
 
@@ -467,17 +468,21 @@ class comput2cnf:
         X = [cnf.add_var() for _ in range(n)]
         R = [cnf.add_var() for _ in range(n)]
         U = [cnf.add_var() for _ in range(n)]
-        W = [cnf.add_var() for _ in range(n)]
+        Wp = [cnf.add_var() for _ in range(n)]
+        # Wn = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
         [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
         [cnf.add_weight(-U[k], 1) for k in range(n)]
-        [cnf.add_weight(W[k], str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt())) for k in range(n)]
-        [cnf.add_weight(-W[k], 1, 0) for k in range(n)]
+        [cnf.add_weight(Wp[k], str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-Wp[k], 1, 0) for k in range(n)]
+        # [cnf.add_weight(Wn[k], str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt())) for k in range(n)]
+        # [cnf.add_weight(-Wn[k], 1, 0) for k in range(n)]
         
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
         hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
         tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
+        # tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
         cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         for k in range(n):
     
@@ -488,16 +493,16 @@ class comput2cnf:
             cnf.add_clause([-R[k], -idg[k]])
             # Implies(idg[k], ~U[k])
             cnf.add_clause([-U[k], -idg[k]])
-            # Implies(idg[k], ~W[k])
-            cnf.add_clause([-W[k], -idg[k]])
+            # Implies(idg[k], ~Wp[k])
+            cnf.add_clause([-Wp[k], -idg[k]])
             # Implies(hg[k], Equivalent(R[k], X[k] & x[k]))
             cnf.add_clause([-R[k],  X[k], -hg[k]])
             cnf.add_clause([-R[k], -hg[k],  x[k]])
             cnf.add_clause([ R[k], -X[k], -hg[k], -x[k]])
             # Implies(hg[k], U[k])
             cnf.add_clause([ U[k], -hg[k]])
-            # Implies(hg[k], ~W[k])
-            cnf.add_clause([-W[k], -hg[k]])
+            # Implies(hg[k], ~Wp[k])
+            cnf.add_clause([-Wp[k], -hg[k]])
             # Implies(tg[k], Equivalent(X[k], x[k]))
             cnf.add_clause([ X[k], -tg[k], -x[k]])
             cnf.add_clause([-X[k], -tg[k],  x[k]])
@@ -505,9 +510,9 @@ class comput2cnf:
             cnf.add_clause([-R[k], -tg[k]])
             # Implies(tg[k], ~U[k])
             cnf.add_clause([-U[k], -tg[k]])
-            # Implies(tg[k], Equivalent(W[k], x[k]))
-            cnf.add_clause([ W[k], -tg[k], -x[k]])
-            cnf.add_clause([-W[k], -tg[k],  x[k]])
+            # Implies(tg[k], Equivalent(Wp[k], x[k]))
+            cnf.add_clause([ Wp[k], -tg[k], -x[k]])
+            cnf.add_clause([-Wp[k], -tg[k],  x[k]])
 
             c = k
             for t in range(n):
@@ -530,10 +535,10 @@ class comput2cnf:
                 cnf.add_clause([-U[c], -cg[c][t]])
                 # Implies(cg[c][t], ~U[t])
                 cnf.add_clause([-U[t], -cg[c][t]])
-                # Implies(cg[c][t], ~W[c])
-                cnf.add_clause([-W[c], -cg[c][t]])
-                # Implies(cg[c][t], ~W[t])
-                cnf.add_clause([-W[t], -cg[c][t]])
+                # Implies(cg[c][t], ~Wp[c])
+                cnf.add_clause([-Wp[c], -cg[c][t]])
+                # Implies(cg[c][t], ~Wp[t])
+                cnf.add_clause([-Wp[t], -cg[c][t]])
 
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
@@ -544,22 +549,28 @@ class comput2cnf:
                 continue
         
             # H -> !l_H
-            cnf.add_clause([-hg[k],  -cnf.get_syn_var_last_layer(Name ='h', bit = k)])
-            # T -> !l_Tdg
-            # cnf.add_clause([-tg[k],  -cnf.get_syn_var_last_layer(Name ='tdg', bit = k)])
-            # Tdg -> !l_T
-            # cnf.add_clause([-tdg[k], -cnf.get_syn_var_last_layer(Name ='t', bit = k)])
+            cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
+            # # T -> !l_Tdg
+            # cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
+            # # Tdg -> !l_T
+            # cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+            # I -> I until CX
+            cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
+
+            # if cnf.syn_gate_layer>5:
+            #     # T -> !l_T | !ll_T | !lll_T | !llll_T
+            #     cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
+            #     # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
+            #     cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
 
             c = k
             for t in range(n):
                 if c==t:
                     continue
                 # CX(c,t) -> !past(CX(c,t))
-                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='cx', bit = [c,t])])
+                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
                 # CX(c,t) -> !past(I(c)) or !past(I(t))
-                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_last_layer(Name ='id', bit = c), -cnf.get_syn_var_last_layer(Name ='id', bit = t)])
-                # I -> I until CX
-                cnf.add_clause([-cnf.get_syn_var_last_layer(Name ='id', bit = c), idg[c]] + cgs_k)
+                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
           
         cnf.vars.x[:n] = X
     
