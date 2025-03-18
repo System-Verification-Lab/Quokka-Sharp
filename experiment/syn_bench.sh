@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tool_path="../../d4v2/build/d4 -m max#sat --maxsharpsat-option-and-dig false --float 1"
+tool_path="../../d4v2/build/maxT_static "
 eq_tool_path="../../GPMC/bin/gpmc -mode=1"
 path=$PWD/benchmark
 

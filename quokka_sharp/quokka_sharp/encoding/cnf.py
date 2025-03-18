@@ -273,7 +273,10 @@ class CNF:
 
     def add_weight(self, var, weight, complex_weight=None, comment=None):
         assert self.weighted
-        self.weight_list.write("c p weight ")
+        if (complex_weight != None):
+            self.weight_list.write("c p complex ")
+        else:
+            self.weight_list.write("c p weight ")
         self.weight_list.write(str(var))
         self.weight_list.write(" ")
         self.weight_list.write(str(weight))
@@ -302,7 +305,10 @@ class CNF:
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
                 the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys() - self.syn_projection_vars)]) + " 0\n") 
-            the_file.write(self.weight_list.getvalue())
+            weights_str = self.weight_list.getvalue()
+            if not syntesis_fomat:
+                weights_str.replace("complex", "weight")
+            the_file.write(weights_str)
             the_file.write(''.join(self.cons_list))
 
     # add to the cnf the gates as decribed in the circuit
