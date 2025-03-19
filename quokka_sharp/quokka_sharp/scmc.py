@@ -22,23 +22,25 @@ def get_result(result_file, expexted_prob):
         result_str = file.read()
 
     # get weight
+    res_regex = r"-?[0-9\.\s+\-i]+"
     if re.findall(r"r SATISFIABLE",result_str):
-        weight = re.findall(r"s -?[0-9\.]+",result_str)
+        weight = re.findall(r"s " + res_regex,result_str)
     else:
-        weight = re.findall(r"o -?[0-9\.]+",result_str) + re.findall(r"k -?[0-9]+",result_str)
+        weight = re.findall(r"[ok] " + res_regex,result_str)
         if not weight: 
             return (False, "CRASH", [])
-    # get assignment
+    # get assignment 
     assignment = re.findall(r"v [0-9\s\-]+ 0",result_str)
-    weight = Decimal(float(weight[0][2:]))
+    weight = weight[0][2:].replace("\\n", "").replace(" ", "").replace("i", "j").replace("+-", "-")
+    weight = complex(weight)
     if assignment:
         assignment = assignment[0].split(" ")
         assert assignment[0] == "v"
         assert assignment[-1] == "0"
         assignment = assignment[1:-1]
 
-    print( f"achived: {weight}/{Decimal(expexted_prob)}")
-    prec = Decimal(weight/Decimal(expexted_prob))
+    print(f"achived: {Decimal(abs(weight))}/{Decimal(expexted_prob)}")
+    prec = Decimal(Decimal(abs(weight))/Decimal(expexted_prob))
     return (prec > (1-1e-12), prec, assignment)
     
 def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = False):
@@ -118,7 +120,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
             if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             # "--maxsharpsat-threshold", str(expected_prob * fidelity_threshold),
-            command = tool_invocation.split(' ') + [ "-i", file]
+            command = tool_invocation.split(' ') + [ "-i", file] + (["--complex", "1"] if cnf.computational_basis else ["--complex", "0"])
             if DEBUG: print(" ".join(command))
             out_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.out"
             err_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.err"

@@ -469,20 +469,20 @@ class comput2cnf:
         R = [cnf.add_var() for _ in range(n)]
         U = [cnf.add_var() for _ in range(n)]
         Wp = [cnf.add_var() for _ in range(n)]
-        # Wn = [cnf.add_var() for _ in range(n)]
+        Wn = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
         [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
         [cnf.add_weight(-U[k], 1) for k in range(n)]
         [cnf.add_weight(Wp[k], str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt())) for k in range(n)]
         [cnf.add_weight(-Wp[k], 1, 0) for k in range(n)]
-        # [cnf.add_weight(Wn[k], str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt())) for k in range(n)]
-        # [cnf.add_weight(-Wn[k], 1, 0) for k in range(n)]
+        [cnf.add_weight(Wn[k], str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-Wn[k], 1, 0) for k in range(n)]
         
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
         hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
         tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
-        # tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
+        tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
         cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         for k in range(n):
     
@@ -493,7 +493,8 @@ class comput2cnf:
             cnf.add_clause([-R[k], -idg[k]])
             # Implies(idg[k], ~U[k])
             cnf.add_clause([-U[k], -idg[k]])
-            # Implies(idg[k], ~Wp[k])
+            # Implies(idg[k], ~Wn[k] & ~Wp[k])
+            cnf.add_clause([-Wn[k], -idg[k]])
             cnf.add_clause([-Wp[k], -idg[k]])
             # Implies(hg[k], Equivalent(R[k], X[k] & x[k]))
             cnf.add_clause([-R[k],  X[k], -hg[k]])
@@ -501,17 +502,26 @@ class comput2cnf:
             cnf.add_clause([ R[k], -X[k], -hg[k], -x[k]])
             # Implies(hg[k], U[k])
             cnf.add_clause([ U[k], -hg[k]])
-            # Implies(hg[k], ~Wp[k])
+            # Implies(hg[k], ~Wn[k] & ~Wp[k])
+            cnf.add_clause([-Wn[k], -hg[k]])
             cnf.add_clause([-Wp[k], -hg[k]])
-            # Implies(tg[k], Equivalent(X[k], x[k]))
+            # Implies(tdg[k] | tg[k], Equivalent(X[k], x[k]))
+            cnf.add_clause([ X[k], -tdg[k], -x[k]])
             cnf.add_clause([ X[k], -tg[k], -x[k]])
+            cnf.add_clause([-X[k], -tdg[k],  x[k]])
             cnf.add_clause([-X[k], -tg[k],  x[k]])
-            # Implies(tg[k], ~R[k])
+            # Implies(tdg[k] | tg[k], ~R[k])
+            cnf.add_clause([-R[k], -tdg[k]])
             cnf.add_clause([-R[k], -tg[k]])
-            # Implies(tg[k], ~U[k])
+            # Implies(tdg[k] | tg[k], ~U[k])
+            cnf.add_clause([-U[k], -tdg[k]])
             cnf.add_clause([-U[k], -tg[k]])
-            # Implies(tg[k], Equivalent(Wp[k], x[k]))
+            # (Implies(tdg[k], ~Wp[k] & (Equivalent(Wn[k], x[k])))) & (Implies(tg[k], ~Wn[k] & (Equivalent(Wp[k], x[k]))))
+            cnf.add_clause([-Wn[k], -tg[k]])
+            cnf.add_clause([-Wp[k], -tdg[k]])
+            cnf.add_clause([ Wn[k], -tdg[k], -x[k]])
             cnf.add_clause([ Wp[k], -tg[k], -x[k]])
+            cnf.add_clause([-Wn[k], -tdg[k],  x[k]])
             cnf.add_clause([-Wp[k], -tg[k],  x[k]])
 
             c = k
@@ -535,14 +545,16 @@ class comput2cnf:
                 cnf.add_clause([-U[c], -cg[c][t]])
                 # Implies(cg[c][t], ~U[t])
                 cnf.add_clause([-U[t], -cg[c][t]])
-                # Implies(cg[c][t], ~Wp[c])
+                # Implies(cg[c][t], ~Wn[c] & ~Wp[c])
+                cnf.add_clause([-Wn[c], -cg[c][t]])
                 cnf.add_clause([-Wp[c], -cg[c][t]])
-                # Implies(cg[c][t], ~Wp[t])
+                # Implies(cg[c][t], ~Wn[t] & ~Wp[t])
+                cnf.add_clause([-Wn[t], -cg[c][t]])
                 cnf.add_clause([-Wp[t], -cg[c][t]])
 
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
-            gate_controlers = [idg[k], hg[k], tg[k]]+cgs_k
+            gate_controlers = [idg[k], hg[k], tg[k], tdg[k]]+cgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer<=1:
@@ -550,18 +562,18 @@ class comput2cnf:
         
             # H -> !l_H
             cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
-            # # T -> !l_Tdg
-            # cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
-            # # Tdg -> !l_T
-            # cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+            # T -> !l_Tdg
+            cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
+            # Tdg -> !l_T
+            cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
             # I -> I until CX
             cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
 
-            # if cnf.syn_gate_layer>5:
-            #     # T -> !l_T | !ll_T | !lll_T | !llll_T
-            #     cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
-            #     # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
-            #     cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
+            if cnf.syn_gate_layer>5:
+                # T -> !l_T | !ll_T | !lll_T | !llll_T
+                cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
+                # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
+                cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
 
             c = k
             for t in range(n):
