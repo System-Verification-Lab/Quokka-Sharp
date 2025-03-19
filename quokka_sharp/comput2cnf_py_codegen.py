@@ -274,7 +274,6 @@ def main():
 
     idg   = symbols('idg[k]')
     hg    = symbols('hg[k]')
-    # sg    = symbols('sg[k]')
     tg    = symbols('tg[k]')
     tdg    = symbols('tdg[k]')
 
@@ -282,28 +281,24 @@ def main():
     Rk = symbols('R[k]')    
     Uk = symbols('U[k]')
     Wpk = symbols('Wp[k]')
-    # Wnk = symbols('Wn[k]')
+    Wnk = symbols('Wn[k]')
 
     I_x = idg >> Equivalent(Xk, x[k])
     I_r = idg >> Equivalent(Rk, False)
     I_u = idg >> Equivalent(Uk, False)
     I_w = idg >> Equivalent(Wpk, False)
-    # I_w = idg >> (Equivalent(Wpk, False) & Equivalent(Wnk, False))
+    I_w = idg >> (Equivalent(Wpk, False) & Equivalent(Wnk, False))
 
     H_r = hg >> Equivalent(Rk, x[k] & Xk)
     H_u = hg >> Equivalent(Uk, True)
     H_w = hg >> Equivalent(Wpk, False)
-    # H_w = hg >> (Equivalent(Wpk, False) & Equivalent(Wnk, False))
+    H_w = hg >> (Equivalent(Wpk, False) & Equivalent(Wnk, False))
 
-    T_x = tg >> Equivalent(Xk, x[k])
-    T_r = tg >> Equivalent(Rk, False)
-    T_u = tg >> Equivalent(Uk, False)
-    T_w = tg >> Equivalent(Wpk, x[k])
-    # T_x = (tg | tdg) >> Equivalent(Xk, x[k])
-    # T_r = (tg | tdg) >> Equivalent(Rk, False)
-    # T_u = (tg | tdg) >> Equivalent(Uk, False)
-    # T_w = ((tg  >> (Equivalent(Wpk, x[k]) & Equivalent(Wnk, False))) &
-    #        (tdg >> (Equivalent(Wnk, x[k]) & Equivalent(Wpk, False))) )
+    T_x = (tg | tdg) >> Equivalent(Xk, x[k])
+    T_r = (tg | tdg) >> Equivalent(Rk, False)
+    T_u = (tg | tdg) >> Equivalent(Uk, False)
+    T_w = ((tg  >> (Equivalent(Wpk, x[k]) & Equivalent(Wnk, False))) &
+           (tdg >> (Equivalent(Wnk, x[k]) & Equivalent(Wpk, False))) )
 
     single_qb_gate_properties = [I_x, I_r, I_u, I_w, H_r, H_u, H_w, T_x, T_r, T_u, T_w]
     
@@ -318,8 +313,8 @@ def main():
     Ut = symbols('U[t]')
     Wpc = symbols('Wp[c]')
     Wpt = symbols('Wp[t]')
-    # Wnc = symbols('Wn[c]')
-    # Wnt = symbols('Wn[t]')
+    Wnc = symbols('Wn[c]')
+    Wnt = symbols('Wn[t]')
 
     CX_xc = cg_ct >> Equivalent(Xcc, x[c])
     CX_xt = cg_ct >> Equivalent(Xtt, x[t] ^ x[c])
@@ -327,10 +322,8 @@ def main():
     CX_rt = cg_ct >> Equivalent(Rt, False)
     CX_uc = cg_ct >> Equivalent(Uc, False)
     CX_ut = cg_ct >> Equivalent(Ut, False)
-    CX_wc = cg_ct >> Equivalent(Wpc, False)
-    CX_wt = cg_ct >> Equivalent(Wpt, False)
-    # CX_wc = cg_ct >> (Equivalent(Wpc, False) & Equivalent(Wnc, False))
-    # CX_wt = cg_ct >> (Equivalent(Wpt, False) & Equivalent(Wnt, False))
+    CX_wc = cg_ct >> (Equivalent(Wpc, False) & Equivalent(Wnc, False))
+    CX_wt = cg_ct >> (Equivalent(Wpt, False) & Equivalent(Wnt, False))
 
     double_qb_gate_properties = [CX_xc, CX_xt, CX_rc, CX_rt, CX_uc, CX_ut, CX_wc, CX_wt]
 
@@ -355,20 +348,20 @@ def main():
         R = [cnf.add_var() for _ in range(n)]
         U = [cnf.add_var() for _ in range(n)]
         Wp = [cnf.add_var() for _ in range(n)]
-        # Wn = [cnf.add_var() for _ in range(n)]
+        Wn = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
         [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
         [cnf.add_weight(-U[k], 1) for k in range(n)]
         [cnf.add_weight(Wp[k], str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt())) for k in range(n)]
         [cnf.add_weight(-Wp[k], 1, 0) for k in range(n)]
-        # [cnf.add_weight(Wn[k], str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt())) for k in range(n)]
-        # [cnf.add_weight(-Wn[k], 1, 0) for k in range(n)]
+        [cnf.add_weight(Wn[k], str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt())) for k in range(n)]
+        [cnf.add_weight(-Wn[k], 1, 0) for k in range(n)]
         
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
         hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
         tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
-        # tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
+        tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
         cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         for k in range(n):
     ''')
@@ -385,7 +378,7 @@ def main():
     print('''
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
-            gate_controlers = [idg[k], hg[k], tg[k]]+cgs_k
+            gate_controlers = [idg[k], hg[k], tg[k], tdg[k]]+cgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer<=1:
@@ -393,18 +386,18 @@ def main():
         
             # H -> !l_H
             cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
-            # # T -> !l_Tdg
-            # cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
-            # # Tdg -> !l_T
-            # cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+            # T -> !l_Tdg
+            cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
+            # Tdg -> !l_T
+            cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
             # I -> I until CX
             cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
 
-            # if cnf.syn_gate_layer>5:
-            #     # T -> !l_T | !ll_T | !lll_T | !llll_T
-            #     cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
-            #     # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
-            #     cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
+            if cnf.syn_gate_layer>5:
+                # T -> !l_T | !ll_T | !lll_T | !llll_T
+                cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
+                # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
+                cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
 
             c = k
             for t in range(n):
