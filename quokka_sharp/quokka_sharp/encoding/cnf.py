@@ -1,17 +1,13 @@
 import copy
 import io
-from itertools import product
 import math
-import numpy as np
-
 
 from .qasm_parser import Circuit
 
 class Variables:
-    def __init__(self, cnf: 'CNF', computational_basis=False, unitary_encoding = False, Unitary = None):
+    def __init__(self, cnf: 'CNF', computational_basis=False):
         self.cnf = cnf
         self.n = cnf.n + cnf.ancillas
-        self.Udim = 2 ** self.n
         self.var = 0
         self.XVar = []
         self.ZVar = []
@@ -41,17 +37,7 @@ class Variables:
             cnf.add_clause([-self.r])
             self.u = self.add_var()
             cnf.add_clause([-self.u])
-        if unitary_encoding:
-            self.Unitaryvar = [[0 for _ in range(self.Udim)] for _ in range(self.Udim)]
-            Udim = self.Udim
-            for i in range(Udim):
-                for j in range(Udim):
-                    self.Unitaryvar[i][j] = self.add_var()
-                    if Unitary[i][j] == 0:
-                        self.cnf.add_clause([-self.Unitaryvar[i][j]])
-                    else:
-                        self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j])
-                        self.cnf.add_weight(-self.Unitaryvar[i][j], 1)
+
     def copy(self):
         cnf = self.cnf
         self.cnf = None
@@ -145,22 +131,9 @@ class Variables:
                 else:
                     self.cnf.add_clause([-z[i]], prepend)            
     
-    def encode_unitary_static(self, U):
-        # is_unitary, num_qubits = check_unitary_and_qubits(U)           
-        Udim = 2 ** self.n
-        Uvar = [[0 for _ in range(Udim)] for _ in range(Udim)]
-        for i in range(Udim):
-            for j in range(Udim):
-                Uvar[i][j] = self.add_var()
-                if U[i][j] == 0:
-                    self.cnf.add_clause([-Uvar[i][j]])
-                else:
-                    self.cnf.add_weight(Uvar[i][j], U[i][j])
-                    self.cnf.add_weight(-Uvar[i][j], 1)
-                # add weight Uvar[i][j] --- U[i][j] and not Uvar[i][j] --- 1        
-                
+
 class CNF:
-    def __init__(self, n = 0, ancillas=0, computational_basis=False, weighted = True, ganak = False, unitary_encoding = False, Unitary = None):
+    def __init__(self, n, ancillas=0, computational_basis=False, weighted = True, ganak = False):
         self.clause = 0
         self.n = n
         self.ancillas = ancillas
@@ -170,8 +143,8 @@ class CNF:
         self.weighted = weighted
         self.weight_list = io.StringIO()
         self.power_two_normalisation = 0
-        # self.vars = Variables(self, computational_basis, unitary_encoding, Unitary) # variables at timestep m (end of circuit)
-        # self.vars_init = self.vars.copy()     # variables at timestep 0
+        self.vars = Variables(self, computational_basis) # variables at timestep m (end of circuit)
+        self.vars_init = self.vars.copy()     # variables at timestep 0
         self.computational_basis = computational_basis
         self.square_result = False
         self.syn_gate_layer = 0
@@ -179,42 +152,7 @@ class CNF:
         self.syn_gate_picking_vars = {}
         self.syn_projection_vars = set()
         self.ganak = ganak
-        self.unitary_encoding = unitary_encoding
-        self.Unitary = Unitary
-        if unitary_encoding:
-            try: 
-                is_unitary, num_qubits = check_unitary_and_qubits(Unitary)
-            except:
-                assert "Please give the matrix in np arrays"
-            if not is_unitary:
-                assert "The matrix is not unitary matrix!"
-            else:
-                self.n = num_qubits
-                dim   = 2 ** num_qubits   
-                
-                self.vars = Variables(self, computational_basis, unitary_encoding, Unitary) # variables at timestep m (end of circuit)
-                self.vars_init = self.vars.copy()     # variables at timestep 0             
-                
-                xbinary = generate_signed_combinations(self.vars.x)
-                X = []
-                for i in range(self.n):
-                    Xnew = self.add_var()
-                    X.append(Xnew)
-                Xbinary = generate_signed_combinations(X)
-            #   update the variables
-                self.vars.x = X
-                Ucons = []
-                for i in range(dim):
-                    for j in range(dim):
-                        for var in xbinary[i]:
-                            self.add_clause([var, - self.vars.Unitaryvar[i][j]])
-                        for var in Xbinary[j]:
-                            self.add_clause([var, - self.vars.Unitaryvar[i][j]])
-                        Ucons.append(self.vars.Unitaryvar[i][j])
-                self.add_clause(Ucons)  
-        else:
-            self.vars = Variables(self, computational_basis, unitary_encoding, Unitary) # variables at timestep m (end of circuit)
-            self.vars_init = self.vars.copy()     # variables at timestep 0
+    
     def copy(self):
         self.vars.cnf = None
         self.vars_init.cnf = None
@@ -499,46 +437,13 @@ class CNF:
                 for b in gate['bits']:
                     s += f" q[{b}]"
                 s += f" ;\n"
-        return s         
-        
-
-
-def generate_signed_combinations(lst):
-    n = len(lst)
-    result = {}
-    
-    for signs in product([0, 1], repeat=n):
-        signed_list = [num if sign else -num for num, sign in zip(lst, signs)]
-        signs = signs[::-1]
-        binary_code = ''.join(map(str,signs))
-        result[int(binary_code,2)] = signed_list
-    return result
-
-def check_unitary_and_qubits(U, tol=1e-12):
-    # Check if U is square
-    if U.shape[0] != U.shape[1]:
-        return False, None
-    
-    # Check if U is unitary
-    U_dagger = np.conjugate(U).T
-    identity = np.eye(U.shape[0])
-    
-    is_unitary = np.allclose(U_dagger @ U, identity, atol=tol) and np.allclose(U @ U_dagger, identity, atol=tol)
-    
-    # Determine the number of qubits
-    size = U.shape[0]
-    num_qubits = None
-    if (size & (size - 1)) == 0:  # Check if size is a power of 2
-        num_qubits = int(np.log2(size))
-    
-    return is_unitary, num_qubits
-
+        return s
 
 # construct a CNF object for a given Circuit, in the pauly or computational basis
 def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancillas = 0, ganak = False) -> CNF:
     cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, weighted = weighted, ganak = ganak)
     cnf.encode_circuit(circuit)
-    return cnf 
+    return cnf
 
 # construct a CNF object for a given PauliStrings Composition, in the pauly basis with weights
 def Composition2CNF(composition_dictionary, ancillas = 0) -> CNF:
