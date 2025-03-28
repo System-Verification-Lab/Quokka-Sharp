@@ -142,7 +142,7 @@ def get_angle(angle: str):
             if 'pi' in theta_str:
                 theta = theta_str.replace('*', '')
                 theta = theta.replace('pi', '')
-                theta = float(theta) * math.pi if theta != '' else math.pi
+                theta = -math.pi if theta == '-' else (math.pi if theta == '' else float(theta) * math.pi)
             else:
                 theta = Decimal(float(theta_str))
         return theta
