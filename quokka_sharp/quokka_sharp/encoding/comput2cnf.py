@@ -557,19 +557,17 @@ class comput2cnf:
             gate_controlers = [idg[k], hg[k], tg[k], tdg[k]]+cgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
-            if cnf.syn_gate_layer<=1:
-                continue
-        
-            # H -> !l_H
-            cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
-            # T -> !l_Tdg
-            cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
-            # Tdg -> !l_T
-            cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
-            # I -> I until CX
-            cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
+            if cnf.syn_gate_layer>=2:
+                # H -> !l_H
+                cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
+                # T -> !l_Tdg
+                cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
+                # Tdg -> !l_T
+                cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+                # I -> I until CX
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
 
-            if cnf.syn_gate_layer>5:
+            if cnf.syn_gate_layer>=5:
                 # T -> !l_T | !ll_T | !lll_T | !llll_T
                 cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
                 # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
@@ -577,13 +575,19 @@ class comput2cnf:
 
             c = k
             for t in range(n):
-                if c==t:
-                    continue
-                # CX(c,t) -> !past(CX(c,t))
-                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
-                # CX(c,t) -> !past(I(c)) or !past(I(t))
-                cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
-          
+                if c!=t:
+                    if cnf.syn_gate_layer>=2:
+                        # CX(c,t) -> !past(CX(c,t))
+                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
+                        # CX(c,t) -> !past(I(c)) or !past(I(t))
+                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+            
+                    if cnf.syn_gate_layer>=3:
+                        # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='tdg', bit = c, past=2), -tg[c]])
+                        # past(CX(c,t)) -> !past(past(Tdg(c))) or !T(c))
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='t', bit = c, past=2), -tdg[c]])
+        
         cnf.vars.x[:n] = X
     
     

@@ -2,6 +2,8 @@ import copy
 import io
 from itertools import product
 import math
+import sys
+import traceback
 import numpy as np
 
 
@@ -215,6 +217,7 @@ class CNF:
         else:
             self.vars = Variables(self, computational_basis, unitary_encoding, Unitary) # variables at timestep m (end of circuit)
             self.vars_init = self.vars.copy()     # variables at timestep 0
+        
     def copy(self):
         self.vars.cnf = None
         self.vars_init.cnf = None
@@ -309,19 +312,26 @@ class CNF:
         return var
     
     def get_syn_var_past_layer(self, Name ="UnNamed", bit = None, past=1):
-        if self.syn_gate_layer == 1:
-            return None
-        if type(bit) is int:
-            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-past][Name][bit]
-        if type(bit) is list:
-            return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-past][Name][bit[0]][bit[1]]
+        try:
+            if type(bit) is int:
+                return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-past][Name][bit]
+            if type(bit) is list:
+                return self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer-past][Name][bit[0]][bit[1]]
+        except KeyError:
+            return 0.5
 
 
-    def add_clause(self, cons, prepend=False, comment=None):
+    def add_clause(self, cons, prepend=False, comment=None):   
+        # print(f"adding clause: {cons}")
+        # traceback.print_stack(limit=3, file=sys.stdout)
+        if -0.5 in cons:
+            # raise KeyError("used an invalid past variable, and added its false literal to a clause")
+            return
+        if 0.5 in cons:
+            raise KeyError("used an invalid past variable, and added its true literal to a clause")
         self.clause += 1
         constr = ''
         for i in range(len(cons)):
-            assert cons[i] is not None
             assert type(cons[i]) is int
             constr += str(cons[i]) + " "
         constr = constr + "0"
@@ -369,7 +379,7 @@ class CNF:
                 the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys() - self.syn_projection_vars)]) + " 0\n") 
             weights_str = self.weight_list.getvalue()
             if not syntesis_fomat:
-                weights_str.replace("complex", "weight")
+                weights_str = weights_str.replace("complex", "weight")
             the_file.write(weights_str)
             the_file.write(''.join(self.cons_list))
 
@@ -422,14 +432,14 @@ class CNF:
                 j = int(element[1])
                 k = int(element[2])
                 to_CNF.CZ2CNF(self,j,k)  
-            elif gate == 'cs':
-                j = int(element[1])
-                k = int(element[2])
-                to_CNF.CS2CNF(self,j,k)  
-            elif gate == 'csdg':
-                j = int(element[1])
-                k = int(element[2])
-                to_CNF.CSdg2CNF(self,j,k) 
+            # elif gate == 'cs':
+            #     j = int(element[1])
+            #     k = int(element[2])
+            #     to_CNF.CS2CNF(self,j,k)  
+            # elif gate == 'csdg':
+            #     j = int(element[1])
+            #     k = int(element[2])
+            #     to_CNF.CSdg2CNF(self,j,k) 
             elif gate[0] == 'r':
                 angle = element[1]
                 k = int(element[2])
@@ -457,7 +467,7 @@ class CNF:
         from .pauli2cnf import pauli2cnf as to_CNF
         to_CNF.Composition2CNF(self, composition_dictionary)
 
-    def add_syn_layer(self, n=1):
+    def add_syn_layer(self, n=1, limit_gates=False, h_layer=False):
         if self.computational_basis:
             from .comput2cnf import comput2cnf as to_CNF 
         else:
@@ -466,7 +476,10 @@ class CNF:
         for _ in range(n):
             self.syn_gate_layer += 1
             self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer] = {}
-            to_CNF.SynLayer2CNF(self)
+            if self.computational_basis:
+                to_CNF.SynLayer2CNF(self)
+            else:
+                to_CNF.SynLayer2CNF(self, limit_gates=limit_gates, h_layer=h_layer)
 
     # convert an assignment for the syn variable to a coresponding Circuit object
     def get_syn_circuit(self, assignment, translate_ccx=True):
