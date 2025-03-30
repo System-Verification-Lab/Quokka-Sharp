@@ -15,32 +15,45 @@ getcontext().prec = 32
 
 # TODO: information for arguments in functions
 
-def get_result(result_file, expexted_prob):
+def get_result(result_file, expexted_prob, abs_value):
     ''' return (found, weight, assignment)'''
 
     with open(result_file, 'r') as file:
         result_str = file.read()
 
+    if re.findall(r"s UNSAT",result_str):
+        return (False, 0, [])
+    
     # get weight
-    res_regex = r"-?[0-9\.\s+\-i]+"
+    weight_regex = r"-?[0-9\.\s+\-i]+"
     if re.findall(r"r SATISFIABLE",result_str):
-        weight = re.findall(r"s " + res_regex,result_str)
+        weight = re.findall(r"s " + weight_regex,result_str)
     else:
-        weight = re.findall(r"[ok] " + res_regex,result_str)
+        weight = re.findall(r"[okt] " + weight_regex,result_str)
         if not weight: 
             return (False, "CRASH", [])
     # get assignment 
     assignment = re.findall(r"v [0-9\s\-]+ 0",result_str)
+
+    assert len(weight) == 1
+
     weight = weight[0][2:].replace("\\n", "").replace(" ", "").replace("i", "j").replace("+-", "-")
     weight = complex(weight)
+    real_w, imag_w = Decimal(weight.real), Decimal(weight.imag)
+    if abs_value:
+        weight = (abs(real_w)**2 + abs(imag_w)**2).sqrt()
+    else:
+        weight = real_w
     if assignment:
+        assert len(assignment) == 1
         assignment = assignment[0].split(" ")
         assert assignment[0] == "v"
         assert assignment[-1] == "0"
         assignment = assignment[1:-1]
 
-    print(f"achived: {Decimal(abs(weight))}/{Decimal(expexted_prob)}")
-    prec = Decimal(Decimal(abs(weight))/Decimal(expexted_prob))
+    expexted_w = Decimal(expexted_prob)
+    print(f"achived: {weight}/{expexted_w}")
+    prec = weight/expexted_w
     return (prec > (1-1e-12), prec, assignment)
     
 def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = False):
@@ -51,7 +64,7 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=True, initial_depth=0, onehot_xz = False, computational_basis = False):
+def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=True, initial_depth=0, onehot_xz = False, h_sandwich = False):
     DEBUG = True
     if DEBUG: print() 
     if DEBUG: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
@@ -79,10 +92,13 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
 
         if onehot_xz:
             expected_prob = 2*cnf.n
+            expected_abs_value = False
         elif cnf.computational_basis:
             expected_prob = 2**cnf.n
+            expected_abs_value = True
         else:
             expected_prob = 4**cnf.n
+            expected_abs_value = True
         expected_prob = expected_prob 
         
         done = False
@@ -94,33 +110,47 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         qasm = ""
         if bin_search:
             num_layers = 1
-        cnf_copy = copy.deepcopy(cnf)
+        cnf_copy_init = copy.deepcopy(cnf)
+        if h_sandwich:
+            cnf_copy_init.add_syn_layer(1, limit_gates=True, h_layer=True)
         if initial_depth:
-            cnf_copy.add_syn_layer(initial_depth)
-        # QUESTION: add two synthesis layers?
+            cnf_copy_init.add_syn_layer(initial_depth)
+        cnf_copy = cnf_copy_init
+        cnf_revert = cnf_copy
         skip_first = True
         while not done:
             if DEBUG: print() 
             if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
             if DEBUG: print(f"Iteration: {it_counter}")
-            files_prefix = ("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp"
+            files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
+
             if bin_search:
                 it_counter+=1
-                cnf_copy = copy.deepcopy(cnf)
-                cnf_copy.add_syn_layer(initial_depth+num_layers)
+                cnf_copy = copy.deepcopy(cnf_copy_init)
+                cnf_copy.add_syn_layer(num_layers, limit_gates=h_sandwich, h_layer=False)
+                cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
                 file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
             else:
+                if h_sandwich:
+                    cnf_copy = cnf_revert
                 if skip_first:
                     skip_first = False
                 else:
                     cnf_copy.add_syn_layer()
                     it_counter+=1
+                if h_sandwich:
+                    cnf_revert = copy.deepcopy(cnf_copy)
+                    cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
                 file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
+
             if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
             if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
-            # "--maxsharpsat-threshold", str(expected_prob * fidelity_threshold),
-            command = tool_invocation.split(' ') + [ "-i", file] + (["--complex", "1"] if cnf.computational_basis else ["--complex", "0"])
+            command = (tool_invocation.split(' ') + 
+                       ["-i", file] + 
+                       ["--complex", ("1" if cnf.computational_basis else "0")] + 
+                       ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
+                    )
             if DEBUG: print(" ".join(command))
             out_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.out"
             err_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.err"
@@ -139,7 +169,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 return f"ERROR{err}", 0, res
             if cerr:
                 return f"ERROR{cerr}", 0, res
-            found, weight, assignment = get_result(out_file, expected_prob)
+            found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
             if DEBUG: print(f"found:{found}, weight:{weight}")
             if weight == "CRASH":
                 if DEBUG: print(err, cerr)
@@ -179,7 +209,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
 
     except TimeoutException as error:
         if DEBUG: print(f"Run Time: {time.time()-start}")
-        t_found, t_weight, t_assignment = get_result(out_file, expected_prob)
+        t_found, t_weight, t_assignment = get_result(out_file, expected_prob, expected_abs_value)
         if t_found:
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment)
         if bin_ub_results:
