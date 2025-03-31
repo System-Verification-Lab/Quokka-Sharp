@@ -146,3 +146,5 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         return result
     except TimeoutException:
         return "TIMEOUT"
+    finally:
+        signal.alarm(0)
