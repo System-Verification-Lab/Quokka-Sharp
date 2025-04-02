@@ -205,18 +205,18 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
 
         if DEBUG: print()
         if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
-        return "FOUND", weight, qasm
+        return "FOUND", weight, qasm, cnf_copy.syn_gate_layer
 
     except TimeoutException as error:
         if DEBUG: print(f"Run Time: {time.time()-start}")
         t_found, t_weight, t_assignment = get_result(out_file, expected_prob, expected_abs_value)
         if t_found:
-            return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment)
+            return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment), cnf_copy.syn_gate_layer
         if bin_ub_results:
-            return str(error), bin_ub_results[0], bin_ub_results[1]
+            return str(error), bin_ub_results[0], bin_ub_results[1], cnf_copy.syn_gate_layer
         elif weight == "CRASH":
-            return str(error), weight, qasm
+            return str(error), weight, qasm, cnf_copy.syn_gate_layer
         else:
             if t_weight!="CRASH" and t_weight > weight:
-                return str(error), t_weight, cnf_copy.get_syn_qasm(t_assignment)
-            return str(error), weight, qasm
+                return str(error), t_weight, cnf_copy.get_syn_qasm(t_assignment), cnf_copy.syn_gate_layer
+            return str(error), weight, qasm, cnf_copy.syn_gate_layer

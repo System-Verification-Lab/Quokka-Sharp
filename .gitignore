@@ -35,3 +35,6 @@ experiment/basic_to_run*
 experiment/test2.cnf
 experiment/temp.cnf
 experiment/test2.qasm
+experiment/benchmark/random/for_syn/*
+experiment/benchmark/random/for_syn_syn_solutions/*
+experiment/syn_files 3.28/*
