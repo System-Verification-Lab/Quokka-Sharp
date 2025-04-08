@@ -29,7 +29,7 @@ def main(tool_path, qasmfile, eq_tool_path=None):
     
     with open(helper_folder+"final_results.txt", "w") as file:
         file.write(f"basis\tidentity\tres\tlayers\truntime\tweight\tsol_gate_cnt\torg_gate_cnt\n")
-    for comp_basis, onehot, sandwich in [(False, True, False)]: #(True, False, False), (False, False, False), , (False, False, True), (False, True, True)
+    for comp_basis, onehot, sandwich in [(False, True, False)]: #,(True, False, False), (False, False, False)]: #(True, False, False), (False, False, False), , (False, False, True), (False, True, True)
         glb_st = time.time()
 
         # Parse the circuits
