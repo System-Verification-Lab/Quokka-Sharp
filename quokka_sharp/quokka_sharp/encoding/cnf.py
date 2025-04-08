@@ -450,10 +450,20 @@ class CNF:
                     to_CNF.RX2CNF(self,k, angle)
                 elif gate == 'rz':
                     to_CNF.RZ2CNF(self,k, angle)
+                elif gate == 'ry':
+                    to_CNF.S2CNF(self,k)
+                    to_CNF.RX2CNF(self,k, angle)
+                    to_CNF.Sdg2CNF(self,k)
                 elif gate == 'rxdg':
                     to_CNF.RX2CNF(self,k, -angle)
                 elif gate == 'rzdg':
                     to_CNF.RZ2CNF(self,k, -angle)
+                elif gate == 'rydg':
+                    to_CNF.Sdg2CNF(self,k)
+                    to_CNF.RX2CNF(self,k, -angle)
+                    to_CNF.S2CNF(self,k)
+                else:
+                    raise Exception(str(gate) + " undefined."+ str(element))
             elif gate == "ccx":
                 qubitc1 = int(element[1])
                 qubitc2 = int(element[2])
