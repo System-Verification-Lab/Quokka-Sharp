@@ -52,7 +52,10 @@ class Variables:
                     if Unitary[i][j] == 0:
                         self.cnf.add_clause([-self.Unitaryvar[i][j]])
                     else:
-                        self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j])
+                        if Unitary[i][j].imag == 0:
+                            self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j].real)
+                        else:
+                            self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j].real, Unitary[i][j].imag)
                         self.cnf.add_weight(-self.Unitaryvar[i][j], 1)
     def copy(self):
         cnf = self.cnf

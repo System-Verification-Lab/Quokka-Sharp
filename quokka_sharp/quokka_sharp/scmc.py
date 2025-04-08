@@ -76,7 +76,6 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
             if DEBUG: print(f"TIMEOUT expiered")
-            if DEBUG: print(f"Run Time: {time.time()-start}")
             if p is not None:
                 p.kill()
             else:
@@ -209,6 +208,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
 
     except TimeoutException as error:
         if DEBUG: print(f"Run Time: {time.time()-start}")
+        if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
         t_found, t_weight, t_assignment = get_result(out_file, expected_prob, expected_abs_value)
         if t_found:
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment), cnf_copy.syn_gate_layer

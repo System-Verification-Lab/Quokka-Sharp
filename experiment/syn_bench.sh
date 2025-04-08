@@ -22,17 +22,17 @@ dirs=(
 # done
 # echo -e "\n"
 
-# echo -e -n "\nbasic_to_run:\t"
-# for i in ./basic_to_run/*; do
-#     echo
-#     filename_with_ext=$(basename "$i")
-#     filename="${filename_with_ext%.*}"
-#     target="./syn_files/$filename/syn_run.out"
-#     python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" | tee $target >&1 ;
-#     echo $target
-# done
-# echo -e "\n"
-
+echo -e -n "\nbasic_to_run:\t"
+for i in ./basic_to_run/*; do
+    echo
+    filename_with_ext=$(basename "$i")
+    filename="${filename_with_ext%.*}"
+    target="./syn_files/$filename/syn_run.out"
+    python3 syn_run.py "$tool_path" "$i" "$eq_tool_path" | tee $target >&1 ;
+    echo $target
+done
+echo -e "\n"
+exit 0
 
 # echo -e -n "\nbasic_tests:\t"
 # for i in ./basic_to_run/*; do
@@ -48,19 +48,19 @@ dirs=(
 # echo -e "\n"
 
 
-echo -e "\nrandom/for_syn:\t"
-for file in ./benchmark/random/for_syn/*; do
-    filename_with_ext=$(basename "$file")
-    filename="${filename_with_ext%.*}"
-    path="./syn_files/$filename"
-    if [ ! -d $path ]; then
-        mkdir -p $path
-        target="${path}/syn_run.out"
-        python3 syn_run.py "$tool_path" "$file" "$eq_tool_path" | tee $target >&1 ;
-        echo $target
-        echo
-    fi
-done
+# echo -e "\nrandom/for_syn:\t"
+# for file in ./benchmark/random/for_syn/*; do
+#     filename_with_ext=$(basename "$file")
+#     filename="${filename_with_ext%.*}"
+#     path="./syn_files/$filename"
+#     if [ ! -d $path ]; then
+#         mkdir -p $path
+#         target="${path}/syn_run.out"
+#         python3 syn_run.py "$tool_path" "$file" "$eq_tool_path" | tee $target >&1 ;
+#         echo $target
+#         echo
+#     fi
+# done
 
 
 # for i in "${dirs[@]}"; do
