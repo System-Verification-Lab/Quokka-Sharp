@@ -1,7 +1,7 @@
 import random, os, shutil, sys
 
 
-def generate_random_qasm_circuit(n, m, t_prob, SEED):
+def generate_random_qasm_circuit(n, m, cx_prob, t_prob, s_prob, SEED):
     random.seed(SEED)
     circuit_lines = []
     circuit_lines.append(f'qreg q[{n}];')  # Declare qubits
@@ -9,11 +9,9 @@ def generate_random_qasm_circuit(n, m, t_prob, SEED):
     # Generate random gate list
     gates = ['s', 'h', 'cx', 't']
     gates2 = ['s', 'h', 't']
-    cx_prob = 0.2
-    s_prob = (1 - cx_prob - t_prob) / 2
-    h_prob = s_prob
+    h_prob = (1 - cx_prob - s_prob - t_prob)
     weight = [s_prob, h_prob, cx_prob, t_prob]
-    weight2 = [h_prob/(1-cx_prob), s_prob//(1-cx_prob),t_prob/(1-cx_prob)]
+    weight2 = [0, h_prob/(h_prob+t_prob), t_prob/(h_prob+t_prob)]
 
     cw = [weight[0], weight[0]+weight[1], weight[0]+weight[1]+weight[2], 1]
 
@@ -25,12 +23,16 @@ def generate_random_qasm_circuit(n, m, t_prob, SEED):
                 p = random.random()
                 if p < cw[0]:
                     gate = 's'
+                    if random.random() > 0.5:
+                        gate = 'sdg'
                 elif p < cw[1]:
                     gate = 'h'
                 elif p < cw[2]:
                     gate = 'cx'
                 else:
                     gate = 't'
+                    if random.random() > 0.5:
+                        gate = 'tdg'
                 # gate = random.choices(gates, weight, k = 1)
                 # gate = gate[0]
                 if gate == 'cx':
@@ -49,6 +51,9 @@ def generate_random_qasm_circuit(n, m, t_prob, SEED):
                         extra = extra + 1
                     else:
                         gate = random.choices(gates2, weight2, k = 1)[0]
+                        if gate == 's' or gate == 't':
+                            if random.random() > 0.5:
+                                gate += 'dg'
                         circuit_lines.append(f'{gate} q[{i}];')
                         qubit[i] = 1
                 else:
@@ -133,13 +138,17 @@ def DataPoint(n, m, Tprob):
     return folder + '/' + filename
 
 
-def main(folder, n, d, r, SEED):
+def main(folder, n, d, cx, t, s, SEED):
     # folder = os.getcwd() + "/benchmark/random/" + folder
     if not os.path.isdir(folder):
         os.mkdir(folder)
-    random_circuit = generate_random_qasm_circuit(n, d, r, SEED)
+    random_circuit = generate_random_qasm_circuit(n, d, cx, t, s, SEED)
     circuit_content = '\n'.join(random_circuit)
-    filename = f"q{n}d{d}seed{SEED}.qasm"
+    if d < 10:
+        filename = f"q{n}d0{d}seed{SEED}.qasm"
+    else:  
+        filename = f"q{n}d{d}seed{SEED}.qasm"
+    print(f"Generating {filename}")
     WriteFile(folder, filename, circuit_content)
 
     
