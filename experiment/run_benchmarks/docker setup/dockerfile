@@ -4,7 +4,7 @@ WORKDIR ${workdir}
 
 # apt-get Installs
 RUN apt-get update -y
-RUN apt-get upgrade -y
+#RUN apt-get upgrade -y
 RUN apt-get -y install vim
 RUN apt-get -y install git
 RUN apt-get -y install build-essential
@@ -35,11 +35,12 @@ RUN make install
 
 # MPFR Install
 WORKDIR ${workdir}/downloads/
-RUN wget https://www.mpfr.org/mpfr-current/mpfr-4.2.1.tar.xz
+RUN wget https://www.mpfr.org/mpfr-4.2.1/mpfr-4.2.1.tar.xz
 RUN tar -xf mpfr-4.2.1.tar.xz
 WORKDIR ${workdir}/downloads/mpfr-4.2.1
-RUN ./configure --with-gmp-build=${workdir}/downloads/gmp-6.3.0/ --prefix ${workdir}/.venv 
+RUN ./configure --with-gmp-build=${workdir}/downloads/gmp-6.3.0/  --prefix ${workdir}/.venv
 RUN make
+RUN make check; exit 0
 RUN make check
 RUN make install
 
@@ -55,9 +56,15 @@ RUN make install
 
 # GPMC Install
 WORKDIR ${workdir}
-RUN git clone -b develop https://github.com/System-Verification-Lab/GPMC.git
+RUN git clone https://github.com/System-Verification-Lab/GPMC.git
 WORKDIR ${workdir}/GPMC
 RUN ./build.sh r
+
+# D4 Install
+WORKDIR ${workdir}
+RUN git clone https://github.com/crillab/d4v2.git
+WORKDIR ${workdir}/d4v2
+RUN ./build.sh
 
 # Quokka Install
 WORKDIR ${workdir}/Quokka-Sharp/
