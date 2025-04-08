@@ -134,7 +134,6 @@ def frac_to_float(frac: str):
             return Decimal(math.pow(-1,sign) * num / denom)
 
 def get_angle(angle: str):
-    print(f"theta_str: {angle}")
     try:
         if "/" in angle:
             theta = frac_to_float(angle)
@@ -148,7 +147,6 @@ def get_angle(angle: str):
                 theta = float(theta) * math.pi
             else:
                 theta = Decimal(float(theta_str))
-        print(f"theta: {theta}")
         return theta
     except:
         raise Exception(angle, "is not supported")
@@ -242,5 +240,5 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
             gate = line[0]
             raise Exception(str(gate) + " undefined.")
 
-    print(circuit)
+    print(f"circ: {circuit.circ}")
     return circuit

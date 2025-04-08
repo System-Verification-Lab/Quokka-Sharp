@@ -45,6 +45,7 @@ def main(tool_invocation, qasmfile):
                     For {mesurement} using Pauli vs Comp (both w): 
                     {prob["pauli"+str(True)]} vs {prob["comp"+str(True)]} 
                     ''')
+        print(prob)
 
 if __name__ == '__main__':
 
