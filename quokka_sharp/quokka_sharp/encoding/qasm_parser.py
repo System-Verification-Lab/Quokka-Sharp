@@ -240,5 +240,4 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
             gate = line[0]
             raise Exception(str(gate) + " undefined.")
 
-    print(f"circ: {circuit.circ}")
     return circuit
