@@ -32,7 +32,7 @@ def main(args):
         # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
         cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
         # "id" or "2n"
-        res = qk.CheckEquivalence(tool_path, cnf, check = "id" if (basis == "comp") else "2n")
+        res = qk.CheckEquivalence(tool_path, cnf, check = "cyclic" if (basis == "comp") else "linear", N = 1 if (basis == "comp") else 16)
     except FileNotFoundError:
         res = "FILE_NOT_FOUND"
     
