@@ -156,3 +156,11 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         return result
     except TimeoutException:
         return "TIMEOUT"
+    except ValueError as e:
+        print(e)
+        return "ERROR - GPMC result is empty"
+    except InvalidProcessNumException:
+        return "ERROR - bad process number"
+    except Exception as e:
+        print(e)
+        return "ERROR - unknown error"
