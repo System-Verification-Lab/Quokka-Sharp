@@ -16,25 +16,4 @@ quokka_sharp/quokka_sharp/docker.sh
 env/
 .venv/
 build/
-experiment/shortened_files/algorithm/
-experiment/shortened_files/
-experiment/temp_for_sim.cnf
-experiment/sim_test.py
-experiment/syn_cnf_files/
-experiment/basic_tests_syn_solutions/
-experiment/benchmark/random/rand_small_circs/origin/
-experiment/benchmark/random/rand_small_circs/origin_syn_solutions/
-experiment/temp_check/
-experiment/_syn_composition_solutions/
-experiment/*.out
-experiment/run_benchmarks/temp_for_sim.cnf
-experiment/syn_files/*
-experiment/syn_files_old/*
-experiment/syn_bench/*
-experiment/basic_to_run*
-experiment/test2.cnf
-experiment/temp.cnf
-experiment/test2.qasm
-experiment/benchmark/random/for_syn/*
-experiment/benchmark/random/for_syn_syn_solutions/*
-experiment/syn_files 3.28/*
+experiment/run_benchmarks/tmp/
