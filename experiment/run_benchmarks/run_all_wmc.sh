@@ -8,12 +8,12 @@ mkdir -p tmp/
 
 # get sim test results for a sample of the benchmarks
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero mesurment in pauli basis'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero mesurment in pauli basis - printing results to ./results/sim_wmc_allzero_pauli_results.txt'
 echo "results of Tables 1 of the README, coulmn Quokka\#(pauli)" > results/sim_wmc_allzero_pauli_results.txt
 echo "" >> results/sim_wmc_allzero_pauli_results.txt
 ./run_sim_wmc.sh ./benchmarks_list_full_sim.txt allzero pauli $1 >> results/sim_wmc_allzero_pauli_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero mesurment in comp basis'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero mesurment in comp basis - printing results to ./results/sim_wmc_allzero_comp_results.txt'
 echo "results of Tables 1 of the README, coulmn Quokka\#(comp)" > results/sim_wmc_allzero_comp_results.txt
 echo "" >> results/sim_wmc_allzero_comp_results.txt
 ./run_sim_wmc.sh ./benchmarks_list_full_sim.txt allzero comp $1 >> results/sim_wmc_allzero_comp_results.txt
