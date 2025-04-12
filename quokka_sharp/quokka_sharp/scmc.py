@@ -64,22 +64,21 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False):
-    DEBUG = True
-    if DEBUG: print() 
-    if DEBUG: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
+def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+    if printing: print() 
+    if printing: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
     p = None
     it_counter = 0
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
-        if DEBUG: print(f"TIMEOUT set to: {TIMEOUT}") 
+        if printing: print(f"TIMEOUT set to: {TIMEOUT}") 
         class TimeoutException(Exception): pass 
         def timeout(signum, frame):
-            if DEBUG: print(f"TIMEOUT expiered")
+            if printing: print(f"TIMEOUT expiered")
             if p is not None:
                 p.kill()
             else:
-                if DEBUG: print(it_counter, end="")
+                if printing: print(it_counter, end="")
             raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
@@ -118,10 +117,10 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
         cnf_revert = cnf_copy
         skip_first = True
         while not done:
-            if DEBUG: print() 
-            if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
+            if printing: print() 
+            if printing: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
-            if DEBUG: print(f"Iteration: {it_counter}")
+            if printing: print(f"Iteration: {it_counter}")
             files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
 
             if bin_search:
@@ -143,19 +142,19 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                     cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
                 file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
 
-            if DEBUG: print(f"num_layers: {cnf_copy.syn_gate_layer}")
-            if DEBUG: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
+            if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
+            if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             command = (tool_invocation.split(' ') + 
                        ["-i", file] + 
                        ["--complex", ("1" if cnf.computational_basis else "0")] + 
                        ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                     )
-            if DEBUG: print(" ".join(command))
+            if printing: print(" ".join(command))
             out_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.out"
             err_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.err"
             res_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.res"
-            if DEBUG: print(f"Out file: {out_file}")
-            if DEBUG: print(f"Err file: {err_file}")
+            if printing: print(f"Out file: {out_file}")
+            if printing: print(f"Err file: {err_file}")
             with open(out_file, 'w') as out:
                 with open(err_file, 'w') as err:
                     p = Popen(command, stdout=out, stderr=err)
@@ -169,15 +168,15 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if cerr:
                 return f"ERROR{cerr}", 0, res
             found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
-            if DEBUG: print(f"found:{found}, weight:{weight}")
+            if printing: print(f"found:{found}, weight:{weight}")
             if weight == "CRASH":
-                if DEBUG: print(err, cerr)
+                if printing: print(err, cerr)
                 return "CRASH", 0, ""
             
             qasm = cnf_copy.get_syn_qasm(assignment)
             with open(res_file, "w") as f:
                 f.write(qasm)
-                if DEBUG: print(f"Res file: {res_file}")
+                if printing: print(f"Res file: {res_file}")
 
             if bin_search:
                 if found:
@@ -186,7 +185,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 else: 
                     bin_lb = num_layers
                 
-                if DEBUG: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
+                if printing: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
 
                 if bin_lb + 1 == bin_ub:
                     if found == False:
@@ -200,15 +199,15 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             else:
                 if found or weight > fidelity_threshold:
                     done = True
-            if DEBUG: print(f"Run Time: {time.time()-start}")
+            if printing: print(f"Run Time: {time.time()-start}")
 
-        if DEBUG: print()
-        if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
+        if printing: print()
+        if printing: print(f"Global Time: {datetime.datetime.now()}")
         return "FOUND", weight, qasm, cnf_copy.syn_gate_layer
 
     except TimeoutException as error:
-        if DEBUG: print(f"Run Time: {time.time()-start}")
-        if DEBUG: print(f"Global Time: {datetime.datetime.now()}")
+        if printing: print(f"Run Time: {time.time()-start}")
+        if printing: print(f"Global Time: {datetime.datetime.now()}")
         t_found, t_weight, t_assignment = get_result(out_file, expected_prob, expected_abs_value)
         if t_found:
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment), cnf_copy.syn_gate_layer
