@@ -5,4 +5,4 @@
 
 export TIMEOUT=$2
 
-python3.11 './veri_wmc.py' '../benchmark/algorithm/origin/qwalk-noancilla_nativegates_ibm_qiskit_opt0_5.qasm'  -pre {0:0} -post {0:0} -b $1;
+python3 './run_veri.py' '../benchmark/algorithm/origin/qwalk-noancilla_nativegates_ibm_qiskit_opt0_5.qasm'  -pre {0:0} -post {0:0} -b $1;
