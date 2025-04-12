@@ -64,7 +64,7 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=True, initial_depth=0, onehot_xz = False, h_sandwich = False):
+def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False):
     DEBUG = True
     if DEBUG: print() 
     if DEBUG: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
