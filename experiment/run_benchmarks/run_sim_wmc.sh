@@ -8,5 +8,5 @@
 export TIMEOUT=$4
 
 while read -r line; do
-    python3 './sim_wmc.py' '../benchmark/algorithm/origin/'$line'.qasm' -m $2 -b $3 >&1;
+    python3 './run_sim.py' '../benchmark/algorithm/origin/'$line'.qasm' -m $2 -b $3 >&1;
 done < "$1"
