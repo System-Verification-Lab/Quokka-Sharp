@@ -9,4 +9,4 @@ python3 ./quokka_sharp/comput2cnf_py_codegen.py > ./quokka_sharp/quokka_sharp/en
 
 pip install ./quokka_sharp --force-reinstall 
 
-cd ./experiment/development
+cd -
