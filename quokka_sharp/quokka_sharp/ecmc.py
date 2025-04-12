@@ -63,7 +63,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass
         def timeout(signum, frame):
-            for proc in proclist:
+            for proc in procdict.keys():
                 procdict[proc.pid].kill()
             raise TimeoutException("TIMEOUT")
     except KeyError:
@@ -75,7 +75,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         signal.alarm(TIMEOUT)
 
         cnf_file_list = []
-        proclist = []
+        procdict = {}
 
         if check == "cyclic":
             if N > 1:
@@ -117,28 +117,26 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         # parallel processes
         # N = 16
         while True:
-            proclist = []
+            procdict = {}
             length = len(cnf_file_list)
             for i in range(min(N, length)):
                 cnf_file = cnf_file_list[i]
                 tool_file_command = tool_command + [cnf_file]
                 if DEBUG: print(" ".join(tool_file_command))
                 p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
-                proclist.append(p)
-            if len(proclist) == 0:
+                procdict[p.pid] = p
+            if len(procdict) == 0:
                 break
-            procdict = {proc.pid: proc for proc in proclist}
-            watched_pids = set(proc.pid for proc in proclist)
             while True:
                 pid, _ = os.wait()
-                if pid in watched_pids:
+                if pid in procdict.keys():
                     res = procdict[pid].communicate()
                     result = get_result(res[0], expected_prob, expected_abs_value)
                     if result == False:
                         break
                     else:
-                        watched_pids.remove(pid)
-                if len(watched_pids) == 0:
+                        procdict.pop(pid)
+                if len(procdict) == 0:
                     break
 
             if result == False:
