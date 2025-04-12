@@ -92,4 +92,4 @@ RUN pip install ./quokka_sharp --force-reinstall
 RUN pip install -r requirements.txt
 
 WORKDIR ${workdir}/Quokka-Sharp/experiment/run_benchmarks
-# RUN ./run_all_wmc.sh 3
+# RUN ./run_all_wmc.sh 300
