@@ -21,22 +21,22 @@ echo "" >> results/sim_wmc_allzero_comp_results.txt
 
 # get eq test results for a sample of the benchmarks
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in pauli basis'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in pauli basis - printing results to ./results/eq_wmc_pauli_results.txt'
 echo "results of Tables 2,3,4,5 of the README, coulmn Quokka\#(pauli)" > results/eq_wmc_pauli_results.txt
 echo "" >> results/eq_wmc_pauli_results.txt
 ./run_eq_wmc.sh ./benchmarks_list_full_eq.txt pauli $1 >> results/eq_wmc_pauli_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in comp basis'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in comp basis - printing results to ./results/eq_wmc_comp_results.txt'
 echo "results of Tables 2,3,4,5 of the README, coulmn Quokka\#(comp)" > results/eq_wmc_comp_results.txt
 echo "" >> results/eq_wmc_comp_results.txt
 ./run_eq_wmc.sh ./benchmarks_list_full_eq.txt comp  $1 >> results/eq_wmc_comp_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running verification check'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running verification check - printing results to ./results/veri_wmc_results.txt'
 echo "results of Tables 6 of the README" > results/veri_wmc_results.txt
 echo "" >> results/veri_wmc_results.txt
 ./run_veri_wmc.sh comp $1 >> results/veri_wmc_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running syn check'
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running syn check - printing results to ./results/syn_wmc_results.txt'
 echo "results of Tables 7 of the README" > results/syn_wmc_results.txt
 echo "" >> results/syn_wmc_results.txt
 ./run_syn_wmc.sh $1 >> results/syn_wmc_results.txt

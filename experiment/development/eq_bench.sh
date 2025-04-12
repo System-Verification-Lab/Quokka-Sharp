@@ -1,7 +1,7 @@
 #!/bin/bash
 
-tool_path="../../GPMC/bin/gpmc -mode=1"
-path=$PWD/benchmark
+tool_path="../../../GPMC/bin/gpmc -mode=1"
+path=$PWD/../benchmark
 # path=$PWD/shortened_files
 
 dirs=(
@@ -13,14 +13,13 @@ dirs=(
 options=(
 "opt"
 "gm"
-"fp"
-"ps"
+# "fp"
+# "ps"
 )
 
 echo -e -n "\nbasic_tests:\t"
-for i in ./basic_tests/*; do
-    echo -e -n "\n\tsim_run: $i \t"
-    # echo -n "/"
+for i in ../basic_tests/*; do
+    echo -e -n "\n\teq_run: $i \t"
     python3 eq_run.py "$tool_path" "$i" "$i" "True" >&1;
 done
 echo -e "\n"
