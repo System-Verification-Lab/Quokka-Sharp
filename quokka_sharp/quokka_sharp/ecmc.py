@@ -63,8 +63,8 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         TIMEOUT = int(os.environ["TIMEOUT"])
         class TimeoutException(Exception): pass
         def timeout(signum, frame):
-            for proc in procdict.keys():
-                procdict[proc.pid].kill()
+            for pid in procdict.keys():
+                procdict[pid].kill()
             raise TimeoutException("TIMEOUT")
     except KeyError:
         print ("Please set the environment variable TIMEOUT")
