@@ -35,7 +35,7 @@ def GPMC(tool_invocation, wmc_file, square):
 def Simulate(toolpath, cnf: "CNF"):
     DEBUG = False
     if cnf.weighted:
-        filename = "temp_for_sim.cnf"
+        filename = "./tmp/for_sim.cnf"
         cnf.write_to_file(filename)
         result = GPMC(toolpath, filename, square = cnf.square_result)
         if result != "TIMEOUT":
@@ -47,7 +47,7 @@ def Simulate(toolpath, cnf: "CNF"):
             complex_sum = 0
             for s in ["p", "m"]:
                 for t in ["e", "o"]:
-                    filename = f"temp_for_sim.cnf"
+                    filename = f"./tmp/for_sim.cnf"
                     if DEBUG: print(c,s,t)
                     cnf_copy = copy.deepcopy(cnf)
                     if cnf.computational_basis:

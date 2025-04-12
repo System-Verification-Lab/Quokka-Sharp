@@ -60,11 +60,11 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
     
-    cnf_file = cnf_file_root + f"{files_prefix}_{indx}_quokka_syn.cnf" # overide files to reduce spaming
+    cnf_file = cnf_file_root + f"/{files_prefix}_{indx}_quokka_syn.cnf" # overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
     if printing: print() 
     if printing: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
     p = None
@@ -146,13 +146,13 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
             if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             command = (tool_invocation.split(' ') + 
                        ["-i", file] + 
-                       ["--complex", ("1" if cnf.computational_basis else "0")] + 
-                       ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
+                       (["--complex", "1"] if cnf.computational_basis else []) + 
+                       ["--maxsharpsat-threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                     )
             if printing: print(" ".join(command))
-            out_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.out"
-            err_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.err"
-            res_file = cnf_file_root+f"{files_prefix}_{it_counter}_d4.res"
+            out_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.out"
+            err_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.err"
+            res_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.res"
             if printing: print(f"Out file: {out_file}")
             if printing: print(f"Err file: {err_file}")
             with open(out_file, 'w') as out:
@@ -164,14 +164,14 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
                 pid, err = os.wait()
             res, cerr = p.communicate()
             if err:
-                return f"ERROR{err}", 0, res
+                return f"ERROR{err}", 0, res, cnf_copy.syn_gate_layer
             if cerr:
-                return f"ERROR{cerr}", 0, res
+                return f"ERROR{cerr}", 0, res, cnf_copy.syn_gate_layer
             found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
             if printing: print(f"found:{found}, weight:{weight}")
             if weight == "CRASH":
                 if printing: print(err, cerr)
-                return "CRASH", 0, ""
+                return "CRASH", 0, "", cnf_copy.syn_gate_layer
             
             qasm = cnf_copy.get_syn_qasm(assignment)
             with open(res_file, "w") as f:
