@@ -80,10 +80,16 @@ RUN mv ./build/Linux-x86_64/* ./patoh/
 WORKDIR ${workdir}/d4v2/
 RUN ./build.sh
 
-# Install Quokka
+# Quokka update
 WORKDIR ${workdir}
-RUN git clone https://github.com/System-Verification-Lab/Quokka-Sharp.git
-WORKDIR ${workdir}/Quokka-Sharp
-RUN pip install ./quokka_sharp
+RUN rm -rf ${workdir}/Quokka-Sharp
+ARG CACHEBUST=$(date +%s)
+RUN git clone https://github.com/System-Verification-Lab/Quokka-Sharp.git 
 
+RUN . .venv/bin/activate
+WORKDIR ${workdir}/Quokka-Sharp/
+RUN pip install ./quokka_sharp --force-reinstall 
+RUN pip install -r requirements.txt
 
+WORKDIR ${workdir}/Quokka-Sharp/experiment/run_benchmarks
+# RUN ./run_all_wmc.sh 3
