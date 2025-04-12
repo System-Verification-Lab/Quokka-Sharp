@@ -147,7 +147,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
             else:
                 break
 
-        for pid in watched_pids:
+        for pid in procdict.keys():
             procdict[pid].kill()
 
         return result
