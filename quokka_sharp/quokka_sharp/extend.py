@@ -30,17 +30,15 @@ def ApproxEqcheck(tool_path, qasmfile1, qasmfile2, epsilon, basis = "comp"):
         return False
     
 # solve nomalisation
-def Verify(qasmfile, tool_path, precons, postcons, basis = "paul"):
+def Verify(tool_path, cnf: "CNF", precons, postcons, basis = "paul"):
     # ERROR if pre contains larger than N
-    circuit = QASMparser(qasmfile, True)
-    cnf     = QASM2CNF(circuit, computational_basis = (basis == "comp"))
     cnf.precondition(precons)
     cnf.postcondition(postcons)
     prob = Simulate(tool_path, cnf)
     if abs(prob - 1) < FPE:
-        print("True")
+        return("True")
     else:
-        print("False")
+        return("False")
 
 def Ancilla(qasmfile,tool_path, ancilla):
     Verify(qasmfile, tool_path, ancilla, ancilla)
