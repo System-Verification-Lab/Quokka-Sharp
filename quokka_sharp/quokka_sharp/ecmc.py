@@ -25,11 +25,11 @@ class InvalidProcessNumException(Exception):
 
 def get_result(result, expexted_prob, abs_value):
     result = str(result)
-    gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
+    gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)
     if len(gpmc_ans_str) == 0:
         print(result)
         raise ValueError("GPMC result is empty")
-    gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
+    gpmc_ans_str = gpmc_ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
     if abs_value:
