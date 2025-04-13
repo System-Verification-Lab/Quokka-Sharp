@@ -3,9 +3,14 @@
 
 - Install GPMC
 
-Follow instructions in [GPMC git](https://git.trs.css.i.nagoya-u.ac.jp/k-hasimt/GPMC) to install GPMC.
+Follow instructions in [GPMC git](https://github.com/System-Verification-Lab/GPMC) to install GPMC.
 
-- Install pip
+- Install GPMC
+
+Follow instructions in [d4v2 git](https://github.com/crillab/d4v2) to install GPMC.
+
+- Install pip 
+
 
 ## INSTALLATION
 
@@ -16,19 +21,16 @@ pip install quokka_sharp
 
 ## Usage
 
-Quokka# provides three kinds of funcionalities: one is to simulate a quantum circuit, 
-the second is to check the equivalence of two circuits, and the last is to synthesis a circuit based on a spesification.
+Quokka# provides four kinds of funcionalities: 
+* **Simulate** a quantum circuit.
+* **Verify** a quantum circuit with pre- and post- conditions.
+* check **Equivalence** of two quantum circuits.
+* **Synthesis** a circuit based on a spesification
 
-We work in one of two posible bases: Pauli or Computations.
+We work in one of two posible bases: Pauli or Computational.
 
-For equivalence checking we allow one of 4 techniques for the Pauli basis: "id", "id_2n", "id_noY", "2n"
-For equivalence checking check we allow one only 1 technique for the computational basis: "id"
-"id": creats a cyclic check, such that the final state is constraind to be identical to the initial state.
-"id_2n": uses "id" and add constraits on the initial state such that a basis of size 2*n is checked.
-"id_noY": uses "id" and add constraits on the initial state such that there will be no Y.
-"2n": makes 2*n independant calls, each checking one initial state in the 2n basis.
-
-Synthsis workes only in the Pauli base. 
+For equivalence checking we suppeort multiple techniques. 
+We recomend the user to use "linear" for the Pauli basis and "cyclic" for the Computational basis. 
 
 Please first set the wanted timeout (in seconds) using export TIMEOUT, for example:
 ```
@@ -45,10 +47,14 @@ import tempfile
 
 # the path of the WMC tool
 tool_invocation = "/Users/GPMC/bin/gpmc -mode=1"
+
+# input files
+qasmfile1 = "test1.qasm"
+qasmfile2 = "test2.qasm"
+
 '''
 Simulation
 '''
-qasmfile1 = "test.qasm"
 # Parse the circuit where the encoding will decompose ccx gate into clifford+t.
 circuit1 = qk.encoding.QASMparser(qasmfile1, translate_ccx = True)
 # Encode the circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
@@ -88,7 +94,7 @@ Synthesis
 circuit = qk.encoding.QASMparser(qasmfile, True)
 # Get (circuit1)^dagger
 circuit.dagger()
-# Get CNF for the circuit in Pauli basis
+# Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
 cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
 # Users can change the path for the cnf files by setting a different parameter to cnf_file_root, otherwise it would be in the tempfile.
 res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root = tempfile.gettempdir())
@@ -96,17 +102,26 @@ res, weight, sol = qk.Synthesis(tool_path, cnf, cnf_file_root = tempfile.gettemp
 # In the case of "TIMEOUT" the best solution found will be returned.
 # The weight will give the achieved fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found circuit.
 # Sol will be a string in a qasm file format describing the (best) circuit found, achieving the mentioned weight.
+
+'''
+Verification
+'''
+# Parse the circuit
+circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+# Encode the circuit in Pauli basis (can change to True for the computational basis)
+cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
+# Verify for pre and post conditions given in dictionary format
+res = qk.Verify(tool_invocation, cnf, precons={0:0}, postcons={0:0})
+# The result will be "True" if it conditions hold, "False" if not, or "TIMEOUT" if the tool ran out of time.
 ```
 
 - extention of the encodings
 Now the encoding support a universal gate set: CNOT, CZ, H, S, T, RX, RZ.
-If you want to add direct encoding of other gates, you should first install the package sympy by
-```
-pip install sympy
-```
-
-and add new encoding in ./encoding/pauli2cnf_py_codegen.py 
-or in ./encoding/comput2cnf_py_codegen.py, depending on the base used.
+If you want to add direct encoding of other gates
+add new encoding in ./encoding/pauli2cnf_py_codegen.py 
+or in ./encoding/comput2cnf_py_codegen.py, 
+depending on the base used.
+You will also need to update the ifelse casses at the "QASMparser" function in ./encoding/qasm_parser.py and the "encode_circuit" function in ./encoding/cnf.py.
 then run one of the following comands corespondingly:
 
 ```
