@@ -1,11 +1,8 @@
 import copy
-import os
+import os, sys
 import re
 import signal
-import sys
-import tempfile
-import time
-import datetime
+import time, datetime
 from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF

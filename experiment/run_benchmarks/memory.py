@@ -1,6 +1,10 @@
 from queue import Queue, Empty
 from resource import getrusage, RUSAGE_SELF
 from threading import Thread
+import sys
+
+"""This module provides a thread that can return a value from its target function.
+It also includes a memory monitor that checks the maximum resident set size (RSS) of the process."""
 
 class ReturnValueThread(Thread):
     def __init__(self, *args, **kwargs):
