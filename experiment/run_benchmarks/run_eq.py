@@ -37,7 +37,7 @@ def main(args):
         res = "FILE_NOT_FOUND"
     
 
-    if res == "TIMEOUT": res = 99999
+    # if res == "TIMEOUT": res = 99999
     end_time = time()
     queue.put('stop')
     max_rss = monitor_thread.join()
