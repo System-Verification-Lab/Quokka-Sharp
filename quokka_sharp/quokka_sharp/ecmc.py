@@ -21,9 +21,18 @@ class InvalidProcessNumException(Exception):
     "Raised when the process number is invalid"
     pass
 
-# TODO: information for arguments in functions
 
-def get_result(result, expexted_prob, abs_value):
+def get_result(result, expected_prob, abs_value):
+    """
+    Analyse the weighted model counting result to decide the circuits are equivalent or not:
+    if the result matches the expected probablity then the circuits are equivalent otherwise they are not.
+    Args:
+        result                :  the output of the weighted model counter
+        expected_prob         :  the expected probablity before normalization, where the probability P = 2^n in computational basis and P = 4^n in Pauli basis
+        abs_value             :  if it is true, we take the absolute value of the probablity, and if it is false, we take the original value.
+    Returns:
+        True if the circuits are equivalent otherwise False
+    """
     result = str(result)
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)
     if len(gpmc_ans_str) == 0:
@@ -36,12 +45,22 @@ def get_result(result, expexted_prob, abs_value):
         prob = (abs(real)**2 + abs(imag)**2).sqrt()
     else:
         prob = real
-    if abs(prob - expexted_prob) < (expexted_prob * Decimal(FPE)):
+    if abs(prob - expected_prob) < (expected_prob * Decimal(FPE)):
         return True
     else:
         return False
 
 def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
+    """
+    Create cnf file for each of the basis in the linear check
+    Args:
+        i         :  the index of the qubit
+        Z_or_X    :  True if in Z basis otherwise in X basis
+        cnf       :  the encoded CNF object of a circuit
+        cnf_file_root : the path where the current cnf file will be stored.
+    Returns:
+        cnf_file  :  the path of the generated cnf file
+    """
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.rightProjectZXi(Z_or_X, i)
     cnf_temp.leftProjectZXi(Z_or_X, i)
@@ -51,6 +70,16 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     return cnf_file
 
 def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_Y = False):
+    """
+    Add idenity clauses to the encoding
+    Args:
+        cnf       :  the encoded CNF object of a circuit
+        cnf_file_root : the path where the current cnf file will be stored.
+        constrain_2n: True if the user is performing linear check otherwise false
+        constrain_no_Y: True if omit Pauli strings containing Y  otherwise False
+    Returns:
+        cnf_file  :  the path of the generated cnf file
+    """
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = constrain_2n, constrain_no_Y = constrain_no_Y)
 
@@ -59,6 +88,17 @@ def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_
     return cnf_file
 
 def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "cyclic", N=16):
+    """
+    Check if the given circuit is equivalent to the identity
+    Args:
+        tool_invocation : the running command of the weighted model counter
+        cnf             : the encoded cnf of the given circuit
+        cnf_file_root   : the path where the all cnf files are stored.
+        check           : types of equivalence checking encoding: either cyclic or linear
+        N               : the number of threads running in parral (only useful when checking type is linear)
+    Returns:
+        True if the circuits are equivalent otherwise False
+    """
     DEBUG = False
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
@@ -152,6 +192,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
 
         for pid in procdict.keys():
             procdict[pid].kill()
+        procdict = {}
 
         return result
     except TimeoutException:

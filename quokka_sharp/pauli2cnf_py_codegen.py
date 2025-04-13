@@ -90,6 +90,10 @@ def main():
     print("getcontext().prec = 32")
     print()
     print("class pauli2cnf:")
+    print('''    \"\"\"
+    This class contains the functions to convert a quantum circuit to CNF clauses in the Pauli basis.
+    \"\"\"''')
+    print()
 
     # H:
     print("    def H2CNF(cnf, k):")

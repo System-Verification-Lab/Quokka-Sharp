@@ -101,6 +101,9 @@ def main():
     print("from .pauli2cnf import pauli2cnf")
     print()
     print("class comput2cnf:")
+    print('''    \"\"\"
+    This class contains the functions to convert a quantum circuit to CNF clauses in the Computationl basis.
+    \"\"\"''')
     print()
 
     # H:

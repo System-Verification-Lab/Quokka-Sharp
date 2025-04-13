@@ -11,6 +11,15 @@ FPE = 1e-12
 
 
 def GPMC(tool_invocation, wmc_file, square):
+    """
+    Parse the output of GPMC to get the weighted model counting result
+    Args:
+        tool_invocation   :  the running command of the weighted model counter
+        wmc_file          :  the path to the encoded WMC file
+        square            :  when the value is true get the modulus square root of the output
+    Returns:
+        result           :  the probability of the circuit
+    """
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
     except KeyError: 
@@ -36,7 +45,16 @@ def GPMC(tool_invocation, wmc_file, square):
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
+
 def Simulate(toolpath, cnf: "CNF"):
+    """
+    Simulate a quantum circuit and give the corresponding probability
+    Args:
+        toolpath    :  the running command of the weighted model counter
+        cnf         :  the encoded cnf of the given circuit
+    Returns:
+        result      :  the probability of the circuit
+    """
     DEBUG = False
     if cnf.weighted:
         filename = "./tmp/for_sim.cnf"
