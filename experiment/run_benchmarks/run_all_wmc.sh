@@ -8,28 +8,28 @@ mkdir -p tmp/
 
 # get sim test results for the benchmarks
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero mesurment in pauli basis - printing results to ./results/sim_wmc_allzero_pauli_results.txt'
-echo "results of Tables 2 (left) and 3 (left) of the paper, coulmn Quokka\#(pauli)" > results/sim_wmc_allzero_pauli_results.txt
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero measurement in Pauli basis - printing results to ./results/sim_wmc_allzero_pauli_results.txt'
+echo "results of Tables 2 (left) and 3 (left) of the paper, column Quokka\#(pauli)" > results/sim_wmc_allzero_pauli_results.txt
 echo "" >> results/sim_wmc_allzero_pauli_results.txt
-./run_sim_wmc.sh ./benchmarks_list_full_sim.txt allzero pauli $1 >> results/sim_wmc_allzero_pauli_results.txt
+./run_sim_wmc.sh allzero pauli $1 >> results/sim_wmc_allzero_pauli_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero mesurment in comp basis - printing results to ./results/sim_wmc_allzero_comp_results.txt'
-echo "results of Tables 2 (left) and 3 (left) of the paper, coulmn Quokka\#(comp)" > results/sim_wmc_allzero_comp_results.txt
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running sim check with allzero measurement in computational basis - printing results to ./results/sim_wmc_allzero_comp_results.txt'
+echo "results of Tables 2 (left) and 3 (left) of the paper, column Quokka\#(comp)" > results/sim_wmc_allzero_comp_results.txt
 echo "" >> results/sim_wmc_allzero_comp_results.txt
-./run_sim_wmc.sh ./benchmarks_list_full_sim.txt allzero comp $1 >> results/sim_wmc_allzero_comp_results.txt
+./run_sim_wmc.sh allzero comp $1 >> results/sim_wmc_allzero_comp_results.txt
 
 
 # get eq test results for the benchmarks
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in pauli basis - printing results to ./results/eq_wmc_pauli_results.txt'
-echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, coulmn Quokka\#(pauli)" > results/eq_wmc_pauli_results.txt
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in Pauli basis - printing results to ./results/eq_wmc_pauli_results.txt'
+echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, column Quokka\#(pauli)" > results/eq_wmc_pauli_results.txt
 echo "" >> results/eq_wmc_pauli_results.txt
-./run_eq_wmc.sh ./benchmarks_list_full_eq.txt pauli $1 >> results/eq_wmc_pauli_results.txt
+./run_eq_wmc.sh pauli $1 >> results/eq_wmc_pauli_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running eq check in comp basis - printing results to ./results/eq_wmc_comp_results.txt'
-echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, coulmn Quokka\#(comp)" > results/eq_wmc_comp_results.txt
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in computational basis - printing results to ./results/eq_wmc_comp_results.txt'
+echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, column Quokka\#(comp)" > results/eq_wmc_comp_results.txt
 echo "" >> results/eq_wmc_comp_results.txt
-./run_eq_wmc.sh ./benchmarks_list_full_eq.txt comp  $1 >> results/eq_wmc_comp_results.txt
+./run_eq_wmc.sh comp  $1 >> results/eq_wmc_comp_results.txt
 
 
 # get veri test results for the benchmarks
