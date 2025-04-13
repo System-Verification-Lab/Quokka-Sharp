@@ -13,6 +13,19 @@ getcontext().prec = 32
 global FPE
 FPE = 1e-12
 
+procdict = {}
+
+class TimeoutException(Exception): pass
+
+def timeout(signum, frame):
+    for proc in procdict.values():
+        try:
+            proc.kill()
+        except Exception:
+            pass
+    raise TimeoutException("TIMEOUT")
+
+
 
 # define Python user-defined exceptions
 class InvalidProcessNumException(Exception):
@@ -97,18 +110,25 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
     Returns:
         True if the circuits are equivalent otherwise False
     """
+    global procdict  # make sure handler sees this
+    
     DEBUG = False
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
+    # try:
+    #     TIMEOUT = int(os.environ["TIMEOUT"])
+    #     class TimeoutException(Exception): pass
+    #     def timeout(signum, frame):
+    #         for pid in procdict.keys():
+    #             procdict[pid].kill()
+    #         raise TimeoutException("TIMEOUT")
+    # except KeyError:
+    #     print ("Please set the environment variable TIMEOUT")
+    #     sys.exit(1)
     try:
         TIMEOUT = int(os.environ["TIMEOUT"])
-        class TimeoutException(Exception): pass
-        def timeout(signum, frame):
-            for pid in procdict.keys():
-                procdict[pid].kill()
-            raise TimeoutException("TIMEOUT")
     except KeyError:
-        print ("Please set the environment variable TIMEOUT")
+        print("Please set the environment variable TIMEOUT")
         sys.exit(1)
 
     try:
@@ -190,8 +210,10 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
 
         for pid in procdict.keys():
             procdict[pid].kill()
+            procdict[pid].communicate()
+        
         procdict = {}
-
+        signal.alarm(0)
         return result
     except TimeoutException:
         return "TIMEOUT"
@@ -203,3 +225,12 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
     except Exception as e:
         print(e)
         return "ERROR - unknown error"
+    finally:
+        for pid in procdict.keys():
+            try:
+                procdict[pid].kill()
+                procdict[pid].communicate()
+            except Exception:
+                pass
+        procdict = {}
+        signal.alarm(0)  # Cancel any pending alarms
