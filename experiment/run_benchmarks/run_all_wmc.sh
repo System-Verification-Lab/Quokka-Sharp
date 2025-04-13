@@ -22,12 +22,12 @@ echo "" >> results/sim_wmc_allzero_comp_results.txt
 # get eq test results for the benchmarks
 
 echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in Pauli basis - printing results to ./results/eq_wmc_pauli_results.txt'
-echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, column Quokka\#(pauli)" > results/eq_wmc_pauli_results.txt
+echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, column Quokka\#(linear)" > results/eq_wmc_pauli_results.txt
 echo "" >> results/eq_wmc_pauli_results.txt
 ./run_eq_wmc.sh pauli $1 >> results/eq_wmc_pauli_results.txt
 
 echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in computational basis - printing results to ./results/eq_wmc_comp_results.txt'
-echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, column Quokka\#(comp)" > results/eq_wmc_comp_results.txt
+echo "results of Tables 2 (right), 3 (mid + right), 6, 7, 8 of the paper, column Quokka\#(cyclic)" > results/eq_wmc_comp_results.txt
 echo "" >> results/eq_wmc_comp_results.txt
 ./run_eq_wmc.sh comp  $1 >> results/eq_wmc_comp_results.txt
 
