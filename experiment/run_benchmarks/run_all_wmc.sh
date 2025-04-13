@@ -35,15 +35,16 @@ echo "" >> results/eq_wmc_comp_results.txt
 # get veri test results for the benchmarks
 
 echo `date +"[%Y-%m-%d %H:%M:%S]"`' running verification check - printing results to ./results/veri_wmc_results.txt'
-echo "results of Table 4 of the paper" > results/veri_wmc_results.txt
+echo "results of Verification paragraph of the paper" > results/veri_wmc_results.txt
 echo "" >> results/veri_wmc_results.txt
 ./run_veri_wmc.sh comp $1 >> results/veri_wmc_results.txt
+./run_veri_wmc.sh pauli $1 >> results/veri_wmc_results.txt
 
 
 # get syn test results for the benchmarks
 
 echo `date +"[%Y-%m-%d %H:%M:%S]"`' running syn check - printing results to ./results/syn_wmc_results.txt'
-echo "results of Verification paragraph of the paper" > results/syn_wmc_results.txt
+echo "results of Table 4 of the paper" > results/syn_wmc_results.txt
 echo "" >> results/syn_wmc_results.txt
 ./run_syn_wmc.sh $1 >> results/syn_wmc_results.txt
 
