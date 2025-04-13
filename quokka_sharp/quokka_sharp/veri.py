@@ -1,5 +1,5 @@
 from .encoding.qasm_parser import QASMparser
-from .encoding.cnf import QASM2CNF
+from .encoding.cnf import QASM2CNF, CNF
 from .qcmc import Simulate
 from .qcmc import FPE
 
@@ -11,6 +11,8 @@ def Verify(tool_path, cnf: "CNF", precons, postcons):
         cnf         :  the encoded cnf of the input circuit
         precons     :  a dictionary specifying the pre-condition. The keys are qubit indices and the values are 0 or 1.
         postcons    :  a dictionary specifying the post-condition. The keys are qubit indices and the values are 0 or 1.
+    Returns:
+        result      :  "True" if the circuit is equivalent to the identity, "False" if not, "TIMEOUT" if the simulation times out.
     """
     cnf.precondition(precons)
     cnf.postcondition(postcons)

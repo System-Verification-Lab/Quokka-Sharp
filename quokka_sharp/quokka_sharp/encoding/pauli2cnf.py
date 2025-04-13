@@ -4,6 +4,10 @@ from decimal import Decimal, getcontext
 getcontext().prec = 32
 
 class pauli2cnf:
+    """
+    This class contains the functions to convert a quantum circuit to CNF clauses in the Pauli basis.
+    """
+
     def H2CNF(cnf, k):
         x = cnf.vars.x
         z = cnf.vars.z

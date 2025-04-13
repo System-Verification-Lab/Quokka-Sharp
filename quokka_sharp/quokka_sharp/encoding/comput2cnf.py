@@ -6,6 +6,9 @@ getcontext().prec = 32
 from .pauli2cnf import pauli2cnf
 
 class comput2cnf:
+    """
+    This class contains the functions to convert a quantum circuit to CNF clauses in the Computationl basis.
+    """
 
     def H2CNF(cnf, k):
         x = cnf.vars.x

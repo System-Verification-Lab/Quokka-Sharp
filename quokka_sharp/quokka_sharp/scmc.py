@@ -12,11 +12,22 @@ from .encoding.cnf import CNF
 from .encoding.qasm_parser import Circuit, QASMparser
 from decimal import Decimal, getcontext
 getcontext().prec = 32
-
-# TODO: information for arguments in functions
+global FPE
+FPE = 1e-12
 
 def get_result(result_file, expexted_prob, abs_value):
-    ''' return (found, weight, assignment)'''
+    """
+    Parse the output of the tool to get the result
+    Args:
+        result_file       :  the path to the output file
+        expexted_prob     :  the expected probability
+        abs_value         :  when the value is true get the modulus square root.
+    Returns:
+        (found, weight, assignment) :  a tuple containing the result of the simulation
+        found: True if the simulation is successful, False otherwise
+        weight: the weight of the simulation
+        assignment: the assignment of the qubits
+    """
 
     with open(result_file, 'r') as file:
         result_str = file.read()
@@ -54,9 +65,18 @@ def get_result(result_file, expexted_prob, abs_value):
     expexted_w = Decimal(expexted_prob)
     print(f"achived: {weight}/{expexted_w}")
     prec = weight/expexted_w
-    return (prec > (1-1e-12), prec, assignment)
+    return (prec > FPE, prec, assignment)
     
 def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = False):
+    """
+    Function to create a temporary file with the identity check
+    Args:
+        cnf             :  the encoded cnf of the input circuit
+        cnf_file_root   :  the path to the output file
+        files_prefix    :  the prefix of the output file
+        indx            :  the index of the output file
+        onehot_xz       :  when the value is true use one-hot encoding for x and z
+    """
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
     
@@ -65,6 +85,25 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     return cnf_file
 
 def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+    """
+    Function to synthesize a quantum circuit
+    Args:
+        tool_invocation   :  the running command of the weighted model counter
+        cnf              :  the encoded cnf of the input circuit
+        cnf_file_root    :  the path to the output file
+        fidelity_threshold:  the threshold for the fidelity
+        bin_search       :  when the value is true use binary search to find the optimal depth
+        initial_depth    :  the initial depth of the circuit
+        onehot_xz       :  when the value is true use one-hot encoding for x and z
+        h_sandwich      :  when the value is true use h-sandwich encoding
+        printing         :  when the value is true print the output
+    Returns:
+        (status, weight, qasm, depth) :  a tuple containing the result of the simulation
+        status: "FOUND" if the simulation is successful, "TIMEOUT"/"CRASH"/"ERROR" otherwise
+        weight: the weight of the simulation
+        qasm: the qasm of the found circuit
+        depth: the depth of the found circuit
+    """
     if printing: print() 
     if printing: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
     p = None
