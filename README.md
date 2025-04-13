@@ -111,8 +111,8 @@ res = qk.Verify(tool_invocation, cnf, precons={0:0}, postcons={0:0})
 
 ### extension of the encodings:
 The encoding supports a universal gate set: CNOT, CZ, H, S, T, RX, RZ.
-To add direct encoding of other gates, add new encoding in ./encoding/pauli2cnf_py_codegen.py or ./encoding/comput2cnf_py_codegen.py, depending on the basis.
-Then, update the ifelse cases at the "QASMparser" function in ./encoding/qasm_parser.py and the "encode_circuit" function in ./encoding/cnf.py.
+To add direct encoding of other gates, add new encoding in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/pauli2cnf_py_codegen.py or Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/comput2cnf_py_codegen.py, depending on the basis.
+Then, update the ifelse cases at the "QASMparser" function in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/qasm_parser.py and the "encode_circuit" function in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/cnf.py.
 Finally, run one of the following commands correspondingly:
 
 ```
