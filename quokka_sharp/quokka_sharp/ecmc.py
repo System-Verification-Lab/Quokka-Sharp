@@ -1,10 +1,8 @@
 import copy
-import os
+import os, sys
 import random
 import re
-import sys
 import tempfile
-import time
 from subprocess import PIPE, Popen
 import signal
 

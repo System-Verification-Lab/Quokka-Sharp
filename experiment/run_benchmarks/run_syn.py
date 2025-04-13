@@ -2,7 +2,6 @@ import time
 import quokka_sharp as qk
 import traceback
 import sys
-import os
 
 def main(tool_path, qasmfile):
         glb_st = time.time()

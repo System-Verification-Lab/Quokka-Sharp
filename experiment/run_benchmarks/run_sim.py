@@ -1,6 +1,5 @@
 import quokka_sharp as qk
 from queue import Queue
-import os, sys
 from time import sleep, time
 from memory import ReturnValueThread, memory_monitor
 import argparse
