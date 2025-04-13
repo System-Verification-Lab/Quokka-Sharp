@@ -44,7 +44,7 @@ def main(args):
     max_rss = str(max_rss / 1024) + "MB"
     filename1 = qasmfile1.split("/")[-1]
     filename2 = qasmfile2.split("/")[-1]
-    s = '{' + f'"basis": "{basis}", "file1": "{filename1}", "file2": "{filename2}", "time": "{end_time - start_time}", "res": "{res}"' + '}'
+    s = '{' + f'"file1": "{filename1}", "file2": "{filename2}", "time": "{end_time - start_time}", "res": "{res}"' + '}'
     print(s)
     
 
