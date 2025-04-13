@@ -6,6 +6,10 @@ from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
 getcontext().prec = 32
 
+global FPE
+FPE = 1e-12
+
+
 def GPMC(tool_invocation, wmc_file, square):
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
