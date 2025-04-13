@@ -30,7 +30,7 @@ def main(args):
     
     start_time = time()
     prob = wmc(qasmfile, tool_invocation, meas, basis)
-    if prob == "TIMEOUT": prob = 99999
+    # if prob == "TIMEOUT": prob = 99999
     end_time = time()
     queue.put('stop')
     max_rss = monitor_thread.join()
