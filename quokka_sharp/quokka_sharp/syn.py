@@ -155,7 +155,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             if printing: print() 
             # if printing: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
-            # if printing: print(f"Iteration: {it_counter}")
+            if printing: print(f"Iteration: {it_counter}")
             files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
 
             if bin_search:
@@ -177,7 +177,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                     cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
                 file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
 
-            if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
+            # if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
             # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             command = (tool_invocation.split(' ') + 
                        ["-i", file] + 
@@ -203,7 +203,8 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             if cerr:
                 return f"ERROR{cerr}", 0, res, cnf_copy.syn_gate_layer
             found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
-            if printing: print(f"found:{found}, weight:{weight}")
+            # if printing: print(f"found:{found}, weight:{weight}")
+            if printing: print(f"fidelity:{weight}")
             if weight == "CRASH":
                 # if printing: print(err, cerr)
                 return "CRASH", 0, "", cnf_copy.syn_gate_layer
@@ -211,7 +212,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             qasm = cnf_copy.get_syn_qasm(assignment)
             with open(res_file, "w") as f:
                 f.write(qasm)
-                if printing: print(f"Res file: {res_file}")
+                # if printing: print(f"Res file: {res_file}")
 
             if bin_search:
                 if found:
