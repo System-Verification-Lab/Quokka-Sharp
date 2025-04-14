@@ -113,8 +113,8 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             if printing: print(f"TIMEOUT expiered")
             if p is not None:
                 p.kill()
-            else:
-                if printing: print(it_counter, end="")
+            # else:
+            #     if printing: print(it_counter, end="")
             raise TimeoutException("TIMEOUT")
     except KeyError: 
         print ("Please set the environment variable TIMEOUT")
@@ -153,10 +153,10 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
         cnf_revert = cnf_copy
         skip_first = True
         while not done:
-            if printing: print() 
-            if printing: print(f"Global Time: {datetime.datetime.now()}")
+            # if printing: print() 
+            # if printing: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
-            if printing: print(f"Iteration: {it_counter}")
+            # if printing: print(f"Iteration: {it_counter}")
             files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
 
             if bin_search:
@@ -179,18 +179,18 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                 file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
 
             if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
-            if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
+            # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             command = (tool_invocation.split(' ') + 
                        ["-i", file] + 
                        (["--complex", "1"] if cnf.computational_basis else []) + 
                        ["--maxsharpsat-threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                     )
-            if printing: print(" ".join(command))
+            # if printing: print(" ".join(command))
             out_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.out"
             err_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.err"
             res_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.res"
-            if printing: print(f"Out file: {out_file}")
-            if printing: print(f"Err file: {err_file}")
+            # if printing: print(f"Out file: {out_file}")
+            # if printing: print(f"Err file: {err_file}")
             with open(out_file, 'w') as out:
                 with open(err_file, 'w') as err:
                     p = Popen(command, stdout=out, stderr=err)
@@ -206,7 +206,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
             if printing: print(f"found:{found}, weight:{weight}")
             if weight == "CRASH":
-                if printing: print(err, cerr)
+                # if printing: print(err, cerr)
                 return "CRASH", 0, "", cnf_copy.syn_gate_layer
             
             qasm = cnf_copy.get_syn_qasm(assignment)
@@ -221,7 +221,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                 else: 
                     bin_lb = num_layers
                 
-                if printing: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
+                # if printing: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
 
                 if bin_lb + 1 == bin_ub:
                     if found == False:
@@ -237,13 +237,13 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                     done = True
             if printing: print(f"Run Time: {time.time()-start}")
 
-        if printing: print()
-        if printing: print(f"Global Time: {datetime.datetime.now()}")
+        # if printing: print()
+        # if printing: print(f"Global Time: {datetime.datetime.now()}")
         return "FOUND", weight, qasm, cnf_copy.syn_gate_layer
 
     except TimeoutException as error:
         if printing: print(f"Run Time: {time.time()-start}")
-        if printing: print(f"Global Time: {datetime.datetime.now()}")
+        # if printing: print(f"Global Time: {datetime.datetime.now()}")
         t_found, t_weight, t_assignment = get_result(out_file, expected_prob, expected_abs_value)
         if t_found:
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment), cnf_copy.syn_gate_layer
