@@ -109,6 +109,13 @@ res = qk.Verify(tool_invocation, cnf, precons={0:0}, postcons={0:0})
 
 ## Modifications
 
+### code structure:
+The Quokka sharp repository has two main directories. The first directory is named quokka_sharp, and has the source code for the Quokka library. The second directory is named experiments, has examples on how to use the tool and benchmarks to test it.
+
+In the directory qukkora_sharp/quokka_sharp the main functionalities are implemented each in its own file and they use the core libraries defined within the quokka_sharp/quokka_sharp encoding. 
+
+
+
 ### extension of the encodings:
 The encoding supports a universal gate set: CNOT, CZ, H, S, T, RX, RZ.
 To add direct encoding of other gates, add new encoding in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/pauli2cnf_py_codegen.py or Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/comput2cnf_py_codegen.py, depending on the basis.
