@@ -1,6 +1,5 @@
 import time
 import quokka_sharp as qk
-import traceback
 import sys
 
 def main(tool_path, qasmfile):

@@ -1,7 +1,6 @@
-from .encoding.qasm_parser import QASMparser
-from .encoding.cnf import QASM2CNF, CNF
-from .qcmc import Simulate
-from .qcmc import FPE
+from .encoding.cnf import CNF
+from .sim import Simulate
+from .sim import FPE
 
 def Verify(tool_path, cnf: "CNF", precons, postcons):
     """
