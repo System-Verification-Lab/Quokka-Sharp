@@ -21,15 +21,15 @@ echo "" >> results/sim_wmc_allzero_comp_results.txt
 
 # get eq test results for the benchmarks
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in Pauli basis - printing results to ./results/eq_wmc_pauli_results.txt'
-echo "results of Tables 1 (right), 2 (mid + right) of the artifacts README file, column Quokka\#(linear)" > results/eq_wmc_pauli_results.txt
-echo "" >> results/eq_wmc_pauli_results.txt
-./run_eq_wmc.sh pauli $1 >> results/eq_wmc_pauli_results.txt
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in linear encoding - printing results to ./results/eq_wmc_linear_results.txt'
+echo "results of Tables 1 (right), 2 (mid + right) of the artifacts README file, column Quokka\#(linear)" > results/eq_wmc_linear_results.txt
+echo "" >> results/eq_wmc_linear_results.txt
+./run_eq_wmc.sh pauli $1 >> results/eq_wmc_linear_results.txt
 
-echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in computational basis - printing results to ./results/eq_wmc_comp_results.txt'
-echo "results of Tables 1 (right), 2 (mid + right) of the artifacts README file, column Quokka\#(cyclic)" > results/eq_wmc_comp_results.txt
-echo "" >> results/eq_wmc_comp_results.txt
-./run_eq_wmc.sh comp  $1 >> results/eq_wmc_comp_results.txt
+echo `date +"[%Y-%m-%d %H:%M:%S]"`' running equivalence checking in cyclic encoding - printing results to ./results/eq_wmc_cyclic_results.txt'
+echo "results of Tables 1 (right), 2 (mid + right) of the artifacts README file, column Quokka\#(cyclic)" > results/eq_wmc_cyclic_results.txt
+echo "" >> results/eq_wmc_cyclic_results.txt
+./run_eq_wmc.sh comp  $1 >> results/eq_wmc_cyclic_results.txt
 
 
 # get veri test results for the benchmarks
