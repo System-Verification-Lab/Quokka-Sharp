@@ -61,7 +61,7 @@ def get_result(result_file, expexted_prob, abs_value):
     expexted_w = Decimal(expexted_prob)
     print(f"achived: {weight}/{expexted_w}")
     prec = weight/expexted_w
-    return (prec > FPE, prec, assignment)
+    return (prec > (1-FPE), prec, assignment)
     
 def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = False):
     """
