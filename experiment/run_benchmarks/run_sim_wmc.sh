@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# arg1: mesurment 'firstzero' or 'allzero'
+# arg1: mesurement 'firstzero' or 'allzero'
 # arg2: basis 'comp' or 'pauli'
 # arg3: timeout in seconds (300 = 5 minutes)
 
