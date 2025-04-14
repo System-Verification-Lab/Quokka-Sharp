@@ -64,6 +64,7 @@ cnf.add_measurement("firstzero")
 # Export to benchmarks
 cnf.write_to_file("circ.cnf")
 prob = qk.Simulate(tool_invocation, cnf)
+# The result will be a float if the probability was computed,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 '''
 Equivalence checking
@@ -79,6 +80,7 @@ circuit1.append(circuit2)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Users can set a different number N of parallel processes when the check mode is "linear". For other modes, "N" should be 1.
 res = qk.CheckEquivalence(tool_path, cnf, check = "linear", N=16)
+# The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 '''
 Synthesis
@@ -104,10 +106,17 @@ circuit1 = qk.encoding.QASMparser(qasmfile1, True)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Verify for pre and post conditions given in dictionary format
 res = qk.Verify(tool_invocation, cnf, precons={0:0}, postcons={0:0})
-# The result will be "True" if the conditions hold, "False" if not, or "TIMEOUT" if the tool ran out of time.
+# The result will be "True" if the conditions hold, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 ```
 
 ## Modifications
+
+### code structure:
+The Quokka sharp repository has two main directories. The first directory is named quokka_sharp, and has the source code for the Quokka library. The second directory is named experiments, has examples on how to use the tool and benchmarks to test it.
+
+In the directory qukkora_sharp/quokka_sharp the main functionalities are implemented each in its own file and they use the core libraries defined within the quokka_sharp/quokka_sharp encoding. 
+
+
 
 ### extension of the encodings:
 The encoding supports a universal gate set: CNOT, CZ, H, S, T, RX, RZ.
