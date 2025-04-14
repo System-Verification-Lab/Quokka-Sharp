@@ -1,25 +1,9 @@
 import quokka_sharp as qk
-from queue import Queue
-from time import sleep, time
-from memory import ReturnValueThread, memory_monitor
+from time import time
 import argparse
 
-def main(args):
 
-    qasmfile1       = args.filename1
-    qasmfile2       = args.filename2
-    tool_path       = '../../../GPMC/bin/gpmc -mode=1'
-    basis           = args.basis
-    
-    # start monitor thread for measuring mem
-    queue = Queue()
-    poll_interval = 0.1
-    monitor_thread = ReturnValueThread(target=memory_monitor, args=(queue, poll_interval))
-    monitor_thread.start()
-    # wait a bit for monitor thread to start measuring mem
-    sleep(.5)
-    start_time = time()
-    
+def wmc(qasmfile1, qasmfile2, tool_invocation, basis): 
     try:
         # Parse the circuit
         circuit1 = qk.encoding.QASMparser(qasmfile1, True)
@@ -31,16 +15,23 @@ def main(args):
         # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
         cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
         # "id" or "2n"
-        res = qk.CheckEquivalence(tool_path, cnf, check = "cyclic" if (basis == "comp") else "linear", N = 1 if (basis == "comp") else 16)
+        res = qk.CheckEquivalence(tool_invocation, cnf, check = "cyclic" if (basis == "comp") else "linear", N = 1 if (basis == "comp") else 16)
     except FileNotFoundError:
         res = "FILE_NOT_FOUND"
-    
 
-    # if res == "TIMEOUT": res = 99999
+    return res
+
+def main(args):
+
+    qasmfile1       = args.filename1
+    qasmfile2       = args.filename2
+    tool_path       = '../../../GPMC/bin/gpmc -mode=1'
+    basis           = args.basis
+    
+    start_time = time()
+    res = wmc(qasmfile1, tool_path, qasmfile2, basis)
     end_time = time()
-    queue.put('stop')
-    max_rss = monitor_thread.join()
-    max_rss = str(max_rss / 1024) + "MB"
+
     filename1 = qasmfile1.split("/")[-1]
     filename2 = qasmfile2.split("/")[-1]
     s = '{' + f'"file1": "{filename1}", "file2": "{filename2}", "time": "{end_time - start_time}", "res": "{res}"' + '}'
