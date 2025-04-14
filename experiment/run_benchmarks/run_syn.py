@@ -33,6 +33,6 @@ def main(tool_path, qasmfile):
 
 
 if __name__ == '__main__':
-    tool_path = sys.argv[1]
-    circ = sys.argv[2]
+    tool_path = "../../d4v2/build/d4 -m max#sat --maxsharpsat-option-and-dig false --float 1 "
+    circ = sys.argv[1]
     main(tool_path, circ)
