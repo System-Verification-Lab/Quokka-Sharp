@@ -3,7 +3,6 @@ import io
 from itertools import product
 import numpy as np
 
-
 from .qasm_parser import Circuit
 
 class Variables:

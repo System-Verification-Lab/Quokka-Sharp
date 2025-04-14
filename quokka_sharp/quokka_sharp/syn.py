@@ -2,11 +2,10 @@ import copy
 import os, sys
 import re
 import signal
-import time, datetime
+import time
 from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF
-from .encoding.qasm_parser import Circuit, QASMparser
 from decimal import Decimal, getcontext
 getcontext().prec = 32
 global FPE
