@@ -59,7 +59,7 @@ def get_result(result_file, expexted_prob, abs_value):
         assignment = assignment[1:-1]
 
     expexted_w = Decimal(expexted_prob)
-    print(f"achived: {weight}/{expexted_w}")
+    # print(f"achived: {weight}/{expexted_w}")
     prec = weight/expexted_w
     return (prec > (1-FPE), prec, assignment)
     
