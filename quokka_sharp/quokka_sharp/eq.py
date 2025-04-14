@@ -47,8 +47,7 @@ def get_result(result, expected_prob, abs_value):
     result = str(result)
     gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)
     if len(gpmc_ans_str) == 0:
-        print(result)
-        raise ValueError("GPMC result is empty")
+        return "MEMOUT"
     gpmc_ans_str = gpmc_ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j")
     gpmc_ans = complex(gpmc_ans_str)
     real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
@@ -193,14 +192,14 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 if pid in procdict.keys():
                     res = procdict[pid].communicate()
                     result = get_result(res[0], expected_prob, expected_abs_value)
-                    if result == False:
+                    if result != True:
                         break
                     else:
                         procdict.pop(pid)
                 if len(procdict) == 0:
                     break
 
-            if result == False:
+            if result != True:
                 break
 
             if length > N:
@@ -217,9 +216,6 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
         return result
     except TimeoutException:
         return "TIMEOUT"
-    except ValueError as e:
-        print(e)
-        return "ERROR - GPMC result is empty"
     except InvalidProcessNumException:
         return "ERROR - bad process number"
     except Exception as e:

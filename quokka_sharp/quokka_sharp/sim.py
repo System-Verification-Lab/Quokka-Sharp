@@ -31,8 +31,10 @@ def GPMC(tool_invocation, wmc_file, square):
     try: 
         result = p.communicate(timeout = TIMEOUT)
         result = str(result)    
-        gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)[0]
-        gpmc_ans_str = gpmc_ans_str.replace("\\n", "").replace(" ", "").replace("i", "j")
+        gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)
+        if len(gpmc_ans_str) == 0:
+            return "MEMOUT"
+        gpmc_ans_str = gpmc_ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j")
         gpmc_ans = complex(gpmc_ans_str)
         real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
         if abs(real) < 1e-16 and abs(imag) < 1e-16:
