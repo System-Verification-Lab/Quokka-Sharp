@@ -181,8 +181,8 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
             command = (tool_invocation.split(' ') + 
                        ["-i", file] + 
-                       (["--complex", "1"] if cnf.computational_basis else []) + 
-                       ["--maxsharpsat-threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
+                       ["--complex", ("1" if cnf.computational_basis else "0")] + 
+                       ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                     )
             # if printing: print(" ".join(command))
             out_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.out"
