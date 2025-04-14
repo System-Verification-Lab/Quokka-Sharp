@@ -1,5 +1,5 @@
 # Quokka-Sharp
-## Prerequisite
+## Prerequisites
 
 - Install GPMC solver: Follow instructions in [GPMC git](https://github.com/System-Verification-Lab/GPMC) to install GPMC.
 
@@ -8,7 +8,7 @@
 - Install pip: Follow instructions in [pip Installation](https://pip.pypa.io/en/stable/installation/) to install pip. 
 
 
-## INSTALLATION
+## Instalation
 
 To use Quokka# as-is, you can install it as a Python module via pip:
 ```
