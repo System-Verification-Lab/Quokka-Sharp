@@ -29,7 +29,7 @@ def main(args):
     basis           = args.basis
     
     start_time = time()
-    res = wmc(qasmfile1, tool_path, qasmfile2, basis)
+    res = wmc(qasmfile1, qasmfile2, tool_path, basis)
     end_time = time()
 
     filename1 = qasmfile1.split("/")[-1]
