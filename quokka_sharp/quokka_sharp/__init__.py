@@ -1,8 +1,8 @@
 __version__ = "0.0.14"
 
-from .qcmc import Simulate
-from .ecmc import CheckEquivalence
-from .scmc import Synthesis
+from .sim import Simulate
+from .eq import CheckEquivalence
+from .syn import Synthesis
 from .veri import Verify
 
 from .encoding import CNF
