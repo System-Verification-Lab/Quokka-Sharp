@@ -103,7 +103,6 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
     if printing: print() 
     if printing: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
     p = None
-    it_counter = 0
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
         if printing: print(f"TIMEOUT set to: {TIMEOUT}") 
@@ -150,7 +149,8 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             cnf_copy_init.add_syn_layer(initial_depth)
         cnf_copy = cnf_copy_init
         cnf_revert = cnf_copy
-        skip_first = True
+        skip_first = False
+        it_counter = 0 if skip_first else 1
         while not done:
             if printing: print() 
             # if printing: print(f"Global Time: {datetime.datetime.now()}")
@@ -159,7 +159,6 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
 
             if bin_search:
-                it_counter+=1
                 cnf_copy = copy.deepcopy(cnf_copy_init)
                 cnf_copy.add_syn_layer(num_layers, limit_gates=h_sandwich, h_layer=False)
                 cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
@@ -171,7 +170,6 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                     skip_first = False
                 else:
                     cnf_copy.add_syn_layer()
-                    it_counter+=1
                 if h_sandwich:
                     cnf_revert = copy.deepcopy(cnf_copy)
                     cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
@@ -236,6 +234,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                 if found or weight > fidelity_threshold:
                     done = True
             if printing: print(f"Run Time: {time.time()-start}")
+            it_counter+=1
 
         # if printing: print()
         # if printing: print(f"Global Time: {datetime.datetime.now()}")
