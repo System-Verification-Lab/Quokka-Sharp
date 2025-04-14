@@ -1,7 +1,5 @@
 import quokka_sharp as qk
-from queue import Queue
-from time import sleep, time
-from memory import ReturnValueThread, memory_monitor
+from time import time
 import argparse
 
 def wmc(qasmfile1, tool_invocation, meas, basis): 
@@ -19,21 +17,11 @@ def main(args):
     tool_invocation = '../../../GPMC/bin/gpmc -mode=1'
     basis           = args.basis
     meas            = args.measurement
-    # start monitor thread for measuring mem
-    queue = Queue()
-    poll_interval = 0.1
-    monitor_thread = ReturnValueThread(target=memory_monitor, args=(queue, poll_interval))
-    monitor_thread.start()
-    # wait a bit for monitor thread to start measuring mem
-    sleep(.5)
     
     start_time = time()
     prob = wmc(qasmfile, tool_invocation, meas, basis)
-    # if prob == "TIMEOUT": prob = 99999
     end_time = time()
-    queue.put('stop')
-    max_rss = monitor_thread.join()
-    max_rss = str(max_rss / 1024 / 1024) + "MB"
+
     filename = qasmfile.split("/")[-1]
     s = '{' + f'"file": "{filename}", "time": "{end_time - start_time}", "prob": "{prob}"' + '}'
     print(s)

@@ -1,7 +1,5 @@
 import quokka_sharp as qk
-from queue import Queue
-from time import sleep, time
-from memory import ReturnValueThread, memory_monitor
+from time import time
 import argparse
 import ast
 
@@ -19,21 +17,11 @@ def main(args):
     basis           = args.basis
     pre            = ast.literal_eval(args.precondition)
     post            = ast.literal_eval(args.postcondition)
-    # start monitor thread for measuring mem
-    queue = Queue()
-    poll_interval = 0.1
-    monitor_thread = ReturnValueThread(target=memory_monitor, args=(queue, poll_interval))
-    monitor_thread.start()
-    # wait a bit for monitor thread to start measuring mem
-    sleep(.5)
     
     start_time = time()
     res = wmc(qasmfile, tool_invocation, pre, post, basis)
-    # if res == "TIMEOUT": res = None
     end_time = time()
-    queue.put('stop')
-    max_rss = monitor_thread.join()
-    max_rss = str(max_rss / 1024 / 1024) + "MB"
+    
     filename = qasmfile.split("/")[-1]
     s = '{' + f'"basis": "{basis}", "file": "{filename}", "time": "{end_time - start_time}", "res": "{str(res)}"' + '}'
     print(s)
