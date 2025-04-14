@@ -36,25 +36,4 @@ def main(tool_path, qasmfile):
 if __name__ == '__main__':
     tool_path = sys.argv[1]
     circ = sys.argv[2]
-    try:
-        main(tool_path, circ)
-    except AssertionError:
-        print(f"""\nAssertion Failed for call:\
-                \n   tool_path=\"{tool_path}\"\
-                \n   circ=\"{circ}\"
-                """)
-        print()
-        print(traceback.format_exc())
-        print()
-    except FileNotFoundError:
-        print(f"nf", end="")
-    except KeyboardInterrupt:
-        print("KeyboardInterrupt")
-    except:
-        print(f"""\nError for call:\
-                \n   tool_path=\"{tool_path}\"\
-                \n   circ=\"{circ}\"
-                """)
-        print()
-        print(traceback.format_exc())
-        print()
+    main(tool_path, circ)
