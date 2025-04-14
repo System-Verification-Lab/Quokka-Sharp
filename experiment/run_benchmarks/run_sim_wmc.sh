@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# arg1: mesurement 'firstzero' or 'allzero'
+# arg1: a general measurement with map format, i.e. {0:1,1:1}. We specifically offer a quick argument "allzero" when measuring all zero state
 # arg2: basis 'comp' or 'pauli'
 # arg3: timeout in seconds (300 = 5 minutes)
 
