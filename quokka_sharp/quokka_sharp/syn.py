@@ -152,7 +152,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
         cnf_revert = cnf_copy
         skip_first = True
         while not done:
-            # if printing: print() 
+            if printing: print() 
             # if printing: print(f"Global Time: {datetime.datetime.now()}")
             start = time.time()
             # if printing: print(f"Iteration: {it_counter}")
