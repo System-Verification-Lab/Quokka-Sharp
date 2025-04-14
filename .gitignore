@@ -17,3 +17,4 @@ env/
 .venv/
 build/
 experiment/run_benchmarks/tmp/
+experiment/run_benchmarks/results/
