@@ -18,7 +18,7 @@ def main(args):
     tool_invocation = '../../../GPMC/bin/gpmc -mode=1'
     basis           = args.basis
     meas            = args.measurement
-    if meas != "firstzero" or "allzero":
+    if meas != "firstzero" and meas != "allzero":
         meas  = ast.literal_eval(meas)
     
     start_time = time()
