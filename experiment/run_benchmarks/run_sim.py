@@ -32,7 +32,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Simulating quantum circuits with WMC')
     parser.add_argument('filename')
-    parser.add_argument('-m', '--measurement', default='firstzero')
+    parser.add_argument('-m', '--measurement', default='allzero')
     parser.add_argument('-b', '--basis', choices=['comp', 'pauli'])
     args = parser.parse_args()
     main(args)
