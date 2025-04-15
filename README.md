@@ -86,7 +86,7 @@ res = qk.CheckEquivalence(tool_path, cnf, check = "linear", N=16)
 Synthesis
 '''
 # Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile, True)
+circuit = qk.encoding.QASMparser(qasmfile1, True)
 # Get (circuit1)^dagger
 circuit.dagger()
 # Get CNF for the circuit in Pauli basis (can change to False for the Pauli basis)
