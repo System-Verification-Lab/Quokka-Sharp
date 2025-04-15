@@ -101,7 +101,8 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
         depth: the depth of the found circuit
     """
     if printing: print() 
-    if printing: print(f"fidelity_threshold:{fidelity_threshold}, onehot_xz:{onehot_xz}") 
+    if printing: print(f"basis:{"Comp" if cnf.computational_basis else "Pauli"}, exact:{onehot_xz}") 
+    if printing: print(f"fidelity_threshold:{fidelity_threshold}") 
     p = None
     try:  
         TIMEOUT = int(os.environ["TIMEOUT"])
