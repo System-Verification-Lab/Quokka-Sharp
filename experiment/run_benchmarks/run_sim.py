@@ -1,6 +1,7 @@
 import quokka_sharp as qk
 from time import time
 import argparse
+import ast
 
 def wmc(qasmfile1, tool_invocation, meas, basis): 
     # Parse the circuit
@@ -17,6 +18,8 @@ def main(args):
     tool_invocation = '../../../GPMC/bin/gpmc -mode=1'
     basis           = args.basis
     meas            = args.measurement
+    if meas != "firstzero" or "allzero":
+        meas  = ast.literal_eval(meas)
     
     start_time = time()
     prob = wmc(qasmfile, tool_invocation, meas, basis)
