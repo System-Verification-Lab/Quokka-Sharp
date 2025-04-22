@@ -6,3 +6,4 @@
 export TIMEOUT=$1
 
 python3 run_syn.py "../basic_tests/cs.qasm" -b "pauli" -f 1.0 >&1 ;
+python3 run_syn.py "../basic_tests/cs.qasm" -b "comp" -f 1.0 >&1 ;

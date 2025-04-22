@@ -61,6 +61,8 @@ def get_result(result_file, expexted_prob, abs_value):
     expexted_w = Decimal(expexted_prob)
     # print(f"achived: {weight}/{expexted_w}")
     prec = weight/expexted_w
+    if abs_value:
+        prec = prec**2
     return (prec > (1-FPE), prec, assignment)
     
 def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = False):
@@ -131,8 +133,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             expected_abs_value = True
         else:
             expected_prob = 4**cnf.n
-            expected_abs_value = True
-        expected_prob = expected_prob 
+            expected_abs_value = False
         
         done = False
         bin_lb = 0
@@ -150,7 +151,7 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
             cnf_copy_init.add_syn_layer(initial_depth)
         cnf_copy = cnf_copy_init
         cnf_revert = cnf_copy
-        skip_first = False
+        skip_first = True
         it_counter = 0 if skip_first else 1
         while not done:
             if printing: print() 
