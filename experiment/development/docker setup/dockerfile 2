@@ -1,0 +1,60 @@
+FROM --platform=linux/amd64 dekelzak/quokka:latest
+ARG workdir=/Quokka
+WORKDIR ${workdir}
+
+RUN . .venv/bin/activate
+
+# Install dependencies
+RUN pip install ninja
+
+# Install Boost
+WORKDIR ${workdir}
+RUN wget https://archives.boost.io/release/1.87.0/source/boost_1_87_0.tar.gz
+RUN tar -xvzf boost_1_87_0.tar.gz
+WORKDIR ${workdir}/boost_1_87_0
+RUN ./bootstrap.sh 
+RUN ./b2 install link=static --prefix=${workdir}/.venv; exit 0
+ENV Boost_LIBRARIES=${workdir}/.venv/lib/
+ENV CPLUS_INCLUDE_PATH=${workdir}/.venv/include/:${workdir}/boost_1_87_0
+
+# D4 Install
+# WORKDIR ${workdir}
+# RUN git clone https://github.com/crillab/d4v2.git
+# WORKDIR ${workdir}/d4v2/3rdParty
+# RUN wget https://faculty.cc.gatech.edu/~umit/PaToH/patoh-Linux-x86_64.tar.gz
+# RUN tar -xvzf patoh-Linux-x86_64.tar.gz 
+# RUN mv ./build/Linux-x86_64/* ./patoh/
+# WORKDIR ${workdir}/d4v2/
+# RUN ./build.sh
+RUN mkdir -p ${workdir}/d4v2/build
+COPY maxT_static ${workdir}/d4v2/build/
+
+# Update Python
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
+RUN apt-get update
+RUN apt-get install software-properties-common -y
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update
+RUN apt-get install python3.12 -y
+
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 2
+RUN update-alternatives --set python3 /usr/bin/python3.12
+
+RUN wget https://bootstrap.pypa.io/get-pip.py
+RUN python3 get-pip.py
+RUN pip install --force-reinstall setuptools
+
+# Quokka update
+WORKDIR ${workdir}
+RUN rm -rf ${workdir}/Quokka-Sharp
+ARG CACHEBUST=$(date +%s)
+RUN git clone https://github.com/System-Verification-Lab/Quokka-Sharp.git 
+
+RUN . .venv/bin/activate
+WORKDIR ${workdir}/Quokka-Sharp/
+RUN pip install -r requirements.txt
+RUN pip install ./quokka_sharp --force-reinstall 
+
+WORKDIR ${workdir}/Quokka-Sharp/experiment/run_benchmarks
+# RUN ./run_all_wmc.sh 300
