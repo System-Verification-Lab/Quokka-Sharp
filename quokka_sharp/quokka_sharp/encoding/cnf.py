@@ -25,6 +25,8 @@ class Variables:
         self.ZVar = []
         self.RVar = []
         self.UVar = []
+        self.IVar = []
+        self.DVar = []
         self.computational_basis = computational_basis
         self.x = []
         if not self.computational_basis:

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cd ../../ 
-
+cd ../../
 echo "remaking pauli2cnf"
 python3 ./quokka_sharp/pauli2cnf_py_codegen.py > ./quokka_sharp/quokka_sharp/encoding/pauli2cnf.py
 echo "remaking comput2cnf"

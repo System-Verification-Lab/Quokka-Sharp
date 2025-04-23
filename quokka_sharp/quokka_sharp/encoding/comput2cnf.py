@@ -14,8 +14,10 @@ class comput2cnf:
         x = cnf.vars.x
 
         X = cnf.add_var()
+        cnf.vars.XVar.append(X)
 
         U = cnf.add_var()
+        cnf.vars.UVar.append(U)
         if cnf.weighted: 
             cnf.add_weight(U, str(Decimal(1/2).sqrt()))
             cnf.add_weight(-U, 1)
@@ -30,6 +32,7 @@ class comput2cnf:
             cnf.add_clause([-U,  u], comment="sqrt U update ")
 
             D = cnf.add_var()
+            cnf.vars.DVar.append(D)
             cnf.add_clause([D, cnf.add_var()], comment="sqrt D double ")
             # Equivalent(D, u & ~U)
             cnf.add_clause([-D,  u], comment="sqrt D update ")
@@ -38,6 +41,7 @@ class comput2cnf:
 
         # adding sign if X & x[k]
         R = cnf.add_var()
+        cnf.vars.RVar.append(R)
         if cnf.weighted: 
             cnf.add_weight(R, -1)
             cnf.add_weight(-R, 1)
@@ -62,6 +66,7 @@ class comput2cnf:
         x = cnf.vars.x
 
         Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
         # Equivalent(Xt, x[c] ^ x[t])
         cnf.add_clause([ Xt,  x[c], -x[t]])
         cnf.add_clause([ Xt, -x[c],  x[t]])
@@ -74,6 +79,7 @@ class comput2cnf:
         x = cnf.vars.x
 
         Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
         # Equivalent(Xt, x[t] ^ (x[c] & x[k]))
         cnf.add_clause([ Xt,  x[c], -x[t]])
         cnf.add_clause([ Xt,  x[k], -x[t]])
@@ -89,6 +95,7 @@ class comput2cnf:
 
         # adding sign if x[k]
         R = cnf.add_var()
+        cnf.vars.RVar.append(R)
         if cnf.weighted: 
             cnf.add_weight(R, -1)
             cnf.add_weight(-R, 1)
@@ -108,6 +115,7 @@ class comput2cnf:
         x = cnf.vars.x
 
         w = cnf.add_var()
+        cnf.vars.UVar.append(w)
         cnf.add_weight(w, Decimal(math.cos(theta)), Decimal(math.sin(theta)))
         cnf.add_weight(-w, 1, 0)
         # Equivalent(w, x[k])
@@ -119,6 +127,7 @@ class comput2cnf:
 
         # adding i if x[k]
         I = cnf.add_var()
+        cnf.vars.IVar.append(I)
         if cnf.weighted: 
             cnf.add_weight(I, 0, 1)
             cnf.add_weight(-I, 1, 0)
@@ -134,6 +143,7 @@ class comput2cnf:
             cnf.add_clause([-I, -i, -x[k]], comment="i (S)")
             # adding sign if i & ~I
             R = cnf.add_var()
+            cnf.vars.RVar.append(R)
             if cnf.weighted: 
                 cnf.add_weight(R, -1)
                 cnf.add_weight(-R, 1)
@@ -157,6 +167,7 @@ class comput2cnf:
         x = cnf.vars.x
         if cnf.weighted: 
             w = cnf.add_var()
+            cnf.vars.UVar.append(w)
             cnf.add_weight(w, 0, -1)
             cnf.add_weight(-w, 1, 0)
             # Equivalent(w, x[k])
@@ -165,6 +176,7 @@ class comput2cnf:
         else:
             # adding i if x[k]
             I = cnf.add_var()
+            cnf.vars.IVar.append(I)
             if cnf.weighted: 
                 cnf.add_weight(I, 0, 1)
                 cnf.add_weight(-I, 1, 0)
@@ -180,6 +192,7 @@ class comput2cnf:
                 cnf.add_clause([-I, -i, -x[k]], comment="i (Sdg)")
                 # adding sign if i & ~I
                 R = cnf.add_var()
+                cnf.vars.RVar.append(R)
                 if cnf.weighted: 
                     cnf.add_weight(R, -1)
                     cnf.add_weight(-R, 1)
@@ -201,6 +214,7 @@ class comput2cnf:
 
             # adding sign if x[k]
             R = cnf.add_var()
+            cnf.vars.RVar.append(R)
             if cnf.weighted: 
                 cnf.add_weight(R, -1)
                 cnf.add_weight(-R, 1)
@@ -220,6 +234,7 @@ class comput2cnf:
         x = cnf.vars.x
         if cnf.weighted: 
             w = cnf.add_var()
+            cnf.vars.UVar.append(w)
             cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt()))
             cnf.add_weight(-w, 1, 0)
             # Equivalent(w, x[k])
@@ -229,12 +244,14 @@ class comput2cnf:
             i = cnf.vars.i
 
             I = cnf.add_var()
+            cnf.vars.IVar.append(I)
             # x[k] | (Equivalent(I, i))
             cnf.add_clause([ I, -i,  x[k]], comment="I (T)")
             cnf.add_clause([-I,  i,  x[k]], comment="I (T)")
 
             # adding sign if i & ~I
             R = cnf.add_var()
+            cnf.vars.RVar.append(R)
             if cnf.weighted: 
                 cnf.add_weight(R, -1)
                 cnf.add_weight(-R, 1)
@@ -254,6 +271,7 @@ class comput2cnf:
                 cnf.add_clause([ I, -R, -i, -r], comment="- (T)")
 
             U = cnf.add_var()
+            cnf.vars.UVar.append(U)
             if cnf.weighted: 
                 cnf.add_weight(U, str(Decimal(1/2).sqrt()))
                 cnf.add_weight(-U, 1)
@@ -271,6 +289,7 @@ class comput2cnf:
                 cnf.add_clause([-U, -u,  x[k]], comment="sqrt U update (T)")
 
                 D = cnf.add_var()
+                cnf.vars.DVar.append(D)
                 cnf.add_clause([D, cnf.add_var()], comment="sqrt D double (T)")
                 # Equivalent(D, u & ~U)
                 cnf.add_clause([-D,  u], comment="sqrt D update (T)")
@@ -282,6 +301,7 @@ class comput2cnf:
         x = cnf.vars.x
         if cnf.weighted: 
             w = cnf.add_var()
+            cnf.vars.UVar.append(w)
             cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt()))
             cnf.add_weight(-w, 1, 0)
             # Equivalent(w, x[k])
@@ -291,12 +311,14 @@ class comput2cnf:
             i = cnf.vars.i
 
             I = cnf.add_var()
+            cnf.vars.IVar.append(I)
             # x[k] | (Equivalent(I, i))
             cnf.add_clause([ I, -i,  x[k]], comment="I (Tdg)")
             cnf.add_clause([-I,  i,  x[k]], comment="I (Tdg)")
 
             # adding sign if I & ~i
             R = cnf.add_var()
+            cnf.vars.RVar.append(R)
             if cnf.weighted: 
                 cnf.add_weight(R, -1)
                 cnf.add_weight(-R, 1)
@@ -316,6 +338,7 @@ class comput2cnf:
                 cnf.add_clause([-I, -R,  i, -r], comment="- (Tdg)")
 
             U = cnf.add_var()
+            cnf.vars.UVar.append(U)
             if cnf.weighted: 
                 cnf.add_weight(U, str(Decimal(1/2).sqrt()))
                 cnf.add_weight(-U, 1)
@@ -333,6 +356,7 @@ class comput2cnf:
                 cnf.add_clause([-U, -u,  x[k]], comment="sqrt U update (Tdg)")
 
                 D = cnf.add_var()
+                cnf.vars.DVar.append(D)
                 cnf.add_clause([D, cnf.add_var()], comment="sqrt D double (Tdg)")
                 # Equivalent(D, u & ~U)
                 cnf.add_clause([-D,  u], comment="sqrt D update (Tdg)")
@@ -344,6 +368,7 @@ class comput2cnf:
         x = cnf.vars.x
 
         X = cnf.add_var()
+        cnf.vars.XVar.append(X)
         # Equivalent(X, ~x[k])
         cnf.add_clause([ X,  x[k]])
         cnf.add_clause([-X, -x[k]])
@@ -354,12 +379,14 @@ class comput2cnf:
         x = cnf.vars.x
 
         X = cnf.add_var()
+        cnf.vars.XVar.append(X)
         # Equivalent(X, ~x[k])
         cnf.add_clause([ X,  x[k]], comment="Y gate")
         cnf.add_clause([-X, -x[k]], comment="Y gate")
 
         # adding sign if x[k]
         R = cnf.add_var()
+        cnf.vars.RVar.append(R)
         if cnf.weighted: 
             cnf.add_weight(R, -1)
             cnf.add_weight(-R, 1)
@@ -377,6 +404,7 @@ class comput2cnf:
 
         # adding i if True
         I = cnf.add_var()
+        cnf.vars.IVar.append(I)
         if cnf.weighted: 
             cnf.add_weight(I, 0, 1)
             cnf.add_weight(-I, 1, 0)
@@ -389,6 +417,7 @@ class comput2cnf:
             cnf.add_clause([-I, -i], comment="i ")
             # adding sign if i & ~I
             R = cnf.add_var()
+            cnf.vars.RVar.append(R)
             if cnf.weighted: 
                 cnf.add_weight(R, -1)
                 cnf.add_weight(-R, 1)
@@ -413,8 +442,10 @@ class comput2cnf:
     def RX2CNF(cnf, k, theta):
         x = cnf.vars.x
         X = cnf.add_var()
+        cnf.vars.XVar.append(X)
 
         w = cnf.add_var()
+        cnf.vars.UVar.append(w)
         # Equivalent(w, Equivalent(X, x[k]))
         cnf.add_clause([ X,  w,  x[k]])
         cnf.add_clause([ X, -w, -x[k]])
@@ -430,11 +461,13 @@ class comput2cnf:
         x = cnf.vars.x
 
         Xc = cnf.add_var()
+        cnf.vars.XVar.append(Xc)
         # Equivalent(Xc, x[c])
         cnf.add_clause([ Xc, -x[c]])
         cnf.add_clause([-Xc,  x[c]])
 
         Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
         # Equivalent(Xt, x[t])
         cnf.add_clause([ Xt, -x[t]])
         cnf.add_clause([-Xt,  x[t]])
@@ -444,6 +477,7 @@ class comput2cnf:
 
         # adding sign if x[c] & x[t]
         R = cnf.add_var()
+        cnf.vars.RVar.append(R)
         if cnf.weighted: 
             cnf.add_weight(R, -1)
             cnf.add_weight(-R, 1)
