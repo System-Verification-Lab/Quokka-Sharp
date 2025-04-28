@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
-VERSION = '2.3'
+VERSION = '2.6'
 DESCRIPTION = 'Quokka Sharp'
 LONG_DESCRIPTION = '''
                     Quokka Sharp for simulating and equivalence checking 
                     of quantum circuits based on weighted model counting.
-                    You have to intall a weighted model counting tool first.
+                    Please intall a weighted model counting tool first.
                     Please refer to https://github.com/System-Verification-Lab/Quokka-Sharp for more details.
                     '''
 
@@ -26,6 +26,8 @@ setup(
             "Operating System :: MacOS :: MacOS X",
             "Operating System :: Microsoft :: Windows"  
     ],
-    install_requires=[],
+    install_requires=[
+        "numpy>=2.2"
+        ],
     include_package_data=True
 )
