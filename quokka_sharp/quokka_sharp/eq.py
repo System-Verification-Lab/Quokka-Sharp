@@ -146,7 +146,7 @@ def CheckEquivalence(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gette
                 expected_abs_value = True
             else:
                 expected_prob = Decimal(4**cnf.n)
-                expected_abs_value = True
+                expected_abs_value = False
         elif check == "cyclic_linear":
             if N > 1:
                 raise InvalidProcessNumException
