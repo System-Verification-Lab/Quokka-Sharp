@@ -1,6 +1,7 @@
 import copy
 import re, os, sys
 from subprocess import Popen, PIPE, TimeoutExpired
+import tempfile
 
 from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
@@ -48,7 +49,7 @@ def GPMC(tool_invocation, wmc_file, square):
         return "TIMEOUT"
 
 
-def Simulate(toolpath, cnf: "CNF"):
+def Simulate(toolpath, cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
     """
     Simulate a quantum circuit and give the corresponding probability
     Args:
@@ -59,7 +60,7 @@ def Simulate(toolpath, cnf: "CNF"):
     """
     DEBUG = False
     if cnf.weighted:
-        filename = "./tmp/for_sim.cnf"
+        filename = os.path.join(cnf_file_root, "for_sim.cnf")
         cnf.write_to_file(filename)
         result = GPMC(toolpath, filename, square = cnf.square_result)
         if result != "TIMEOUT":
@@ -71,7 +72,7 @@ def Simulate(toolpath, cnf: "CNF"):
             complex_sum = 0
             for s in ["p", "m"]:
                 for t in ["e", "o"]:
-                    filename = f"./tmp/for_sim.cnf"
+                    filename = os.path.join(cnf_file_root, "for_sim.cnf")
                     if DEBUG: print(c,s,t)
                     cnf_copy = copy.deepcopy(cnf)
                     if cnf.computational_basis:
