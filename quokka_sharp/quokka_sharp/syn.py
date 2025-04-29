@@ -2,6 +2,7 @@ import copy
 import os, sys
 import re
 import signal
+import tempfile
 import time
 from subprocess import PIPE, Popen
 
@@ -78,11 +79,11 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = onehot_xz)
     
-    cnf_file = cnf_file_root + f"/{files_prefix}_{indx}_quokka_syn.cnf" # overide files to reduce spaming
+    cnf_file = os.path.join(cnf_file_root, f"{files_prefix}_{indx}_quokka_syn.cnf") # overide files to reduce spaming
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
     """
     Function to synthesize a quantum circuit
     Args:
@@ -185,9 +186,9 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = "./tmp", fidelity_thr
                        ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                     )
             # if printing: print(" ".join(command))
-            out_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.out"
-            err_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.err"
-            res_file = cnf_file_root+f"/{files_prefix}_{it_counter}_d4.res"
+            out_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.out")
+            err_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.err")
+            res_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.res")
             # if printing: print(f"Out file: {out_file}")
             # if printing: print(f"Err file: {err_file}")
             with open(out_file, 'w') as out:

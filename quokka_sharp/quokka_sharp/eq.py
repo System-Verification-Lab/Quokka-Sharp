@@ -75,7 +75,7 @@ def basis(i, Z_or_X, cnf:'CNF', cnf_file_root):
     cnf_temp.rightProjectZXi(Z_or_X, i)
     cnf_temp.leftProjectZXi(Z_or_X, i)
 
-    cnf_file = cnf_file_root + "/quokka_eq_check_"+ ("Z" if Z_or_X else "X") + str(i) + ".cnf"
+    cnf_file = os.path.join(cnf_file_root, "quokka_eq_check_"+ ("Z" if Z_or_X else "X") + str(i) + ".cnf")
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
@@ -93,7 +93,7 @@ def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_
     cnf_temp = copy.deepcopy(cnf)
     cnf_temp.add_identity_clauses(constrain_2n = constrain_2n, constrain_no_Y = constrain_no_Y)
 
-    cnf_file = cnf_file_root + f"/quokka_eq_check_identity_{random.random()}.cnf"
+    cnf_file = os.path.join(cnf_file_root, f"quokka_eq_check_identity_{random.random()}.cnf")
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
