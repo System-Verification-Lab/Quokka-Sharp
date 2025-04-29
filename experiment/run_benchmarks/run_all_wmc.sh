@@ -1,7 +1,6 @@
 #!/bin/bash
 
 mkdir -p results/
-mkdir -p tmp/
 
 # arg1: timeout in seconds (300 = 5 minutes)
 
