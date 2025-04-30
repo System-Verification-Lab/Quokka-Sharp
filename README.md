@@ -122,6 +122,12 @@ In the directory qukkora_sharp/quokka_sharp the main functionalities are impleme
 
 
 ### extension of the encodings:
+Advanced users can extend `quokka-sharp` to support more quantum gates than the current gate set.  
+To do this, one needs to install [`SymPy`](https://docs.sympy.org/latest/index.html):
+
+```bash
+pip install sympy
+```
 The encoding supports a universal gate set: CNOT, CZ, H, S, T, RX, RZ.
 To add direct encoding of other gates, add new encoding in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/pauli2cnf_py_codegen.py or Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/comput2cnf_py_codegen.py, depending on the basis.
 Then, update the ifelse cases at the "QASMparser" function in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/qasm_parser.py and the "encode_circuit" function in Quokka-Sharp/quokka_sharp/quokka_sharp/encoding/cnf.py.
