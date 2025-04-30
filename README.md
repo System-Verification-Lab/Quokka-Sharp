@@ -59,8 +59,8 @@ circuit1 = qk.encoding.QASMparser(qasmfile1, translate_ccx = True)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Set the input state to be the all-zero state |0...0>.
 cnf.leftProjectAllZero()
-# Choose firstzero or allzero measurement 
-cnf.add_measurement("firstzero")
+# Add measurement specification. We offer 'allzero' as a parameter for a simple way to specify a measure with all-zero state.
+cnf.add_measurement({0:0})
 # Export to benchmarks
 cnf.write_to_file("circ.cnf")
 prob = qk.Simulate(tool_invocation, cnf)
