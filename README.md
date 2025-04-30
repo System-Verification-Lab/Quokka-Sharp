@@ -83,21 +83,6 @@ res = qk.CheckEquivalence(tool_path, cnf, check = "linear", N=16)
 # The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 '''
-Synthesis
-'''
-# Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile1, True)
-# Get (circuit1)^dagger
-circuit.dagger()
-# Get CNF for the circuit in Pauli basis (can change to False for the Pauli basis)
-cnf = qk.encoding.QASM2CNF(circuit, computational_basis = True)
-result, weight, solution = qk.Synthesis(tool_path, cnf)
-# The result will be "FOUND" if a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.
-# In the case of "TIMEOUT", the best solution found will be returned.
-# The weight will give the achieved fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found circuit.
-# solution will be a string in a qasm file format describing the (best) circuit found, achieving the mentioned weight.
-
-'''
 Verification
 '''
 # Parse the circuit
@@ -107,6 +92,24 @@ cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Verify for pre and post conditions given in dictionary format
 res = qk.Verify(tool_invocation, cnf, precons={0:0}, postcons={0:0})
 # The result will be "True" if the conditions hold, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
+
+'''
+Synthesis
+'''
+# Change the tool_invocation to be the maximum weighted model counter.
+tool_invocation = "./d4v2/build/maxT_static"
+# Parse the circuits
+circuit = qk.encoding.QASMparser(qasmfile1, True)
+# Get (circuit)^dagger
+circuit.dagger()
+# Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
+cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
+result, weight, solution, layers = qk.Synthesis(tool_invocation, cnf)
+# The result will be "FOUND" if a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.
+# In the case of "TIMEOUT", the best solution found will be returned.
+# weight will give the achieved fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found circuit.
+# solution will be a string in a qasm file format describing the (best) circuit found, achieving the mentioned weight.
+# 'layers' is an integer stating the achieved minimal depth
 ```
 
 ## Modifications
