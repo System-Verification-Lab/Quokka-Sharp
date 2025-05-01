@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '2.6'
+VERSION = '2.6.1'
 DESCRIPTION = 'Quokka Sharp'
 LONG_DESCRIPTION = '''
                     Quokka Sharp for simulating and equivalence checking 
@@ -24,7 +24,8 @@ setup(
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
             "Operating System :: MacOS :: MacOS X",
-            "Operating System :: Microsoft :: Windows"  
+            "Operating System :: Microsoft :: Windows",
+            "Operating System :: POSIX :: Linux"  
     ],
     install_requires=[
         "numpy>=2.2"
