@@ -1,7 +1,7 @@
 {
-    "DEBUG": false,
+    "DEBUG": true,
     "TIMEOUT": 300,
-    "ToolInvocation": "/Users/meij/Desktop/coding/Quokka/Untitled/GPMC/bin/gpmc -mode=1",
-    "GetResult": "exact.double.prec-sci\\.(.+?)\\nc s",
+    "ToolInvocation": "/Users/meij/Desktop/coding/Quokka/Untitled/GPMC/bin/ganak --mode=6",
+    "GetResult": "c s exact arb cpx (.+?)\\\\nc",
     "FPE"       : 1e-12
   }
