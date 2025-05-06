@@ -16,7 +16,6 @@ from decimal import Decimal, getcontext
 DEBUG           = CONFIG["DEBUG"]
 TIMEOUT         = CONFIG["TIMEOUT"]
 tool_invocation = CONFIG["ToolInvocation"]
-get_result      = CONFIG["GetResult"]
 FPE             = CONFIG["FPE"]
 precision       = CONFIG["Precision"]
 
@@ -30,18 +29,19 @@ class InvalidProcessNumException(Exception):
     pass
 
 
-def get_result(result, expected_prob, abs_value):
+def get_result(result, expected_prob, sqaure):
     """
     Analyse the weighted model counting result to decide the circuits are equivalent or not:
     if the result matches the expected probablity then the circuits are equivalent otherwise they are not.
     Args:
         result                :  the output of the weighted model counter
         expected_prob         :  the expected probablity before normalization, where the probability P = 2^n in computational basis and P = 4^n in Pauli basis
-        abs_value             :  if it is true, we take the absolute value of the probablity, and if it is false, we take the original value.
+        sqaure                :  if it is true, we take square o the absolute value of the probablity, and if it is false, we take the absolute value of the original value.
     Returns:
         True if the circuits are equivalent otherwise False
     """
-    prob = parse_wmc_result(result, abs_value)
+    prob = parse_wmc_result(result, sqaure)
+    if DEBUG: print("probability:", prob)
     if prob == -1:
         raise MemoutError
     if abs(prob - expected_prob) < (expected_prob * Decimal(FPE)):
@@ -99,7 +99,6 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
     """
     global procdict  # make sure handler sees this
     
-    DEBUG = False
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
 
@@ -119,7 +118,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
                 if cnf.computational_basis:
                     expected_prob = Decimal(2**cnf.n)
-                    expected_abs_value = True
+                    expected_abs_value = False
                 else:
                     expected_prob = Decimal(4**cnf.n)
                     expected_abs_value = False
@@ -134,7 +133,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
                 expected_prob = Decimal(3**cnf.n)
-                expected_abs_value = True
+                expected_abs_value = False
             elif check == "linear":
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
