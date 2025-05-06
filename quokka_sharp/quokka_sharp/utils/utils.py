@@ -5,16 +5,16 @@ from ..config import CONFIG
 
 tool_invocation = CONFIG["ToolInvocation"]
 get_result      = CONFIG["GetResult"]
-debug           = CONFIG["DEBUG"]
+DEBUG           = CONFIG["DEBUG"]
 
 
 def parse_wmc_result(result, square: bool):
     """Parse the output of WMC to get the weighted model counting result."""
     result = str(result)
     ans_str = re.findall( re.compile(get_result), result)
+    if DEBUG: print("weighted model counting result:", ans_str)
     if not ans_str:
         return -1
-
     ans_str = ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j")
     ans = complex(ans_str)
     real, imag = Decimal(ans.real), Decimal(ans.imag)
