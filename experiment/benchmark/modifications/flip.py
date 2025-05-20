@@ -1,7 +1,7 @@
 import random, sys, re
 
 def flipcx(line):
-    line = re.split('\s|, |,|;', line)
+    line = re.split(r'\s|, |,|;', line)
     line = str(line[0]) + " " + str(line[2]) + ", " + str(line[1]) + ";"
     return line
 
