@@ -47,7 +47,7 @@ def get_angle(str):
     return theta
 
 def shiftgate(line, error):
-    linelist = re.split('\(|\)', line)
+    linelist = re.split(r'\(|\)', line)
     linelist[1] = get_angle(line) + error
     line = str(linelist[0]) + "(" + str(linelist[1]) + ")" + str(linelist[2])
     return line

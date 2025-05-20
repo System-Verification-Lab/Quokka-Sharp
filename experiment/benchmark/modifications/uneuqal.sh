@@ -3,7 +3,8 @@ path=`dirname $PWD`
 dirs=(
 #"random/randqubitscale"
 #"random/randdepscale"
-"algorithm"
+"random/uniform"
+# "algorithm"
 # "add"
 )
 
@@ -18,6 +19,9 @@ for i in "${dirs[@]}"; do
     for option in "${options[@]}"; do
         case ${option} in
             "gm")
+            if [ ! -d $path/"$i"/gm ]; then
+                mkdir $path/"$i"/gm
+            fi
             for file in $path/"$i"/opt/*
             do
                 base_name=$(basename ${file})
@@ -29,6 +33,9 @@ for i in "${dirs[@]}"; do
             done
             ;;
             "fp")
+            if [ ! -d $path/"$i"/flip ]; then
+                mkdir $path/"$i"/flip
+            fi
             for file in $path/"$i"/opt/*
             do
                 base_name=$(basename ${file})
@@ -40,6 +47,12 @@ for i in "${dirs[@]}"; do
             done
             ;;
             "ps")
+            if [ ! -d $path/"$i"/shift4 ]; then
+                mkdir $path/"$i"/shift4
+            fi
+            if [ ! -d $path/"$i"/shift7 ]; then
+                mkdir $path/"$i"/shift7
+            fi
             for file in $path/"$i"/opt/*
             do
                 base_name=$(basename ${file})
