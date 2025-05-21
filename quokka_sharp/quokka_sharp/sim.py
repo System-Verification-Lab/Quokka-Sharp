@@ -64,7 +64,7 @@ def Simulate(toolpath, cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
         cnf.write_to_file(filename)
         result = GPMC(toolpath, filename, square = cnf.square_result)
         if result != "TIMEOUT":
-            result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
+            result = Decimal(result) * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
         return result
     else:
         sum_results = 0
@@ -90,10 +90,10 @@ def Simulate(toolpath, cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
                         result = -result
                     
                     if t == "e":
-                        result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
+                        result = Decimal(result) * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
                         if DEBUG: print(f"   fixed: {result} (/{cnf.power_two_normalisation})")
                     else:
-                        result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation-0.5))
+                        result = Decimal(result) * (Decimal(1/2)**Decimal(cnf.power_two_normalisation-0.5))
                         if DEBUG: print(f"   fixed: {result} (/{cnf.power_two_normalisation-0.5})")
 
                     complex_sum += result
