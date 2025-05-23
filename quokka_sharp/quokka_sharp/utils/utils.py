@@ -15,7 +15,8 @@ def parse_wmc_result(result, square: bool):
     if DEBUG: print("weighted model counting result:", ans_str)
     if not ans_str:
         return -1
-    ans_str = ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j")
+    ans_str = ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j").replace("+-", "-")
+    if DEBUG: print("weighted model counting result:", ans_str)
     ans = complex(ans_str)
     real, imag = Decimal(ans.real), Decimal(ans.imag)
 
