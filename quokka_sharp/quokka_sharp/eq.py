@@ -1,9 +1,9 @@
 import copy
-import os, sys
+import os
 import random
 import tempfile
 from subprocess import PIPE, Popen
-import signal
+import traceback
 
 from .encoding.cnf import CNF
 from .utils.utils import parse_wmc_result
@@ -122,7 +122,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                 else:
                     expected_prob = Decimal(4**cnf.n)
                     expected_abs_value = False
-            elif check == "cyclic_linear":
+            elif (check == "cyclic_linear") or (check == "cyc_lin"):
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
@@ -187,8 +187,8 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
         return "TIMEOUT"
     except InvalidProcessNumException:
         return "ERROR - bad process number"
-    except Exception as e:
-        print(e)
+    except Exception:
+        print(traceback.format_exc())
         return "ERROR - unknown error"
     finally:
         for pid in procdict.keys():
