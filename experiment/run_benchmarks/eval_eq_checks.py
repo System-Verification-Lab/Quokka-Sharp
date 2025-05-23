@@ -19,7 +19,6 @@ def get_full_path(file, mod):
 
 
 results_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "results")
-os.makedirs(results_path, exist_ok=True)
 results_file = os.path.join(results_path, f"eq_results.csv")
 
 if os.path.exists(results_file):
@@ -37,8 +36,8 @@ else:
 
 for file in benchmarks_list:
 	name = file.replace(".qasm", "")
-	if "_ibm_qiskit_opt0_" in file:
-		name = name.replace("_ibm_qiskit_opt0_", "_q")
+	if "_nativegates_ibm_qiskit_opt0_" in file:
+		name = name.replace("_nativegates_ibm_qiskit_opt0_", "_q")
 	for modification in ["opt", "gm"]:
 		origin_file = get_full_path(file, "origin")
 		mod_file = get_full_path(file, modification)
@@ -71,6 +70,7 @@ for file in benchmarks_list:
 				results_df = pd.concat([results_df, result_df], ignore_index=True)
 
 # # Save the results to a file
+# os.makedirs(results_path, exist_ok=True)
 # results_df.to_csv(results_file, index=False)
 
 # Print the results

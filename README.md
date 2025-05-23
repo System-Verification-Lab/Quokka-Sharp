@@ -37,7 +37,7 @@ export TIMEOUT=3600
 
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs on how to use the tool. 
-For more detailed examples, the files run_eq.py, run_sim.py, run_veri.py, and run_syn.py in the Quokka-Sharp/experiment/run_benchmarks/ folder can be used. 
+For more detailed examples look as the /quokka_sharp/quokka_sharp/functionalities.py file. 
 
 ```python
 import quokka_sharp as qk
