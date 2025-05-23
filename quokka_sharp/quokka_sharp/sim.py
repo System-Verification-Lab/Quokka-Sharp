@@ -1,68 +1,58 @@
 import copy
-import re, os, sys
+import re, os
 from subprocess import Popen, PIPE, TimeoutExpired
 import tempfile
-
-from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
-getcontext().prec = 32
 
-global FPE
-FPE = 1e-12
+# Importing necessary configurations
+from .config import CONFIG
+from .encoding.cnf import CNF
+from .utils.utils import parse_wmc_result
+
+# Global constants from config
+DEBUG           = CONFIG["DEBUG"]
+TIMEOUT         = CONFIG["TIMEOUT"]
+tool_invocation = CONFIG["ToolInvocation"]
+get_result      = CONFIG["GetResult"]
+FPE             = CONFIG["FPE"]
+precision       = CONFIG["Precision"]
+
+getcontext().prec = precision
 
 
-def GPMC(tool_invocation, wmc_file, square):
+def WMC(wmc_file, square):
     """
-    Parse the output of GPMC to get the weighted model counting result
+    Parse the output of WMC to get the weighted model counting result
     Args:
-        tool_invocation   :  the running command of the weighted model counter
         wmc_file          :  the path to the encoded WMC file
         square            :  when the value is true get the modulus square root of the output
     Returns:
         result           :  the probability of the circuit
     """
-    try:  
-        TIMEOUT = int(os.environ["TIMEOUT"])
-    except KeyError: 
-        print ("Please set the environment variable TIMEOUT")
-        sys.exit(1)
+    global tool_invocation
     tool_invocation = tool_invocation.split(' ')
     tool_invocation.append(wmc_file)
     p = Popen(tool_invocation, stdout=PIPE)
     try: 
         result = p.communicate(timeout = TIMEOUT)
-        result = str(result)    
-        gpmc_ans_str = re.findall(r"exact.double.prec-sci.(.+?)\\nc s",result)
-        if len(gpmc_ans_str) == 0:
-            return "MEMOUT"
-        gpmc_ans_str = gpmc_ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j")
-        gpmc_ans = complex(gpmc_ans_str)
-        real, imag = Decimal(gpmc_ans.real), Decimal(gpmc_ans.imag)
-        if abs(real) < 1e-16 and abs(imag) < 1e-16:
-            return 0
-        elif abs(imag) < 1e-16:
-            return real*real if square else real
-        else:
-            return (real*real + imag*imag) if square else (real*real + imag*imag).sqrt()
+        return parse_wmc_result(result, square)
     except TimeoutExpired:
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
 
-def Simulate(toolpath, cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
+def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
     """
     Simulate a quantum circuit and give the corresponding probability
     Args:
-        toolpath    :  the running command of the weighted model counter
         cnf         :  the encoded cnf of the given circuit
     Returns:
         result      :  the probability of the circuit
     """
-    DEBUG = False
     if cnf.weighted:
         filename = os.path.join(cnf_file_root, "for_sim.cnf")
         cnf.write_to_file(filename)
-        result = GPMC(toolpath, filename, square = cnf.square_result)
+        result = WMC(filename, square = cnf.square_result)
         if result != "TIMEOUT":
             result = Decimal(result) * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
         return result
@@ -81,7 +71,7 @@ def Simulate(toolpath, cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
                     cnf_copy.add_clause([-cnf.vars.u] if (t == "e") else [cnf.vars.u], comment="sqrt2 norm")
                     
                     cnf_copy.write_to_file(filename)
-                    result = GPMC(toolpath, filename, square = False)
+                    result = WMC(filename, square = False)
                     if result == "TIMEOUT":
                         return result
                     

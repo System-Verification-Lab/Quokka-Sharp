@@ -3,7 +3,7 @@ from time import time
 import argparse
 
 
-def wmc(qasmfile1, qasmfile2, tool_invocation, basis): 
+def wmc(qasmfile1, qasmfile2, basis): 
     try:
         # Parse the circuit
         circuit1 = qk.encoding.QASMparser(qasmfile1, True)
@@ -15,7 +15,7 @@ def wmc(qasmfile1, qasmfile2, tool_invocation, basis):
         # Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
         cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
         # "id" or "2n"
-        res = qk.CheckEquivalence(tool_invocation, cnf, check = "cyclic" if (basis == "comp") else "linear", N = 1 if (basis == "comp") else 16)
+        res = qk.CheckEquivalence(cnf, check = "cyclic" if (basis == "comp") else "linear", N = 1 if (basis == "comp") else 16)
     except FileNotFoundError:
         res = "FILE_NOT_FOUND"
 
@@ -25,11 +25,10 @@ def main(args):
 
     qasmfile1       = args.filename1
     qasmfile2       = args.filename2
-    tool_path       = '../../../GPMC/bin/gpmc -mode=1'
     basis           = args.basis
     
     start_time = time()
-    res = wmc(qasmfile1, qasmfile2, tool_path, basis)
+    res = wmc(qasmfile1, qasmfile2, basis)
     end_time = time()
 
     filename1 = qasmfile1.split("/")[-1]
