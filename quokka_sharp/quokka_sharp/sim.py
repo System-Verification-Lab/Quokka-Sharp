@@ -53,7 +53,7 @@ def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
         filename = os.path.join(cnf_file_root, "for_sim.cnf")
         cnf.write_to_file(filename)
         result = WMC(filename, square = cnf.square_result)
-        if result != "TIMEOUT":
+        if result != "TIMEOUT" or result!= "NoAnswerGiven":
             result = result * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
         return result
     else:
