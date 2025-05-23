@@ -3,7 +3,7 @@ import re
 import pandas as pd
 import numpy as np
 
-from experiment.benchmark.random.gen_random import main as gen_random_circ
+from benchmark.random.random_circ_qasm import main as gen_random_circ
 
 circuits_path = os.path.join(os.getcwd(), "benchmark", "random", "for_syn")
 results_path="./syn_files"
