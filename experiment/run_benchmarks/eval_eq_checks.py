@@ -1,9 +1,12 @@
 import os, time
 import pandas as pd
 import quokka_sharp as qk
+import re
 
 benchmarks_list_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "benchmarks_list.txt")
-benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark", "algorithm")
+# benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark", "algorithm")
+benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark", "random", "uniform")
+
 org_path = os.path.join(benchmark_path, "origin")
 
 def get_full_path(file, mod):
@@ -24,7 +27,7 @@ results_file = os.path.join(results_path, f"eq_results.csv")
 if os.path.exists(results_file):
 	results_df = pd.read_csv(results_file)
 else:
-	results_df = pd.DataFrame(columns=["name", "mod", "basis", "check", "result", "time"])
+	results_df = pd.DataFrame(columns=["name", "qubits", "mod", "basis", "check", "result", "time"])
 
 if benchmarks_list_file:
 	with open(benchmarks_list_file) as file:
@@ -33,16 +36,22 @@ else:
 	# Filter out files that are not .qasm
 	benchmarks_list = [file for file in os.listdir(org_path) if file.endswith(".qasm")]
 
-
+cnt = 0
 for file in benchmarks_list:
+	cnt += 1
+	print(f"Processing ({cnt}/{len(benchmarks_list)}) {file} \t", end="")
+	origin_file = get_full_path(file, "origin")
 	name = file.replace(".qasm", "")
 	if "_nativegates_ibm_qiskit_opt0_" in file:
-		name = name.replace("_nativegates_ibm_qiskit_opt0_", "_q")
+		name, numqubits = name.split("_nativegates_ibm_qiskit_opt0_")
+	else:
+		qubits, deepth, seed = tuple(map(int, re.compile(r"random_q(\d+)_d(\d+)_s(\d+)").match(name).groups()))
+		name, numqubits = (deepth, seed), qubits
 	for modification in ["opt", "gm"]:
-		origin_file = get_full_path(file, "origin")
+		print(f"  {modification} ", end="")
 		mod_file = get_full_path(file, modification)
 		for basis, check in [("comp", "cyclic"), ("pauli", "cyclic"), ("pauli", "linear"), ("pauli", "cyc_lin")]:
-			enteries = results_df[(results_df["name"] == name) & (results_df["mod"] == modification) & (results_df["basis"] == basis) & (results_df["check"] == check)]
+			enteries = results_df[(results_df["name"] == name) & (results_df["qubits"] == numqubits) & (results_df["mod"] == modification) & (results_df["basis"] == basis) & (results_df["check"] == check)]
 			assert len(enteries) <= 1
 			if len(enteries) == 1:
 				if enteries["result"].values[0] == "TIMEOUT" and enteries["time"].values[0] < 1:
@@ -57,6 +66,7 @@ for file in benchmarks_list:
 			# Save the result
 			result_df = pd.DataFrame([{
 				"name": name,
+				"qubits": numqubits,
 				"mod": modification,
 				"basis": basis,
 				"check": check,
@@ -68,6 +78,7 @@ for file in benchmarks_list:
 				results_df = result_df
 			else:
 				results_df = pd.concat([results_df, result_df], ignore_index=True)
+	print("")
 
 # # Save the results to a file
 # os.makedirs(results_path, exist_ok=True)
