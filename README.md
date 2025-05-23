@@ -30,9 +30,20 @@ We work in one of two possible bases: Pauli or Computational.
 For equivalence checking, we support multiple techniques. 
 We recommend using "linear" for the Pauli basis and "cyclic" for the Computational basis. 
 
-Please first set the wanted timeout (in seconds) using export TIMEOUT, for example:
+Please first set the configuration file for all necessary config
 ```
-export TIMEOUT=3600
+export QUOKKA_CONFIG=config.json
+```
+An example of a config file for GPMC is given as follows:
+
+```json
+{
+  "DEBUG": false,
+  "TIMEOUT": 300,
+  "ToolInvocation": "/path/to/GPMC/bin/gpmc -mode=1",
+  "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
+  "FPE": 1e-12
+}
 ```
 
 All the input circuits should be in [QASM format](https://openqasm.com/).
