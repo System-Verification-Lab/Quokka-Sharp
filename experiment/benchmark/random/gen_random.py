@@ -1,7 +1,9 @@
 import numpy as np
 import os
 
-def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg = [1, 1, 1, 1, 1, 1], folder = "uniform/origin", filename_format="random_q{n:02d}_d{d:03d}_s{seed:02d}.qasm"):
+def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg = [1, 1, 1, 1, 1, 1], 
+								 folder = os.path.join(os.path.dirname(os.path.realpath(__file__)),"uniform","origin"), 
+							     filename_format="random_q{n:02d}_d{d:03d}_s{seed:02d}.qasm"):
     """
     Generates a random quantum circuit in QASM format.
     Args:
@@ -18,6 +20,12 @@ def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg
     # Check if the sum of weights is zero
     if sum(weighted_prob_cx_h_s_sdg_t_tdg) == 0:
         raise ValueError("The sum of weighted_prob_cx_h_s_sdg_t_tdg must not be zero.")
+    
+    # if file already exists, skip
+    filename = os.path.join(folder, filename_format.format(n=n, d=d, seed=seed))
+    if os.path.exists(filename):
+        print(f"File {filename} already exists. Skipping...")
+        return
     
     circuit_lines = []
     circuit_lines.append("OPENQASM 2.0;")
