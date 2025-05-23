@@ -54,8 +54,6 @@ For more detailed examples look as the /quokka_sharp/quokka_sharp/functionalitie
 import quokka_sharp as qk
 import tempfile
 
-# the path of the WMC tool
-tool_invocation = "/Users/GPMC/bin/gpmc -mode=1"
 
 # input files
 qasmfile1 = "test1.qasm"
@@ -74,7 +72,7 @@ cnf.leftProjectAllZero()
 cnf.add_measurement({0:0})
 # Export to benchmarks
 cnf.write_to_file("circ.cnf")
-prob = qk.Simulate(tool_invocation, cnf)
+prob = qk.Simulate(cnf)
 # The result will be a float if the probability was computed,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 '''
@@ -90,7 +88,7 @@ circuit1.append(circuit2)
 # Get CNF for the merged circuit (for computational basis instead of Pauli, use `computational_basis = True`)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Users can set a different number N of parallel processes when the check mode is "linear". For other modes, "N" should be 1.
-res = qk.CheckEquivalence(tool_path, cnf, check = "linear", N=16)
+res = qk.CheckEquivalence(cnf, check = "linear", N=16)
 # The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 '''
@@ -101,21 +99,21 @@ circuit1 = qk.encoding.QASMparser(qasmfile1, True)
 # Encode the circuit in Pauli basis (can change to True for the computational basis)
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Verify for pre and post conditions given in dictionary format
-res = qk.Verify(tool_invocation, cnf, precons={0:0}, postcons={0:0})
+res = qk.Verify(cnf, precons={0:0}, postcons={0:0})
 # The result will be "True" if the conditions hold, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 '''
 Synthesis
 '''
-# Change the tool_invocation to be the maximum weighted model counter.
-tool_invocation = "./d4v2/build/maxT_static"
+# Change the tool_invocation in config.json to be the maximum weighted model counter.
+
 # Parse the circuits
 circuit = qk.encoding.QASMparser(qasmfile1, True)
 # Get (circuit)^dagger
 circuit.dagger()
 # Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
 cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
-result, weight, solution, layers = qk.Synthesis(tool_invocation, cnf)
+result, weight, solution, layers = qk.Synthesis(cnf)
 # The result will be "FOUND" if a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.
 # In the case of "TIMEOUT", the best solution found will be returned.
 # weight will give the achieved fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found circuit.
