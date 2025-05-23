@@ -12,9 +12,9 @@ do
 
 	# Replace rotations with T gates
     sed -i 's|rz(pi/4)|t|g' $f
-    sed -i 's|rz(0.25\*pi)|s|g' $f
+    sed -i 's|rz(0.25\*pi)|t|g' $f
     sed -i 's|rz(-pi/4)|tdg|g' $f
-    sed -i 's|rz(1.75\*pi)|s|g' $f
+    sed -i 's|rz(1.75\*pi)|tdg|g' $f
 
 	# Replace complex rotations
 
