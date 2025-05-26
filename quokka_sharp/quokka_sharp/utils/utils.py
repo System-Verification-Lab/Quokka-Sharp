@@ -14,6 +14,10 @@ def parse_wmc_result(result, square: bool):
     ans_str = re.findall( re.compile(get_result), str(result))
     if DEBUG: print("weighted model counting result:", ans_str)
     if not ans_str:
+        if DEBUG: print("No result found, returning -1")
+        if DEBUG: print("output:", result)
+        if DEBUG: print("regex:", get_result)
+        if DEBUG: print("ans_str:", ans_str)
         return -1
     ans_str = ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j").replace("+-", "-")
     ans = complex(ans_str)
