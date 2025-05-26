@@ -1,5 +1,6 @@
 import re
 from decimal import Decimal, getcontext
+from ..utils.timeout import MemoutError
 
 from ..config import CONFIG
 
@@ -18,7 +19,7 @@ def parse_wmc_result(result, square: bool):
         if DEBUG: print("output:", result)
         if DEBUG: print("regex:", get_result)
         if DEBUG: print("ans_str:", ans_str)
-        return -1
+        raise MemoutError
     ans_str = ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j").replace("+-", "-")
     ans = complex(ans_str)
     real, imag = Decimal(ans.real), Decimal(ans.imag)
