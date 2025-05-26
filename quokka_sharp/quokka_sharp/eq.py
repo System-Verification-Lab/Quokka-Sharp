@@ -42,8 +42,6 @@ def get_result(result, expected_prob, sqaure):
     """
     prob = parse_wmc_result(result, sqaure)
     if DEBUG: print("probability:", prob)
-    if prob == -1:
-        raise MemoutError
     if abs(prob - expected_prob) < (expected_prob * Decimal(FPE)):
         return True
     else:
