@@ -6,6 +6,7 @@ dirs=(
 #"random/randqubitscale"
 #"random/randdepscale"
 "random/uniform"
+"random/TH_ratio"
 # "algorithm"
 # "add"
 )
