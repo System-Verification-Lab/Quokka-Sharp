@@ -29,10 +29,9 @@ def WMC(wmc_file, square):
     Returns:
         result           :  the probability of the circuit
     """
-    global tool_invocation
-    tool_invocation = tool_invocation.split(' ')
-    tool_invocation.append(wmc_file)
-    p = Popen(tool_invocation, stdout=PIPE)
+    tool_command = tool_invocation.split(' ')
+    tool_command.append(wmc_file)
+    p = Popen(tool_command, stdout=PIPE)
     try: 
         result = p.communicate(timeout = TIMEOUT)
         return parse_wmc_result(result, square)
