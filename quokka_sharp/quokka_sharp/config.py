@@ -7,7 +7,7 @@ DEFAULT_CONFIG = {
     "DEBUG": False,
     "TIMEOUT": 300,
     "ToolInvocation": "/Users/meij/Desktop/coding/Quokka/Untitled/GPMC/bin/gpmc -mode=1",
-    "GetResult": "exact\\.double\\.prec-sci\\.(.+?)\\nc s",
+    "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
     "FPE"       : 1e-12,
     "Precision" : 32
 }
