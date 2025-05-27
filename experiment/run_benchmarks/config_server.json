@@ -1,0 +1,7 @@
+{
+    "DEBUG": false,
+    "TIMEOUT": 30,
+    "ToolInvocation": "/home/dekel/GPMC/bin/gpmc -mode=1",
+    "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s"
+  }
+  
