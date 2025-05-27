@@ -2,89 +2,96 @@ import os, time
 import pandas as pd
 import quokka_sharp as qk
 import re
+import utils
+from tqdm import tqdm
+import matplotlib.pyplot as plt
 
-benchmarks_list_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "benchmarks_list.txt")
-# benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark", "algorithm")
-benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark", "random", "uniform")
+benchmark_folder = os.path.join("random", "uniform")
+benchmarks_list = utils.get_benchmark_files(benchmark_folder)
 
-org_path = os.path.join(benchmark_path, "origin")
+results_file_name = "eq_checks.csv"
+df_columns = ["qubits", "deepth", "seed", "mod", "basis", "check", "result", "time"]
+results_df = utils.get_results_from_file(results_file_name, df_columns)
 
-def get_full_path(file, mod):
-	match mod:
-		case "origin":
-			return os.path.join(org_path, file)
-		case "opt":
-			return os.path.join(benchmark_path, "opt", file+".opt.qasm")
-		case "gm":
-			return os.path.join(benchmark_path, "gm", file+".gm.qasm")
-		case _:
-			raise ValueError(f"Unknown modification: {mod}")
+def get_from_file_name(file_name):
+	name = file_name.replace(".qasm", "")
+	return tuple(map(int, re.compile(r"random_q(\d+)_d(\d+)_s(\d+)").match(name).groups()))
 
-
-results_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "results")
-results_file = os.path.join(results_path, f"eq_results.csv")
-
-if os.path.exists(results_file):
-	results_df = pd.read_csv(results_file)
-else:
-	results_df = pd.DataFrame(columns=["name", "qubits", "mod", "basis", "check", "result", "time"])
-
-if benchmarks_list_file:
-	with open(benchmarks_list_file) as file:
-		benchmarks_list = [line.rstrip() for line in file]
-else:
-	# Filter out files that are not .qasm
-	benchmarks_list = [file for file in os.listdir(org_path) if file.endswith(".qasm")]
-
-cnt = 0
-for file in benchmarks_list:
-	cnt += 1
-	print(f"Processing ({cnt}/{len(benchmarks_list)}) {file} \t", end="")
-	origin_file = get_full_path(file, "origin")
-	name = file.replace(".qasm", "")
-	if "_nativegates_ibm_qiskit_opt0_" in file:
-		name, numqubits = name.split("_nativegates_ibm_qiskit_opt0_")
-	else:
-		qubits, deepth, seed = tuple(map(int, re.compile(r"random_q(\d+)_d(\d+)_s(\d+)").match(name).groups()))
-		name, numqubits = (deepth, seed), qubits
+for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
+	origin_file = utils.get_file_path(file, "origin", benchmark_folder)
+	qubits, deepth, seed = get_from_file_name(file)
 	for modification in ["opt", "gm"]:
-		print(f"  {modification} ", end="")
-		mod_file = get_full_path(file, modification)
+		mod_file = utils.get_file_path(file, modification, benchmark_folder)
 		for basis, check in [("comp", "cyclic"), ("pauli", "cyclic"), ("pauli", "linear"), ("pauli", "cyc_lin")]:
-			enteries = results_df[(results_df["name"] == name) & (results_df["qubits"] == numqubits) & (results_df["mod"] == modification) & (results_df["basis"] == basis) & (results_df["check"] == check)]
-			assert len(enteries) <= 1
-			if len(enteries) == 1:
-				if enteries["result"].values[0] == "TIMEOUT" and enteries["time"].values[0] < 1:
-					results_df = results_df.drop(enteries.index[0])
-				else:
-					continue
-			# Run the equivalence check
+			run_data = {
+				"qubits": qubits,
+				"deepth": deepth,
+				"seed": seed,
+				"mod": modification,
+				"basis": basis,
+				"check": check
+			}
 
+			# Check if the entry already exists in the results DataFrame
+			if utils.data_exists(run_data, results_df):
+				continue
+			
 			start_time = time.time()
 			result = qk.functionalities.eq(origin_file, mod_file, basis, check, N=(1 if check != "liniar" else 16))
 			end_time = time.time()
-			# Save the result
-			result_df = pd.DataFrame([{
-				"name": name,
-				"qubits": numqubits,
-				"mod": modification,
-				"basis": basis,
-				"check": check,
-				"result": result,
-				"time": end_time - start_time
-			}])
 
-			if results_df.empty:
-				results_df = result_df
-			else:
-				results_df = pd.concat([results_df, result_df], ignore_index=True)
-	print("")
+			results_df = utils.add_result_to_df(run_data, result, end_time-start_time, results_df)
 
-# # Save the results to a file
-# os.makedirs(results_path, exist_ok=True)
-# results_df.to_csv(results_file, index=False)
+# Save the results to a file
+utils.save_results_to_file(results_file_name, results_df)
 
-# Print the results
 print(results_df)
 
 
+
+color_map = {}
+for i, (basis, check) in enumerate(results_df.groupby(["basis", "check"]).groups.keys()):
+	color_map[(basis, check)] = next(utils.color_cycle)
+
+line_styles = {}
+for depth in sorted(results_df["qubits"].unique()):
+	line_styles[depth] = next(utils.line_style_cycle)
+
+for mod in results_df["mod"].unique():
+	mod_df = results_df[results_df["mod"] == mod]
+	plt.figure(figsize=(10, 6))
+
+	# assert that all results are True or TIMEOUT
+	valid_resutls = [str(mod=="opt"), "TIMEOUT"]
+	if not mod_df["result"].isin(valid_resutls).all():
+		print(f"ERROR: Not all results are in {valid_resutls} for modification {mod}. Skipping plot.")
+		print(mod_df["result"].unique())
+		#print bad lines
+		print(mod_df[~mod_df["result"].isin(valid_resutls)])
+		continue
+
+	for (deepth, basis, check), group in mod_df.groupby(["qubits", "basis", "check"]):
+		# Calculate the mean and std time for each group, excluding TIMEOUT
+		group = group[group["result"] != "TIMEOUT"]
+		if group.empty:
+			print(f"WARNING: No valid results for {mod} with qubits={qubits}, basis={basis}, check={check}. Skipping.")
+			continue
+		group = group.groupby("qubits").agg({"time": ["mean", "std"]}).reset_index()
+		plt.errorbar(
+			group["deepth"],
+			group["time"]["mean"],
+			yerr=group["time"]["std"],
+			label=f"qubits={qubits}, {basis}-{check}",
+			fmt='o',
+			capsize=5,
+			color=color_map[(basis, check)],
+			linestyle=line_styles[qubits]
+		)
+
+	plt.title(f"Mean Time vs Deepth for {mod} Modification")
+	plt.xlabel("Circuit Deepth")
+	plt.ylabel("Mean Time (s)")
+	plt.legend()
+	plt.grid()
+	plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{mod}_time_vs_depth.png"))
+	plt.close()
