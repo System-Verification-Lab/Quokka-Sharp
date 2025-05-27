@@ -3,16 +3,31 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from itertools import cycle
 
+from quokka_sharp.config import CONFIG
+
 benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark")
 results_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "results")
-timeout = 60 
+timeout = CONFIG["TIMEOUT"]
+FPE = CONFIG["FPE"]
 
 # Assign a unique colors
-color_cycle = cycle(plt.cm.tab10.colors)
+def cycle_colors():
+	"""
+	Cycle through a set of colors for plotting.
+	
+	Returns:
+		cycle: A cycle object that yields colors.
+	"""
+	return cycle(plt.cm.tab10.colors)
 
-# Assign a unique line styles
-line_styles = ['-', '--', '-.', ':']
-line_style_cycle = cycle(line_styles)
+def line_style_cycle():
+	"""
+	Cycle through a set of line styles for plotting.
+	Returns:
+		cycle: A cycle object that yields line styles.
+	"""
+	line_styles = ['-', '--', '-.', ':']
+	return cycle(line_styles)
 
 def get_benchmark_path():
 	"""
