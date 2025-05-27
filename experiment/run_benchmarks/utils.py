@@ -5,7 +5,7 @@ from itertools import cycle
 
 benchmark_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark")
 results_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "results")
-timeout = 30  
+timeout = 60 
 
 # Assign a unique colors
 color_cycle = cycle(plt.cm.tab10.colors)
@@ -107,6 +107,27 @@ def save_results_to_file(results_file_name, results_df):
 	os.makedirs(os.path.dirname(results_file), exist_ok=True)
 	results_df.to_csv(results_file, index=False)
 
+	
+def get_data(data_dict, df):
+	"""
+	Retrieve data from the DataFrame based on the provided dictionary.
+	
+	Args:
+		data_dict (dict): A dictionary containing the data to retrieve.
+		df (pd.DataFrame): The DataFrame to search in.
+		
+	Returns:
+		pd.DataFrame: A DataFrame containing the matching entries.
+	"""
+	def format_value(val):
+		if isinstance(val, str):
+			return f'"{val}"'
+		return val
+	query = " & ".join([f"{key} == {format_value(value)}" for key, value in data_dict.items()])
+	enteries = df.query(query)
+	assert len(enteries) <= 1
+	return enteries
+
 def data_exists(data_dict, df):
 	"""
 	Check if the data exists in the DataFrame.
@@ -117,20 +138,15 @@ def data_exists(data_dict, df):
 	Returns:
 		bool: True if the data exists, False otherwise.
 	"""
-	def format_value(val):
-		if isinstance(val, str):
-			return f'"{val}"'
-		return val
-	query = " & ".join([f"{key} == {format_value(value)}" for key, value in data_dict.items()])
-	enteries = df.query(query)
-	assert len(enteries) <= 1
-	if len(enteries) == 1:
-		if enteries["result"].values[0] == "TIMEOUT" and enteries["time"].values[0] < timeout:
-			df = df.drop(enteries.index[0])
-			return False
-		else:
-			return True
-	return False
+	enteries = get_data(data_dict, df)
+
+	if enteries.empty:
+		return False
+
+	if enteries["result"].values[0] == "TIMEOUT" and enteries["time"].values[0] < timeout:
+		return False
+	
+	return True
 
 def add_result_to_df(data_dict, result, time_taken, df):
 	"""
@@ -148,8 +164,13 @@ def add_result_to_df(data_dict, result, time_taken, df):
 	data_dict["result"] = str(result)
 	data_dict["time"] = time_taken
 	new_df = pd.DataFrame([data_dict])
-	if not df.empty:
-		return pd.concat([df, new_df], ignore_index=True)
-	else:
+
+	if df.empty:
 		return new_df
+	
+	exsisting_data = get_data(data_dict, df)
+	if not exsisting_data.empty:
+		df = df.drop(exsisting_data.index)
+	
+	return pd.concat([df, new_df], ignore_index=True)
 
