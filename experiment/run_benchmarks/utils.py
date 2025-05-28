@@ -140,7 +140,7 @@ def get_data(data_dict, df):
 		return val
 	query = " & ".join([f"{key} == {format_value(value)}" for key, value in data_dict.items()])
 	enteries = df.query(query)
-	assert len(enteries) <= 1
+	assert len(enteries) <= 1, f"Expected at most one entry, but found {len(enteries)} for query: {query}\n{enteries}"
 	return enteries
 
 def data_exists(data_dict, df):
@@ -158,7 +158,7 @@ def data_exists(data_dict, df):
 	if enteries.empty:
 		return False
 
-	if enteries["result"].values[0] == "TIMEOUT" and enteries["time"].values[0] < timeout:
+	if (enteries["result"].values[0] == "TIMEOUT") and (enteries["time"].values[0] < timeout):
 		return False
 	
 	return True
@@ -176,16 +176,19 @@ def add_result_to_df(data_dict, result, time_taken, df):
 	Returns:
 		pd.DataFrame: The updated DataFrame with the new result.
 	"""
-	data_dict["result"] = str(result)
-	data_dict["time"] = time_taken
-	new_df = pd.DataFrame([data_dict])
 
 	if df.empty:
 		return new_df
 	
 	exsisting_data = get_data(data_dict, df)
+	old_df = df
 	if not exsisting_data.empty:
-		df = df.drop(exsisting_data.index)
+		old_df = old_df.drop(exsisting_data.index)
+
+	new_data = data_dict
+	new_data["result"] = str(result)
+	new_data["time"] = time_taken
+	new_df = pd.DataFrame([new_data])
 	
-	return pd.concat([df, new_df], ignore_index=True)
+	return pd.concat([old_df, new_df], ignore_index=True)
 
