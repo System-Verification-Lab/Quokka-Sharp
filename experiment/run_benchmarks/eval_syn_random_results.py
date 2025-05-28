@@ -1,99 +1,99 @@
 import os
+import time
+import utils
 import re
+import tempfile
 import pandas as pd
-import numpy as np
+import quokka_sharp as qk
+from gen_random import generate_random_circuit_qasm
 
-from benchmark.random.random_circ_qasm import main as gen_random_circ
+folder_name = "for_syn"
+benchmark_folder = os.path.join("random", folder_name)
+filename_format="random_q{n:02d}_d{d:03d}_s{seed:02d}.qasm"
 
-circuits_path = os.path.join(os.getcwd(), "benchmark", "random", "for_syn")
-results_path="./syn_files"
-folder_pattern = re.compile(r"q(\d+)d(\d+)seed(\d+)")
-timeout = 3600
-samples = 5
+def get_from_file_name(file_name):
+	print(f"Processing file: {file_name}")
+	print(re.compile(r"random_q(\d+)_d(\d+)_s(\d+).qasm").match(file_name))
+	return tuple(map(int, re.compile(r"random_q(\d+)_d(\d+)_s(\d+).qasm").match(file_name).groups()))
 
-def extract_numbers_from_folders():
-	"""
-	Go over all folders in the base_path with the format q#b#seed# and extract numbers.
-	"""
-	results_df_rows = []
-	parent_path = os.path.join(os.getcwd(), results_path)
+samples = 10
+success_rate_threshold = 0.5
 
-	if not os.path.exists(parent_path):
-		print(f"Path {parent_path} does not exist.")
-		return {}
-	for folder_name in os.listdir(parent_path):
-		match = folder_pattern.match(folder_name)
-		if match:
-			qubits, in_deepth, seed = tuple(map(int, match.groups()))
-			final_results_path = os.path.join(parent_path, folder_name, "final_results.txt")
-			enterys = pd.read_csv(final_results_path, sep="\t", header=0, index_col=False)
-			assert len(enterys) == 1, f"Error: {final_results_path} does not have one line."
-			for index, entery in enterys.iterrows():
-				assert entery["res"] in ["FOUND", "TIMEOUT", "CRASH"], f"Error: {final_results_path} has invalid result."
-				results_df_rows.append(
-					{"Number of Qubits": qubits,
-					 "In Depth": in_deepth,
-					 "Seed": seed,
-	  				 "Out Depth": entery["layers"],
-					 "Runtime": entery["runtime"],
-					 "Result": entery["res"]
-					 }
-					 )
-				
-	results_df = pd.DataFrame(results_df_rows)
-	statistics_df_rows = []
-	done = True
-	for q in [2,3,4,5,6]:
-		d=0
-		while True:
-			# Filter the DataFrame for the current qubits and depth
-			q_d_filtered_df = results_df[(results_df["Number of Qubits"] == q) & (results_df["In Depth"] == d)]
-			if q_d_filtered_df.empty:
-				gen_random_circ(circuits_path, q, d, 0.25, 0.5, 0, 0)
-				done = False
-				break
-			# Check if all results are "TIMEOUT"
-			if any(q_d_filtered_df["Result"] == "CRASH"):
-				print(f"Crash cases: \n {q_d_filtered_df[q_d_filtered_df['Result'] == 'CRASH']}")
-				break
-			disqualifi_filtered_df = q_d_filtered_df[(q_d_filtered_df["Out Depth"] < d)]
-			if any(disqualifi_filtered_df["Result"] == "TIMEOUT"):
-				break
-			relevant_df = q_d_filtered_df[q_d_filtered_df["Out Depth"] >= d]
-			assert all(relevant_df["Out Depth"] == d), f"Error: data has out d bigger than in d: \n {relevant_df}"
-			if len(relevant_df) >= samples:
-				chosen_df = relevant_df[:samples]
-				assert len(chosen_df) == samples
-				found_df = chosen_df[chosen_df["Result"] == "FOUND"][:samples]
-				statistics_df_rows.append(
-					{
-					 "Number of Qubits": q,
-					 "Depth": d,
-					 "Runtime": f"${found_df["Runtime"].mean():.3f}\\pm{found_df["Runtime"].std():.3f}$",
-					 "Rate": len(found_df) / len(chosen_df),
-					}
-				)
-			else:
-				max_seed = q_d_filtered_df["Seed"].max()
-				gen_random_circ(circuits_path, q, d, 0.25, 0.5, 0, int(max_seed+1))
-				done = False
-				break
-			d += 1
+results_file_name = "synthesis.csv"
+df_columns = ["qubits", "depth", "seed", "basis", "layers", "result", "time"]
 
-	print("Statistics:")
-	statistics_df = pd.DataFrame(statistics_df_rows)
-	statistics_df_to_print = statistics_df.pivot_table(values=["Rate", "Runtime"], index=["Depth"], columns="Number of Qubits", aggfunc="sum").swaplevel(0, 1, axis=1).sort_index(axis=1, level=0)
-	print(statistics_df_to_print)
-	statistics_df_to_print.to_latex(f"{results_path}/statistics.tex", index=True, float_format="%.1f", multicolumn_format="c", multirow=True, multicolumn=True, na_rep="")
+def gen_and_run(q, d, seed, df):
+	generate_random_circuit_qasm(q, d, seed, folder_name=folder_name, filename_format=filename_format)
+	file = utils.get_file_path(filename_format.format(n=q, d=d, seed=seed), "origin", benchmark_folder)
 
-	return done
+	for basis in ["comp", "pauli"]:
+		run_data = {
+			"qubits": q,
+			"depth": d,
+			"seed": seed,
+			"basis": basis
+		}
 
-# Example usage
-if __name__ == "__main__":
-	while not extract_numbers_from_folders():
-		print()
-		print(f"Printing Synthesis output to file ./syn_bench_tmp.out")
-		os.system("./syn_bench.sh > ./syn_bench_tmp.out")
-		print("Synthesis Finished")
-		print()
+		start_time = time.time()
+		status, weight, qasm, depth = qk.functionalities.syn(file, basis, 1)
+		end_time = time.time()
 
+		run_data["layers"] = depth
+
+		tmp = tempfile.NamedTemporaryFile()
+		with open(tmp.name, 'w') as f:
+			f.write(qasm) 
+
+		assert qk.functionalities.eq(file, tmp.name, "comp", "cyclic", N=1)
+		
+		utils.save_results_to_file(results_file_name, utils.add_result_to_df(run_data, status, end_time-start_time, df))
+
+statistics_df_rows=[]
+for q in [2,3,4,5,6]:
+	d=1
+	passed_rate = 1
+	while passed_rate >= success_rate_threshold:
+		# Filter the DataFrame for the current qubits and depth
+		results_df = utils.get_results_from_file(results_file_name, df_columns)
+		q_d_filtered_df = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d)]
+
+		if q_d_filtered_df.empty:
+			results_df = gen_and_run(q, d, 0, results_df)
+			break
+
+		# Check if all results are "TIMEOUT"
+		if any(q_d_filtered_df["result"] == "CRASH"):
+			print(f"WARNING: crash cases\n{q_d_filtered_df[q_d_filtered_df['result'] == 'CRASH']}")
+		
+		assert q_d_filtered_df[(q_d_filtered_df["layers"] > d)].empty 
+		relevant_df = q_d_filtered_df[(q_d_filtered_df["layers"] == d) or (q_d_filtered_df["result"] in ["TIMEOUT", "CRASH"])]
+		relevant_df = relevant_df[(q_d_filtered_df["result"] != "TIMEOUT") or (q_d_filtered_df["runtime"] >= utils.timeout)]
+
+		if len(relevant_df) < samples:
+			max_seed = set(relevant_df["seed"]).max()
+			seed_to_generate = (set(range(max_seed + 1)) - set(relevant_df["seed"])).min()
+			results_df = gen_and_run(q, d, seed_to_generate, results_df)
+			break
+		
+		relevant_df = relevant_df[:samples]
+		passed_df = relevant_df[(q_d_filtered_df["layers"] == d) and (q_d_filtered_df["Result"] == "FOUND") and (q_d_filtered_df["runtime"] <= utils.timeout)]
+		passed_rate = len(passed_df) / len(relevant_df)
+		statistics_df_rows.append(
+			{
+				"Number of Qubits": q,
+				"Circuit Depth": d,
+				"Runtime": f"${passed_df["Runtime"].mean():.3f}\\pm{passed_df["Runtime"].std():.3f}$",
+				"Rate": passed_rate,
+			}
+		)
+		d += 1
+
+# Save statistics DataFrame to latex table
+statistics_df = pd.DataFrame(statistics_df_rows)
+statistics_df.to_latex(
+	utils.get_results_file_path(results_file_name).replace(".csv", "_statistics.tex"),
+	index=False,
+	float_format="%.3f",
+	column_format="lcccc",
+	header=["Number of Qubits", "Circuit Depth", "Runtime", "Rate"]
+)
