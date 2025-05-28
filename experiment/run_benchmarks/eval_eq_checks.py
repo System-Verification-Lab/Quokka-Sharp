@@ -20,15 +20,18 @@ def get_from_file_name(file_name):
 
 def draw_figures(results_df, results_file_name):
 
+	qubits_df = results_df[results_df["qubits"] <= 10]
+	qubits_df = qubits_df[qubits_df["deepth"] <= 50]
+
 	colors = utils.cycle_colors()
 	color_map = {b: next(colors) for b in results_df.groupby(["basis", "check"]).groups.keys()}
 
 	# Assign a unique line style for each depth
 	lines = utils.line_style_cycle()
-	line_styles = {d: next(lines) for d in sorted(results_df["deepth"].unique())}
+	line_styles = {d: next(lines) for d in sorted(results_df["qubits"].unique())}
 
-	for mod in results_df["mod"].unique():
-		mod_df = results_df[results_df["mod"] == mod]
+	for mod in qubits_df["mod"].unique():
+		mod_df = qubits_df[qubits_df["mod"] == mod]
 		plt.figure(figsize=(10, 6))
 
 		# assert that all results are True or TIMEOUT
@@ -42,7 +45,7 @@ def draw_figures(results_df, results_file_name):
 
 		for (qubits, basis, check), group in mod_df.groupby(["qubits", "basis", "check"]):
 			# Calculate the mean and std time for each group, excluding TIMEOUT
-			group = group[group["result"] != "TIMEOUT"]
+			# group = group[group["result"] != "TIMEOUT"]
 			if group.empty:
 				continue
 			group = group.groupby("deepth").agg({"time": ["mean", "std"]}).reset_index()
@@ -69,8 +72,11 @@ def draw_figures(results_df, results_file_name):
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	origin_file = utils.get_file_path(file, "origin", benchmark_folder)
 	qubits, deepth, seed = get_from_file_name(file)
-	if deepth >= 100:
+	if deepth > 50:
 		continue
+	if qubits > 10:
+		continue
+	new = False
 	for modification in ["opt", "gm"]:
 		mod_file = utils.get_file_path(file, modification, benchmark_folder)
 		for basis, check in [("comp", "cyclic"), ("pauli", "cyclic"), ("pauli", "linear"), ("pauli", "cyc_lin")]:
@@ -95,11 +101,12 @@ for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 
 			# Save the results to a file
 			utils.save_results_to_file(results_file_name, results_df)
-			draw_figures(results_df, results_file_name)
+			new = True
+	if new:
+		draw_figures(results_df, results_file_name)
 
 results_df.sort_values(by=["qubits", "deepth", "seed", "mod", "basis", "check"], inplace=True)
 utils.save_results_to_file(results_file_name, results_df)
 draw_figures(results_df, results_file_name)
-
 print(results_df)
 

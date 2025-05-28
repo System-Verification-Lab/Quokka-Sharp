@@ -70,19 +70,19 @@ def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg
 
     
 if __name__ == "__main__":
-    for n in [40,80,120,160,200,300,400]:
-        for d in [3, 10]:
+    for n in [1, 5, 10, 20]:
+        for d in [5,10,20,30,50,100,150,200]:
             for seed in range(10):
                 generate_random_circuit_qasm(n, d, seed=seed, 
-                                             filename_format="random_q{n:03d}_d{d:01d}_s{seed:01d}.qasm")
+                                             filename_format="random_q{n:02d}_d{d:03d}_s{seed:01d}.qasm")
     
 
-    for n in [40]:
-        for d in [10]:
+    for n in [5, 10]:
+        for d in [10, 50, 100]:
             for t_h_ratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
-                for seed in range(10):
+                for seed in range(50):
                     generate_random_circuit_qasm(n, d, seed=seed, 
                                                  folder_name="TH_ratio",
-                                                 filename_format="random_q{n:03d}_d{d:01d}_s{seed:01d}_THr"+str(t_h_ratio)+".qasm",
+                                                 filename_format="random_q{n:02d}_d{d:02d}_s{seed:01d}_THr"+str(t_h_ratio)+".qasm",
                                                  weighted_prob_cx_h_s_sdg_t_tdg=[1, 2*(1-t_h_ratio), 1, 1, 2*t_h_ratio, 1])
     
