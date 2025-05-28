@@ -1,5 +1,8 @@
 __version__ = "0.0.14"
 
+from .config import set_config_path
+from .config import CONFIG
+
 from .sim import Simulate
 from .eq import CheckEquivalence
 from .syn import Synthesis
