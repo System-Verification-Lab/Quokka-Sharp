@@ -45,7 +45,9 @@ def draw_figures(results_df, results_file_name):
 
 		for (qubits, basis, check), group in mod_df.groupby(["qubits", "basis", "check"]):
 			# Calculate the mean and std time for each group, excluding TIMEOUT
-			# group = group[group["result"] != "TIMEOUT"]
+			group = group[group["result"] != "TIMEOUT"]
+			group = group[group["time"] <= utils.timeout]
+
 			if group.empty:
 				continue
 			group = group.groupby("deepth").agg({"time": ["mean", "std"]}).reset_index()
