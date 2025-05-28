@@ -7,7 +7,7 @@ import traceback
 
 from .encoding.cnf import CNF
 from .utils.utils import parse_wmc_result
-from .utils.timeout import timeout, TimeoutException, MemoutError
+from .utils.timeout import timeout, TimeoutException
 from .config import CONFIG
 
 from decimal import Decimal, getcontext
@@ -114,24 +114,23 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
+                expected_prob = Decimal(4**cnf.n)
                 if cnf.computational_basis:
-                    expected_prob = Decimal(2**cnf.n)
-                    expected_abs_value = False
+                    square_prob = True
                 else:
-                    expected_prob = Decimal(4**cnf.n)
-                    expected_abs_value = False
+                    square_prob = False
             elif (check == "cyclic_linear") or (check == "cyc_lin"):
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
                 expected_prob = Decimal(2*cnf.n)
-                expected_abs_value = False
+                square_prob = False
             elif check == "cyclic_noY":
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
                 expected_prob = Decimal(3**cnf.n)
-                expected_abs_value = False
+                square_prob = False
             elif check == "linear":
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
@@ -140,7 +139,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
                         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
                     expected_prob = 1
-                    expected_abs_value = False
+                    square_prob = False
             else:
                 raise ValueError(f"Invalid check type {check}")
             if DEBUG: print(f"expected: {expected_prob}")
@@ -164,7 +163,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                     pid, _ = os.wait()
                     if pid in procdict.keys():
                         res = procdict[pid].communicate()
-                        result = get_result(res[0], expected_prob, expected_abs_value)
+                        result = get_result(res[0], expected_prob, square_prob)
                         if result != True:
                             break
                         else:
