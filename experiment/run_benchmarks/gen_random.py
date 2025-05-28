@@ -22,7 +22,7 @@ def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg
         raise ValueError("The sum of weighted_prob_cx_h_s_sdg_t_tdg must not be zero.")
     
     # if file already exists, skip
-    folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), folder_name, "origin")
+    folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "benchmark", "random", folder_name, "origin")
     filename = os.path.join(folder, filename_format.format(n=n, d=d, seed=seed))
     if os.path.exists(filename):
         print(f"File {filename} already exists. Skipping...")
@@ -71,7 +71,7 @@ def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg
     
 if __name__ == "__main__":
     for n in [1, 5, 10, 20]:
-        for d in [5,10,20,30,50,100,150,200]:
+        for d in [5,10,15,20,25,30,35,40,45,50]:
             for seed in range(10):
                 generate_random_circuit_qasm(n, d, seed=seed, 
                                              filename_format="random_q{n:02d}_d{d:03d}_s{seed:01d}.qasm")

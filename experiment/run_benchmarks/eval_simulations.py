@@ -10,8 +10,11 @@ benchmark_folder = os.path.join("random", "uniform")
 benchmarks_list = utils.get_benchmark_files(benchmark_folder)
 
 results_file_name = "simulations.csv"
-df_columns = ["qubits", "deepth", "seed", "measurement", "basis", "result", "time"]
+df_columns = ["qubits", "depth", "seed", "measurement", "basis", "result", "time"]
 results_df = utils.get_results_from_file(results_file_name, df_columns)
+
+qubits_limit = 5
+depth_limit = 50
 
 def get_from_file_name(file_name):
 	name = file_name.replace(".qasm", "")
@@ -20,7 +23,7 @@ def get_from_file_name(file_name):
 
 def draw_figures(results_df, results_file_name):
 	# check that for all entries in results_df, the coresponding result of the other basis is timeout or the same
-	for exp, results in results_df.groupby(["qubits", "deepth", "seed", "measurement"]):
+	for exp, results in results_df.groupby(["qubits", "depth", "seed", "measurement"]):
 		assert len(results) == 2, f"Expected 2 results for {exp}, but found {len(results)}\n{results}"
 
 		basis_results = results.set_index("basis")["result"]
@@ -28,6 +31,9 @@ def draw_figures(results_df, results_file_name):
 			continue
 		if abs(float(basis_results["comp"]) - float(basis_results["pauli"])) > utils.FPE:
 			print(f"WARNING: Results mismatch for {exp}: {basis_results['comp']} vs {basis_results['pauli']}")
+
+	# Filter results_df to only include entries with qubits <= qubits_limit and depth <= depth_limit
+	qubits_df = results_df[(results_df["qubits"] <= qubits_limit) & (results_df["depth"] <= depth_limit)]
 
 	# Assign a unique color for each basis combination
 	colors = utils.cycle_colors()
@@ -37,7 +43,6 @@ def draw_figures(results_df, results_file_name):
 	lines = utils.line_style_cycle()
 	line_map = {d: next(lines) for d in sorted(results_df["qubits"].unique())}
 
-	qubits_df = results_df[results_df["qubits"] <= 10]
 	for measurement in qubits_df["measurement"].unique():
 		measurement_df = qubits_df[qubits_df["measurement"] == measurement]
 		plt.figure(figsize=(10, 6))
@@ -47,9 +52,9 @@ def draw_figures(results_df, results_file_name):
 			group = group[group["result"] != "TIMEOUT"]
 			if group.empty:
 				continue
-			group = group.groupby("deepth").agg({"time": ["mean", "std"]}).reset_index()
+			group = group.groupby("depth").agg({"time": ["mean", "std"]}).reset_index()
 			plt.errorbar(
-				group["deepth"],
+				group["depth"],
 				group["time"]["mean"],
 				yerr=group["time"]["std"],
 				label=f"qubits={qubits}, {basis}",
@@ -58,29 +63,32 @@ def draw_figures(results_df, results_file_name):
 				color=color_map[basis],
 				linestyle=line_map[qubits]
 			)
-		plt.title(f"Mean Time vs Deepth for {measurement} Modification")
-		plt.xlabel("Circuit Deepth")
+		plt.title(f"Mean Time vs Depth for {measurement} Simulation")
+		plt.xlabel("Circuit Depth")
 		plt.ylabel("Mean Time (s)")
 		plt.legend()
 		plt.grid()
-		plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{measurement}_time_vs_deepth.png"))
+		plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{measurement}_time_vs_depth.png"))
 		plt.close()
+
+		# Timeout rates to Latex table
+		timeout_rate = measurement_df[measurement_df["result"] == "TIMEOUT"].groupby(["qubits", "basis"]).size() / measurement_df.groupby(["qubits", "basis"]).size()
+		timeout_rate = timeout_rate.reset_index(name='timeout_rate')
+		timeout_rate = timeout_rate.pivot(index='qubits', columns='basis', values='timeout_rate').fillna(0)
+		timeout_rate = timeout_rate.round(2)  # Round to 2 decimal places
+		timeout_rate.to_latex(utils.get_results_file_path(results_file_name).replace(".csv", f"_{measurement}_timeout_rate.tex"), float_format="%.2f")
 
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	file_path = utils.get_file_path(file, "origin", benchmark_folder)
-	qubits, deepth, seed = get_from_file_name(file)
-	if deepth != 100:
-		continue
-	if qubits != 10:
-		continue
-	if seed != 0:
+	qubits, depth, seed = get_from_file_name(file)
+	if depth > depth_limit or qubits > qubits_limit:
 		continue
 	new = False
 	for measurement in ["firstzero", "allzero"]:
 		for basis in ["comp", "pauli"]:
 			run_data = {
 				"qubits": qubits,
-				"deepth": deepth,
+				"depth": depth,
 				"seed": seed,
 				"measurement": measurement,
 				"basis": basis
@@ -102,7 +110,7 @@ for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	if new:
 		draw_figures(results_df, results_file_name)
 
-results_df.sort_values(by=["qubits", "deepth", "seed", "measurement", "basis"], inplace=True)
+results_df.sort_values(by=["qubits", "depth", "seed", "measurement", "basis"], inplace=True)
 utils.save_results_to_file(results_file_name, results_df)
 draw_figures(results_df, results_file_name)
 print(results_df)

@@ -176,6 +176,15 @@ def add_result_to_df(data_dict, result, time_taken, df):
 	Returns:
 		pd.DataFrame: The updated DataFrame with the new result.
 	"""
+	
+	if result == "ERROR - unknown error":
+		print("Error for data_dict\n", data_dict)
+		return df
+
+	new_data = data_dict
+	new_data["result"] = str(result)
+	new_data["time"] = time_taken
+	new_df = pd.DataFrame([new_data])
 
 	if df.empty:
 		return new_df
@@ -185,10 +194,5 @@ def add_result_to_df(data_dict, result, time_taken, df):
 	if not exsisting_data.empty:
 		old_df = old_df.drop(exsisting_data.index)
 
-	new_data = data_dict
-	new_data["result"] = str(result)
-	new_data["time"] = time_taken
-	new_df = pd.DataFrame([new_data])
-	
 	return pd.concat([old_df, new_df], ignore_index=True)
 
