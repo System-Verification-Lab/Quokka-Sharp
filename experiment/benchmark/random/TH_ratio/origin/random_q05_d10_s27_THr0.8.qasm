@@ -5,7 +5,7 @@ tdg q[1];
 t q[0];
 cx q[3],q[2];
 h q[4];
-sdg q[2];
+s q[2];
 h q[1];
 tdg q[4];
 tdg q[3];
