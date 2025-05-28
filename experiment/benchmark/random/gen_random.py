@@ -84,5 +84,5 @@ if __name__ == "__main__":
                     generate_random_circuit_qasm(n, d, seed=seed, 
                                                  folder_name="TH_ratio",
                                                  filename_format="random_q{n:02d}_d{d:02d}_s{seed:01d}_THr"+str(t_h_ratio)+".qasm",
-                                                 weighted_prob_cx_h_s_sdg_t_tdg=[1, 2*(1-t_h_ratio), 1, 1, 2*t_h_ratio, 1])
+                                                 weighted_prob_cx_h_s_sdg_t_tdg=[1, 3*(1-t_h_ratio), 1, 1, 1.5*t_h_ratio, 1.5*t_h_ratio])
     

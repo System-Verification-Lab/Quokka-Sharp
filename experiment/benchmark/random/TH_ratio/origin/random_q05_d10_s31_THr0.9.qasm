@@ -8,7 +8,7 @@ s q[0];
 t q[3];
 tdg q[2];
 t q[1];
-s q[0];
+h q[0];
 sdg q[4];
 cx q[1],q[3];
 tdg q[4];
