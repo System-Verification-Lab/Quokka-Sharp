@@ -73,17 +73,16 @@ def draw_figures(results_df, results_file_name):
 			plt.close()
 			
 			# Timeout rates to Latex table
-			timeout_rates = mod_df[mod_df["result"] == "TIMEOUT"].groupby(["basis", "check"]).size()/ mod_df.groupby(["basis", "check"]).size()
-			timeout_rates = timeout_rates.reset_index(name="timeout_rate")
-			timeout_rates["mod"] = mod
-			timeout_rates = timeout_rates[["mod", "basis", "check", "timeout_rate"]]
-			timeout_rates.to_latex(
-				utils.get_results_file_path(results_file_name).replace(".csv", f"_{mod}_timeout_rates.tex"),
-				index=False,
-				float_format="%.2f",
-				column_format="lccc",
-				header=["Modification", "Basis", "Check", "Timeout Rate"]
-			)
+	group_by = ["mod", "basis", "check", "qubits", "depth"]
+	timeout_rates = qubits_df[qubits_df["result"] == "TIMEOUT"].groupby(group_by).size()/ qubits_df.groupby(group_by).size()
+	timeout_rates = timeout_rates.reset_index(name="timeout_rate").fillna(0)
+	timeout_rates.to_latex(
+		utils.get_results_file_path(results_file_name).replace(".csv", f"_timeout_rates.tex"),
+		index=False,
+		float_format="%.2f",
+		column_format="lccc",
+		header=group_by + ["Timeout Rate"]
+	)
 
 
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
