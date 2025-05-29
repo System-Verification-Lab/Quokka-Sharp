@@ -9,7 +9,7 @@ from gen_random import generate_random_circuit_qasm
 
 folder_name = "for_syn"
 benchmark_folder = os.path.join("random", folder_name)
-filename_format="random_q{n:02d}_d{d:03d}_s{seed:02d}.qasm"
+filename_format="random_q{n:01d}_d{d:01d}_s{seed:01d}.qasm"
 
 def get_from_file_name(file_name):
 	print(f"Processing file: {file_name}")
@@ -52,6 +52,9 @@ def gen_and_run(q, d, seed, df):
 		run_data["test"] = test
 		
 		utils.save_results_to_file(results_file_name, utils.add_result_to_df(run_data, status, end_time-start_time, df))
+
+		# Remove file
+		os.remove(file)
 
 statistics_df_rows=[]
 for q in [2,3,4,5,6]:
