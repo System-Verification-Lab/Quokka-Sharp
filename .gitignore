@@ -9,3 +9,5 @@ quokka_sharp/quokka_sharp/docker.sh
 env/
 .venv/
 build/
+experiment/run_benchmarks/results/*.png
+experiment/run_benchmarks/results/*.tex
