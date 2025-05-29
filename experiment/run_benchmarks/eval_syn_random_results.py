@@ -20,13 +20,15 @@ samples = 10
 success_rate_threshold = 0.5
 
 results_file_name = "synthesis.csv"
-df_columns = ["qubits", "depth", "seed", "basis", "layers", "result", "time"]
+df_columns = ["qubits", "depth", "seed", "basis", "layers", "result", "time", "test"]
 
 def gen_and_run(q, d, seed, df):
+	print(f"Generating and running for q={q}, d={d}, seed={seed}")
+
 	generate_random_circuit_qasm(q, d, seed, folder_name=folder_name, filename_format=filename_format, weighted_prob_cx_h_s_sdg_t_tdg=[1, 1, 0, 0, 1, 1])
 	file = utils.get_file_path(filename_format.format(n=q, d=d, seed=seed), "origin", benchmark_folder)
 
-	for basis in ["comp", "pauli"]:
+	for basis in ["comp"]:
 		run_data = {
 			"qubits": q,
 			"depth": d,
@@ -51,10 +53,12 @@ def gen_and_run(q, d, seed, df):
 			f"ERROR: Equivalence check failed for {file}"
 		run_data["test"] = test
 		
-		utils.save_results_to_file(results_file_name, utils.add_result_to_df(run_data, status, end_time-start_time, df))
-
-		# Remove file
-		os.remove(file)
+		df = utils.save_results_to_file(results_file_name, utils.add_result_to_df(run_data, status, end_time-start_time, df))
+		
+	# Remove file
+	os.remove(file)
+	return df
+		
 
 statistics_df_rows=[]
 for q in [2,3,4,5,6]:
@@ -63,7 +67,7 @@ for q in [2,3,4,5,6]:
 	while passed_rate >= success_rate_threshold:
 		# Filter the DataFrame for the current qubits and depth
 		results_df = utils.get_results_from_file(results_file_name, df_columns)
-		q_d_df = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d)]
+		q_d_df = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d) & (results_df["basis"] == "comp")]
 
 		if q_d_df.empty:
 			results_df = gen_and_run(q, d, 0, results_df)
@@ -94,6 +98,8 @@ for q in [2,3,4,5,6]:
 			}
 		)
 		d += 1
+
+assert results_df[results_df["test"] == False].empty, "There are failed tests in the results DataFrame. Please check the results."
 
 # Save statistics DataFrame to latex table
 print(f"Statistics:\n{statistics_df_rows}")
