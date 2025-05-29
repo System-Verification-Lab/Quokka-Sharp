@@ -71,12 +71,18 @@ def draw_figures(results_df, results_file_name):
 		plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{measurement}_time_vs_depth.png"))
 		plt.close()
 
-		# Timeout rates to Latex table
-		timeout_rate = measurement_df[measurement_df["result"] == "TIMEOUT"].groupby(["qubits", "basis"]).size() / measurement_df.groupby(["qubits", "basis"]).size()
-		timeout_rate = timeout_rate.reset_index(name='timeout_rate')
-		timeout_rate = timeout_rate.pivot(index='qubits', columns='basis', values='timeout_rate').fillna(0)
-		timeout_rate = timeout_rate.round(2)  # Round to 2 decimal places
-		timeout_rate.to_latex(utils.get_results_file_path(results_file_name).replace(".csv", f"_{measurement}_timeout_rate.tex"), float_format="%.2f")
+	# Timout rates
+	group_by = ["qubits", "depth", "seed", "measurement", "basis"]
+	timeout_rates = qubits_df[qubits_df["result"] == "TIMEOUT"].groupby(group_by).size()/ qubits_df.groupby(group_by).size()
+	timeout_rates = timeout_rates.reset_index(name="timeout_rate").fillna(0)
+	timeout_rates = timeout_rates[timeout_rates["timeout_rate"] > 0]
+	timeout_rates.to_latex(
+		utils.get_results_file_path(results_file_name).replace(".csv", f"_timeout_rates.tex"),
+		index=False,
+		float_format="%.2f",
+		column_format="lccc",
+		header=group_by + ["Timeout Rate"]
+	)
 
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	file_path = utils.get_file_path(file, "origin", benchmark_folder)
