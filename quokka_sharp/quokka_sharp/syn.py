@@ -8,9 +8,17 @@ from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
-getcontext().prec = 32
-global FPE
-FPE = 1e-12
+from .config import CONFIG
+from .utils.timeout import timeout, TimeoutException
+
+# Global constants from config
+DEBUG           = CONFIG["DEBUG"]
+TIMEOUT         = CONFIG["TIMEOUT"]
+tool_invocation = CONFIG["D4ToolInvocation"]
+FPE             = CONFIG["FPE"]
+precision       = CONFIG["Precision"]
+
+getcontext().prec = precision
 
 def get_result(result_file, expexted_prob, abs_value):
     """
@@ -83,11 +91,10 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = DEBUG):
     """
     Function to synthesize a quantum circuit
     Args:
-        tool_invocation   :  the running command of the weighted model counter
         cnf              :  the encoded cnf of the input circuit
         cnf_file_root    :  the path to the output file
         fidelity_threshold:  the threshold for the fidelity
@@ -107,141 +114,131 @@ def Synthesis(tool_invocation, cnf: 'CNF', cnf_file_root = tempfile.gettempdir()
     if printing: print(f"basis:{'Comp' if cnf.computational_basis else 'Pauli'}, exact:{onehot_xz}") 
     if printing: print(f"fidelity_threshold:{fidelity_threshold}") 
     p = None
-    try:  
-        TIMEOUT = int(os.environ["TIMEOUT"])
-        if printing: print(f"TIMEOUT set to: {TIMEOUT}") 
-        class TimeoutException(Exception): pass 
-        def timeout(signum, frame):
-            if printing: print(f"TIMEOUT expiered")
-            if p is not None:
-                p.kill()
-            # else:
-            #     if printing: print(it_counter, end="")
-            raise TimeoutException("TIMEOUT")
-    except KeyError: 
-        print ("Please set the environment variable TIMEOUT")
-        sys.exit(1)
+
+    def cleanup():
+        if printing: print(f"TIMEOUT expiered")
+        if p is not None:
+            p.kill()
 
     try:
-        signal.signal(signal.SIGALRM, timeout)
-        signal.alarm(TIMEOUT)
+        with timeout(TIMEOUT, on_timeout=cleanup):
 
-        if onehot_xz:
-            expected_prob = 2*cnf.n
-            expected_abs_value = False
-        elif cnf.computational_basis:
-            expected_prob = 2**cnf.n
-            expected_abs_value = True
-        else:
-            expected_prob = 4**cnf.n
-            expected_abs_value = False
-        
-        done = False
-        bin_lb = 0
-        bin_ub = None
-        bin_ub_results = None
-        weight = 0
-        assignment = []
-        qasm = ""
-        if bin_search:
-            num_layers = 1
-        cnf_copy_init = copy.deepcopy(cnf)
-        if h_sandwich:
-            cnf_copy_init.add_syn_layer(1, limit_gates=True, h_layer=True)
-        if initial_depth:
-            cnf_copy_init.add_syn_layer(initial_depth)
-        cnf_copy = cnf_copy_init
-        cnf_revert = cnf_copy
-        skip_first = True
-        it_counter = 0 if skip_first else 1
-        while not done:
-            if printing: print() 
-            # if printing: print(f"Global Time: {datetime.datetime.now()}")
-            start = time.time()
-            if printing: print(f"Iteration: {it_counter}")
-            files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
-
-            if bin_search:
-                cnf_copy = copy.deepcopy(cnf_copy_init)
-                cnf_copy.add_syn_layer(num_layers, limit_gates=h_sandwich, h_layer=False)
-                cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
-                file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
+            if onehot_xz:
+                expected_prob = 2*cnf.n
+                expected_abs_value = False
+            elif cnf.computational_basis:
+                expected_prob = 2**cnf.n
+                expected_abs_value = True
             else:
-                if h_sandwich:
-                    cnf_copy = cnf_revert
-                if skip_first:
-                    skip_first = False
-                else:
-                    cnf_copy.add_syn_layer()
-                if h_sandwich:
-                    cnf_revert = copy.deepcopy(cnf_copy)
-                    cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
-                file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
-
-            # if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
-            # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
-            command = (tool_invocation.split(' ') + 
-                       ["-i", file] + 
-                       ["--complex", ("1" if cnf.computational_basis else "0")] + 
-                       ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
-                    )
-            # if printing: print(" ".join(command))
-            out_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.out")
-            err_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.err")
-            res_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.res")
-            # if printing: print(f"Out file: {out_file}")
-            # if printing: print(f"Err file: {err_file}")
-            with open(out_file, 'w') as out:
-                with open(err_file, 'w') as err:
-                    p = Popen(command, stdout=out, stderr=err)
-            pid = None
-            err = 0
-            while pid == p.pid:
-                pid, err = os.wait()
-            res, cerr = p.communicate()
-            if err:
-                return f"ERROR{err}", 0, res, cnf_copy.syn_gate_layer
-            if cerr:
-                return f"ERROR{cerr}", 0, res, cnf_copy.syn_gate_layer
-            found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
-            # if printing: print(f"found:{found}, weight:{weight}")
-            if printing: print(f"fidelity:{weight}")
-            if weight == "CRASH":
-                # if printing: print(err, cerr)
-                return "CRASH", 0, "", cnf_copy.syn_gate_layer
+                expected_prob = 4**cnf.n
+                expected_abs_value = False
             
-            qasm = cnf_copy.get_syn_qasm(assignment)
-            with open(res_file, "w") as f:
-                f.write(qasm)
-                # if printing: print(f"Res file: {res_file}")
-
+            done = False
+            bin_lb = 0
+            bin_ub = None
+            bin_ub_results = None
+            weight = 0
+            assignment = []
+            qasm = ""
             if bin_search:
-                if found:
-                    bin_ub = num_layers
-                    bin_ub_results = (weight, qasm)
-                else: 
-                    bin_lb = num_layers
-                
-                # if printing: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
+                num_layers = 1
+            cnf_copy_init = copy.deepcopy(cnf)
+            if h_sandwich:
+                cnf_copy_init.add_syn_layer(1, limit_gates=True, h_layer=True)
+            if initial_depth:
+                cnf_copy_init.add_syn_layer(initial_depth)
+            cnf_copy = cnf_copy_init
+            cnf_revert = cnf_copy
+            skip_first = True
+            it_counter = 0 if skip_first else 1
+            while not done:
+                if printing: print() 
+                # if printing: print(f"Global Time: {datetime.datetime.now()}")
+                start = time.time()
+                if printing: print(f"Iteration: {it_counter}")
+                files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
 
-                if bin_lb + 1 == bin_ub:
-                    if found == False:
-                        weight, qasm = bin_ub_results
-                    done = True
-
-                if bin_ub:
-                    num_layers = int((bin_lb + bin_ub) / 2)
+                if bin_search:
+                    cnf_copy = copy.deepcopy(cnf_copy_init)
+                    cnf_copy.add_syn_layer(num_layers, limit_gates=h_sandwich, h_layer=False)
+                    cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
+                    file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
                 else:
-                    num_layers = int(bin_lb*2)
-            else:
-                if found or weight > fidelity_threshold:
-                    done = True
-            if printing: print(f"Run Time: {time.time()-start}")
-            it_counter+=1
+                    if h_sandwich:
+                        cnf_copy = cnf_revert
+                    if skip_first:
+                        skip_first = False
+                    else:
+                        cnf_copy.add_syn_layer()
+                    if h_sandwich:
+                        cnf_revert = copy.deepcopy(cnf_copy)
+                        cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
+                    file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
 
-        # if printing: print()
-        # if printing: print(f"Global Time: {datetime.datetime.now()}")
-        return "FOUND", weight, qasm, cnf_copy.syn_gate_layer
+                # if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
+                # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
+                command = (tool_invocation.split(' ') + 
+                        ["-i", file] + 
+                        ["--complex", ("1" if cnf.computational_basis else "0")] + 
+                        ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
+                        )
+                # if printing: print(" ".join(command))
+                out_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.out")
+                err_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.err")
+                res_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.res")
+                # if printing: print(f"Out file: {out_file}")
+                # if printing: print(f"Err file: {err_file}")
+                with open(out_file, 'w') as out:
+                    with open(err_file, 'w') as err:
+                        p = Popen(command, stdout=out, stderr=err)
+                pid = None
+                err = 0
+                while pid == p.pid:
+                    pid, err = os.wait()
+                res, cerr = p.communicate()
+                if err:
+                    return f"ERROR{err}", 0, res, cnf_copy.syn_gate_layer
+                if cerr:
+                    return f"ERROR{cerr}", 0, res, cnf_copy.syn_gate_layer
+                found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
+                # if printing: print(f"found:{found}, weight:{weight}")
+                if printing: print(f"fidelity:{weight}")
+                if weight == "CRASH":
+                    # if printing: print(err, cerr)
+                    return "CRASH", 0, "", cnf_copy.syn_gate_layer
+                
+                qasm = cnf_copy.get_syn_qasm(assignment)
+                with open(res_file, "w") as f:
+                    f.write(qasm)
+                    # if printing: print(f"Res file: {res_file}")
+
+                if bin_search:
+                    if found:
+                        bin_ub = num_layers
+                        bin_ub_results = (weight, qasm)
+                    else: 
+                        bin_lb = num_layers
+                    
+                    # if printing: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
+
+                    if bin_lb + 1 == bin_ub:
+                        if found == False:
+                            weight, qasm = bin_ub_results
+                        done = True
+
+                    if bin_ub:
+                        num_layers = int((bin_lb + bin_ub) / 2)
+                    else:
+                        num_layers = int(bin_lb*2)
+                else:
+                    if found or weight > fidelity_threshold:
+                        done = True
+                if printing: print(f"Run Time: {time.time()-start}")
+                it_counter+=1
+
+            # if printing: print()
+            # if printing: print(f"Global Time: {datetime.datetime.now()}")
+            return "FOUND", weight, qasm, cnf_copy.syn_gate_layer
 
     except TimeoutException as error:
         if printing: print(f"Run Time: {time.time()-start}")
