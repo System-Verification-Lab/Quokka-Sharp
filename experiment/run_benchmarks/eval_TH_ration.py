@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 benchmark_folder = os.path.join("random", "TH_ratio")
 benchmarks_list = utils.get_benchmark_files(benchmark_folder)
 
-results_file_name = "simulations_HT_rations.csv"
+results_file_name = "TH_rations.csv"
 df_columns = ["qubits", "depth", "seed", "ratio", "measurement", "basis", "result", "time"]
 results_df = utils.get_results_from_file(results_file_name, df_columns)
 
