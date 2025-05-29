@@ -74,6 +74,19 @@ def draw_figures(results_df, results_file_name):
 		plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{qubits}_qubits_time_vs_ratio.png"))
 		plt.close()
 
+	# Timout rates
+	group_by = ["qubits", "depth", "seed", "ratio", "measurement", "basis"]
+	timeout_rates = qubits_df[qubits_df["result"] == "TIMEOUT"].groupby(group_by).size()/ qubits_df.groupby(group_by).size()
+	timeout_rates = timeout_rates.reset_index(name="timeout_rate").fillna(0)
+	timeout_rates = timeout_rates[timeout_rates["timeout_rate"] > 0]
+	timeout_rates.to_latex(
+		utils.get_results_file_path(results_file_name).replace(".csv", f"_timeout_rates.tex"),
+		index=False,
+		float_format="%.2f",
+		column_format="lccc",
+		header=group_by + ["Timeout Rate"]
+	)
+
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	file_path = utils.get_file_path(file, "origin", benchmark_folder)
 	qubits, depth, seed, ratio = get_from_file_name(file)
