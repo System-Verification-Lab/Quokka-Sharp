@@ -28,7 +28,7 @@ class functionalities:
 		circuit.dagger()
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 
-		return qk.Synthesis(cnf, onehot_xz = False, printing = True, fidelity_threshold = fid) #((fid == 1) and (basis == "pauli"))
+		return qk.Synthesis(cnf, onehot_xz = False, fidelity_threshold = fid) #((fid == 1) and (basis == "pauli"))
         
 	def veri(qasmfile, basis): 
 		# Parse the circuit
