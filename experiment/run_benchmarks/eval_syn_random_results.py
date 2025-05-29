@@ -22,6 +22,15 @@ success_rate_threshold = 0.5
 results_file_name = "synthesis.csv"
 df_columns = ["qubits", "depth", "seed", "basis", "layers", "result", "time", "test"]
 
+def statistics_to_latex(statistics_df_rows):
+	statistics_df = pd.DataFrame(statistics_df_rows)
+	statistics_df_to_print = statistics_df.pivot_table(values=["Rate", "Runtime"],
+										index=["Circuit Depth"], columns="Number of Qubits",
+										aggfunc="sum").swaplevel(0, 1, axis=1).sort_index(axis=1, level=0)
+	statistics_df_to_print.to_latex(utils.get_results_file_path(results_file_name).replace(".csv", "_statistics.tex"),
+								  index=True, float_format="%.1f", multicolumn_format="c",
+								    multirow=True, multicolumn=True, na_rep="")
+
 def gen_and_run(q, d, seed, df):
 	print(f"Generating and running for q={q}, d={d}, seed={seed}")
 
@@ -97,19 +106,9 @@ for q in [2,3,4,5,6]:
 				"Rate": passed_rate,
 			}
 		)
+		statistics_to_latex(statistics_df_rows)
 		d += 1
 
 assert results_df[results_df["test"] == False].empty, "There are failed tests in the results DataFrame. Please check the results."
 
-# Save statistics DataFrame to latex table
-print(f"Statistics:\n{statistics_df_rows}")
-
-statistics_df = pd.DataFrame(statistics_df_rows)
-print(statistics_df)
-statistics_df.to_latex(
-	utils.get_results_file_path(results_file_name).replace(".csv", "_statistics.tex"),
-	index=False,
-	float_format="%.3f",
-	column_format="lcccc",
-	header=["Number of Qubits", "Circuit Depth", "Runtime", "Rate"]
-)
+statistics_to_latex(statistics_df_rows)
