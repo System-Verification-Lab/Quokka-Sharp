@@ -67,6 +67,7 @@ def draw_figures(results_df, results_file_name):
 			plt.title(f"Mean Time vs Depth for {mod} Modification with {qubits} Qubits")
 			plt.xlabel("Circuit Depth")
 			plt.ylabel("Mean Time (s)")
+			plt.yscale("log")
 			plt.legend()
 			plt.grid()
 			plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{mod}_{qubits}_qubits_time_vs_depth.png"))
