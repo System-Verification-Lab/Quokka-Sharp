@@ -176,12 +176,12 @@ def add_result_to_df(data_dict, result, time_taken, df):
 	Returns:
 		pd.DataFrame: The updated DataFrame with the new result.
 	"""
-	
+
 	if result == "ERROR - unknown error":
 		print("Error for data_dict\n", data_dict)
 		return df
 
-	new_data = data_dict
+	new_data = data_dict.copy()
 	new_data["result"] = str(result)
 	new_data["time"] = time_taken
 	new_df = pd.DataFrame([new_data])
