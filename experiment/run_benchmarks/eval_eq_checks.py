@@ -76,6 +76,7 @@ def draw_figures(results_df, results_file_name):
 	group_by = ["mod", "basis", "check", "qubits", "depth"]
 	timeout_rates = qubits_df[qubits_df["result"] == "TIMEOUT"].groupby(group_by).size()/ qubits_df.groupby(group_by).size()
 	timeout_rates = timeout_rates.reset_index(name="timeout_rate").fillna(0)
+	timeout_rates = timeout_rates[timeout_rates["timeout_rate"] > 0]
 	timeout_rates.to_latex(
 		utils.get_results_file_path(results_file_name).replace(".csv", f"_timeout_rates.tex"),
 		index=False,
