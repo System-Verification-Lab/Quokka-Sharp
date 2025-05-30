@@ -100,10 +100,10 @@ def gen_and_run(q, d, seed, basis, onehot_xz):
 	# Remove file
 	os.remove(file)
 		
-basis_onehot_xz_list = [
+basis_onehot_xz_list = [ # ordered by preference
+	("pauli", True),   # Pauli basis, one-hot encoding
 	("comp", False),  # Computational basis, no one-hot encoding
-	("pauli", False),  # Pauli basis, no one-hot encoding
-	("pauli", True)   # Pauli basis, one-hot encoding
+	("pauli", False)  # Pauli basis, no one-hot encoding
 ]
 def name(basis, onehot_xz):
 	"""
@@ -126,44 +126,52 @@ for q in [2,3,4,5,6]:
 	d_dict = {name(b,lin): 1 for b, lin in basis_onehot_xz_list}  # Initialize depth for each basis
 	passed_rate_dict = {name(b,lin): 1 for b, lin in basis_onehot_xz_list}  # Initialize passed rate for each basis
 	while any([passed_rate_dict[name(b,lin)] >= success_rate_threshold for b, lin in basis_onehot_xz_list]):
-		for basis, onehot_xz in [(b,lin) for b,lin in basis_onehot_xz_list if passed_rate_dict[name(b,lin)]>= success_rate_threshold]:
-			d = d_dict[name(basis, onehot_xz)]
-			# Filter the DataFrame for the current qubits and depth
-			results_df = utils.get_results_from_file(results_file_name, df_columns)
-			q_d_df = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d) & (results_df["basis"] == name(basis, onehot_xz))]
+		# let the fastest run first for each qubit to find bad seeds quicker
+		basis, onehot_xz = [(b,lin) for b,lin in basis_onehot_xz_list if passed_rate_dict[name(b,lin)]>= success_rate_threshold][0]
+		d = d_dict[name(basis, onehot_xz)]
+		# Filter the DataFrame for the current qubits and depth
+		results_df = utils.get_results_from_file(results_file_name, df_columns)
 
-			if q_d_df.empty:
-				gen_and_run(q, d, 0, basis, onehot_xz)
-				continue
+		bad_seeds_strs = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d) &
+													(results_df["layers"] < d) & (results_df["result"] == "FOUND")]["seed"].unique()
+		bad_seeds = [int(s) for s in bad_seeds_strs]
+		
+		q_d_df = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d) & (results_df["basis"] == name(basis, onehot_xz)) & ~(results_df["seed"].isin(bad_seeds))]
 
-			# Check if all results are "TIMEOUT"
-			if any(q_d_df["result"] == "CRASH"):
-				print(f"WARNING: crash cases\n{q_d_df[q_d_df['result'] == 'CRASH']}")
-			
-			relevant_df = q_d_df[(q_d_df["layers"] == d) | (q_d_df["result"] == "TIMEOUT") | (q_d_df["result"] == "CRASH")]
-			relevant_df = relevant_df[(relevant_df["result"] != "TIMEOUT") | (relevant_df["time"] >= utils.timeout)]
+		if q_d_df.empty:
+			seed_to_generate = min(set(range(max(bad_seeds)+2)) - set(bad_seeds))
+			gen_and_run(q, d, seed_to_generate, basis, onehot_xz)
+			continue
 
-			if len(relevant_df) < samples:
-				max_seed = max([int(s) for s in q_d_df["seed"].unique()])
-				seed_to_generate = min(set(range(max_seed + 2)) - set(q_d_df["seed"].unique()))
-				gen_and_run(q, d, seed_to_generate, basis, onehot_xz)
-				continue
-			
-			relevant_df = relevant_df[:samples]
-			passed_df = relevant_df[(relevant_df["layers"] == d) & (relevant_df["result"] == "FOUND") & (relevant_df["time"] <= utils.timeout)]
-			passed_rate_dict[name(basis, onehot_xz)] = len(passed_df) / len(relevant_df)
-			statistics_df_rows.append(
-				{
-					"Number of Qubits": q,
-					"Circuit Depth": d,
-					"Basis": name(basis, onehot_xz),
-					"Memory (GB)": f"${passed_df['mem'].mean():.3f}\\pm{passed_df['mem'].std():.3f}$" if not passed_df.empty else "N/A",
-					"Time (s)": f"${passed_df['time'].mean():.3f}\\pm{passed_df['time'].std():.3f}$" if not passed_df.empty else "N/A",
-					"Rate": passed_rate_dict[name(basis, onehot_xz)]
-				}
-			)
-			statistics_to_latex(statistics_df_rows)
-			d_dict[name(basis, onehot_xz)] += 1
+		# Check if all results are "TIMEOUT"
+		if any(q_d_df["result"] == "CRASH"):
+			print(f"WARNING: crash cases\n{q_d_df[q_d_df['result'] == 'CRASH']}")
+		
+		relevant_df = q_d_df[(q_d_df["layers"] == d) | (q_d_df["result"] == "TIMEOUT") | (q_d_df["result"] == "CRASH")]
+		relevant_df = relevant_df[(relevant_df["result"] != "TIMEOUT") | (relevant_df["time"] >= utils.timeout)]
+
+		if len(relevant_df) < samples:
+			used_seeds = [int(s) for s in q_d_df["seed"].unique()]
+			max_seed = max(bad_seeds + used_seeds) 
+			seed_to_generate = min(set(range(max_seed + 2)) - set(used_seeds) - set(bad_seeds))
+			gen_and_run(q, d, seed_to_generate, basis, onehot_xz)
+			continue
+		
+		relevant_df = relevant_df[:samples]
+		passed_df = relevant_df[(relevant_df["layers"] == d) & (relevant_df["result"] == "FOUND") & (relevant_df["time"] <= utils.timeout)]
+		passed_rate_dict[name(basis, onehot_xz)] = len(passed_df) / len(relevant_df)
+		statistics_df_rows.append(
+			{
+				"Number of Qubits": q,
+				"Circuit Depth": d,
+				"Basis": name(basis, onehot_xz),
+				"Memory (GB)": f"${passed_df['mem'].mean():.3f}\\pm{passed_df['mem'].std():.3f}$" if not passed_df.empty else "N/A",
+				"Time (s)": f"${passed_df['time'].mean():.3f}\\pm{passed_df['time'].std():.3f}$" if not passed_df.empty else "N/A",
+				"Rate": passed_rate_dict[name(basis, onehot_xz)]
+			}
+		)
+		statistics_to_latex(statistics_df_rows)
+		d_dict[name(basis, onehot_xz)] += 1
 	utils.save_results_to_file(results_file_name,utils.get_results_from_file(results_file_name, df_columns).sort_values(by=df_columns, ignore_index=True))
 results_df = utils.get_results_from_file(results_file_name, df_columns)
 assert results_df[(results_df["result"] == "TIMEOUT") & (results_df["test"] == False)].empty, "There are failed tests in the results DataFrame. Please check the results."
