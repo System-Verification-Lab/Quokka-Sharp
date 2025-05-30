@@ -48,7 +48,7 @@ def memory_usage(folder):
 				for line in f:
 					if line.startswith('c |'):
 						columns = [col.strip() for col in line.split('|')]
-						if len(columns) > 11:
+						if len(columns) > 12:
 							mem_mb = columns[11]
 							if mem_mb != "mem(MB)":
 								mem_mb_values.append(float(mem_mb)/1024)  # Convert to GB
@@ -139,7 +139,10 @@ for q in [2,3,4,5,6]:
 		q_d_df = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d) & (results_df["basis"] == name(basis, onehot_xz)) & ~(results_df["seed"].isin(bad_seeds))]
 
 		if q_d_df.empty:
-			seed_to_generate = min(set(range(max(bad_seeds)+2)) - set(bad_seeds))
+			if 0 in bad_seeds:
+				seed_to_generate = min(set(range(max(bad_seeds)+2)) - set(bad_seeds))
+			else:
+				seed_to_generate = 0
 			gen_and_run(q, d, seed_to_generate, basis, onehot_xz)
 			continue
 
