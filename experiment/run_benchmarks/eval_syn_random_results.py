@@ -175,8 +175,11 @@ for q in [2,3,4,5,6]:
 		)
 		statistics_to_latex(statistics_df_rows)
 		d_dict[name(basis, onehot_xz)] += 1
-	utils.save_results_to_file(results_file_name,utils.get_results_from_file(results_file_name, df_columns).sort_values(by=df_columns, ignore_index=True))
-results_df = utils.get_results_from_file(results_file_name, df_columns)
-assert results_df[(results_df["result"] == "TIMEOUT") & (results_df["test"] == False)].empty, "There are failed tests in the results DataFrame. Please check the results."
+	
+
+	results_df = utils.get_results_from_file(results_file_name, df_columns).sort_values(by=df_columns, ignore_index=True)
+	utils.save_results_to_file(results_file_name, results_df)
+	assert results_df[(results_df["result"] == "FOUND") & (results_df["test"] == False)].empty, "There are failed tests in the results DataFrame. Please check the results."
+	assert results_df[(results_df["result"] == "TIMEOUT") & (results_df["test"] == True)].empty, "There are failed tests in the results DataFrame. Please check the results."
 
 statistics_to_latex(statistics_df_rows)
