@@ -29,6 +29,29 @@ def line_style_cycle():
 	line_styles = ['-', '--', '-.', ':']
 	return cycle(line_styles)
 
+def get_tmp_folder_path():
+	"""
+	Get the path to the temporary folder.
+	
+	Returns:
+		str: The path to the temporary folder.
+	"""
+	tmp_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tmp")
+	os.makedirs(tmp_folder, exist_ok=True)
+	return tmp_folder
+
+def remove_tmp_folder():
+	"""
+	Remove the temporary folder and its contents.
+	"""
+	tmp_folder = get_tmp_folder_path()
+	if os.path.exists(tmp_folder):
+		for file in os.listdir(tmp_folder):
+			file_path = os.path.join(tmp_folder, file)
+			if os.path.isfile(file_path):
+				os.remove(file_path)
+		os.rmdir(tmp_folder)
+
 def get_benchmark_path():
 	"""
 	Get the path to the benchmark directory.
@@ -105,6 +128,10 @@ def get_results_from_file(results_file_name, df_columns):
 	results_file = get_results_file_path(results_file_name)
 	if os.path.exists(results_file):
 		results_df = pd.read_csv(results_file)
+		# if missing columns, add them with NaN values
+		for col in df_columns:
+			if col not in results_df.columns:
+				results_df[col] = pd.NA
 	else:
 		results_df = pd.DataFrame(columns=df_columns)
 
@@ -163,7 +190,7 @@ def data_exists(data_dict, df):
 	
 	return True
 
-def add_result_to_df(data_dict, result, time_taken, df):
+def add_result_to_df(data_dict, result, time_taken, df, memory=None):
 	"""
 	Add a new result to the DataFrame.
 	
@@ -184,6 +211,8 @@ def add_result_to_df(data_dict, result, time_taken, df):
 	new_data = data_dict.copy()
 	new_data["result"] = str(result)
 	new_data["time"] = time_taken
+	if memory is not None:
+		new_data["mem"] = memory
 	new_df = pd.DataFrame([new_data])
 
 	if df.empty:
