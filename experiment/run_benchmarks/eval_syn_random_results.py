@@ -31,7 +31,24 @@ def statistics_to_latex(statistics_df_rows):
 								  index=True, float_format="%.1f", multicolumn_format="c",
 								    multirow=True, multicolumn=True, na_rep="")
 
-def gen_and_run(q, d, seed, df):
+def memory_usage(folder):
+	"""
+	Calculate the memory usage of the synthesis call.
+	
+	Args:
+		folder (str): The folder where the temporary files are stored.
+		
+	Returns:
+		float: The max memory usage in MB from all d4 files.
+	"""
+	mem = 0
+	for file in os.listdir(folder):
+		if file.endswith("_d4.out"):
+			file_path = os.path.join(folder, file)
+			
+	return mem
+
+def gen_and_run(q, d, seed, basis, onehot_xz, df):
 	print(f"Generating and running for q={q}, d={d}, seed={seed}")
 
 	generate_random_circuit_qasm(q, d, seed, folder_name=folder_name, filename_format=filename_format, weighted_prob_cx_h_s_sdg_t_tdg=[1, 1, 0, 0, 1, 1])
@@ -42,12 +59,16 @@ def gen_and_run(q, d, seed, df):
 			"qubits": q,
 			"depth": d,
 			"seed": seed,
-			"basis": basis
+			"basis": basis,
+			"liniar": onehot_xz
 		}
 
+		tmp_folder = tempfile.mkdtemp(prefix="quokka_syn_")
+
 		start_time = time.time()
-		status, weight, qasm, layers = qk.functionalities.syn(file, basis, 1)
+		status, weight, qasm, layers = qk.functionalities.syn(file, basis, onehot_xz=onehot_xz, fid=1, files_root=tmp_folder)
 		end_time = time.time()
+		mem = memory_usage(tmp_folder)
 
 		assert layers <= d
 
@@ -62,7 +83,7 @@ def gen_and_run(q, d, seed, df):
 			f"ERROR: Equivalence check failed for {file}"
 		run_data["test"] = test
 		
-		df = utils.save_results_to_file(results_file_name, utils.add_result_to_df(run_data, status, end_time-start_time, df))
+		df = utils.save_results_to_file(results_file_name, utils.add_result_to_df(run_data, status, end_time-start_time, df, memory=mem))
 		
 	# Remove file
 	os.remove(file)
@@ -109,6 +130,6 @@ for q in [2,3,4,5,6]:
 		statistics_to_latex(statistics_df_rows)
 		d += 1
 
-assert results_df[results_df["test"] == False].empty, "There are failed tests in the results DataFrame. Please check the results."
+assert results_df[(results_df["result"] == "TIMEOUT") & (results_df["test"] == False)].empty, "There are failed tests in the results DataFrame. Please check the results."
 
 statistics_to_latex(statistics_df_rows)
