@@ -23,12 +23,12 @@ class functionalities:
 		cnf.add_measurement(meas)
 		return qk.Simulate(cnf)
 	
-	def syn(qasmfile, basis, fid): 
+	def syn(qasmfile, basis, onehot_xz=False, fid=1, files_root=None): 
 		circuit = qk.encoding.QASMparser(qasmfile, True)
 		circuit.dagger()
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 
-		return qk.Synthesis(cnf, onehot_xz = False, fidelity_threshold = fid) #((fid == 1) and (basis == "pauli"))
+		return qk.Synthesis(cnf, onehot_xz = onehot_xz, fidelity_threshold = fid, cnf_file_root=files_root)
         
 	def veri(qasmfile, basis): 
 		# Parse the circuit
