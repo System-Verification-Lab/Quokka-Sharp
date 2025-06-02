@@ -1,3 +1,4 @@
+import datetime
 import os
 import time
 import utils
@@ -16,7 +17,7 @@ def get_from_file_name(file_name):
 	print(re.compile(r"random_q(\d+)_d(\d+)_s(\d+).qasm").match(file_name))
 	return tuple(map(int, re.compile(r"random_q(\d+)_d(\d+)_s(\d+).qasm").match(file_name).groups()))
 
-samples = 10
+samples = 5
 success_rate_threshold = 0.5
 
 results_file_name = "synthesis.csv"
@@ -60,7 +61,7 @@ def memory_usage(folder):
 
 
 def gen_and_run(q, d, seed, basis, onehot_xz):
-	print(f"Generating and running for q={q}, d={d}, seed={seed}, basis={basis}, onehot_xz={onehot_xz}")
+	print(f"[{datetime.datetime.now()}] Generating and running for q={q}, d={d}, seed={seed}, basis={basis}, onehot_xz={onehot_xz}")
 
 	generate_random_circuit_qasm(q, d, seed, folder_name=folder_name, filename_format=filename_format, weighted_prob_cx_h_s_sdg_t_tdg=[1, 1, 0, 0, 1, 1])
 	file = utils.get_file_path(filename_format.format(n=q, d=d, seed=seed), "origin", benchmark_folder)
@@ -102,8 +103,8 @@ def gen_and_run(q, d, seed, basis, onehot_xz):
 		
 basis_onehot_xz_list = [ # ordered by preference
 	("pauli", True),   # Pauli basis, one-hot encoding
-	("comp", False),  # Computational basis, no one-hot encoding
-	("pauli", False)  # Pauli basis, no one-hot encoding
+	# ("comp", False),  # Computational basis, no one-hot encoding
+	# ("pauli", False)  # Pauli basis, no one-hot encoding
 ]
 def name(basis, onehot_xz):
 	"""
@@ -131,6 +132,7 @@ for q in [2,3,4,5,6]:
 		d = d_dict[name(basis, onehot_xz)]
 		# Filter the DataFrame for the current qubits and depth
 		results_df = utils.get_results_from_file(results_file_name, df_columns)
+		results_df = results_df[(results_df["result"] != "TIMEOUT") | (results_df["time"] >=utils.timeout)]
 
 		bad_seeds_strs = results_df[(results_df["qubits"] == q) & (results_df["depth"] == d) &
 													(results_df["layers"] < d) & (results_df["result"] == "FOUND")]["seed"].unique()
