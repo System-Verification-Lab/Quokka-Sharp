@@ -1,0 +1,77 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 92
+c [INITIAL INPUT] Number of clauses: 382
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 230
+c [INITIAL INPUT] Number of ternary clauses: 120
+c [INITIAL INPUT] Number of clauses larger than 3: 32
+c [INITIAL INPUT] Number of literals: 960
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 0.000119
+c [BACKBONE] Number of SAT calls: 10
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 92
+c [PREPROCESSED INPUT] Number of clauses: 380
+c [PREPROCESSED INPUT] Number of unit clauses: 0
+c [PREPROCESSED INPUT] Number of binary clauses: 261
+c [PREPROCESSED INPUT] Number of ternary clauses: 87
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 32
+c [PREPROCESSED INPUT] Number of literals: 923
+c
+c
+c [MAX VARIABLES] list: 8 9 10 11 17 18 19 20 26 27 28 29 35 36 37 38 44 45 46 47 53 54 55 56 62 63 64 65 71 72 73 74 80 81 82 83 89 90 91 92 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 12 13 14 15 16 21 22 23 24 25 30 31 32 33 34 39 40 41 42 43 48 49 50 51 52 57 58 59 60 61 66 67 68 69 70 75 76 77 78 79 84 85 86 87 88 
+c
+c Run with the complex mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 6
+c [MAXT] Set the threshold limit: 2+0i
+c Warm start process (11): 4/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 5371
+c Number of split formula (max): 0
+c Number of split formula (ind): 944
+c Number of decision: 6968
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 6899
+c Number of negative hit: 4283
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 5371
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 0.065793
+c
+v -8 -9 -10 11 -17 18 -19 -20 -26 -27 -28 29 -35 36 -37 -38 -44 -45 -46 47 -53 54 -55 -56 -62 -63 -64 65 -71 72 -73 -74 -80 -81 -82 83 -89 90 -91 -92 0
+o 1.64213389806801125282778717621768352452936318177027-1.09723879129219262937242332890382046592740387235363i
+c [MAX-T] Elapsed time: 0.09165068399999999615435086752768256701529026031494 seconds
