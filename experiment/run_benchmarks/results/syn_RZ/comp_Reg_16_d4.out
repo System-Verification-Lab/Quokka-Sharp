@@ -1,0 +1,86 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 146
+c [INITIAL INPUT] Number of clauses: 616
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 368
+c [INITIAL INPUT] Number of ternary clauses: 192
+c [INITIAL INPUT] Number of clauses larger than 3: 56
+c [INITIAL INPUT] Number of literals: 1560
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 0.000173
+c [BACKBONE] Number of SAT calls: 12
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 146
+c [PREPROCESSED INPUT] Number of clauses: 614
+c [PREPROCESSED INPUT] Number of unit clauses: 0
+c [PREPROCESSED INPUT] Number of binary clauses: 418
+c [PREPROCESSED INPUT] Number of ternary clauses: 140
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 56
+c [PREPROCESSED INPUT] Number of literals: 1504
+c
+c
+c [MAX VARIABLES] list: 8 9 10 11 17 18 19 20 26 27 28 29 35 36 37 38 44 45 46 47 53 54 55 56 62 63 64 65 71 72 73 74 80 81 82 83 89 90 91 92 98 99 100 101 107 108 109 110 116 117 118 119 125 126 127 128 134 135 136 137 143 144 145 146 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 12 13 14 15 16 21 22 23 24 25 30 31 32 33 34 39 40 41 42 43 48 49 50 51 52 57 58 59 60 61 66 67 68 69 70 75 76 77 78 79 84 85 86 87 88 93 94 95 96 97 102 103 104 105 106 111 112 113 114 115 120 121 122 123 124 129 130 131 132 133 138 139 140 141 142 
+c
+c Run with the complex mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 9
+c [MAXT] Set the threshold limit: 2+0i
+c Warm start process (11): 5/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |       37263|       93809|        0.62|           0|       37261|       83338|       37595|           0|       55788|     2988691|     2148.82|       56234|    1.10e+00-1.64e+00i|
+c |       73067|      189077|        1.24|           0|       73065|      167133|       76276|           0|      110408|     6138642|     2163.00|      112815|    1.96e+00+3.90e-01i|
+c |      112458|      280758|        1.88|           0|      112456|      240356|      112268|           0|      145904|     9072275|     2177.43|      168502|    1.96e+00+3.90e-01i|
+c |      142789|      381499|        2.49|           0|      142783|      314052|      155060|           0|      178426|    12556257|     2191.23|      226461|    1.96e+00-3.90e-01i|
+c |      170437|      484923|        3.09|           0|      170431|      383484|      199859|           0|      200728|    16174606|     2205.02|      285084|    1.96e+00-3.90e-01i|
+c |      200170|      586262|        3.69|           0|      200164|      459710|      243095|           0|      237066|    19763349|     2218.81|      343185|    1.96e+00-3.90e-01i|
+c |      232281|      685223|        4.31|           0|      232275|      529103|      284548|           0|      261232|    23359658|     2232.86|      400695|    1.96e+00-3.90e-01i|
+c |      255551|      793025|        4.89|           0|      255545|      602788|      332631|           0|      289676|    27215637|     2246.40|      460411|    1.96e+00-3.90e-01i|
+c |      289785|      889863|        5.52|           0|      289779|      667718|      372491|           0|      305940|    30600490|     2260.58|      517387|    1.96e+00-3.90e-01i|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 298863
+c Number of split formula (max): 0
+c Number of split formula (ind): 311300
+c Number of decision: 534927
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 687940
+c Number of negative hit: 385496
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 298857
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 5.70e+00
+c
+v -8 9 -10 -11 -17 -18 19 -20 -26 27 -28 -29 -35 -36 -37 38 -44 45 -46 -47 -53 -54 -55 56 -62 63 -64 -65 -71 -72 73 -74 -80 81 -82 -83 -89 -90 -91 92 -98 99 -100 -101 -107 -108 -109 110 -116 117 -118 -119 -125 -126 127 -128 -134 135 -136 -137 -143 -144 145 -146 0
+o 1.95847561425055614281858128828218054691022303238232-0.38956502088590801809689614639743871044810499692549i
+c [MAX-T] Elapsed time: 5.99195932199999958811531541869044303894042968750000 seconds

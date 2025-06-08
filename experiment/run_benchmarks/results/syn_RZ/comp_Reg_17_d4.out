@@ -1,0 +1,99 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 155
+c [INITIAL INPUT] Number of clauses: 655
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 391
+c [INITIAL INPUT] Number of ternary clauses: 204
+c [INITIAL INPUT] Number of clauses larger than 3: 60
+c [INITIAL INPUT] Number of literals: 1660
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 0.000219
+c [BACKBONE] Number of SAT calls: 12
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 155
+c [PREPROCESSED INPUT] Number of clauses: 653
+c [PREPROCESSED INPUT] Number of unit clauses: 0
+c [PREPROCESSED INPUT] Number of binary clauses: 438
+c [PREPROCESSED INPUT] Number of ternary clauses: 155
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 60
+c [PREPROCESSED INPUT] Number of literals: 1607
+c
+c
+c [MAX VARIABLES] list: 8 9 10 11 17 18 19 20 26 27 28 29 35 36 37 38 44 45 46 47 53 54 55 56 62 63 64 65 71 72 73 74 80 81 82 83 89 90 91 92 98 99 100 101 107 108 109 110 116 117 118 119 125 126 127 128 134 135 136 137 143 144 145 146 152 153 154 155 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 12 13 14 15 16 21 22 23 24 25 30 31 32 33 34 39 40 41 42 43 48 49 50 51 52 57 58 59 60 61 66 67 68 69 70 75 76 77 78 79 84 85 86 87 88 93 94 95 96 97 102 103 104 105 106 111 112 113 114 115 120 121 122 123 124 129 130 131 132 133 138 139 140 141 142 147 148 149 150 151 
+c
+c Run with the complex mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 9
+c [MAXT] Set the threshold limit: 2+0i
+c Warm start process (11): 7/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |       32340|       98732|        0.61|           0|       32336|       69892|       41288|           0|       29600|     3516652|     2148.57|       57466|    1.10e+00-1.64e+00i|
+c |       54510|      207634|        1.21|           0|       54506|      148840|       90195|           0|       68262|     7857741|     2161.98|      117455|    1.64e+00+1.10e+00i|
+c |       77701|      315515|        1.83|           0|       77696|      222136|      138339|           0|       95534|    12385774|     2175.38|      177195|    1.64e+00+1.10e+00i|
+c |       96629|      427659|        2.43|           0|       96624|      310602|      189678|           0|      153520|    16912871|     2188.53|      237997|    1.64e+00+1.10e+00i|
+c |      132361|      522999|        3.06|           0|      132356|      384751|      228415|           0|      189090|    20704662|     2202.71|      294600|    1.96e+00-3.90e-01i|
+c |      164411|      622021|        3.67|           0|      164406|      459543|      269915|           0|      224466|    24459021|     2216.76|      352127|    1.96e+00-3.90e-01i|
+c |      185722|      731782|        4.26|           0|      185717|      541059|      319466|           0|      267414|    28824016|     2230.17|      412332|    1.96e+00-3.90e-01i|
+c |      209254|      839322|        4.86|           0|      209249|      621596|      367354|           0|      309706|    33068224|     2243.70|      471986|    1.96e+00-3.90e-01i|
+c |      234725|      944923|        5.44|           0|      234720|      702159|      413786|           0|      352558|    37220833|     2257.37|      531153|    1.96e+00-3.90e-01i|
+c |      258528|     1052192|        6.05|           0|      258523|      782325|      461471|           0|      393722|    41436544|     2271.03|      590741|    1.96e+00-3.90e-01i|
+c |      279535|     1162257|        6.64|           0|      279530|      862759|      511250|           0|      434018|    45802661|     2284.57|      651023|    1.96e+00-3.90e-01i|
+c |      300397|     1272467|        7.25|           0|      300392|      946220|      561140|           0|      480772|    50390833|     2298.10|      711344|    1.96e+00-3.90e-01i|
+c |      322348|     1381588|        7.83|           0|      322343|     1025385|      610213|           0|      519374|    54839935|     2311.77|      771392|    1.96e+00-3.90e-01i|
+c |      355281|     1479727|        8.46|           0|      355276|     1101996|      651048|           0|      557988|    58738538|     2325.95|      828692|    1.96e+00-3.90e-01i|
+c |      385833|     1580247|        9.07|           0|      385828|     1166719|      693671|           0|      571640|    62672740|     2340.12|      886591|    1.96e+00-3.90e-01i|
+c |      416473|     1680679|        9.68|           0|      416468|     1246943|      736228|           0|      616424|    66559912|     2354.30|      944471|    1.96e+00-3.90e-01i|
+c |      443113|     1785111|       10.30|           0|      443108|     1340344|      781784|           0|      685772|    70664032|     2368.36|     1003346|    1.96e+00-3.90e-01i|
+c |      463885|     1895411|       10.90|           0|      463880|     1419523|      831740|           0|      723778|    75092318|     2382.15|     1063689|    1.96e+00-3.90e-01i|
+c |      495191|     1995177|       11.51|           0|      495186|     1504791|      873796|           0|      778894|    78911201|     2396.46|     1121396|    1.96e+00-3.90e-01i|
+c |      530969|     2090471|       12.14|           0|      530964|     1581124|      912500|           0|      818628|    82411854|     2411.02|     1177990|    1.96e+00-3.90e-01i|
+c |      553570|     2198942|       12.72|           0|      553565|     1642970|      961084|           0|      822610|    86528977|     2424.95|     1237873|    1.96e+00-3.90e-01i|
+c |      575186|     2308398|       13.28|           0|      575181|     1704176|     1010408|           0|      824758|    90635342|     2438.87|     1298004|    1.96e+00-3.90e-01i|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 583821
+c Number of split formula (max): 0
+c Number of split formula (ind): 824758
+c Number of decision: 1321308
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 1727482
+c Number of negative hit: 1029398
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 583816
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 1.35e+01
+c
+v -8 9 -10 -11 -17 -18 19 -20 -26 27 -28 -29 -35 -36 -37 38 -44 45 -46 -47 -53 -54 -55 56 -62 63 -64 -65 -71 -72 73 -74 -80 81 -82 -83 -89 -90 -91 92 -98 99 -100 -101 -107 -108 -109 110 -116 117 -118 -119 -125 -126 127 -128 -134 135 -136 -137 -143 -144 145 -146 152 -153 -154 -155 0
+o 1.95847561425055614281858128828218054691022303238232-0.38956502088590801809689614639743871044810499692549i
+c [MAX-T] Elapsed time: 14.17507898999999937927896098699420690536499023437500 seconds
