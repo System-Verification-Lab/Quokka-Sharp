@@ -1,0 +1,74 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 2
+c [INITIAL INPUT] Number of clauses: 2
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 2
+c [INITIAL INPUT] Number of ternary clauses: 0
+c [INITIAL INPUT] Number of clauses larger than 3: 0
+c [INITIAL INPUT] Number of literals: 4
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 3.3e-05
+c [BACKBONE] Number of SAT calls: 2
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 2
+c [PREPROCESSED INPUT] Number of clauses: 2
+c [PREPROCESSED INPUT] Number of unit clauses: 0
+c [PREPROCESSED INPUT] Number of binary clauses: 2
+c [PREPROCESSED INPUT] Number of ternary clauses: 0
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 0
+c [PREPROCESSED INPUT] Number of literals: 4
+c
+c
+c [IND VARIABLES] list: 1 2 
+c
+c Run with the complex mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 1
+c [MAXT] Set the threshold limit: 2+0i
+c Warm start process (11): 18/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 1
+c Number of split formula (max): 0
+c Number of split formula (ind): 0
+c Number of decision: 1
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 1
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 1
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 4.4e-05
+c
+v 0
+o 1.92387953251128673848313610506011173129081726074219-0.38268343236508978177923268049198668450117111206055i
+c [MAX-T] Elapsed time: 0.02208002599999999912561143844413891201838850975037 seconds
