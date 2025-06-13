@@ -5,7 +5,7 @@ import utils
 import re
 import tempfile
 import pandas as pd
-import quokka_sharp as qk
+import quokka_sharp.functionalities as qk
 from gen_random import generate_random_circuit_qasm
 
 folder_name = "for_syn"
@@ -70,7 +70,7 @@ def gen_and_run(q, d, seed, basis, onehot_xz):
 	utils.remove_tmp_folder()
 
 	start_time = time.time()
-	status, weight, qasm, layers = qk.functionalities.syn(file, basis, onehot_xz=onehot_xz, fid=1, files_root=utils.get_tmp_folder_path())
+	status, weight, qasm, layers = qk.syn(file, basis, cyc_lin_encoding=onehot_xz, fid=1, files_root=utils.get_tmp_folder_path())
 	end_time = time.time()
 
 	mem = memory_usage(utils.get_tmp_folder_path())
@@ -90,7 +90,7 @@ def gen_and_run(q, d, seed, basis, onehot_xz):
 	tmp = tempfile.NamedTemporaryFile(delete_on_close=False)
 	with open(tmp.name, 'w') as f:
 		f.write(qasm) 
-	test = qk.functionalities.eq(file, tmp.name, "comp", "cyclic", N=1)
+	test = qk.eq(file, tmp.name, "comp", "cyclic", N=1)
 	if not test:
 		f"ERROR: Equivalence check failed for {file}"
 	run_data["test"] = test

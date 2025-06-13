@@ -17,7 +17,7 @@ def get_from_file_name(file_name):
 	print(re.compile(r"random_q(\d+)_d(\d+)_s(\d+).qasm").match(file_name))
 	return tuple(map(int, re.compile(r"random_q(\d+)_d(\d+)_s(\d+).qasm").match(file_name).groups()))
 
-samples = 5
+samples = 10
 success_rate_threshold = 0.5
 
 results_file_name = "synthesis.csv"
@@ -69,7 +69,7 @@ def gen_and_run(q, d, seed, basis, onehot_xz):
 	utils.remove_tmp_folder()
 
 	start_time = time.time()
-	status, weight, qasm, layers = qk.functionalities.syn(file, basis, onehot_xz=onehot_xz, fid=1, files_root=utils.get_tmp_folder_path())
+	status, weight, qasm, layers = qk.functionalities.syn(file, basis, cyc_lin_encoding=onehot_xz, fid=1, files_root=utils.get_tmp_folder_path())
 	end_time = time.time()
 
 	mem = memory_usage(utils.get_tmp_folder_path())
@@ -103,8 +103,8 @@ def gen_and_run(q, d, seed, basis, onehot_xz):
 		
 basis_onehot_xz_list = [ # ordered by preference
 	("pauli", True),   # Pauli basis, one-hot encoding
-	# ("comp", False),  # Computational basis, no one-hot encoding
-	# ("pauli", False)  # Pauli basis, no one-hot encoding
+	("comp", False),  # Computational basis, no one-hot encoding
+	("pauli", False)  # Pauli basis, no one-hot encoding
 ]
 def name(basis, onehot_xz):
 	"""
