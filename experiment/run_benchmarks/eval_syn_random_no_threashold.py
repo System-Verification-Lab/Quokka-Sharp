@@ -125,9 +125,6 @@ def name(basis, onehot_xz):
 
 statistics_df_rows=[]
 
-q=2
-d=6
-
 for q,d in [(2,6), (3,4)]:
 	# let the fastest run first for each qubit to find bad seeds quicker
 	basis, onehot_xz = basis_onehot_xz_list[0]
