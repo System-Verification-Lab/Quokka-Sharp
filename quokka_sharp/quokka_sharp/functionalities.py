@@ -7,7 +7,7 @@ class functionalities:
 		:param qasmfile1: Path to the first QASM file.
 		:param qasmfile2: Path to the second QASM file.
 		:param basis: The basis to use for the comparison, either "comp" for computational basis or "pauli" for Pauli basis.
-		:param check: The type of check to use, either "cyclic", "linear", or "cyclic_linear".
+		:param check: The type of check to use, either "cyclic", "linear", or "cyclic_linear". Must be "cyclic" if basis is "comp".
 		:param N: The number of parallel calles to the WMC, relevant only if check is "linear".
 		:return: Boolean indicating whether the two circuits are equivalent.
 		"""
@@ -64,8 +64,8 @@ class functionalities:
 		Verify a quantum circuit given in QASM format against preconditions and postconditions.
 		:param qasmfile: Path to the QASM file.
 		:param basis: The basis to use for the verification, either "comp" for computational basis or "pauli" for Pauli basis.
-		:param precons: A list of preconditions to check before the circuit execution.
-		:param postcons: A list of postconditions to check after the circuit execution.
+		:param precons: A dictionary with qubit indices and their expected values describing the preconditions to enforce before the circuit execution.
+		:param postcons:A dictionary with qubit indices and their expected values describing the postconditions to check after the circuit execution.
 		:return: Verification result, which can be "True", "False", or "TIMEOUT".
 		"""
 		# Parse the circuit
