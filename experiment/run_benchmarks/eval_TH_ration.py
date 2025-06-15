@@ -47,7 +47,7 @@ def draw_figures(results_df, results_file_name):
 		if qubits_df.empty:
 			continue
 
-		plt.figure(figsize=(10, 6))
+		plt.figure(figsize=(10, 4))
 		for (depth, basis), group in qubits_df.groupby(["depth", "basis"]):
 			# Calculate the mean and std time for each group, excluding TIMEOUT
 			group = group[group["result"] != "TIMEOUT"]
@@ -65,7 +65,7 @@ def draw_figures(results_df, results_file_name):
 				color=color_map[basis],
 				linestyle=line_map[depth]
 			)
-		plt.title(f"Mean Time vs Ratio for Simulation of {qubits} Qubits")
+		# plt.title(f"Mean Time vs Ratio for Simulation of {qubits} Qubits")
 		plt.xlabel("T gates to H gates Ratio")
 		plt.ylabel("Mean Time (s)")
 		plt.yscale("log")
@@ -75,7 +75,7 @@ def draw_figures(results_df, results_file_name):
 		plt.close()
 
 	# Timout rates
-	group_by = ["qubits", "depth", "seed", "ratio", "measurement", "basis"]
+	group_by = ["qubits", "depth", "ratio", "measurement", "basis"]
 	timeout_rates = qubits_df[qubits_df["result"] == "TIMEOUT"].groupby(group_by).size()/ qubits_df.groupby(group_by).size()
 	timeout_rates = timeout_rates.reset_index(name="timeout_rate").fillna(0)
 	timeout_rates = timeout_rates[timeout_rates["timeout_rate"] > 0]

@@ -14,7 +14,8 @@ df_columns = ["qubits", "depth", "seed", "measurement", "basis", "result", "time
 results_df = utils.get_results_from_file(results_file_name, df_columns)
 
 qubits_limit = 5
-depth_limit = 50
+depth_limit = 100
+step=10
 
 def get_from_file_name(file_name):
 	name = file_name.replace(".qasm", "")
@@ -33,7 +34,7 @@ def draw_figures(results_df, results_file_name):
 			print(f"WARNING: Results mismatch for {exp}: {basis_results['comp']} vs {basis_results['pauli']}")
 
 	# Filter results_df to only include entries with qubits <= qubits_limit and depth <= depth_limit
-	qubits_df = results_df[(results_df["qubits"] <= qubits_limit) & (results_df["depth"] <= depth_limit)]
+	qubits_df = results_df[(results_df["qubits"] <= qubits_limit) & (results_df["depth"] <= depth_limit) & (results_df["depth"] % step == 0) ]
 
 	# Assign a unique color for each basis combination
 	colors = utils.cycle_colors()
@@ -45,7 +46,7 @@ def draw_figures(results_df, results_file_name):
 
 	for measurement in qubits_df["measurement"].unique():
 		measurement_df = qubits_df[qubits_df["measurement"] == measurement]
-		plt.figure(figsize=(10, 6))
+		plt.figure(figsize=(6, 4))
 			
 		for (qubits, basis), group in measurement_df.groupby(["qubits", "basis"]):
 			# Calculate the mean and std time for each group, excluding TIMEOUT
@@ -63,9 +64,10 @@ def draw_figures(results_df, results_file_name):
 				color=color_map[basis],
 				linestyle=line_map[qubits]
 			)
-		plt.title(f"Mean Time vs Depth for {measurement} Simulation")
+		# plt.title(f"Mean Time vs Depth for {measurement.replace('zero','').capitalize()} Zero Simulation")
 		plt.xlabel("Circuit Depth")
 		plt.ylabel("Mean Time (s)")
+		plt.yscale("log")
 		plt.legend()
 		plt.grid()
 		plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{measurement}_time_vs_depth.png"))
@@ -87,7 +89,7 @@ def draw_figures(results_df, results_file_name):
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	file_path = utils.get_file_path(file, "origin", benchmark_folder)
 	qubits, depth, seed = get_from_file_name(file)
-	if depth > depth_limit or qubits > qubits_limit:
+	if depth > depth_limit or qubits > qubits_limit or depth % step != 0:
 		continue
 	new = False
 	for measurement in ["firstzero", "allzero"]:

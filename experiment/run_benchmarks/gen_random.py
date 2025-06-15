@@ -71,7 +71,7 @@ def generate_random_circuit_qasm(n, d, seed=None, weighted_prob_cx_h_s_sdg_t_tdg
     
 if __name__ == "__main__":
     for n in [1, 5, 10, 20]:
-        for d in [5,10,15,20,25,30,35,40,45,50]:
+        for d in range(5, 101, 5):
             for seed in range(10):
                 generate_random_circuit_qasm(n, d, seed=seed, 
                                              filename_format="random_q{n:02d}_d{d:03d}_s{seed:01d}.qasm")
