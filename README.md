@@ -48,7 +48,7 @@ An example of a config file for GPMC is given as follows:
 
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs on how to use the tool. 
-For more detailed examples look as the /quokka_sharp/quokka_sharp/functionalities.py file. 
+For simple usage and more detailed examples, refer to the /quokka_sharp/quokka_sharp/functionalities.py file. 
 
 ```python
 import quokka_sharp as qk
