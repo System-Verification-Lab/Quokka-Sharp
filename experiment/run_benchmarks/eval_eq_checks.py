@@ -1,8 +1,10 @@
 import os, time
+import numpy as np
 import quokka_sharp as qk
 import re
 import utils
 from tqdm import tqdm
+import matplotlib
 import matplotlib.pyplot as plt
 
 benchmark_folder = os.path.join("random", "uniform")
@@ -13,7 +15,7 @@ df_columns = ["qubits", "depth", "seed", "mod", "basis", "check", "result", "tim
 results_df = utils.get_results_from_file(results_file_name, df_columns)
 
 qubits_limit = 5
-depth_limit = 50
+depth_limit = 100
 
 def get_from_file_name(file_name):
 	name = file_name.replace(".qasm", "")
@@ -22,7 +24,7 @@ def get_from_file_name(file_name):
 
 def draw_figures(results_df, results_file_name):
 	# Filter results_df to only include entries with qubits <= qubits_limit and depth <= depth_limit
-	qubits_df = results_df[(results_df["qubits"] <= qubits_limit) & (results_df["depth"] <= depth_limit)]
+	qubits_df = results_df[(results_df["qubits"] == qubits_limit) & (results_df["depth"] <= depth_limit)]
 
 	colors = utils.cycle_colors()
 	color_map = {b: next(colors) for b in results_df.groupby(["basis", "check"]).groups.keys()}
@@ -34,7 +36,7 @@ def draw_figures(results_df, results_file_name):
 	for mod in qubits_df["mod"].unique():
 		for qubits in qubits_df["qubits"].unique():
 			mod_df = qubits_df[(qubits_df["mod"] == mod) & (qubits_df["qubits"] == qubits)]
-			plt.figure(figsize=(10, 6))
+			plt.figure(figsize=(6,4))
 
 			# assert that all results are True or TIMEOUT
 			valid_resutls = [str(mod=="opt"), "TIMEOUT"]
@@ -47,28 +49,48 @@ def draw_figures(results_df, results_file_name):
 
 			for (basis, check), group in mod_df.groupby(["basis", "check"]):
 				# Calculate the mean and std time for each group, excluding TIMEOUT
-				group = group[group["result"] != "TIMEOUT"]
-				group = group[group["time"] <= utils.timeout]
+				group.loc[group["result"] == "TIMEOUT","time"] = np.nan
+				group.loc[group["time"] > utils.timeout,"time"] = np.nan
+				group["timeout"] = group["result"] == "TIMEOUT"
 
 				if group.empty:
 					continue
-				group = group.groupby("depth").agg({"time": ["mean", "std"]}).reset_index()
+				group = group.groupby("depth").agg({"time": ["mean", "std"], "timeout":["any"]}).reset_index()
+				print(group)
 				plt.errorbar(
 					group["depth"],
 					group["time"]["mean"],
 					yerr=group["time"]["std"],
 					label=f"{basis}-{check}",
+					fmt='.',
+					capsize=5,
+					color=color_map[(basis, check)],
+					linestyle=line_styles[qubits]
+				)
+				group = group[group["timeout"]["any"] == False]
+				plt.errorbar(
+					group["depth"],
+					group["time"]["mean"],
+					yerr=group["time"]["std"],
+					# label=f"{basis}-{check}",
 					fmt='o',
 					capsize=5,
 					color=color_map[(basis, check)],
 					linestyle=line_styles[qubits]
 				)
 
-			plt.title(f"Mean Time vs Depth for {mod} Modification with {qubits} Qubits")
+			handles, labels = plt.gca().get_legend_handles_labels()
+			spoint = matplotlib.lines.Line2D([0], [0], label='partical TIMEOUTS', marker='.', markerfacecolor='k', linestyle='')
+			bpoint = matplotlib.lines.Line2D([0], [0], label='no TIMEOUTS', marker='o', markerfacecolor='k', linestyle='')
+			handles.extend([spoint, bpoint])
+
+
+
+			# plt.title(f"Mean Time vs Depth for {mod} Modification with {qubits} Qubits")
 			plt.xlabel("Circuit Depth")
 			plt.ylabel("Mean Time (s)")
 			plt.yscale("log")
-			plt.legend()
+			plt.legend(handles=handles)
 			plt.grid()
 			plt.savefig(utils.get_results_file_path(results_file_name).replace(".csv", f"_{mod}_{qubits}_qubits_time_vs_depth.png"))
 			plt.close()
@@ -90,7 +112,7 @@ def draw_figures(results_df, results_file_name):
 for file in tqdm(benchmarks_list, desc="Processing files", unit="file"):
 	origin_file = utils.get_file_path(file, "origin", benchmark_folder)
 	qubits, depth, seed = get_from_file_name(file)
-	if qubits > qubits_limit or depth > depth_limit:
+	if qubits != qubits_limit or depth > depth_limit:
 		continue
 	new = False
 	for modification in ["opt", "gm"]:
