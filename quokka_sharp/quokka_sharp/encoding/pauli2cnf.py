@@ -405,6 +405,85 @@ class pauli2cnf:
         cnf.vars.z[c] = Zc
         cnf.vars.z[t] = Zt
 
+    def CY2CNF(cnf, c, t):
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        Zc = cnf.add_var()
+        cnf.vars.ZVar.append(Zc)
+        # Equivalent(Zc, x[t] ^ z[c] ^ z[t])
+        cnf.add_clause([ Zc,  x[t],  z[c], -z[t]])
+        cnf.add_clause([ Zc,  x[t], -z[c],  z[t]])
+        cnf.add_clause([ Zc, -x[t],  z[c],  z[t]])
+        cnf.add_clause([-Zc,  x[t],  z[c],  z[t]])
+        cnf.add_clause([ Zc, -x[t], -z[c], -z[t]])
+        cnf.add_clause([-Zc,  x[t], -z[c], -z[t]])
+        cnf.add_clause([-Zc, -x[t],  z[c], -z[t]])
+        cnf.add_clause([-Zc, -x[t], -z[c],  z[t]])
+
+        Zt = cnf.add_var()
+        cnf.vars.ZVar.append(Zt)
+        # Equivalent(Zt, x[c] ^ z[t])
+        cnf.add_clause([ Zt,  x[c], -z[t]])
+        cnf.add_clause([ Zt, -x[c],  z[t]])
+        cnf.add_clause([-Zt,  x[c],  z[t]])
+        cnf.add_clause([-Zt, -x[c], -z[t]])
+
+        Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
+        # Equivalent(Xt, x[c] ^ x[t])
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt, -x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[t]])
+
+        # adding sign if x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t])
+        R = cnf.add_var()
+        cnf.vars.RVar.append(R)
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # Equivalent(R, x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t]))
+            cnf.add_clause([-R,  x[c]])
+            cnf.add_clause([-R,  x[t],  z[c]])
+            cnf.add_clause([-R, -z[c],  z[t]])
+            cnf.add_clause([-R, -x[t], -z[t]])
+            cnf.add_clause([ R, -x[c], -x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -x[c],  x[t], -z[c], -z[t]])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, r ^ (x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t])))
+            cnf.add_clause([ R, -r,  x[c]])
+            cnf.add_clause([-R,  r,  x[c]])
+            cnf.add_clause([ R, -r,  x[t],  z[c]])
+            cnf.add_clause([-R,  r,  x[t],  z[c]])
+            cnf.add_clause([ R, -r, -z[c],  z[t]])
+            cnf.add_clause([-R,  r, -z[c],  z[t]])
+            cnf.add_clause([ R, -r, -x[t], -z[t]])
+            cnf.add_clause([-R,  r, -x[t], -z[t]])
+            cnf.add_clause([ R,  r, -x[c], -x[t],  z[c],  z[t]])
+            cnf.add_clause([ R,  r, -x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([-R, -r, -x[c], -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -r, -x[c],  x[t], -z[c], -z[t]])
+
+        cnf.vars.z[c] = Zc
+        cnf.vars.z[t] = Zt
+        cnf.vars.x[t] = Xt
+
+    def SWAP2CNF(cnf, c, t):
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        x[c], x[t] = x[t], x[c]
+        z[c], z[t] = z[t], z[c]
+
+    def ISWAP2CNF(cnf, c, t):
+        SWAP2CNF(cnf, c, t)
+        CZ2CNF(cnf, c, t)
+        S2CNF(cnf, c)
+        S2CNF(cnf, t)
+
     def CS2CNF(cnf, c, t):
         x = cnf.vars.x
         z = cnf.vars.z
