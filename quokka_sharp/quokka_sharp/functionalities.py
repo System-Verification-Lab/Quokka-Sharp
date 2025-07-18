@@ -32,7 +32,7 @@ class functionalities:
 		:return: Simulation result, a float representing the probability of the measurement outcome.
 		"""
 		# Parse the circuit
-		circuit1 = qk.encoding.QASMparser(qasmfile, True)
+		circuit1 = qk.encoding.QASMparser(qasmfile, True)  # TODO: instead of hardcoded true paramater; use CCX in computational basis
 		# Encode the circuit
 		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"), weighted=True)
 		cnf.leftProjectAllZero()
