@@ -52,7 +52,7 @@ class Circuit:
         """
         Adds a Toffoli gate (CCX) to the circuit.
         """
-        if translate_ccx:
+        if translate_ccx:   #TODO: Remove this from parser and add to Pauli2CNF.codegen (comput2CNF already has it)
             self.add_single('h',    qubitr)
             self.add_double('cx',   qubitc2, qubitr)
             self.add_single('tdg',  qubitr)
