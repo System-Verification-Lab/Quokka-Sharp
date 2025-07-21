@@ -437,6 +437,7 @@ class CNF:
             return 0.5
 
 
+    # TODO: what's -.5 and .5?
     def add_clause(self, cons: list, prepend=False, comment=None):   
         """
         Add a clause to the CNF encoding.

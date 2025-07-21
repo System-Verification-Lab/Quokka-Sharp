@@ -51,6 +51,7 @@ def to_py(func, prefix="", simplify=True, force=True):
                 print(", ", end="")
         print("])")
 
+# TODO: why we add weight of -1 to R and 1 to -R?
 def add_sign(func, prefix = ""):
     print(prefix+f"        # adding sign if {func}")
     print(prefix+"        R = cnf.add_var()")
