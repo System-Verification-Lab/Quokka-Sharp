@@ -1,0 +1,312 @@
+sim_wmc.py com {"file": "test.qasm", "time": "0.047824859619140625", "prob": "0", "Max RSS": "14.625MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.0403788089752197", "prob": "TIMEOUT", "Max RSS": "16.1875MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.04443025588989258", "prob": "0", "Max RSS": "14.140625MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.0266432762145996", "prob": "99999", "Max RSS": "16.359375MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.038359880447387695", "prob": "0", "Max RSS": "14.390625MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.0290451049804688", "prob": "99999", "Max RSS": "15.96875MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.044222116470336914", "prob": "0", "Max RSS": "14.59375MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.042968988418579", "prob": "99999", "Max RSS": "16.3125MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3933107852935791", "prob": "0.0", "Max RSS": "12.46875MB"}
+sim_quasimodo.py {"file": "test.qasm", "time": "3.2255961894989014", "prob": "99999", "Max RSS": "410.125MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.0448148250579834", "prob": "0", "Max RSS": "14.71875MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.037277936935425", "prob": "99999", "Max RSS": "16.046875MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3875150680541992", "prob": "0.0", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "test.qasm", "time": "3.211879253387451", "prob": "99999", "Max RSS": "417.0625MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.043331146240234375", "prob": "0", "Max RSS": "14.703125MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.0323550701141357", "prob": "99999", "Max RSS": "16.171875MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3739619255065918", "prob": "0.0", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "test.qasm", "time": "3.1767170429229736", "prob": "99999", "Max RSS": "412.5625MB"}
+sim_wmc.py com {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.024990081787109375", "prob": "3.5501628431014050386163088249623E-33", "Max RSS": "13.765625MB"}
+sim_wmc.py pauli {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.03214001655578613", "prob": "1.9528266861562017735424129842776E-260", "Max RSS": "13.484375MB"}
+sim_quizx.py {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.02245020866394043", "prob": "0.0", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.06952500343322754", "prob": "0.0", "Max RSS": "378.578125MB"}
+sim_wmc.py com {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.026213884353637695", "prob": "3.5501628431014030408257025550568E-33", "Max RSS": "13.671875MB"}
+sim_wmc.py pauli {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.04013800621032715", "prob": "0", "Max RSS": "13.609375MB"}
+sim_quizx.py {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.023731231689453125", "prob": "0.0", "Max RSS": "12.390625MB"}
+sim_quasimodo.py {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.1041409969329834", "prob": "0.0", "Max RSS": "391.59375MB"}
+sim_wmc.py com {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.026043176651000977", "prob": "3.5501628431013993120878018918171E-33", "Max RSS": "13.6875MB"}
+sim_wmc.py pauli {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.07036995887756348", "prob": "0", "Max RSS": "14.140625MB"}
+sim_quizx.py {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.05683612823486328", "prob": "0.0", "Max RSS": "12.359375MB"}
+sim_quasimodo.py {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.16579985618591309", "prob": "0.0", "Max RSS": "389.546875MB"}
+sim_wmc.py com {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.021275758743286133", "prob": "3.5501628431014050386163088249623E-33", "Max RSS": "13.609375MB"}
+sim_wmc.py pauli {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.024810075759887695", "prob": "1.9528266861562017735424129842776E-260", "Max RSS": "13.4375MB"}
+sim_quizx.py {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.01869797706604004", "prob": "0.0", "Max RSS": "12.234375MB"}
+sim_quasimodo.py {"file": "dj_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.07192206382751465", "prob": "0.0", "Max RSS": "377.765625MB"}
+sim_wmc.py com {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.029593229293823242", "prob": "3.5501628431014030408257025550568E-33", "Max RSS": "13.875MB"}
+sim_wmc.py pauli {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.04152679443359375", "prob": "0", "Max RSS": "13.9375MB"}
+sim_quizx.py {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.027894973754882812", "prob": "0.0", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "dj_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.10371208190917969", "prob": "0.0", "Max RSS": "390.9375MB"}
+sim_wmc.py com {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.035392045974731445", "prob": "3.5501628431013993120878018918171E-33", "Max RSS": "13.890625MB"}
+sim_wmc.py pauli {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.0693821907043457", "prob": "0", "Max RSS": "14.3125MB"}
+sim_quizx.py {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.06496191024780273", "prob": "0.0", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "dj_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.17834925651550293", "prob": "0.0", "Max RSS": "390.484375MB"}
+sim_wmc.py com {"file": "ghz_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.012190103530883789", "prob": "0.50000000000000006835808657661924", "Max RSS": "13.140625MB"}
+sim_wmc.py pauli {"file": "ghz_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.01348114013671875", "prob": "0.5", "Max RSS": "12.984375MB"}
+sim_quizx.py {"file": "ghz_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.013084173202514648", "prob": "0.5", "Max RSS": "12.140625MB"}
+sim_quasimodo.py {"file": "ghz_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.03790402412414551", "prob": "0.4999999999999999", "Max RSS": "370.796875MB"}
+sim_wmc.py com {"file": "ghz_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.013429880142211914", "prob": "0.50000000000000006835808657661924", "Max RSS": "13.109375MB"}
+sim_wmc.py pauli {"file": "ghz_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.01672816276550293", "prob": "0.5", "Max RSS": "13.421875MB"}
+sim_quizx.py {"file": "ghz_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.012514114379882812", "prob": "0.5", "Max RSS": "12.140625MB"}
+sim_quasimodo.py {"file": "ghz_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.04609990119934082", "prob": "0.4999999999999999", "Max RSS": "391.25MB"}
+sim_wmc.py com {"file": "ghz_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.015570878982543945", "prob": "0.50000000000000006835808657661924", "Max RSS": "13.890625MB"}
+sim_wmc.py pauli {"file": "ghz_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.017805099487304688", "prob": "0.5", "Max RSS": "12.875MB"}
+sim_quizx.py {"file": "ghz_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.018169164657592773", "prob": "0.5", "Max RSS": "12.25MB"}
+sim_quasimodo.py {"file": "ghz_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.05564308166503906", "prob": "0.4999999999999999", "Max RSS": "375.046875MB"}
+sim_wmc.py com {"file": "graphstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.02593064308166504", "prob": "0.000015258789062500020328790734103742", "Max RSS": "13.515625MB"}
+sim_wmc.py pauli {"file": "graphstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.03656315803527832", "prob": "0.000015258789062500013552527156068805", "Max RSS": "14.09375MB"}
+sim_quizx.py {"file": "graphstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.019831180572509766", "prob": "1.52587890625e-05", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "graphstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.10215473175048828", "prob": "1.52587890624998e-05", "Max RSS": "391.125MB"}
+sim_wmc.py com {"file": "graphstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.0266571044921875", "prob": "2.3283064365387035268928598393196E-10", "Max RSS": "13.671875MB"}
+sim_wmc.py pauli {"file": "graphstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.047693729400634766", "prob": "2.3283064365387009419534456107807E-10", "Max RSS": "13.734375MB"}
+sim_quizx.py {"file": "graphstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.02790379524230957", "prob": "2.3283064365386963e-10", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "graphstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.8600172996520996", "prob": "2.3283064365386353e-10", "Max RSS": "399.859375MB"}
+sim_wmc.py com {"file": "graphstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.045732736587524414", "prob": "5.4210108624275558738112907840267E-20", "Max RSS": "14.390625MB"}
+sim_wmc.py pauli {"file": "graphstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.0825490951538086", "prob": "5.4210108624275438367491383607531E-20", "Max RSS": "14.609375MB"}
+sim_quizx.py {"file": "graphstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.043726205825805664", "prob": "5.421010862427522e-20", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "graphstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.203168869018555", "prob": "99999", "Max RSS": "424.703125MB"}
+sim_wmc.py com {"file": "groundstate_large_nativegates_ibm_qiskit_opt0_14.qasm", "time": "5.035718202590942", "prob": "99999", "Max RSS": "15.21875MB"}
+sim_wmc.py pauli {"file": "groundstate_large_nativegates_ibm_qiskit_opt0_14.qasm", "time": "5.039036989212036", "prob": "99999", "Max RSS": "16.90625MB"}
+sim_quizx.py {"file": "groundstate_large_nativegates_ibm_qiskit_opt0_14.qasm", "time": "5.002740859985352", "prob": "99999", "Max RSS": "12.234375MB"}
+sim_quasimodo.py {"file": "groundstate_large_nativegates_ibm_qiskit_opt0_14.qasm", "time": "5.036434888839722", "prob": "99999", "Max RSS": "514.640625MB"}
+sim_wmc.py com {"file": "groundstate_medium_nativegates_ibm_qiskit_opt0_12.qasm", "time": "3.2531938552856445", "prob": "0.000016221830130851814119226857566694", "Max RSS": "15.09375MB"}
+sim_wmc.py pauli {"file": "groundstate_medium_nativegates_ibm_qiskit_opt0_12.qasm", "time": "5.0382537841796875", "prob": "99999", "Max RSS": "16.28125MB"}
+sim_quizx.py {"file": "groundstate_medium_nativegates_ibm_qiskit_opt0_12.qasm", "time": "5.00439190864563", "prob": "99999", "Max RSS": "12.5MB"}
+sim_quasimodo.py {"file": "groundstate_medium_nativegates_ibm_qiskit_opt0_12.qasm", "time": "4.416757822036743", "prob": "2.6311368661959087e-05", "Max RSS": "427.328125MB"}
+sim_wmc.py com {"file": "groundstate_small_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.0339200496673584", "prob": "0.023716822442560520168670025451812", "Max RSS": "13.6875MB"}
+sim_wmc.py pauli {"file": "groundstate_small_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.18459606170654297", "prob": "0.023716822442560563100055759377938", "Max RSS": "13.765625MB"}
+sim_quizx.py {"file": "groundstate_small_nativegates_ibm_qiskit_opt0_4.qasm", "time": "5.005407094955444", "prob": "99999", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "groundstate_small_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.06930208206176758", "prob": "0.003065563315694358", "Max RSS": "370.796875MB"}
+sim_wmc.py com {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.02663397789001465", "prob": "0", "Max RSS": "13.96875MB"}
+sim_wmc.py pauli {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm", "time": "5.019098997116089", "prob": "99999", "Max RSS": "14.671875MB"}
+sim_quizx.py {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.09203028678894043", "prob": "0.0", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.09847497940063477", "prob": "0.0", "Max RSS": "371.96875MB"}
+sim_wmc.py com {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.05063819885253906", "prob": "0", "Max RSS": "14.140625MB"}
+sim_wmc.py pauli {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "5.040313005447388", "prob": "99999", "Max RSS": "17.4375MB"}
+sim_quizx.py {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.48737096786499023", "prob": "0.0", "Max RSS": "12.171875MB"}
+sim_quasimodo.py {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.23879504203796387", "prob": "0.0", "Max RSS": "385.96875MB"}
+sim_wmc.py com {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.09741377830505371", "prob": "0", "Max RSS": "14.875MB"}
+sim_wmc.py pauli {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.081955194473267", "prob": "99999", "Max RSS": "24.0MB"}
+sim_quizx.py {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "4.305560111999512", "prob": "0.0", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "grover-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.5225000381469727", "prob": "0.0", "Max RSS": "373.53125MB"}
+sim_wmc.py com {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.07202410697937012", "prob": "5.7196849310651236341160688642261E-33", "Max RSS": "14.078125MB"}
+sim_wmc.py pauli {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "5.024055004119873", "prob": "99999", "Max RSS": "14.859375MB"}
+sim_quizx.py {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "5.004348993301392", "prob": "99999", "Max RSS": "12.375MB"}
+sim_quasimodo.py {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.1192021369934082", "prob": "5.6961818854904415e-33", "Max RSS": "379.140625MB"}
+sim_wmc.py com {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.38921380043029785", "prob": "1.3249408395349084025924099935723E-36", "Max RSS": "14.71875MB"}
+sim_wmc.py pauli {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.037958145141602", "prob": "99999", "Max RSS": "16.421875MB"}
+sim_quizx.py {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.002179145812988", "prob": "99999", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.3318369388580322", "prob": "1.534903347496611e-36", "Max RSS": "392.875MB"}
+sim_wmc.py com {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.045459985733032", "prob": "99999", "Max RSS": "16.8125MB"}
+sim_wmc.py pauli {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.07234787940979", "prob": "99999", "Max RSS": "21.875MB"}
+sim_quizx.py {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.005380868911743", "prob": "99999", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "grover-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "2.440751791000366", "prob": "3.5316927148622534e-37", "Max RSS": "401.734375MB"}
+sim_wmc.py com {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.040048837661743164", "prob": "0.014825361122794596450141006646249", "Max RSS": "13.5MB"}
+sim_wmc.py pauli {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_5.qasm", "time": "3.9845759868621826", "prob": "0.014825361122794646420719466561877", "Max RSS": "13.53125MB"}
+sim_quizx.py {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.03182101249694824", "prob": "1.8446744073709552e+19", "Max RSS": "12.234375MB"}
+sim_quasimodo.py {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.07560992240905762", "prob": "0.022768148077370452", "Max RSS": "382.59375MB"}
+sim_wmc.py com {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.061363935470581055", "prob": "0.0039627490310915738152348810667215", "Max RSS": "13.53125MB"}
+sim_wmc.py pauli {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_6.qasm", "time": "5.01838493347168", "prob": "99999", "Max RSS": "13.9375MB"}
+sim_quizx.py {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.039322853088378906", "prob": "6.64613997892458e+35", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.09562206268310547", "prob": "0.01363157715444161", "Max RSS": "381.0625MB"}
+sim_wmc.py com {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.1045980453491211", "prob": "0.013263646506953476721521490648247", "Max RSS": "14.09375MB"}
+sim_wmc.py pauli {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.022181034088135", "prob": "99999", "Max RSS": "14.390625MB"}
+sim_quizx.py {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.04090404510498047", "prob": "1.8268770466636286e+47", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "portfolioqaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.13762211799621582", "prob": "0.03539205632761439", "Max RSS": "371.0MB"}
+sim_wmc.py com {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.050100088119506836", "prob": "0.010713417972368887643414027922896", "Max RSS": "13.65625MB"}
+sim_wmc.py pauli {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "3.135094165802002", "prob": "0.010713417972368905264901606244621", "Max RSS": "14.125MB"}
+sim_quizx.py {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.03570985794067383", "prob": "4.611686018427388e+18", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.1329798698425293", "prob": "0.012827632050154015", "Max RSS": "379.03125MB"}
+sim_wmc.py com {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.06677794456481934", "prob": "0.00091153124144781602875006273683683", "Max RSS": "14.203125MB"}
+sim_wmc.py pauli {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_6.qasm", "time": "5.0158562660217285", "prob": "99999", "Max RSS": "14.203125MB"}
+sim_quizx.py {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.03966689109802246", "prob": "1.2379400392853803e+27", "Max RSS": "12.234375MB"}
+sim_quasimodo.py {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.1669940948486328", "prob": "0.006278165211153581", "Max RSS": "378.359375MB"}
+sim_wmc.py com {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.13301801681518555", "prob": "0.0036128370700037676098149844634313", "Max RSS": "13.890625MB"}
+sim_wmc.py pauli {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.024001121520996", "prob": "99999", "Max RSS": "14.53125MB"}
+sim_quizx.py {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.001376152038574", "prob": "99999", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "portfoliovqe_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.2742021083831787", "prob": "0.06439526592900557", "Max RSS": "379.921875MB"}
+sim_wmc.py com {"file": "pricingcall_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.033422231674194336", "prob": "0.00073099548185874101136881757699566", "Max RSS": "13.65625MB"}
+sim_wmc.py pauli {"file": "pricingcall_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.24584221839904785", "prob": "0.00073099548185875809838685235320100", "Max RSS": "13.765625MB"}
+sim_quizx.py {"file": "pricingcall_nativegates_ibm_qiskit_opt0_5.qasm", "time": "5.005110025405884", "prob": "99999", "Max RSS": "12.234375MB"}
+sim_quasimodo.py {"file": "pricingcall_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.08418607711791992", "prob": "0.0007309954818587299", "Max RSS": "379.40625MB"}
+sim_wmc.py com {"file": "pricingcall_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.03919219970703125", "prob": "0.00031368764373703691508351012430374", "Max RSS": "14.078125MB"}
+sim_wmc.py pauli {"file": "pricingcall_nativegates_ibm_qiskit_opt0_7.qasm", "time": "3.953670024871826", "prob": "0.00031368764373703681433772083586575", "Max RSS": "14.890625MB"}
+sim_quizx.py sim_wmc.py com {"file": "pricingcall_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.051460981369018555", "prob": "0.00014658673809932536017685146491762", "Max RSS": "14.0MB"}
+sim_wmc.py pauli {"file": "pricingcall_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.0176661014556885", "prob": "99999", "Max RSS": "14.796875MB"}
+sim_quizx.py sim_wmc.py com {"file": "pricingput_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.03297877311706543", "prob": "0.00032636221079599512222553638260362", "Max RSS": "13.6875MB"}
+sim_wmc.py pauli {"file": "pricingput_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.28192996978759766", "prob": "0.00032636221079600295736852788586190", "Max RSS": "13.71875MB"}
+sim_quizx.py sim_wmc.py com {"file": "pricingput_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.03639101982116699", "prob": "0.00014004982992383148297532544409267", "Max RSS": "13.796875MB"}
+sim_wmc.py pauli {"file": "pricingput_nativegates_ibm_qiskit_opt0_7.qasm", "time": "4.06825590133667", "prob": "0.00014004982992383150828229199102992", "Max RSS": "14.609375MB"}
+sim_quizx.py sim_wmc.py com {"file": "pricingput_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.054164886474609375", "prob": "0.000065445509728491327274234154489433", "Max RSS": "13.828125MB"}
+sim_wmc.py pauli {"file": "pricingput_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.018965005874634", "prob": "99999", "Max RSS": "14.96875MB"}
+sim_quizx.py sim_wmc.py com {"file": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm", "time": "0.03908705711364746", "prob": "8.2706859497982779148601820778930E-9", "Max RSS": "13.640625MB"}
+sim_wmc.py pauli {"file": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm", "time": "1.069248914718628", "prob": "8.2706859497983086093899531411437E-9", "Max RSS": "13.890625MB"}
+sim_quizx.py {"file": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm", "time": "0.03053116798400879", "prob": "2.028240960365167e+31", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "qaoa_nativegates_ibm_qiskit_opt0_11.qasm", "time": "0.7044353485107422", "prob": "0.030756931207090315", "Max RSS": "390.109375MB"}
+sim_wmc.py com {"file": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.02929091453552246", "prob": "1.0480649473535055833562639728577E-7", "Max RSS": "13.5MB"}
+sim_wmc.py pauli {"file": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.15184879302978516", "prob": "1.0480649473535822849107302604660E-7", "Max RSS": "13.875MB"}
+sim_quizx.py {"file": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.025734901428222656", "prob": "65536.0", "Max RSS": "12.171875MB"}
+sim_quasimodo.py {"file": "qaoa_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.08767223358154297", "prob": "5.144403627905204e-07", "Max RSS": "384.703125MB"}
+sim_wmc.py com {"file": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.03568005561828613", "prob": "5.5511248403867659281084934125688E-13", "Max RSS": "13.84375MB"}
+sim_wmc.py pauli {"file": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm", "time": "1.3097748756408691", "prob": "5.5511248364923884396330169730012E-13", "Max RSS": "14.375MB"}
+sim_quizx.py {"file": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.0331418514251709", "prob": "3.022314549036573e+23", "Max RSS": "12.203125MB"}
+sim_quasimodo.py {"file": "qaoa_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.31290507316589355", "prob": "0.009614498816112774", "Max RSS": "395.296875MB"}
+sim_wmc.py com {"file": "qft_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.018938302993774414", "prob": "0.000015258789062500038289724170496526", "Max RSS": "13.15625MB"}
+sim_wmc.py pauli {"file": "qft_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.06508302688598633", "prob": "0.000015258789062500013552527156068805", "Max RSS": "14.6875MB"}
+sim_quizx.py {"file": "qft_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.003591775894165", "prob": "99999", "Max RSS": "12.5MB"}
+sim_quasimodo.py {"file": "qft_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.046900987625122", "prob": "99999", "Max RSS": "550.84375MB"}
+sim_wmc.py com {"file": "qft_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.06840109825134277", "prob": "2.3283064365387211057265739155428E-10", "Max RSS": "14.09375MB"}
+sim_wmc.py pauli {"file": "qft_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.2707059383392334", "prob": "2.3283064365387009419534456107807E-10", "Max RSS": "21.109375MB"}
+sim_quizx.py {"file": "qft_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.0036468505859375", "prob": "99999", "Max RSS": "12.359375MB"}
+sim_quasimodo.py {"file": "qft_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.080986261367798", "prob": "99999", "Max RSS": "499.859375MB"}
+sim_wmc.py com {"file": "qft_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.20182514190673828", "prob": "5.4210108624276810592630354477434E-20", "Max RSS": "25.765625MB"}
+sim_wmc.py pauli {"file": "qft_nativegates_ibm_qiskit_opt0_64.qasm", "time": "1.647590160369873", "prob": "5.4210108624275438367491383607531E-20", "Max RSS": "42.203125MB"}
+sim_quizx.py {"file": "qft_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.004682302474976", "prob": "99999", "Max RSS": "12.359375MB"}
+sim_quasimodo.py {"file": "qft_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.028308153152466", "prob": "99999", "Max RSS": "498.171875MB"}
+sim_wmc.py com {"file": "qftentangled_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.09545087814331055", "prob": "0.000030517578124999999426290496747960", "Max RSS": "13.84375MB"}
+sim_wmc.py pauli {"file": "qftentangled_nativegates_ibm_qiskit_opt0_16.qasm", "time": "1.1824390888214111", "prob": "0.000030517578125000006776263578034403", "Max RSS": "15.359375MB"}
+sim_quizx.py {"file": "qftentangled_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.004548788070679", "prob": "99999", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "qftentangled_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.04704213142395", "prob": "99999", "Max RSS": "582.53125MB"}
+sim_wmc.py com {"file": "qftentangled_nativegates_ibm_qiskit_opt0_32.qasm", "time": "1.0402870178222656", "prob": "4.6566128730774078398762026180849E-10", "Max RSS": "16.4375MB"}
+sim_wmc.py pauli {"file": "qftentangled_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.065571069717407", "prob": "99999", "Max RSS": "21.109375MB"}
+sim_quizx.py {"file": "qftentangled_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.004198312759399", "prob": "99999", "Max RSS": "12.4375MB"}
+sim_quasimodo.py {"file": "qftentangled_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.062969207763672", "prob": "99999", "Max RSS": "521.109375MB"}
+sim_wmc.py com {"file": "qftentangled_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.109326124191284", "prob": "99999", "Max RSS": "25.78125MB"}
+sim_wmc.py pauli {"file": "qftentangled_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.215757131576538", "prob": "99999", "Max RSS": "44.640625MB"}
+sim_quizx.py {"file": "qftentangled_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.004477024078369", "prob": "99999", "Max RSS": "12.203125MB"}
+sim_quasimodo.py {"file": "qftentangled_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.061738967895508", "prob": "99999", "Max RSS": "533.640625MB"}
+sim_wmc.py com {"file": "qnn_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.027853012084961", "prob": "99999", "Max RSS": "14.4375MB"}
+sim_wmc.py pauli {"file": "qnn_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.032886028289795", "prob": "99999", "Max RSS": "16.15625MB"}
+sim_quizx.py {"file": "qnn_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.1435551643371582", "prob": "1.2420144738405671e+232", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "qnn_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.137924909591675", "prob": "99999", "Max RSS": "709.484375MB"}
+sim_wmc.py com {"file": "qnn_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.051813125610352", "prob": "99999", "Max RSS": "17.546875MB"}
+sim_wmc.py pauli {"file": "qnn_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.0830559730529785", "prob": "99999", "Max RSS": "23.28125MB"}
+sim_quizx.py sim_wmc.py com {"file": "qnn_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.130728244781494", "prob": "99999", "Max RSS": "28.109375MB"}
+sim_wmc.py pauli {"file": "qnn_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.2634758949279785", "prob": "99999", "Max RSS": "48.546875MB"}
+sim_quizx.py {"file": "qnn_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.003607749938965", "prob": "99999", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "qnn_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.115401029586792", "prob": "99999", "Max RSS": "485.953125MB"}
+sim_wmc.py com {"file": "qpeexact_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.016321182250976562", "prob": "0", "Max RSS": "13.328125MB"}
+sim_wmc.py pauli {"file": "qpeexact_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.01940393447876", "prob": "99999", "Max RSS": "15.375MB"}
+sim_quizx.py sim_wmc.py com {"file": "qpeexact_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.05820798873901367", "prob": "0", "Max RSS": "14.375MB"}
+sim_wmc.py pauli {"file": "qpeexact_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.056771278381348", "prob": "99999", "Max RSS": "21.15625MB"}
+sim_quizx.py sim_wmc.py com {"file": "qpeexact_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.1741650104522705", "prob": "0", "Max RSS": "25.75MB"}
+sim_wmc.py pauli {"file": "qpeexact_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.215023994445801", "prob": "99999", "Max RSS": "43.90625MB"}
+sim_quizx.py sim_wmc.py com {"file": "qpeinexact_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.02621603012084961", "prob": "0", "Max RSS": "13.78125MB"}
+sim_wmc.py pauli {"file": "qpeinexact_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.030565977096558", "prob": "99999", "Max RSS": "15.265625MB"}
+sim_quizx.py sim_wmc.py com {"file": "qpeinexact_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.058203935623168945", "prob": "0", "Max RSS": "14.75MB"}
+sim_wmc.py pauli {"file": "qpeinexact_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.063923120498657", "prob": "99999", "Max RSS": "21.171875MB"}
+sim_quizx.py sim_wmc.py com {"file": "qpeinexact_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.16895794868469238", "prob": "0", "Max RSS": "26.125MB"}
+sim_wmc.py pauli {"file": "qpeinexact_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.21752405166626", "prob": "99999", "Max RSS": "43.359375MB"}
+sim_quizx.py sim_wmc.py com {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.43342018127441406", "prob": "5.1594638664155893604712900173856E-33", "Max RSS": "16.359375MB"}
+sim_wmc.py pauli {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "5.061165809631348", "prob": "99999", "Max RSS": "20.15625MB"}
+sim_quizx.py {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "1.1103286743164062", "prob": "0.0", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.38816308975219727", "prob": "1.3641166507351179e-33", "Max RSS": "392.671875MB"}
+sim_wmc.py com {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "1.667292833328247", "prob": "5.1594638664156371993778200902848E-33", "Max RSS": "18.421875MB"}
+sim_wmc.py pauli {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.097156763076782", "prob": "99999", "Max RSS": "26.90625MB"}
+sim_quizx.py {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.002555847167969", "prob": "99999", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.9074130058288574", "prob": "1.3641166507351126e-33", "Max RSS": "388.5625MB"}
+sim_wmc.py com {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_8.qasm", "time": "5.095505714416504", "prob": "99999", "Max RSS": "24.125MB"}
+sim_wmc.py pauli {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_8.qasm", "time": "5.175108909606934", "prob": "99999", "Max RSS": "39.578125MB"}
+sim_quizx.py {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_8.qasm", "time": "5.004906892776489", "prob": "99999", "Max RSS": "12.390625MB"}
+sim_quasimodo.py {"file": "qwalk-noancilla_nativegates_ibm_qiskit_opt0_8.qasm", "time": "2.739645004272461", "prob": "1.3641166507351952e-33", "Max RSS": "395.15625MB"}
+sim_wmc.py com {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.02358222007751465", "prob": "0", "Max RSS": "13.71875MB"}
+sim_wmc.py pauli {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "5.012630224227905", "prob": "99999", "Max RSS": "14.203125MB"}
+sim_quizx.py {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.07351398468017578", "prob": "0.0", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.08520722389221191", "prob": "0.0", "Max RSS": "391.0625MB"}
+sim_wmc.py com {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.0349278450012207", "prob": "0", "Max RSS": "14.25MB"}
+sim_wmc.py pauli {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "5.025339841842651", "prob": "99999", "Max RSS": "15.203125MB"}
+sim_quizx.py {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.16442608833312988", "prob": "0.0", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_7.qasm", "time": "0.21562409400939941", "prob": "0.0", "Max RSS": "392.203125MB"}
+sim_wmc.py com {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.0411839485168457", "prob": "0", "Max RSS": "14.796875MB"}
+sim_wmc.py pauli {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.0306642055511475", "prob": "99999", "Max RSS": "16.015625MB"}
+sim_quizx.py {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.3819749355316162", "prob": "0.0", "Max RSS": "12.203125MB"}
+sim_quasimodo.py {"file": "qwalk-v-chain_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.8327419757843018", "prob": "0.0", "Max RSS": "382.3125MB"}
+sim_wmc.py com {"file": "realamprandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.020680904388428", "prob": "99999", "Max RSS": "14.109375MB"}
+sim_wmc.py pauli {"file": "realamprandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.030658006668091", "prob": "99999", "Max RSS": "15.046875MB"}
+sim_quizx.py {"file": "realamprandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.0690920352935791", "prob": "1.4742040721959146e+166", "Max RSS": "12.15625MB"}
+sim_quasimodo.py {"file": "realamprandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.036242961883545", "prob": "99999", "Max RSS": "592.640625MB"}
+sim_wmc.py com {"file": "realamprandom_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.036465167999268", "prob": "99999", "Max RSS": "15.59375MB"}
+sim_wmc.py pauli {"file": "realamprandom_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.04312801361084", "prob": "99999", "Max RSS": "19.0MB"}
+sim_quizx.py sim_wmc.py com {"file": "realamprandom_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.072864055633545", "prob": "99999", "Max RSS": "20.453125MB"}
+sim_wmc.py pauli {"file": "realamprandom_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.142896890640259", "prob": "99999", "Max RSS": "32.4375MB"}
+sim_quizx.py sim_wmc.py com {"file": "routing_nativegates_ibm_qiskit_opt0_12.qasm", "time": "0.04014420509338379", "prob": "1.4685475055750662531349023409681E-10", "Max RSS": "13.921875MB"}
+sim_wmc.py pauli {"file": "routing_nativegates_ibm_qiskit_opt0_12.qasm", "time": "0.3280670642852783", "prob": "1.4685475055702112799648690758057E-10", "Max RSS": "14.375MB"}
+sim_quizx.py {"file": "routing_nativegates_ibm_qiskit_opt0_12.qasm", "time": "0.03649401664733887", "prob": "5.2148120994162844e+92", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "routing_nativegates_ibm_qiskit_opt0_12.qasm", "time": "2.2820281982421875", "prob": "1.4685475055749358e-10", "Max RSS": "425.953125MB"}
+sim_wmc.py com {"file": "routing_nativegates_ibm_qiskit_opt0_2.qasm", "time": "0.016483068466186523", "prob": "6.4435983641948443803938795558110E-14", "Max RSS": "14.1875MB"}
+sim_wmc.py pauli {"file": "routing_nativegates_ibm_qiskit_opt0_2.qasm", "time": "0.03932690620422363", "prob": "6.4459327927502097317846471342286E-14", "Max RSS": "13.875MB"}
+sim_quizx.py {"file": "routing_nativegates_ibm_qiskit_opt0_2.qasm", "time": "0.009353160858154297", "prob": "0.25", "Max RSS": "12.078125MB"}
+sim_quasimodo.py {"file": "routing_nativegates_ibm_qiskit_opt0_2.qasm", "time": "0.04211306571960449", "prob": "6.443598365910733e-14", "Max RSS": "379.328125MB"}
+sim_wmc.py com {"file": "routing_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.026620864868164062", "prob": "0.0000046684044528541301468129326000687", "Max RSS": "13.625MB"}
+sim_wmc.py pauli {"file": "routing_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.14416003227233887", "prob": "0.0000046684044528544136850364137947267", "Max RSS": "14.0625MB"}
+sim_quizx.py {"file": "routing_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.018635034561157227", "prob": "7.378697629483821e+19", "Max RSS": "12.390625MB"}
+sim_quasimodo.py {"file": "routing_nativegates_ibm_qiskit_opt0_6.qasm", "time": "0.09074807167053223", "prob": "4.668404452854052e-06", "Max RSS": "390.171875MB"}
+sim_wmc.py com {"file": "su2random_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.0259459018707275", "prob": "99999", "Max RSS": "14.046875MB"}
+sim_wmc.py pauli {"file": "su2random_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.031101942062378", "prob": "99999", "Max RSS": "15.578125MB"}
+sim_quizx.py {"file": "su2random_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.006448268890381", "prob": "99999", "Max RSS": "12.390625MB"}
+sim_quasimodo.py {"file": "su2random_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.1184680461883545", "prob": "99999", "Max RSS": "587.09375MB"}
+sim_wmc.py com {"file": "su2random_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.0264732837677", "prob": "99999", "Max RSS": "15.953125MB"}
+sim_wmc.py pauli {"file": "su2random_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.059682130813599", "prob": "99999", "Max RSS": "19.4375MB"}
+sim_quizx.py {"file": "su2random_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.001473903656006", "prob": "99999", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "su2random_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.045680999755859", "prob": "99999", "Max RSS": "473.515625MB"}
+sim_wmc.py com {"file": "su2random_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.076091051101685", "prob": "99999", "Max RSS": "20.984375MB"}
+sim_wmc.py pauli {"file": "su2random_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.148329973220825", "prob": "99999", "Max RSS": "33.921875MB"}
+sim_quizx.py sim_wmc.py com {"file": "tsp_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.20934295654296875", "prob": "1.1085389396928130568066799094416E-7", "Max RSS": "14.890625MB"}
+sim_wmc.py pauli {"file": "tsp_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.031935214996338", "prob": "99999", "Max RSS": "15.84375MB"}
+sim_quizx.py {"file": "tsp_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.08438897132873535", "prob": "2.13598703592091e+96", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "tsp_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.026760816574097", "prob": "99999", "Max RSS": "466.6875MB"}
+sim_wmc.py com {"file": "tsp_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.038436174392700195", "prob": "0.019312042884695204489132931235218", "Max RSS": "13.875MB"}
+sim_wmc.py pauli {"file": "tsp_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.7224891185760498", "prob": "0.019312042884695224814750602604363", "Max RSS": "13.75MB"}
+sim_quizx.py {"file": "tsp_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.027467012405395508", "prob": "256.0", "Max RSS": "12.796875MB"}
+sim_quasimodo.py {"file": "tsp_nativegates_ibm_qiskit_opt0_4.qasm", "time": "0.09132695198059082", "prob": "0.2541564223153523", "Max RSS": "379.78125MB"}
+sim_wmc.py com {"file": "tsp_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.0840158462524414", "prob": "0.000025803523952686211388320412109963", "Max RSS": "14.421875MB"}
+sim_wmc.py pauli {"file": "tsp_nativegates_ibm_qiskit_opt0_9.qasm", "time": "5.029356002807617", "prob": "99999", "Max RSS": "15.109375MB"}
+sim_quizx.py {"file": "tsp_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.045165061950683594", "prob": "3.831238852164722e+53", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "tsp_nativegates_ibm_qiskit_opt0_9.qasm", "time": "0.5140039920806885", "prob": "0.0009465703066036762", "Max RSS": "393.125MB"}
+sim_wmc.py com {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.024451971054077", "prob": "99999", "Max RSS": "14.078125MB"}
+sim_wmc.py pauli {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.027903079986572", "prob": "99999", "Max RSS": "15.046875MB"}
+sim_quizx.py {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.06923627853393555", "prob": "1.4742040721959146e+166", "Max RSS": "12.484375MB"}
+sim_quasimodo.py {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.048861980438232", "prob": "99999", "Max RSS": "569.296875MB"}
+sim_wmc.py com {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.036249876022339", "prob": "99999", "Max RSS": "15.890625MB"}
+sim_wmc.py pauli {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.0532920360565186", "prob": "99999", "Max RSS": "18.96875MB"}
+sim_quizx.py sim_wmc.py com {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.070255994796753", "prob": "99999", "Max RSS": "20.09375MB"}
+sim_wmc.py pauli {"file": "twolocalrandom_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.140068054199219", "prob": "99999", "Max RSS": "32.78125MB"}
+sim_quizx.py sim_wmc.py com {"file": "vqe_nativegates_ibm_qiskit_opt0_10.qasm", "time": "0.028976917266845703", "prob": "1.7354654364794986609694705994661E-24", "Max RSS": "13.390625MB"}
+sim_wmc.py pauli {"file": "vqe_nativegates_ibm_qiskit_opt0_10.qasm", "time": "0.08608889579772949", "prob": "1.7354654406016123789928117612724E-24", "Max RSS": "13.78125MB"}
+sim_quizx.py sim_wmc.py com {"file": "vqe_nativegates_ibm_qiskit_opt0_15.qasm", "time": "0.03563523292541504", "prob": "3.5631071228748297571457560718718E-32", "Max RSS": "13.6875MB"}
+sim_wmc.py pauli {"file": "vqe_nativegates_ibm_qiskit_opt0_15.qasm", "time": "0.12365293502807617", "prob": "3.5631071124162529135977676664907E-32", "Max RSS": "13.890625MB"}
+sim_quizx.py {"file": "vqe_nativegates_ibm_qiskit_opt0_15.qasm", "time": "0.03181004524230957", "prob": "1.004336277661869e+59", "Max RSS": "12.265625MB"}
+sim_quasimodo.py {"file": "vqe_nativegates_ibm_qiskit_opt0_15.qasm", "time": "5.0343017578125", "prob": "99999", "Max RSS": "533.015625MB"}
+sim_wmc.py com {"file": "vqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.01975393295288086", "prob": "4.3118697772795574609482437641170E-8", "Max RSS": "13.328125MB"}
+sim_wmc.py pauli {"file": "vqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.04021501541137695", "prob": "4.3118697769925483223768975264354E-8", "Max RSS": "13.8125MB"}
+sim_quizx.py {"file": "vqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.011385917663574219", "prob": "4194304.0", "Max RSS": "12.140625MB"}
+sim_quasimodo.py {"file": "vqe_nativegates_ibm_qiskit_opt0_5.qasm", "time": "0.06671404838562012", "prob": "4.3118697772781883e-08", "Max RSS": "387.359375MB"}
+sim_wmc.py com {"file": "wstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.012273073196411133", "prob": "0", "Max RSS": "13.109375MB"}
+sim_wmc.py pauli {"file": "wstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "0.10031008720397949", "prob": "0", "Max RSS": "13.9375MB"}
+sim_quizx.py {"file": "wstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.0064027309417725", "prob": "99999", "Max RSS": "12.625MB"}
+sim_quasimodo.py {"file": "wstate_nativegates_ibm_qiskit_opt0_16.qasm", "time": "5.041527032852173", "prob": "99999", "Max RSS": "509.625MB"}
+sim_wmc.py com {"file": "wstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.027678966522216797", "prob": "0", "Max RSS": "14.125MB"}
+sim_wmc.py pauli {"file": "wstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "0.26555395126342773", "prob": "0", "Max RSS": "14.84375MB"}
+sim_quizx.py {"file": "wstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.002134799957275", "prob": "99999", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "wstate_nativegates_ibm_qiskit_opt0_32.qasm", "time": "5.456494092941284", "prob": "99999", "Max RSS": "461.546875MB"}
+sim_wmc.py com {"file": "wstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.03694415092468262", "prob": "0", "Max RSS": "14.53125MB"}
+sim_wmc.py pauli {"file": "wstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "0.9173409938812256", "prob": "0", "Max RSS": "16.921875MB"}
+sim_quizx.py {"file": "wstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.00573992729187", "prob": "99999", "Max RSS": "12.328125MB"}
+sim_quasimodo.py {"file": "wstate_nativegates_ibm_qiskit_opt0_64.qasm", "time": "5.696611166000366", "prob": "99999", "Max RSS": "445.71875MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.04920601844787598", "prob": "0", "Max RSS": "14.234375MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.038506031036377", "prob": "99999", "Max RSS": "16.171875MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3863842487335205", "prob": "0.0", "Max RSS": "12.359375MB"}
+sim_quasimodo.py {"file": "test.qasm", "time": "3.031013011932373", "prob": "99999", "Max RSS": "422.390625MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.04503679275512695", "prob": "0", "Max RSS": "14.09375MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.038733959197998", "prob": "99999", "Max RSS": "15.9375MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3812401294708252", "prob": "0.0", "Max RSS": "12.296875MB"}
+sim_quasimodo.py {"file": "test.qasm", "time": "3.0276339054107666", "prob": "99999", "Max RSS": "411.671875MB"}
+sim_wmc.py com {"file": "test.qasm", "time": "0.04255485534667969", "prob": "0", "Max RSS": "13.9375MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.0343427658081055", "prob": "99999", "Max RSS": "16.328125MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.39090514183044434", "prob": "0.0", "Max RSS": "12.234375MB"}
+sim_quasimodo.py sim_wmc.py com {"file": "test.qasm", "time": "0.04327511787414551", "prob": "0", "Max RSS": "14.75MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.032731056213379", "prob": "99999", "Max RSS": "15.953125MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3957672119140625", "prob": "0.0", "Max RSS": "12.609375MB"}
+sim_quasimodo.py sim_wmc.py com {"file": "test.qasm", "time": "0.042446136474609375", "prob": "0", "Max RSS": "14.28125MB"}
+sim_wmc.py pauli {"file": "test.qasm", "time": "3.036949872970581", "prob": "99999", "Max RSS": "16.046875MB"}
+sim_quizx.py {"file": "test.qasm", "time": "0.3843221664428711", "prob": "0.0", "Max RSS": "12.203125MB"}
+sim_quasimodo.py {"file": "test.qasm", "time": "0.8412280082702637", "prob": "0.0", "Max RSS": "379.515625MB"}
