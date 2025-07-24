@@ -163,3 +163,45 @@ Users can run benchmarks on the functionalities Quokka# by running the bash scri
 Quokka-Sharp/experiment/run_benchmarks/run_all_wmc.sh 10
 ```
 
+## 📚 Citation
+
+If you use the materials in this repository, please cite the following papers:
+
+1. **Simulating Quantum Circuits by Model Counting**  
+   *Jingyi Mei, Marcello Bonsangue, Alfons Laarman*  
+   *Proceedings of the 36th International Conference on Computer Aided Verification (CAV 2024)*
+
+2. **Equivalence Checking of Quantum Circuits by Model Counting**  
+   *Jingyi Mei, Thijmen Coopmans, Marcello Bonsangue, Alfons Laarman*  
+   *Proceedings of the 12th International Joint Conference on Automated Reasoning (IJCAR 2024)*
+
+
+<details>
+<summary>📄 BibTeX</summary>
+
+```bibtex
+@InProceedings{mei2024simulating,
+author="J. Mei
+and M. Bonsangue
+and A. Laarman",
+title="Simulating Quantum Circuits by Model Counting",
+booktitle="CAV",
+year="2024"
+}
+
+
+@InProceedings{mei2024eq,
+author="J. Mei and T. Coopmans and M. Bonsangue and A. Laarman",
+title="Equivalence Checking of Quantum Circuits by Model Counting",
+booktitle="Automated Reasoning",
+year="2024"
+}
+ ```
+</details>
+
+## 📬 Contact
+
+If you have any questions, suggestions, or encounter issues while using the materials in this repository, feel free to:
+
+- [Create an issue](https://github.com/System-Verification-Lab/Quokka-Sharp/issues)
+- Or email me at: **j.mei@liacs.leidenuniv.nl**
