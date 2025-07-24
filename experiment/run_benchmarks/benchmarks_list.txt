@@ -1,2 +1,0 @@
-dj_nativegates_ibm_qiskit_opt0_32.qasm
-dj_nativegates_ibm_qiskit_opt0_64.qasm
