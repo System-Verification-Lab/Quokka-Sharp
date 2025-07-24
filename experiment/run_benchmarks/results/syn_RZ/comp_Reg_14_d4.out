@@ -1,0 +1,79 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 128
+c [INITIAL INPUT] Number of clauses: 538
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 322
+c [INITIAL INPUT] Number of ternary clauses: 168
+c [INITIAL INPUT] Number of clauses larger than 3: 48
+c [INITIAL INPUT] Number of literals: 1360
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 0.00017
+c [BACKBONE] Number of SAT calls: 11
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 128
+c [PREPROCESSED INPUT] Number of clauses: 536
+c [PREPROCESSED INPUT] Number of unit clauses: 0
+c [PREPROCESSED INPUT] Number of binary clauses: 360
+c [PREPROCESSED INPUT] Number of ternary clauses: 128
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 48
+c [PREPROCESSED INPUT] Number of literals: 1316
+c
+c
+c [MAX VARIABLES] list: 8 9 10 11 17 18 19 20 26 27 28 29 35 36 37 38 44 45 46 47 53 54 55 56 62 63 64 65 71 72 73 74 80 81 82 83 89 90 91 92 98 99 100 101 107 108 109 110 116 117 118 119 125 126 127 128 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 12 13 14 15 16 21 22 23 24 25 30 31 32 33 34 39 40 41 42 43 48 49 50 51 52 57 58 59 60 61 66 67 68 69 70 75 76 77 78 79 84 85 86 87 88 93 94 95 96 97 102 103 104 105 106 111 112 113 114 115 120 121 122 123 124 
+c
+c Run with the complex mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 8
+c [MAXT] Set the threshold limit: 2+0i
+c Warm start process (11): 3/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |       39385|       91687|        0.55|           0|       39382|       63154|       36001|           0|       16876|     2519956|     2148.93|       55697|    1.94e+00-3.85e-01i|
+c |       78300|      183844|        1.11|           0|       78295|      123044|       72350|           0|       25460|     5116403|     2163.24|      111501|    1.94e+00-3.85e-01i|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 78317
+c Number of split formula (max): 0
+c Number of split formula (ind): 25460
+c Number of decision: 111518
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 123044
+c Number of negative hit: 72360
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 78312
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 1.11e+00
+c
+v -8 9 -10 -11 -17 -18 19 -20 -26 -27 28 -29 -35 -36 37 -38 -44 45 -46 -47 -53 -54 -55 56 -62 63 -64 -65 -71 -72 -73 74 -80 81 -82 -83 -89 -90 91 -92 -98 99 -100 -101 -107 -108 -109 110 -116 -117 -118 119 -125 126 -127 -128 0
+o 1.93702900484382990591782569751611098746629353215135-0.38529902503654926013085527637375799100999196440401i
+c [MAX-T] Elapsed time: 1.16652057599999992021366779226809740066528320312500 seconds

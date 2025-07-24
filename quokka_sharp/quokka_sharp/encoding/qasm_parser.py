@@ -11,6 +11,9 @@ NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 'cs': 'csdg', 'c
                 'rx': 'rxdg', 'rx': 'rxdg', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
 
 class Circuit:
+    """
+    A class to represent a quantum circuit.
+    """
     def __init__(self):
         self.n: int = 0
         self.tgate: int = 0
@@ -19,22 +22,37 @@ class Circuit:
         self.ancillas = 0
     
     def depth(self):
+        """
+        Returns the NUMBER OF GATES in the circuit.
+        """
         return len(self.circ)
     
     def add_single(self,gate: str, qubit: int):
+        """
+        Adds a single qubit gate to the circuit.
+        """
         if(gate == 't' or gate == 'tdg'):
             self.tgate += 1
         self.circ.append([gate, qubit])
 
     def add_double(self, gate: str , qubitc: int, qubitr: int):
+        """
+        Adds a double qubit gate to the circuit.
+        """
         self.circ.append([gate, qubitc, qubitr])
     
     def add_rotation(self, gate: str, angle: Decimal, qubit: int):
+        """
+        Adds a rotation gate to the circuit.
+        """
         self.circ.append([gate, angle, qubit])
         self.has_rotations = True
     
     def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int, translate_ccx:bool):
-        if translate_ccx:
+        """
+        Adds a Toffoli gate (CCX) to the circuit.
+        """
+        if translate_ccx:   #TODO: Remove this from parser and add to Pauli2CNF.codegen (comput2CNF already has it)
             self.add_single('h',    qubitr)
             self.add_double('cx',   qubitc2, qubitr)
             self.add_single('tdg',  qubitr)
@@ -54,12 +72,18 @@ class Circuit:
             self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
         
     def add_measurement(self, multi_or_single: bool):
+        """
+        Adds a measurement gate to the circuit.
+        """
         if multi_or_single:
             self.circ.append('mm')
         else:
             self.circ.append('m')
 
     def dagger(self):
+        """
+        Returns the adjoint of the circuit.
+        """
         self.circ.reverse()
         for idx in range(len(self.circ)):
             gate = self.circ[idx][0]
@@ -71,12 +95,18 @@ class Circuit:
                 raise Exception("Gate "+ gate[0] +" dagger not supported.")
 
     def append(self, other: 'Circuit'):
+        """
+        Appends another circuit to this circuit.
+        """
         self.circ.extend( other.circ )
         self.n = min(self.n, other.n)
         self.ancillas = max(self.n, other.n) - min(self.n, other.n)
         self.tgate = self.tgate + other.tgate
 
     def to_qasm(self):
+        """
+        Converts the circuit to QASM format.
+        """
         s = "OPENQASM 2.0;\n"
         s += "include \"qelib1.inc\";\n"
         s += f"qreg q[{self.n + self.ancilas}];\n"
@@ -96,6 +126,9 @@ class Circuit:
         return s
 
 def get_num(s: str):
+    """
+    Extracts the number from a string in the format qreg[n].
+    """
     num = ''
     idx1 = s.index('[')
     idx2 = s.index(']')
@@ -106,6 +139,9 @@ def get_num(s: str):
     return globals()[qreg][int(num)]
 
 def frac_to_float(frac: str):
+    """
+    Converts a string representation of a fraction to a float.
+    """
     sign = 0
     if "-" in frac:
         sign = 1
@@ -134,6 +170,9 @@ def frac_to_float(frac: str):
             return Decimal(math.pow(-1,sign) * num / denom)
 
 def get_angle(angle: str):
+    """
+    Converts an angle in string format to a float or Decimal.
+    """
     try:
         if "/" in angle:
             theta = frac_to_float(angle)
@@ -142,7 +181,11 @@ def get_angle(angle: str):
             if 'pi' in theta_str:
                 theta = theta_str.replace('*', '')
                 theta = theta.replace('pi', '')
-                theta = -math.pi if theta == '-' else (math.pi if theta == '' else float(theta) * math.pi)
+                if theta == '-':
+                    theta = "-1"
+                elif theta == '':
+                    theta = "1"
+                theta = float(theta) * math.pi
             else:
                 theta = Decimal(float(theta_str))
         return theta
@@ -152,6 +195,9 @@ def get_angle(angle: str):
 #TODO: the translate CCX should be factored out to some optimization pass
 #      or separate circuit converter tool
 def QASMparser(filename, translate_ccx: bool) -> Circuit:
+    """
+    Parses a QASM file and returns a Circuit object.
+    """
     qasm_list = []
     
     with open(filename,"r") as qasm:

@@ -1,0 +1,95 @@
+FROM --platform=linux/amd64 ubuntu:22.04
+ARG workdir=/Quokka
+WORKDIR ${workdir}
+
+# apt-get Installs
+RUN apt-get update -y
+#RUN apt-get upgrade -y
+RUN apt-get -y install vim
+RUN apt-get -y install git
+RUN apt-get -y install build-essential
+RUN apt-get -y install cmake
+RUN apt-get -y install wget
+RUN apt-get -y install python3
+RUN apt-get -y install python3-pip
+RUN apt-get -y install python3-venv
+RUN apt-get -y install m4
+
+# pip3 Installs
+RUN pip3 install --upgrade pip
+RUN pip3 install virtualenv
+RUN pip3 install ninja
+
+# virtual env
+RUN python3 -m venv .venv
+RUN . .venv/bin/activate
+
+# GMP Install
+WORKDIR ${workdir}/downloads/
+RUN wget https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz
+RUN tar -xf gmp-6.3.0.tar.xz
+WORKDIR ${workdir}/downloads/gmp-6.3.0
+RUN ./configure --prefix ${workdir}/.venv/ --enable-cxx
+RUN make
+RUN make check
+RUN make install
+
+# MPFR Install
+WORKDIR ${workdir}/downloads/
+RUN wget https://www.mpfr.org/mpfr-4.2.1/mpfr-4.2.1.tar.xz
+RUN tar -xf mpfr-4.2.1.tar.xz
+WORKDIR ${workdir}/downloads/mpfr-4.2.1
+RUN ./configure --with-gmp-build=${workdir}/downloads/gmp-6.3.0/  --prefix ${workdir}/.venv
+RUN make
+RUN make check
+RUN make install
+
+# Zlib Install
+WORKDIR ${workdir}/downloads/
+RUN wget https://zlib.net/zlib-1.3.1.tar.xz
+RUN tar -xf zlib-1.3.1.tar.xz
+WORKDIR ${workdir}/downloads/zlib-1.3.1
+RUN ./configure --prefix ${workdir}/.venv/
+RUN make
+RUN make test
+RUN make install 
+
+# GPMC Install
+WORKDIR ${workdir}
+RUN git clone https://github.com/System-Verification-Lab/GPMC.git
+WORKDIR ${workdir}/GPMC
+RUN ./build.sh r
+
+# Install Boost
+WORKDIR ${workdir}
+RUN wget https://archives.boost.io/release/1.87.0/source/boost_1_87_0.tar.gz
+RUN tar -xvzf boost_1_87_0.tar.gz
+WORKDIR ${workdir}/boost_1_87_0
+RUN ./bootstrap.sh 
+RUN ./b2 install link=static --prefix=${workdir}/.venv; exit 0
+ENV Boost_LIBRARIES=${workdir}/.venv/lib/
+ENV CPLUS_INCLUDE_PATH=${workdir}/.venv/include/:${workdir}/boost_1_87_0
+
+# D4 Install
+WORKDIR ${workdir}
+RUN git clone https://github.com/crillab/d4v2.git
+WORKDIR ${workdir}/d4v2/3rdParty
+RUN wget https://faculty.cc.gatech.edu/~umit/PaToH/patoh-Linux-x86_64.tar.gz
+RUN tar -xvzf patoh-Linux-x86_64.tar.gz 
+RUN mv ./build/Linux-x86_64/* ./patoh/
+WORKDIR ${workdir}/d4v2/
+RUN ./build.sh
+
+# Quokka update
+WORKDIR ${workdir}
+RUN rm -rf ${workdir}/Quokka-Sharp
+ARG CACHEBUST=$(date +%s)
+RUN git clone https://github.com/System-Verification-Lab/Quokka-Sharp.git 
+
+RUN . .venv/bin/activate
+WORKDIR ${workdir}/Quokka-Sharp/
+RUN pip install ./quokka_sharp --force-reinstall 
+RUN pip install -r requirements.txt
+
+WORKDIR ${workdir}/Quokka-Sharp/experiment/run_benchmarks
+# RUN ./run_all_wmc.sh 300

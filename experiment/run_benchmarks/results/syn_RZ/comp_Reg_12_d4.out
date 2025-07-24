@@ -1,0 +1,77 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 110
+c [INITIAL INPUT] Number of clauses: 460
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 276
+c [INITIAL INPUT] Number of ternary clauses: 144
+c [INITIAL INPUT] Number of clauses larger than 3: 40
+c [INITIAL INPUT] Number of literals: 1160
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 0.000167
+c [BACKBONE] Number of SAT calls: 10
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 110
+c [PREPROCESSED INPUT] Number of clauses: 458
+c [PREPROCESSED INPUT] Number of unit clauses: 0
+c [PREPROCESSED INPUT] Number of binary clauses: 310
+c [PREPROCESSED INPUT] Number of ternary clauses: 108
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 40
+c [PREPROCESSED INPUT] Number of literals: 1120
+c
+c
+c [MAX VARIABLES] list: 8 9 10 11 17 18 19 20 26 27 28 29 35 36 37 38 44 45 46 47 53 54 55 56 62 63 64 65 71 72 73 74 80 81 82 83 89 90 91 92 98 99 100 101 107 108 109 110 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 12 13 14 15 16 21 22 23 24 25 30 31 32 33 34 39 40 41 42 43 48 49 50 51 52 57 58 59 60 61 66 67 68 69 70 75 76 77 78 79 84 85 86 87 88 93 94 95 96 97 102 103 104 105 106 
+c
+c Run with the complex mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 7
+c [MAXT] Set the threshold limit: 2+0i
+c Warm start process (11): 8/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 20519
+c Number of split formula (max): 0
+c Number of split formula (ind): 22392
+c Number of decision: 31619
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 41090
+c Number of negative hit: 21360
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 20517
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 0.297034
+c
+v -8 9 -10 -11 -17 -18 -19 20 -26 27 -28 -29 -35 -36 37 -38 -44 45 -46 -47 -53 -54 -55 56 -62 63 -64 -65 -71 -72 -73 74 -80 81 -82 -83 -89 -90 91 -92 -98 -99 100 -101 -107 108 -109 -110 0
+o 1.93702900484382990591782569751610821802860686781682-0.38529902503654926013085527637375815968914320690846i
+c [MAX-T] Elapsed time: 0.32910686399999999895982227826607413589954376220703 seconds

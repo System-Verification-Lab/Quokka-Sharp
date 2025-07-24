@@ -4,6 +4,10 @@ from decimal import Decimal, getcontext
 getcontext().prec = 32
 
 class pauli2cnf:
+    """
+    This class contains the functions to convert a quantum circuit to CNF clauses in the Pauli basis.
+    """
+
     def H2CNF(cnf, k):
         x = cnf.vars.x
         z = cnf.vars.z
@@ -925,23 +929,37 @@ class pauli2cnf:
 
 
 
-    def SynLayer2CNF(cnf):
+    def SynLayer2CNF(cnf, limit_gates=False, h_layer=False):
         n = cnf.n + cnf.ancillas
         x = cnf.vars.x
         z = cnf.vars.z
         X = [cnf.add_var() for _ in range(n)]
         Z = [cnf.add_var() for _ in range(n)]
+          
         R = [cnf.add_var() for _ in range(n)]
-        U = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
-        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
-        [cnf.add_weight(-U[k], 1) for k in range(n)]
+          
+        if not limit_gates or not h_layer:
+            U = [cnf.add_var() for _ in range(n)]
+            [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
+            [cnf.add_weight(-U[k], 1) for k in range(n)]
+        else:
+            U = [0.5 for _ in range(n)]
+          
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
-        hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
-        tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
-        tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
-        cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+        if not limit_gates or h_layer:
+            hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
+        else:
+            hg = [0.5 for _ in range(n)]
+        if not limit_gates or not h_layer:
+            tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
+            tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
+            cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+        else:
+            tdg = [0.5 for _ in range(n)]
+            tg = [0.5 for _ in range(n)]
+            cg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
         for k in range(n):
     
             # Implies(idg[k], ~R[k])
@@ -1029,23 +1047,24 @@ class pauli2cnf:
 
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
-            gate_controlers = [idg[k], hg[k], tdg[k], tg[k]]+cgs_k
+            gate_controlers = [idg[k]]
+            if not limit_gates or h_layer:
+                gate_controlers += [hg[k]]
+            if not limit_gates or not h_layer:
+                gate_controlers += [tdg[k], tg[k]] + cgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
-            if cnf.syn_gate_layer<=1:
-                continue
-        
-            # H -> !l_H
-            cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
-            # T -> !l_Tdg
-            cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
-            # Tdg -> !l_T
-            cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
-            # I -> I until CX
-            cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
+            if cnf.syn_gate_layer>=2:
+                # H -> !l_H
+                cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
+                # T -> !l_Tdg
+                cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
+                # Tdg -> !l_T
+                cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+                # I -> I until CX
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
           
-            if cnf.syn_gate_layer>5:
-                
+            if cnf.syn_gate_layer>=5:
                 # T -> !l_T | !ll_T | !lll_T | !llll_T
                 cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
                 # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
@@ -1053,12 +1072,18 @@ class pauli2cnf:
 
             c = k
             for t in range(n):
-
                 if c!=t:
-                    # CX(c,t) -> !past(CX(c,t))
-                    cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
-                    # CX(c,t) -> !past(I(c)) or !past(I(t))
-                    cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+                    if cnf.syn_gate_layer>=2:
+                        # CX(c,t) -> !past(CX(c,t))
+                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
+                        # CX(c,t) -> !past(I(c)) or !past(I(t))
+                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+        
+                    if cnf.syn_gate_layer>=3:
+                        # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='tdg', bit = c, past=2), -tg[c]])
+                        # past(CX(c,t)) -> !past(past(Tdg(c))) or !T(c))
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='t', bit = c, past=2), -tdg[c]])
         
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z

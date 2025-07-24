@@ -48,11 +48,12 @@ def to_py(func, prefix="", simplify=True, force=True, comment=None):
                 print(", ", end="")
         print("]", end="")
         if comment: print(f", comment=\"{comment}\"", end="")
-        print(f")")
+        print(f")") 
 
 def add_sign(func, prefix = "", comment=""):
     print(prefix+f"        # adding sign if {func}")
     print(prefix+"        R = cnf.add_var()")
+    print(prefix+"        cnf.vars.RVar.append(R)")    
     print(prefix+"        if cnf.weighted: ")
     print(prefix+"            cnf.add_weight(R, -1)")
     print(prefix+"            cnf.add_weight(-R, 1)")
@@ -65,6 +66,10 @@ def add_sign(func, prefix = "", comment=""):
 def add_i(func, prefix = "", comment=""):
     print(prefix+f"        # adding i if {func}")
     print(prefix+"        I = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print(prefix+"        cnf.vars.IVar.append(I)")    
+>>>>>>> main
     print(prefix+"        if cnf.weighted: ")
     print(prefix+"            cnf.add_weight(I, 0, 1)")
     print(prefix+"            cnf.add_weight(-I, 1, 0)")
@@ -77,6 +82,10 @@ def add_i(func, prefix = "", comment=""):
 
 def add_sqrt_half(func, prefix = "", comment=""):
     print(prefix+"        U = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print(prefix+"        cnf.vars.UVar.append(U)")    
+>>>>>>> main
     print(prefix+"        if cnf.weighted: ")
     print(prefix+"            cnf.add_weight(U, str(Decimal(1/2).sqrt()))")
     print(prefix+"            cnf.add_weight(-U, 1)")
@@ -88,6 +97,10 @@ def add_sqrt_half(func, prefix = "", comment=""):
     to_py(	                  Equivalent(U, u ^ ~func), prefix+"    ", comment="sqrt U update "+comment)
     print()
     print(prefix+"            D = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print(prefix+"            cnf.vars.DVar.append(D)")    
+>>>>>>> main
     print(prefix+f"            cnf.add_clause([D, cnf.add_var()], comment=\"sqrt D double {comment}\")")
     to_py(	                  Equivalent(D, u & ~U), prefix+"    ", comment="sqrt D update "+comment)
 
@@ -101,6 +114,12 @@ def main():
     print("from .pauli2cnf import pauli2cnf")
     print()
     print("class comput2cnf:")
+<<<<<<< patch-2
+=======
+    print('''    \"\"\"
+    This class contains the functions to convert a quantum circuit to CNF clauses in the Computationl basis.
+    \"\"\"''')
+>>>>>>> main
     print()
 
     # H:
@@ -108,6 +127,10 @@ def main():
     print("        x = cnf.vars.x")
     print()   
     print("        X = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("        cnf.vars.XVar.append(X)")    
+>>>>>>> main
     print()   
     add_sqrt_half(true)
     print()
@@ -121,6 +144,10 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        Xt = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("        cnf.vars.XVar.append(Xt)")
+>>>>>>> main
     to_py(	       Equivalent(Xt, (x[c] ^ x[t])))
     print()
     print("        cnf.vars.x[t] = Xt")
@@ -131,6 +158,10 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        Xt = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("        cnf.vars.XVar.append(Xt)")
+>>>>>>> main
     to_py(	       Equivalent(Xt, ((x[k] & x[c]) ^ x[t])))
     print()
     print("        cnf.vars.x[t] = Xt")
@@ -148,6 +179,10 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        w = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("        cnf.vars.UVar.append(w)")
+>>>>>>> main
     print("        cnf.add_weight(w, Decimal(math.cos(theta)), Decimal(math.sin(theta)))")
     print("        cnf.add_weight(-w, 1, 0)")
     to_py(	       Equivalent(w, x[k]), comment="w (RZ)")
@@ -165,6 +200,10 @@ def main():
     print("        x = cnf.vars.x") 
     print("        if cnf.weighted: ")  # less variables 
     print("            w = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("            cnf.vars.UVar.append(w)")
+>>>>>>> main
     print("            cnf.add_weight(w, 0, -1)")
     print("            cnf.add_weight(-w, 1, 0)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Sdg)")
@@ -179,6 +218,10 @@ def main():
     print("        x = cnf.vars.x")
     print("        if cnf.weighted: ")    
     print("            w = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("            cnf.vars.UVar.append(w)")
+>>>>>>> main
     print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt()))")
     print("            cnf.add_weight(-w, 1, 0)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (T)")
@@ -186,6 +229,10 @@ def main():
     print("            i = cnf.vars.i")
     print()
     print("            I = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("            cnf.vars.IVar.append(I)")
+>>>>>>> main
     to_py(             x[k] | Equivalent(I, i), prefix="    ", comment="I (T)")
     print()
     add_sign(i & ~I, prefix="    ", comment="(T)")
@@ -199,6 +246,10 @@ def main():
     print("        x = cnf.vars.x")
     print("        if cnf.weighted: ")    
     print("            w = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("            cnf.vars.UVar.append(w)")
+>>>>>>> main
     print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt()))")
     print("            cnf.add_weight(-w, 1, 0)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Tdg)")
@@ -206,6 +257,10 @@ def main():
     print("            i = cnf.vars.i")
     print()
     print("            I = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("            cnf.vars.IVar.append(I)")
+>>>>>>> main
     to_py(             x[k] | Equivalent(I, i), prefix="    ", comment="I (Tdg)")
     print()
     add_sign(~i & I, prefix="    ", comment="(Tdg)")
@@ -219,6 +274,10 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        X = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("        cnf.vars.XVar.append(X)")
+>>>>>>> main
     to_py(         Equivalent(X, ~x[k]))
     print()
     print("        cnf.vars.x[k] = X")
@@ -229,6 +288,10 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        X = cnf.add_var()")
+<<<<<<< patch-2
+=======
+    print("        cnf.vars.XVar.append(X)")
+>>>>>>> main
     to_py(         Equivalent(X, ~x[k]), comment="Y gate")
     print()
     add_sign(x[k])
@@ -242,8 +305,15 @@ def main():
     print("    def RX2CNF(cnf, k, theta):")
     print("        x = cnf.vars.x")
     print("        X = cnf.add_var()")
+<<<<<<< patch-2
     print()
     print("        w = cnf.add_var()")
+=======
+    print("        cnf.vars.XVar.append(X)")
+    print()
+    print("        w = cnf.add_var()")
+    print("        cnf.vars.UVar.append(w)")
+>>>>>>> main
     to_py(         Equivalent(w, Equivalent(x[k], X) ))
     print()
     print("        cnf.vars.x[k] = X")
@@ -257,9 +327,17 @@ def main():
     print("        x = cnf.vars.x")
     print()
     print("        Xc = cnf.add_var()")
+<<<<<<< patch-2
     to_py(         Equivalent(Xc, x[c]))
     print()
     print("        Xt = cnf.add_var()")
+=======
+    print("        cnf.vars.XVar.append(Xc)")
+    to_py(         Equivalent(Xc, x[c]))
+    print()
+    print("        Xt = cnf.add_var()")
+    print("        cnf.vars.XVar.append(Xt)")
+>>>>>>> main
     to_py(         Equivalent(Xt, x[t]))
     print()
     print("        cnf.vars.x[c] = Xc")
@@ -381,6 +459,7 @@ def main():
             gate_controlers = [idg[k], hg[k], tg[k], tdg[k]]+cgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
+<<<<<<< patch-2
             if cnf.syn_gate_layer<=1:
                 continue
         
@@ -394,6 +473,19 @@ def main():
             cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
 
             if cnf.syn_gate_layer>5:
+=======
+            if cnf.syn_gate_layer>=2:
+                # H -> !l_H
+                cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
+                # T -> !l_Tdg
+                cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
+                # Tdg -> !l_T
+                cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
+                # I -> I until CX
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
+
+            if cnf.syn_gate_layer>=5:
+>>>>>>> main
                 # T -> !l_T | !ll_T | !lll_T | !llll_T
                 cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
                 # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
@@ -401,6 +493,7 @@ def main():
 
             c = k
             for t in range(n):
+<<<<<<< patch-2
                 if c==t:
                     continue
                 # CX(c,t) -> !past(CX(c,t))
@@ -408,6 +501,21 @@ def main():
                 # CX(c,t) -> !past(I(c)) or !past(I(t))
                 cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
           
+=======
+                if c!=t:
+                    if cnf.syn_gate_layer>=2:
+                        # CX(c,t) -> !past(CX(c,t))
+                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
+                        # CX(c,t) -> !past(I(c)) or !past(I(t))
+                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+            
+                    if cnf.syn_gate_layer>=3:
+                        # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='tdg', bit = c, past=2), -tg[c]])
+                        # past(CX(c,t)) -> !past(past(Tdg(c))) or !T(c))
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='t', bit = c, past=2), -tdg[c]])
+        
+>>>>>>> main
         cnf.vars.x[:n] = X
     
     

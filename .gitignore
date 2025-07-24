@@ -5,10 +5,8 @@ __pycache__
 *.quasimodo*
 test.qasm
 test.qasm.cnf
-test.qasm.cnf
 dist
 quokka_sharp.egg-info
-wmc_benchmarks/WMCBench.zip
 wmc_benchmarks/WMCBench.zip
 wmc_benchmarks/bzip.sh
 wmc_benchmarks/abstract.pdf
@@ -33,3 +31,6 @@ experiment/basic_to_run*
 experiment/test2.cnf
 experiment/temp.cnf
 experiment/test2.qasm
+experiment/run_benchmarks/results/*.png
+experiment/run_benchmarks/results/*.tex
+experiment/run_benchmarks/tmp/*
