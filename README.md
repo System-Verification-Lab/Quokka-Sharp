@@ -1,5 +1,4 @@
 # Quokka-Sharp
-
 ## Prerequisites
 
 - Install GPMC solver: Follow instructions in [GPMC git](https://github.com/System-Verification-Lab/GPMC) to install GPMC.

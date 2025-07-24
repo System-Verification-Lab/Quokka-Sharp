@@ -90,7 +90,6 @@ def main():
     print("getcontext().prec = 32")
     print()
     print("class pauli2cnf:")
-
     print('''    \"\"\"
     This class contains the functions to convert a quantum circuit to CNF clauses in the Pauli basis.
     \"\"\"''')
@@ -556,7 +555,6 @@ def main():
     print()
     print()
     print('''
-
     def SynLayer2CNF(cnf, limit_gates=False, h_layer=False):
         n = cnf.n + cnf.ancillas
         x = cnf.vars.x
@@ -603,7 +601,6 @@ def main():
     print('''
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
-
             gate_controlers = [idg[k]]
             if not limit_gates or h_layer:
                 gate_controlers += [hg[k]]
