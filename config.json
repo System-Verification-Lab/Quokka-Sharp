@@ -1,0 +1,7 @@
+{
+  "DEBUG": false,
+  "TIMEOUT": 1000,
+  "ToolInvocation": "/Users/muhos/Desktop/Quantum/repositories/GPMC/bin/gpmc -mode=1",
+  "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
+  "FPE": 1e-12
+}
