@@ -156,12 +156,10 @@ When changing the core files, Quokka# needs to be reinstalled from the local fil
 pip install ./quokka_sharp --force-reinstall 
 ```
 
-## Benchmarks
+## Evaluation
 
-Users can run benchmarks on the functionalities Quokka# by running the bash script Quokka-Sharp/experiment/run_benchmarks/run_all_wmc.sh with a desired timeout limit, e.g.:
-```
-Quokka-Sharp/experiment/run_benchmarks/run_all_wmc.sh 10
-```
+For evaluation of Quokka# please refer to [quokka-sharp-artifacts](https://github.com/System-Verification-Lab/quokka-sharp-artifacts)
+
 
 ## 📚 Citation
 
