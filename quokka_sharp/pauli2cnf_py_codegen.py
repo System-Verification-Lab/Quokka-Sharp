@@ -51,6 +51,7 @@ def to_py(func, prefix="", simplify=True, force=True):
                 print(", ", end="")
         print("])")
 
+# TODO: why we add weight of -1 to R and 1 to -R?
 def add_sign(func, prefix = ""):
     print(prefix+f"        # adding sign if {func}")
     print(prefix+"        R = cnf.add_var()")
@@ -225,6 +226,49 @@ def main():
     print()
     print("        cnf.vars.z[c] = Zc")
     print("        cnf.vars.z[t] = Zt")
+    print()
+
+    #CY
+    Xt   = symbols('Xt')
+    print("    def CY2CNF(cnf, c, t):")
+    print("        x = cnf.vars.x")
+    print("        z = cnf.vars.z")
+    print()
+    print("        Zc = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Zc)")
+    to_py(	       Equivalent(Zc, z[c] ^ z[t] ^ x[t]))
+    print()
+    print("        Zt = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Zt)")
+    to_py(	       Equivalent(Zt, z[t] ^ x[c]))
+    print()
+    print("        Xt = cnf.add_var()")
+    print("        cnf.vars.XVar.append(Xt)")
+    to_py(	       Equivalent(Xt, x[t] ^ x[c]))
+    print()
+    add_sign(x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t]))
+    print()
+    print("        cnf.vars.z[c] = Zc")
+    print("        cnf.vars.z[t] = Zt")
+    print("        cnf.vars.x[t] = Xt")
+    print()
+
+    #SWAP
+    print("    def SWAP2CNF(cnf, c, t):")
+    print("        x = cnf.vars.x")
+    print("        z = cnf.vars.z")
+    print()
+    print("        x[c], x[t] = x[t], x[c]")
+    print("        z[c], z[t] = z[t], z[c]")
+    print()
+
+    #ISWAP
+    print("    def ISWAP2CNF(cnf, c, t):")
+    print()
+    print("        SWAP2CNF(cnf, c, t)")
+    print("        CZ2CNF(cnf, c, t)")
+    print("        S2CNF(cnf, c)")
+    print("        S2CNF(cnf, t)")
     print()
 
     #CS

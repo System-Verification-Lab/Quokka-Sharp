@@ -437,6 +437,7 @@ class CNF:
             return 0.5
 
 
+    # TODO: what's -.5 and .5?
     def add_clause(self, cons: list, prepend=False, comment=None):   
         """
         Add a clause to the CNF encoding.
@@ -570,6 +571,18 @@ class CNF:
                 k = int(element[2])
                 to_CNF.CNOT2CNF(self,j,k)
             elif gate == 'cz':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CZ2CNF(self,j,k)  
+            elif gate == 'cy':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CZ2CNF(self,j,k)  
+            elif gate == 'swap':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CZ2CNF(self,j,k)  
+            elif gate == 'iswap':
                 j = int(element[1])
                 k = int(element[2])
                 to_CNF.CZ2CNF(self,j,k)  
