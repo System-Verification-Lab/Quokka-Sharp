@@ -5,11 +5,13 @@ import os
 
 
 # input files
-cnf_dir = "/home/muhos/quantum/quokka/tmp"
+
 parser = argparse.ArgumentParser(description="QuokkaSharp Debug Script")
+parser.add_argument("--tmp", type=str, required=True, help="Path to write CNFs")
 parser.add_argument("--qasmfile1", type=str, required=True, help="Path to the first QASM file")
 args = parser.parse_args()
 
+cnf_dir = args.tmp
 qasmfile1 = args.qasmfile1
 base, ext = os.path.splitext(qasmfile1)
 if base.endswith("1"):
