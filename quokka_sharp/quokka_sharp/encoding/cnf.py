@@ -586,14 +586,14 @@ class CNF:
                 j = int(element[1])
                 k = int(element[2])
                 to_CNF.CZ2CNF(self,j,k)  
-            # elif gate == 'cs':
-            #     j = int(element[1])
-            #     k = int(element[2])
-            #     to_CNF.CS2CNF(self,j,k)  
-            # elif gate == 'csdg':
-            #     j = int(element[1])
-            #     k = int(element[2])
-            #     to_CNF.CSdg2CNF(self,j,k) 
+            elif gate == 'cs':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CS2CNF(self,j,k)  
+            elif gate == 'csdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSdg2CNF(self,j,k) 
             elif gate[0] == 'r':
                 angle = element[1]
                 k = int(element[2])

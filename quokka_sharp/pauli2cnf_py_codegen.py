@@ -264,11 +264,10 @@ def main():
 
     #ISWAP
     print("    def ISWAP2CNF(cnf, c, t):")
-    print()
-    print("        SWAP2CNF(cnf, c, t)")
-    print("        CZ2CNF(cnf, c, t)")
-    print("        S2CNF(cnf, c)")
-    print("        S2CNF(cnf, t)")
+    print("        pauli2cnf.SWAP2CNF(cnf, c, t)")
+    print("        pauli2cnf.CZ2CNF(cnf, c, t)")
+    print("        pauli2cnf.S2CNF(cnf, c)")
+    print("        pauli2cnf.S2CNF(cnf, t)")
     print()
 
     #CS
@@ -298,6 +297,30 @@ def main():
     add_sign(x[c] & x[t] & ~z[t])
     print()
     print("        cnf.vars.z[t] = Zt")
+    print()
+
+    #CCX
+    print("    def CCX2CNF(cnf, c1, c2, t):")
+    print("        # Controlled-SqrtX(c1, t) = H(t) CS(c1, t) H(t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print("        pauli2cnf.CS2CNF(cnf, c1, t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print()
+    print("        # Controlled-SqrtX(c2, t) = H(t) CS(c2, t) H(t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print("        pauli2cnf.CS2CNF(cnf, c2, t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print()
+    print("        # Controlled-X(c1, c2)")
+    print("        pauli2cnf.CNOT2CNF(cnf, c1, c2)")
+    print()
+    print("        # Controlled-SqrtXdg(c2, t) = H(t) CSdg(c2, t) H(t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print("        pauli2cnf.CSdg2CNF(cnf, c2, t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print()
+    print("        # Controlled-X(c1, c2)")
+    print("        pauli2cnf.CNOT2CNF(cnf, c1, c2)")
     print()
 
     #RZ

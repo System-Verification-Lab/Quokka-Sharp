@@ -70,7 +70,7 @@ Synthesis
 # Change the tool_invocation in config.json to be the maximum weighted model counter.
 
 # Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile1, True)
+circuit = qk.encoding.QASMparser(qasmfile1, False)
 # Get (circuit)^dagger
 circuit.dagger()
 # Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
