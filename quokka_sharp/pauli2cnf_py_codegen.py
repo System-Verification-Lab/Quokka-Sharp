@@ -300,27 +300,27 @@ def main():
     print()
 
     #CCX
-    print("    def CCX2CNF(cnf, c1, c2, t):")
-    print("        # Controlled-SqrtX(c1, t) = H(t) CS(c1, t) H(t)")
+    print("    def CCX2CNF(cnf, k, c, t):")
+    print("        # Controlled-SqrtX(k, t) = H(t) CS(k, t) H(t)")
     print("        pauli2cnf.H2CNF(cnf, t)")
-    print("        pauli2cnf.CS2CNF(cnf, c1, t)")
-    print("        pauli2cnf.H2CNF(cnf, t)")
-    print()
-    print("        # Controlled-SqrtX(c2, t) = H(t) CS(c2, t) H(t)")
-    print("        pauli2cnf.H2CNF(cnf, t)")
-    print("        pauli2cnf.CS2CNF(cnf, c2, t)")
+    print("        pauli2cnf.CS2CNF(cnf, k, t)")
     print("        pauli2cnf.H2CNF(cnf, t)")
     print()
-    print("        # Controlled-X(c1, c2)")
-    print("        pauli2cnf.CNOT2CNF(cnf, c1, c2)")
-    print()
-    print("        # Controlled-SqrtXdg(c2, t) = H(t) CSdg(c2, t) H(t)")
+    print("        # Controlled-SqrtX(c, t) = H(t) CS(c, t) H(t)")
     print("        pauli2cnf.H2CNF(cnf, t)")
-    print("        pauli2cnf.CSdg2CNF(cnf, c2, t)")
+    print("        pauli2cnf.CS2CNF(cnf, c, t)")
     print("        pauli2cnf.H2CNF(cnf, t)")
     print()
-    print("        # Controlled-X(c1, c2)")
-    print("        pauli2cnf.CNOT2CNF(cnf, c1, c2)")
+    print("        # Controlled-X(k, c)")
+    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
+    print()
+    print("        # Controlled-SqrtXdg(c, t) = H(t) CSdg(c, t) H(t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print("        pauli2cnf.CSdg2CNF(cnf, c, t)")
+    print("        pauli2cnf.H2CNF(cnf, t)")
+    print()
+    print("        # Controlled-X(k, c)")
+    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
     print()
 
     #RZ
@@ -504,7 +504,7 @@ def main():
 
     idg   = symbols('idg[k]')
     hg    = symbols('hg[k]')
-    # sg    = symbols('sg[k]')
+    sg    = symbols('sg[k]')
     tg    = symbols('tg[k]')
     tdg    = symbols('tdg[k]')
 
@@ -523,10 +523,10 @@ def main():
     H_z = hg >> Equivalent(Zk, x[k])
     H_u = hg >> Equivalent(Uk, False)
 
-    # S_r = sg >> Equivalent(Rk, x[k] & z[k])
-    # S_x = sg >> Equivalent(Xk, x[k])
-    # S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
-    # S_u = sg >> Equivalent(Uk, False)
+    S_r = sg >> Equivalent(Rk, x[k] & z[k])
+    S_x = sg >> Equivalent(Xk, x[k])
+    S_z = sg >> Equivalent(Zk, x[k] ^ z[k])
+    S_u = sg >> Equivalent(Uk, False)
 
     T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
     Tdg_r = tdg >> Equivalent(Rk, x[k] & ~z[k] & Zk)
@@ -534,8 +534,9 @@ def main():
     T_z = (tg | tdg) >> Equivalent(Zk, z[k]) | x[k]
     T_u = (tg | tdg) >> Equivalent(Uk, x[k])
 
-    # single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, T_r, T_x, T_z, T_u]
-    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, Tdg_r, T_r, T_x, T_z, T_u]
+    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, Tdg_r, T_r, T_x, T_z, T_u]
+    #single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u]
+    #single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, Tdg_r, T_r, T_x, T_z, T_u]
     
 
     # dynamic two bit gate:
@@ -571,6 +572,37 @@ def main():
     # CZ_ut = cg_ct >> Equivalent(Ut, False)
 
     # double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
+
+    # three bit gate properties
+
+    ccxg_kct    = symbols('ccxg[k][c][t]')
+    Xk = symbols('X[k]')
+    Xc = symbols('X[c]')
+    Xt = symbols('X[t]')
+    Zk = symbols('Z[k]')
+    Zc = symbols('Z[c]')
+    Zt = symbols('Z[t]')
+    Rk = symbols('R[k]')
+    Rc = symbols('R[c]')
+    Rt = symbols('R[t]')
+    Uk = symbols('U[k]')
+    Uc = symbols('U[c]')
+    Ut = symbols('U[t]')
+
+    CCX_xk = ccxg_kct >> Equivalent(Xk, x[k])
+    CCX_xc = ccxg_kct >> Equivalent(Xc, x[c])
+    CCX_zk = ccxg_kct >> Equivalent(Zk, z[k] ^ (~x[t] & x[c]))
+    CCX_zc = ccxg_kct >> Equivalent(Zc, z[c] ^ (~x[t] & x[k]))
+    CCX_xt = ccxg_kct >> Equivalent(Xt, x[t] ^ (x[k] & x[c]))
+    CCX_zt = ccxg_kct >> Equivalent(Zt, z[t])
+    CCX_rk = ccxg_kct >> Equivalent(Rk, (x[k] & x[c] & ~x[t]) ^ (~x[k] & x[c] & x[t]) ^ (x[k] & ~x[c] & x[t]) ^ (x[t] & z[t]))
+    CCX_rc = ccxg_kct >> Equivalent(Rc, False)
+    CCX_rt = ccxg_kct >> Equivalent(Rt, False)
+    CCX_uk = ccxg_kct >> Equivalent(Uk, False)
+    CCX_uc = ccxg_kct >> Equivalent(Uc, False)
+    CCX_ut = ccxg_kct >> Equivalent(Ut, False)
+
+    triple_qb_gate_properties = [CCX_xk, CCX_xc, CCX_xt, CCX_zk, CCX_zc, CCX_zt, CCX_rk, CCX_rc, CCX_rt, CCX_uk, CCX_uc, CCX_ut]
 
     
     print('''
@@ -624,18 +656,39 @@ def main():
             hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
         else:
             hg = [0.5 for _ in range(n)]
+        sg = [cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k]) for k in range(n)]
         if not limit_gates or not h_layer:
             tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
             tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
             cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+            ccxg = [
+                        [
+                            [
+                                cnf.add_var(syn_gate_pick=True, Name='ccx', bits=[c1, c2, t]) 
+                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
+                            ]
+                            for c2 in range(n)
+                        ]
+                        for c1 in range(n)
+                    ]
         else:
             tdg = [0.5 for _ in range(n)]
             tg = [0.5 for _ in range(n)]
             cg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            ccxg = [
+                        [
+                            [
+                                0.5 
+                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
+                            ]
+                            for c2 in range(n)
+                        ]
+                        for c1 in range(n)
+                    ]
         for k in range(n):
     ''')
     for p in single_qb_gate_properties:
-        to_py(	       p, prefix="    ")  
+        to_py(p, prefix="    ")  
     print('''
             c = k
             for t in range(n):
@@ -643,15 +696,42 @@ def main():
                     continue
     ''')
     for p in double_qb_gate_properties:
-        to_py(	           p, prefix="        ")   
+        to_py(p, prefix="        ") 
+    print('''
+            for c in range(n):
+                if c == k:
+                    continue
+                for t in range(n):
+                    if t == c or t == k:
+                        continue
+    ''')
+    for p in triple_qb_gate_properties:
+        to_py(p, prefix="            ")
     print('''
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
+            cxs_k = (
+                # k as first control
+                [ ccxg[k][c2][t]
+                for c2 in range(n) if c2 != k
+                for t  in range(n) if t not in (k, c2) ]
+            + # k as second control
+                [ ccxg[c1][k][t]
+                for c1 in range(n) if c1 != k
+                for t  in range(n) if t not in (k, c1) ]
+            + # k as target
+                [ ccxg[c1][c2][k]
+                for c1 in range(n) if c1 != k
+                for c2 in range(n) if c2 not in (k, c1) ]
+            )
             gate_controlers = [idg[k]]
             if not limit_gates or h_layer:
                 gate_controlers += [hg[k]]
+            gate_controlers += [sg[k]]
             if not limit_gates or not h_layer:
-                gate_controlers += [tdg[k], tg[k]] + cgs_k
+                gate_controlers += [tdg[k], tg[k]]
+                gate_controlers += cgs_k
+                gate_controlers += cxs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer>=2:

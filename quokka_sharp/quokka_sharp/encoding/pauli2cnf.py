@@ -564,27 +564,27 @@ class pauli2cnf:
 
         cnf.vars.z[t] = Zt
 
-    def CCX2CNF(cnf, c1, c2, t):
-        # Controlled-SqrtX(c1, t) = H(t) CS(c1, t) H(t)
+    def CCX2CNF(cnf, k, c, t):
+        # Controlled-SqrtX(k, t) = H(t) CS(k, t) H(t)
         pauli2cnf.H2CNF(cnf, t)
-        pauli2cnf.CS2CNF(cnf, c1, t)
-        pauli2cnf.H2CNF(cnf, t)
-
-        # Controlled-SqrtX(c2, t) = H(t) CS(c2, t) H(t)
-        pauli2cnf.H2CNF(cnf, t)
-        pauli2cnf.CS2CNF(cnf, c2, t)
+        pauli2cnf.CS2CNF(cnf, k, t)
         pauli2cnf.H2CNF(cnf, t)
 
-        # Controlled-X(c1, c2)
-        pauli2cnf.CNOT2CNF(cnf, c1, c2)
-
-        # Controlled-SqrtXdg(c2, t) = H(t) CSdg(c2, t) H(t)
+        # Controlled-SqrtX(c, t) = H(t) CS(c, t) H(t)
         pauli2cnf.H2CNF(cnf, t)
-        pauli2cnf.CSdg2CNF(cnf, c2, t)
+        pauli2cnf.CS2CNF(cnf, c, t)
         pauli2cnf.H2CNF(cnf, t)
 
-        # Controlled-X(c1, c2)
-        pauli2cnf.CNOT2CNF(cnf, c1, c2)
+        # Controlled-X(k, c)
+        pauli2cnf.CNOT2CNF(cnf, k, c)
+
+        # Controlled-SqrtXdg(c, t) = H(t) CSdg(c, t) H(t)
+        pauli2cnf.H2CNF(cnf, t)
+        pauli2cnf.CSdg2CNF(cnf, c, t)
+        pauli2cnf.H2CNF(cnf, t)
+
+        # Controlled-X(k, c)
+        pauli2cnf.CNOT2CNF(cnf, k, c)
 
     def RZ2CNF(cnf, k, theta):
         x = cnf.vars.x
@@ -909,14 +909,35 @@ class pauli2cnf:
             hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
         else:
             hg = [0.5 for _ in range(n)]
+        sg = [cnf.add_var(syn_gate_pick = True, Name = 's', bits = [k]) for k in range(n)]
         if not limit_gates or not h_layer:
             tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
             tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
             cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+            ccxg = [
+                        [
+                            [
+                                cnf.add_var(syn_gate_pick=True, Name='ccx', bits=[c1, c2, t]) 
+                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
+                            ]
+                            for c2 in range(n)
+                        ]
+                        for c1 in range(n)
+                    ]
         else:
             tdg = [0.5 for _ in range(n)]
             tg = [0.5 for _ in range(n)]
             cg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            ccxg = [
+                        [
+                            [
+                                0.5 
+                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
+                            ]
+                            for c2 in range(n)
+                        ]
+                        for c1 in range(n)
+                    ]
         for k in range(n):
     
             # Implies(idg[k], ~R[k])
@@ -941,6 +962,20 @@ class pauli2cnf:
             cnf.add_clause([-Z[k], -hg[k],  x[k]])
             # Implies(hg[k], ~U[k])
             cnf.add_clause([-U[k], -hg[k]])
+            # Implies(sg[k], Equivalent(R[k], x[k] & z[k]))
+            cnf.add_clause([-R[k], -sg[k],  x[k]])
+            cnf.add_clause([-R[k], -sg[k],  z[k]])
+            cnf.add_clause([ R[k], -sg[k], -x[k], -z[k]])
+            # Implies(sg[k], Equivalent(X[k], x[k]))
+            cnf.add_clause([ X[k], -sg[k], -x[k]])
+            cnf.add_clause([-X[k], -sg[k],  x[k]])
+            # Implies(sg[k], Equivalent(Z[k], x[k] ^ z[k]))
+            cnf.add_clause([ Z[k], -sg[k],  x[k], -z[k]])
+            cnf.add_clause([ Z[k], -sg[k], -x[k],  z[k]])
+            cnf.add_clause([-Z[k], -sg[k],  x[k],  z[k]])
+            cnf.add_clause([-Z[k], -sg[k], -x[k], -z[k]])
+            # Implies(sg[k], ~U[k])
+            cnf.add_clause([-U[k], -sg[k]])
             # Implies(tdg[k], Equivalent(R[k], Z[k] & x[k] & ~z[k]))
             cnf.add_clause([-R[k],  Z[k], -tdg[k]])
             cnf.add_clause([-R[k], -tdg[k],  x[k]])
@@ -1002,13 +1037,90 @@ class pauli2cnf:
                 # Implies(cg[c][t], ~U[t])
                 cnf.add_clause([-U[t], -cg[c][t]])
 
+            for c in range(n):
+                if c == k:
+                    continue
+                for t in range(n):
+                    if t == c or t == k:
+                        continue
+    
+                    # Implies(ccxg[k][c][t], Equivalent(X[k], x[k]))
+                    cnf.add_clause([ X[k], -ccxg[k][c][t], -x[k]])
+                    cnf.add_clause([-X[k], -ccxg[k][c][t],  x[k]])
+                    # Implies(ccxg[k][c][t], Equivalent(X[c], x[c]))
+                    cnf.add_clause([ X[c], -ccxg[k][c][t], -x[c]])
+                    cnf.add_clause([-X[c], -ccxg[k][c][t],  x[c]])
+                    # Implies(ccxg[k][c][t], Equivalent(X[t], x[t] ^ (x[c] & x[k])))
+                    cnf.add_clause([ X[t], -ccxg[k][c][t],  x[c], -x[t]])
+                    cnf.add_clause([ X[t], -ccxg[k][c][t],  x[k], -x[t]])
+                    cnf.add_clause([-X[t], -ccxg[k][c][t],  x[c],  x[t]])
+                    cnf.add_clause([-X[t], -ccxg[k][c][t],  x[k],  x[t]])
+                    cnf.add_clause([ X[t], -ccxg[k][c][t], -x[c], -x[k],  x[t]])
+                    cnf.add_clause([-X[t], -ccxg[k][c][t], -x[c], -x[k], -x[t]])
+                    # Implies(ccxg[k][c][t], Equivalent(Z[k], z[k] ^ (x[c] & ~x[t])))
+                    cnf.add_clause([ Z[k], -ccxg[k][c][t],  x[c], -z[k]])
+                    cnf.add_clause([-Z[k], -ccxg[k][c][t],  x[c],  z[k]])
+                    cnf.add_clause([ Z[k], -ccxg[k][c][t], -x[t], -z[k]])
+                    cnf.add_clause([-Z[k], -ccxg[k][c][t], -x[t],  z[k]])
+                    cnf.add_clause([ Z[k], -ccxg[k][c][t], -x[c],  x[t],  z[k]])
+                    cnf.add_clause([-Z[k], -ccxg[k][c][t], -x[c],  x[t], -z[k]])
+                    # Implies(ccxg[k][c][t], Equivalent(Z[c], z[c] ^ (x[k] & ~x[t])))
+                    cnf.add_clause([ Z[c], -ccxg[k][c][t],  x[k], -z[c]])
+                    cnf.add_clause([-Z[c], -ccxg[k][c][t],  x[k],  z[c]])
+                    cnf.add_clause([ Z[c], -ccxg[k][c][t], -x[t], -z[c]])
+                    cnf.add_clause([-Z[c], -ccxg[k][c][t], -x[t],  z[c]])
+                    cnf.add_clause([ Z[c], -ccxg[k][c][t], -x[k],  x[t],  z[c]])
+                    cnf.add_clause([-Z[c], -ccxg[k][c][t], -x[k],  x[t], -z[c]])
+                    # Implies(ccxg[k][c][t], Equivalent(Z[t], z[t]))
+                    cnf.add_clause([ Z[t], -ccxg[k][c][t], -z[t]])
+                    cnf.add_clause([-Z[t], -ccxg[k][c][t],  z[t]])
+                    # Implies(ccxg[k][c][t], Equivalent(R[k], (x[t] & z[t]) ^ (x[c] & x[k] & ~x[t]) ^ (x[c] & x[t] & ~x[k]) ^ (x[k] & x[t] & ~x[c])))
+                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[c],  x[t]])
+                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[k],  x[t]])
+                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[c],  x[k],  z[t]])
+                    cnf.add_clause([ R[k], -ccxg[k][c][t], -x[c], -x[k],  x[t]])
+                    cnf.add_clause([ R[k], -ccxg[k][c][t], -x[c], -x[k], -z[t]])
+                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[c], -x[k], -z[t]])
+                    cnf.add_clause([-R[k], -ccxg[k][c][t], -x[c],  x[k], -z[t]])
+                    cnf.add_clause([ R[k], -ccxg[k][c][t],  x[c],  x[k], -x[t], -z[t]])
+                    cnf.add_clause([ R[k], -ccxg[k][c][t],  x[c], -x[k], -x[t],  z[t]])
+                    cnf.add_clause([ R[k], -ccxg[k][c][t], -x[c],  x[k], -x[t],  z[t]])
+                    cnf.add_clause([-R[k], -ccxg[k][c][t], -x[c], -x[k], -x[t],  z[t]])
+                    # Implies(ccxg[k][c][t], ~R[c])
+                    cnf.add_clause([-R[c], -ccxg[k][c][t]])
+                    # Implies(ccxg[k][c][t], ~R[t])
+                    cnf.add_clause([-R[t], -ccxg[k][c][t]])
+                    # Implies(ccxg[k][c][t], ~U[k])
+                    cnf.add_clause([-U[k], -ccxg[k][c][t]])
+                    # Implies(ccxg[k][c][t], ~U[c])
+                    cnf.add_clause([-U[c], -ccxg[k][c][t]])
+                    # Implies(ccxg[k][c][t], ~U[t])
+                    cnf.add_clause([-U[t], -ccxg[k][c][t]])
+
           
             cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
+            cxs_k = (
+                # k as first control
+                [ ccxg[k][c2][t]
+                for c2 in range(n) if c2 != k
+                for t  in range(n) if t not in (k, c2) ]
+            + # k as second control
+                [ ccxg[c1][k][t]
+                for c1 in range(n) if c1 != k
+                for t  in range(n) if t not in (k, c1) ]
+            + # k as target
+                [ ccxg[c1][c2][k]
+                for c1 in range(n) if c1 != k
+                for c2 in range(n) if c2 not in (k, c1) ]
+            )
             gate_controlers = [idg[k]]
             if not limit_gates or h_layer:
                 gate_controlers += [hg[k]]
+            gate_controlers += [sg[k]]
             if not limit_gates or not h_layer:
-                gate_controlers += [tdg[k], tg[k]] + cgs_k
+                gate_controlers += [tdg[k], tg[k]]
+                gate_controlers += cgs_k
+                gate_controlers += cxs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer>=2:
