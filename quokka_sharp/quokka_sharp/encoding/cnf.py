@@ -657,16 +657,15 @@ class CNF:
             else:
                 to_CNF.SynLayer2CNF(self, limit_gates=limit_gates, h_layer=h_layer)
 
-    def get_syn_circuit(self, assignment, translate_ccx=True) -> Circuit:
+    def get_syn_circuit(self, assignment) -> Circuit:
         """
         Convert an assignment for the syn variable to a corresponding Circuit object.
         Args:
             assignment (list): The assignment of variables.
-            translate_ccx (bool): If True, translate CCX gates to CNOT and T gates.
         Returns:
             Circuit: The corresponding Circuit object.
         """
-        circuit = Circuit(translate_ccx)
+        circuit = Circuit()
         circuit.n = self.n
         for v in assignment:
             if int(v) > 0:

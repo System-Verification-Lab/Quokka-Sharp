@@ -48,28 +48,11 @@ class Circuit:
         self.circ.append([gate, angle, qubit])
         self.has_rotations = True
     
-    def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int, translate_ccx:bool):
+    def add_ccx(self,qubitc1: int,qubitc2: int, qubitr: int):
         """
         Adds a Toffoli gate (CCX) to the circuit.
         """
-        if translate_ccx:
-            self.add_single('h',    qubitr)
-            self.add_double('cx',   qubitc2, qubitr)
-            self.add_single('tdg',  qubitr)
-            self.add_double('cx',   qubitc1, qubitr)
-            self.add_single('t',    qubitr)
-            self.add_double('cx'    ,qubitc2, qubitr)
-            self.add_single('tdg',  qubitr)
-            self.add_double('cx',   qubitc1, qubitr)
-            self.add_single('t',    qubitc2)
-            self.add_single('t',    qubitr)
-            self.add_double('cx',   qubitc1, qubitc2)
-            self.add_single('h',    qubitr)
-            self.add_single('t',    qubitc1)
-            self.add_single('tdg',  qubitc2)
-            self.add_double('cx',   qubitc1, qubitc2)
-        else:
-            self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
+        self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
         
     def add_measurement(self, multi_or_single: bool):
         """
@@ -192,9 +175,7 @@ def get_angle(angle: str):
     except:
         raise Exception(angle, "is not supported")
 
-#TODO: the translate CCX should be factored out to some optimization pass
-#      or separate circuit converter tool
-def QASMparser(filename, translate_ccx: bool) -> Circuit:
+def QASMparser(filename) -> Circuit:
     """
     Parses a QASM file and returns a Circuit object.
     """
@@ -273,7 +254,7 @@ def QASMparser(filename, translate_ccx: bool) -> Circuit:
                 qubitc1 = get_num(qubits[0])
                 qubitc2 = get_num(qubits[1]) 
                 qubitr = get_num(qubits[2])                
-            circuit.add_ccx(qubitc1, qubitc2, qubitr, translate_ccx)
+            circuit.add_ccx(qubitc1, qubitc2, qubitr)
 
         elif len(gate) > 4 and gate[0:2] in RotationGates:
             # TODO: gate exception

@@ -9,6 +9,7 @@ import os
 parser = argparse.ArgumentParser(description="QuokkaSharp Debug Script")
 parser.add_argument("--tmp", type=str, required=True, help="Path to write CNFs")
 parser.add_argument("--qasmfile1", type=str, required=True, help="Path to the first QASM file")
+parser.add_argument("--qasmfile2", type=str, required=False, help="Path to the first QASM file")
 args = parser.parse_args()
 
 cnf_dir = args.tmp
@@ -16,14 +17,16 @@ qasmfile1 = args.qasmfile1
 base, ext = os.path.splitext(qasmfile1)
 if base.endswith("1"):
     base = base[:-1]
-qasmfile2 = f"{base}2{ext}"
+#qasmfile2 = f"{base}2{ext}"
+
+qasmfile2 = args.qasmfile2
 
 
 # '''
 # Simulation
 # '''
 # # Parse the circuit where the encoding will decompose ccx gate into Clifford+T.
-# circuit1 = qk.encoding.QASMparser(qasmfile1, translate_ccx = True)
+# circuit1 = qk.encoding.QASMparser(qasmfile1)
 # # Encode the circuit (for computational basis, use `computational_basis = True`)
 # cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # # Set the input state to be the all-zero state |0...0>.
@@ -40,9 +43,9 @@ qasmfile2 = f"{base}2{ext}"
 # Equivalence checking
 # '''
 # # Parse the circuit
-# circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+# circuit1 = qk.encoding.QASMparser(qasmfile1)
 # # Parse another circuit
-# circuit2 = qk.encoding.QASMparser(qasmfile2, True)
+# circuit2 = qk.encoding.QASMparser(qasmfile2)
 # # Get (circuit1)(circuit2)^dagger
 # circuit2.dagger()
 # circuit1.append(circuit2)
@@ -57,7 +60,7 @@ qasmfile2 = f"{base}2{ext}"
 Verification
 '''
 # # Parse the circuit
-# circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+# circuit1 = qk.encoding.QASMparser(qasmfile1)
 # # Encode the circuit in Pauli basis (can change to True for the computational basis)
 # cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # # Verify for pre and post conditions given in dictionary format
@@ -70,7 +73,7 @@ Synthesis
 # Change the tool_invocation in config.json to be the maximum weighted model counter.
 
 # Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile1, False)
+circuit = qk.encoding.QASMparser(qasmfile1)
 # Get (circuit)^dagger
 circuit.dagger()
 # Get CNF for the circuit in Pauli basis (can change to True for the computational basis)

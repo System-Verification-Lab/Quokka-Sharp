@@ -478,6 +478,21 @@ class pauli2cnf:
         x[c], x[t] = x[t], x[c]
         z[c], z[t] = z[t], z[c]
 
+        # adding sign if True
+        R = cnf.add_var()
+        cnf.vars.RVar.append(R)
+        if cnf.weighted: 
+            cnf.add_weight(R, -1)
+            cnf.add_weight(-R, 1)
+            # R
+            cnf.add_clause([ R])
+        else: 
+            r = cnf.vars.r
+            cnf.vars.r = R
+            # Equivalent(R, ~r)
+            cnf.add_clause([ R,  r])
+            cnf.add_clause([-R, -r])
+
     def ISWAP2CNF(cnf, c, t):
         pauli2cnf.SWAP2CNF(cnf, c, t)
         pauli2cnf.CZ2CNF(cnf, c, t)
@@ -488,102 +503,241 @@ class pauli2cnf:
         x = cnf.vars.x
         z = cnf.vars.z
 
+        Zc = cnf.add_var()
+        cnf.vars.ZVar.append(Zc)
+        # x[c] | x[t] | (Equivalent(Zc, z[c]))
+        cnf.add_clause([ Zc,  x[c],  x[t], -z[c]])
+        cnf.add_clause([-Zc,  x[c],  x[t],  z[c]])
+
         Zt = cnf.add_var()
         cnf.vars.ZVar.append(Zt)
-        # Equivalent(Zt, z[t] ^ (x[c] & x[t]))
-        cnf.add_clause([ Zt,  x[c], -z[t]])
-        cnf.add_clause([ Zt,  x[t], -z[t]])
-        cnf.add_clause([-Zt,  x[c],  z[t]])
-        cnf.add_clause([-Zt,  x[t],  z[t]])
-        cnf.add_clause([ Zt, -x[c], -x[t],  z[t]])
-        cnf.add_clause([-Zt, -x[c], -x[t], -z[t]])
+        # x[c] | x[t] | (Equivalent(Zt, z[t]))
+        cnf.add_clause([ Zt,  x[c],  x[t], -z[t]])
+        cnf.add_clause([-Zt,  x[c],  x[t],  z[t]])
 
-        # adding sign if x[c] & x[t] & z[t]
+        # adding sign if (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t]))
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
             cnf.add_weight(R, -1)
             cnf.add_weight(-R, 1)
-            # Equivalent(R, x[c] & x[t] & z[t])
-            cnf.add_clause([-R,  x[c]])
-            cnf.add_clause([-R,  x[t]])
-            cnf.add_clause([-R,  z[t]])
-            cnf.add_clause([ R, -x[c], -x[t], -z[t]])
+            # Equivalent(R, (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([-R,  Zc,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zc,  z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  x[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  z[t]])
+            cnf.add_clause([-R, -Zt,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  x[t], -z[c]])
+            cnf.add_clause([-R, -Zt,  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -z[c]])
+            cnf.add_clause([ R,  Zc,  Zt, -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  x[c], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  x[c],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zt, -x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc, -x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zt, -x[c], -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -x[c],  x[t],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc,  Zt,  x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -x[c], -z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -x[c], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -x[t], -z[c], -z[t]])
         else: 
             r = cnf.vars.r
             cnf.vars.r = R
-            # Equivalent(R, r ^ (x[c] & x[t] & z[t]))
-            cnf.add_clause([ R, -r,  x[c]])
-            cnf.add_clause([ R, -r,  x[t]])
-            cnf.add_clause([ R, -r,  z[t]])
-            cnf.add_clause([-R,  r,  x[c]])
-            cnf.add_clause([-R,  r,  x[t]])
-            cnf.add_clause([-R,  r,  z[t]])
-            cnf.add_clause([ R,  r, -x[c], -x[t], -z[t]])
-            cnf.add_clause([-R, -r, -x[c], -x[t], -z[t]])
+            # Equivalent(R, r ^ (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([ R,  Zc, -r,  x[t],  z[c]])
+            cnf.add_clause([ R,  Zc, -r,  z[c],  z[t]])
+            cnf.add_clause([ R,  Zt, -r,  x[c],  z[t]])
+            cnf.add_clause([-R,  Zc,  r,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zc,  r,  z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  r,  x[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -r,  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  r,  z[t]])
+            cnf.add_clause([ R, -Zt, -r,  x[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -r,  x[t], -z[c]])
+            cnf.add_clause([ R, -Zt, -r,  z[c], -z[t]])
+            cnf.add_clause([-R, -Zt,  r,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  r,  x[t], -z[c]])
+            cnf.add_clause([-R, -Zt,  r,  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -r, -z[c]])
+            cnf.add_clause([-R, -Zc, -Zt,  r, -z[c]])
+            cnf.add_clause([ R,  Zc,  Zt,  r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r,  x[c], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r,  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r,  x[c],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r,  x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zt, -r, -x[c], -x[t],  z[c]])
+            cnf.add_clause([-R, -Zt,  r, -x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc,  r, -x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -r, -x[c],  x[t],  z[t]])
+            cnf.add_clause([ R,  Zt,  r, -x[c], -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -r,  x[c], -x[t],  z[c]])
+            cnf.add_clause([-R,  Zc, -Zt,  r, -x[c],  x[t],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt,  r,  x[c], -x[t],  z[c]])
+            cnf.add_clause([ R,  Zc,  Zt,  r,  x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt, -r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt, -r, -x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r, -x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt,  r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt,  r, -x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r,  x[c], -z[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r,  x[t],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r,  x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r,  x[t],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -r, -x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt, -r, -x[c], -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r,  x[c],  x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r, -x[c], -z[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r, -x[t], -z[c], -z[t]])
 
+        u = cnf.add_var()
+        cnf.vars.UVar.append(u)
+        cnf.add_weight( u, Decimal(1/2))
+        cnf.add_weight(-u, 1)
+        # Equivalent(u, x[c] | x[t])
+        cnf.add_clause([ u, -x[c]])
+        cnf.add_clause([ u, -x[t]])
+        cnf.add_clause([-u,  x[c],  x[t]])
+
+        cnf.vars.z[c] = Zc
         cnf.vars.z[t] = Zt
 
     def CSdg2CNF(cnf, c, t):
         x = cnf.vars.x
         z = cnf.vars.z
 
+        Zc = cnf.add_var()
+        cnf.vars.ZVar.append(Zc)
+        # x[c] | x[t] | (Equivalent(Zc, z[c]))
+        cnf.add_clause([ Zc,  x[c],  x[t], -z[c]])
+        cnf.add_clause([-Zc,  x[c],  x[t],  z[c]])
+
         Zt = cnf.add_var()
         cnf.vars.ZVar.append(Zt)
-        # Equivalent(Zt, z[t] ^ (x[c] & x[t]))
-        cnf.add_clause([ Zt,  x[c], -z[t]])
-        cnf.add_clause([ Zt,  x[t], -z[t]])
-        cnf.add_clause([-Zt,  x[c],  z[t]])
-        cnf.add_clause([-Zt,  x[t],  z[t]])
-        cnf.add_clause([ Zt, -x[c], -x[t],  z[t]])
-        cnf.add_clause([-Zt, -x[c], -x[t], -z[t]])
+        # x[c] | x[t] | (Equivalent(Zt, z[t]))
+        cnf.add_clause([ Zt,  x[c],  x[t], -z[t]])
+        cnf.add_clause([-Zt,  x[c],  x[t],  z[t]])
 
-        # adding sign if x[c] & x[t] & ~z[t]
+        # adding sign if (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t]))
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
             cnf.add_weight(R, -1)
             cnf.add_weight(-R, 1)
-            # Equivalent(R, x[c] & x[t] & ~z[t])
-            cnf.add_clause([-R,  x[c]])
-            cnf.add_clause([-R,  x[t]])
-            cnf.add_clause([-R, -z[t]])
-            cnf.add_clause([ R, -x[c], -x[t],  z[t]])
+            # Equivalent(R, (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([-R,  Zc,  Zt,  z[c]])
+            cnf.add_clause([-R,  Zc,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zt,  x[c],  z[t]])
+            cnf.add_clause([-R,  Zt, -z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -z[t]])
+            cnf.add_clause([-R, -Zt,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  x[t], -z[c]])
+            cnf.add_clause([-R, -Zc, -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  x[c], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -x[c], -x[t], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt, -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt, -x[c],  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  x[c],  x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -x[t],  z[c],  z[t]])
         else: 
             r = cnf.vars.r
             cnf.vars.r = R
-            # Equivalent(R, r ^ (x[c] & x[t] & ~z[t]))
-            cnf.add_clause([ R, -r,  x[c]])
-            cnf.add_clause([ R, -r,  x[t]])
-            cnf.add_clause([-R,  r,  x[c]])
-            cnf.add_clause([-R,  r,  x[t]])
-            cnf.add_clause([ R, -r, -z[t]])
-            cnf.add_clause([-R,  r, -z[t]])
-            cnf.add_clause([ R,  r, -x[c], -x[t],  z[t]])
-            cnf.add_clause([-R, -r, -x[c], -x[t],  z[t]])
+            # Equivalent(R, r ^ (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
+            cnf.add_clause([ R,  Zc,  Zt, -r,  z[c]])
+            cnf.add_clause([ R,  Zc, -r,  x[t],  z[c]])
+            cnf.add_clause([ R,  Zt, -r,  x[c],  z[t]])
+            cnf.add_clause([-R,  Zc,  Zt,  r,  z[c]])
+            cnf.add_clause([-R,  Zc,  r,  x[t],  z[c]])
+            cnf.add_clause([-R,  Zt,  r,  x[c],  z[t]])
+            cnf.add_clause([ R,  Zt, -r, -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  r, -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt, -r, -z[t]])
+            cnf.add_clause([ R, -Zt, -r,  x[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -r,  x[t], -z[c]])
+            cnf.add_clause([-R,  Zc, -Zt,  r, -z[t]])
+            cnf.add_clause([-R, -Zt,  r,  x[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  r,  x[t], -z[c]])
+            cnf.add_clause([ R, -Zc, -r, -z[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  r, -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  r,  x[c], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc,  Zt,  r,  x[t], -z[c], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r,  x[t], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r,  x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -r, -x[c], -x[t], -z[t]])
+            cnf.add_clause([-R,  Zc,  r, -x[c], -x[t], -z[t]])
+            cnf.add_clause([ R,  Zc, -Zt,  r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([ R,  Zc, -r,  x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc,  Zt,  r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([ R,  Zt, -r, -x[c],  x[t],  z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  r,  x[c], -x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zt,  r, -x[c],  x[t],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r,  x[c],  x[t],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r, -x[c],  z[c], -z[t]])
+            cnf.add_clause([ R, -Zc, -Zt,  r, -x[t], -z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([ R, -Zc, -Zt, -r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r,  x[c], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc,  Zt, -r,  x[t], -z[c], -z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r,  x[t], -z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r,  x[c],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt,  r, -x[c],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt,  r, -x[t],  z[c],  z[t]])
+            cnf.add_clause([-R,  Zc, -Zt, -r, -x[c], -z[c],  z[t]])
+            cnf.add_clause([-R, -Zc,  Zt, -r, -x[t],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r,  x[c],  x[t],  z[c],  z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r, -x[c],  z[c], -z[t]])
+            cnf.add_clause([-R, -Zc, -Zt, -r, -x[t], -z[c],  z[t]])
 
+        u = cnf.add_var()
+        cnf.vars.UVar.append(u)
+        cnf.add_weight( u, Decimal(1/2))
+        cnf.add_weight(-u, 1)
+        # Equivalent(u, x[c] | x[t])
+        cnf.add_clause([ u, -x[c]])
+        cnf.add_clause([ u, -x[t]])
+        cnf.add_clause([-u,  x[c],  x[t]])
+
+        cnf.vars.z[c] = Zc
         cnf.vars.z[t] = Zt
 
-    def CCX2CNF(cnf, k, c, t):
-        # Controlled-SqrtX(k, t) = H(t) CS(k, t) H(t)
-        pauli2cnf.H2CNF(cnf, t)
-        pauli2cnf.CS2CNF(cnf, k, t)
-        pauli2cnf.H2CNF(cnf, t)
-
-        # Controlled-SqrtX(c, t) = H(t) CS(c, t) H(t)
+    def CSqrtX2CNF(cnf, c, t):
         pauli2cnf.H2CNF(cnf, t)
         pauli2cnf.CS2CNF(cnf, c, t)
         pauli2cnf.H2CNF(cnf, t)
 
-        # Controlled-X(k, c)
-        pauli2cnf.CNOT2CNF(cnf, k, c)
-
-        # Controlled-SqrtXdg(c, t) = H(t) CSdg(c, t) H(t)
+    def CSqrtXdg2CNF(cnf, c, t):
         pauli2cnf.H2CNF(cnf, t)
         pauli2cnf.CSdg2CNF(cnf, c, t)
         pauli2cnf.H2CNF(cnf, t)
 
-        # Controlled-X(k, c)
+    def CCX2CNF(cnf, k, c, t):
+        pauli2cnf.CSqrtX2CNF(cnf, k, t)
+        pauli2cnf.CSqrtX2CNF(cnf, c, t)
+        pauli2cnf.CNOT2CNF(cnf, k, c)
+        pauli2cnf.CSqrtXdg2CNF(cnf, c, t)
         pauli2cnf.CNOT2CNF(cnf, k, c)
 
     def RZ2CNF(cnf, k, theta):
@@ -913,31 +1067,15 @@ class pauli2cnf:
         if not limit_gates or not h_layer:
             tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
             tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
-            cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
-            ccxg = [
-                        [
-                            [
-                                cnf.add_var(syn_gate_pick=True, Name='ccx', bits=[c1, c2, t]) 
-                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
-                            ]
-                            for c2 in range(n)
-                        ]
-                        for c1 in range(n)
-                    ]
+            cx = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtx = [[cnf.add_var(syn_gate_pick = True, Name = 'csqrtx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtxdg = [[cnf.add_var(syn_gate_pick = True, Name = 'csqrtxdg', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         else:
             tdg = [0.5 for _ in range(n)]
             tg = [0.5 for _ in range(n)]
-            cg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
-            ccxg = [
-                        [
-                            [
-                                0.5 
-                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
-                            ]
-                            for c2 in range(n)
-                        ]
-                        for c1 in range(n)
-                    ]
+            cx = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtx = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtxdg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
         for k in range(n):
     
             # Implies(idg[k], ~R[k])
@@ -962,165 +1100,134 @@ class pauli2cnf:
             cnf.add_clause([-Z[k], -hg[k],  x[k]])
             # Implies(hg[k], ~U[k])
             cnf.add_clause([-U[k], -hg[k]])
-            # Implies(sg[k], Equivalent(R[k], x[k] & z[k]))
-            cnf.add_clause([-R[k], -sg[k],  x[k]])
-            cnf.add_clause([-R[k], -sg[k],  z[k]])
-            cnf.add_clause([ R[k], -sg[k], -x[k], -z[k]])
-            # Implies(sg[k], Equivalent(X[k], x[k]))
-            cnf.add_clause([ X[k], -sg[k], -x[k]])
-            cnf.add_clause([-X[k], -sg[k],  x[k]])
-            # Implies(sg[k], Equivalent(Z[k], x[k] ^ z[k]))
-            cnf.add_clause([ Z[k], -sg[k],  x[k], -z[k]])
-            cnf.add_clause([ Z[k], -sg[k], -x[k],  z[k]])
-            cnf.add_clause([-Z[k], -sg[k],  x[k],  z[k]])
-            cnf.add_clause([-Z[k], -sg[k], -x[k], -z[k]])
-            # Implies(sg[k], ~U[k])
-            cnf.add_clause([-U[k], -sg[k]])
-            # Implies(tdg[k], Equivalent(R[k], Z[k] & x[k] & ~z[k]))
-            cnf.add_clause([-R[k],  Z[k], -tdg[k]])
-            cnf.add_clause([-R[k], -tdg[k],  x[k]])
-            cnf.add_clause([-R[k], -tdg[k], -z[k]])
-            cnf.add_clause([ R[k], -Z[k], -tdg[k], -x[k],  z[k]])
-            # Implies(tg[k], Equivalent(R[k], x[k] & z[k] & ~Z[k]))
-            cnf.add_clause([-R[k], -tg[k],  x[k]])
-            cnf.add_clause([-R[k], -tg[k],  z[k]])
-            cnf.add_clause([-R[k], -Z[k], -tg[k]])
-            cnf.add_clause([ R[k],  Z[k], -tg[k], -x[k], -z[k]])
-            # Implies(tdg[k] | tg[k], Equivalent(X[k], x[k]))
-            cnf.add_clause([ X[k], -tdg[k], -x[k]])
-            cnf.add_clause([ X[k], -tg[k], -x[k]])
-            cnf.add_clause([-X[k], -tdg[k],  x[k]])
-            cnf.add_clause([-X[k], -tg[k],  x[k]])
-            # x[k] | (Implies(tdg[k] | tg[k], Equivalent(Z[k], z[k])))
-            cnf.add_clause([ Z[k], -tdg[k],  x[k], -z[k]])
-            cnf.add_clause([ Z[k], -tg[k],  x[k], -z[k]])
-            cnf.add_clause([-Z[k], -tdg[k],  x[k],  z[k]])
-            cnf.add_clause([-Z[k], -tg[k],  x[k],  z[k]])
-            # Implies(tdg[k] | tg[k], Equivalent(U[k], x[k]))
-            cnf.add_clause([ U[k], -tdg[k], -x[k]])
-            cnf.add_clause([ U[k], -tg[k], -x[k]])
-            cnf.add_clause([-U[k], -tdg[k],  x[k]])
-            cnf.add_clause([-U[k], -tg[k],  x[k]])
 
             c = k
             for t in range(n):
                 if t==c:
                     continue
     
-                # Implies(cg[c][t], Equivalent(X[c], x[c]))
-                cnf.add_clause([ X[c], -cg[c][t], -x[c]])
-                cnf.add_clause([-X[c], -cg[c][t],  x[c]])
-                # Implies(cg[c][t], Equivalent(X[t], x[c] ^ x[t]))
-                cnf.add_clause([ X[t], -cg[c][t],  x[c], -x[t]])
-                cnf.add_clause([ X[t], -cg[c][t], -x[c],  x[t]])
-                cnf.add_clause([-X[t], -cg[c][t],  x[c],  x[t]])
-                cnf.add_clause([-X[t], -cg[c][t], -x[c], -x[t]])
-                # Implies(cg[c][t], Equivalent(Z[c], z[c] ^ z[t]))
-                cnf.add_clause([ Z[c], -cg[c][t],  z[c], -z[t]])
-                cnf.add_clause([ Z[c], -cg[c][t], -z[c],  z[t]])
-                cnf.add_clause([-Z[c], -cg[c][t],  z[c],  z[t]])
-                cnf.add_clause([-Z[c], -cg[c][t], -z[c], -z[t]])
-                # Implies(cg[c][t], Equivalent(Z[t], z[t]))
-                cnf.add_clause([ Z[t], -cg[c][t], -z[t]])
-                cnf.add_clause([-Z[t], -cg[c][t],  z[t]])
-                # Implies(cg[c][t], Equivalent(R[c], x[c] & z[t] & (z[c] ^ ~x[t])))
-                cnf.add_clause([-R[c], -cg[c][t],  x[c]])
-                cnf.add_clause([-R[c], -cg[c][t],  z[t]])
-                cnf.add_clause([-R[c], -cg[c][t],  x[t], -z[c]])
-                cnf.add_clause([-R[c], -cg[c][t], -x[t],  z[c]])
-                cnf.add_clause([ R[c], -cg[c][t], -x[c],  x[t],  z[c], -z[t]])
-                cnf.add_clause([ R[c], -cg[c][t], -x[c], -x[t], -z[c], -z[t]])
-                # Implies(cg[c][t], ~R[t])
-                cnf.add_clause([-R[t], -cg[c][t]])
-                # Implies(cg[c][t], ~U[c])
-                cnf.add_clause([-U[c], -cg[c][t]])
-                # Implies(cg[c][t], ~U[t])
-                cnf.add_clause([-U[t], -cg[c][t]])
+                # Implies(cx[c][t], Equivalent(X[c], x[c]))
+                cnf.add_clause([ X[c], -cx[c][t], -x[c]])
+                cnf.add_clause([-X[c], -cx[c][t],  x[c]])
+                # Implies(cx[c][t], Equivalent(X[t], x[c] ^ x[t]))
+                cnf.add_clause([ X[t], -cx[c][t],  x[c], -x[t]])
+                cnf.add_clause([ X[t], -cx[c][t], -x[c],  x[t]])
+                cnf.add_clause([-X[t], -cx[c][t],  x[c],  x[t]])
+                cnf.add_clause([-X[t], -cx[c][t], -x[c], -x[t]])
+                # Implies(cx[c][t], Equivalent(Z[c], z[c] ^ z[t]))
+                cnf.add_clause([ Z[c], -cx[c][t],  z[c], -z[t]])
+                cnf.add_clause([ Z[c], -cx[c][t], -z[c],  z[t]])
+                cnf.add_clause([-Z[c], -cx[c][t],  z[c],  z[t]])
+                cnf.add_clause([-Z[c], -cx[c][t], -z[c], -z[t]])
+                # Implies(cx[c][t], Equivalent(Z[t], z[t]))
+                cnf.add_clause([ Z[t], -cx[c][t], -z[t]])
+                cnf.add_clause([-Z[t], -cx[c][t],  z[t]])
+                # Implies(cx[c][t], Equivalent(R[c], x[c] & z[t] & (z[c] ^ ~x[t])))
+                cnf.add_clause([-R[c], -cx[c][t],  x[c]])
+                cnf.add_clause([-R[c], -cx[c][t],  z[t]])
+                cnf.add_clause([-R[c], -cx[c][t],  x[t], -z[c]])
+                cnf.add_clause([-R[c], -cx[c][t], -x[t],  z[c]])
+                cnf.add_clause([ R[c], -cx[c][t], -x[c],  x[t],  z[c], -z[t]])
+                cnf.add_clause([ R[c], -cx[c][t], -x[c], -x[t], -z[c], -z[t]])
+                # Implies(cx[c][t], ~R[t])
+                cnf.add_clause([-R[t], -cx[c][t]])
+                # Implies(cx[c][t], ~U[c])
+                cnf.add_clause([-U[c], -cx[c][t]])
+                # Implies(cx[c][t], ~U[t])
+                cnf.add_clause([-U[t], -cx[c][t]])
+                # Implies(csqrtx[c][t] | csqrtxdg[c][t], Equivalent(X[c], x[c]))
+                cnf.add_clause([ X[c], -csqrtx[c][t], -x[c]])
+                cnf.add_clause([ X[c], -csqrtxdg[c][t], -x[c]])
+                cnf.add_clause([-X[c], -csqrtx[c][t],  x[c]])
+                cnf.add_clause([-X[c], -csqrtxdg[c][t],  x[c]])
+                # Implies(csqrtx[c][t] | csqrtxdg[c][t], Equivalent(X[t], z[t]))
+                cnf.add_clause([ X[t], -csqrtx[c][t], -z[t]])
+                cnf.add_clause([ X[t], -csqrtxdg[c][t], -z[t]])
+                cnf.add_clause([-X[t], -csqrtx[c][t],  z[t]])
+                cnf.add_clause([-X[t], -csqrtxdg[c][t],  z[t]])
+                # x[c] | x[t] | (Implies(csqrtx[c][t] | csqrtxdg[c][t], Equivalent(Z[c], z[c])))
+                cnf.add_clause([ Z[c], -csqrtx[c][t],  x[c],  x[t], -z[c]])
+                cnf.add_clause([ Z[c], -csqrtxdg[c][t],  x[c],  x[t], -z[c]])
+                cnf.add_clause([-Z[c], -csqrtx[c][t],  x[c],  x[t],  z[c]])
+                cnf.add_clause([-Z[c], -csqrtxdg[c][t],  x[c],  x[t],  z[c]])
+                # Implies(csqrtxdg[c][t], Equivalent(R[c], (Z[c] & x[c] & ~z[c]) ^ (Z[t] & x[t] & ~z[t]) ^ ((Z[c] ^ z[c]) & (Z[t] ^ z[t]) & (~x[c] | ~x[t]))))
+                cnf.add_clause([-R[c],  Z[c],  Z[t], -csqrtxdg[c][t],  z[c]])
+                cnf.add_clause([-R[c],  Z[c], -csqrtxdg[c][t],  x[t],  z[c]])
+                cnf.add_clause([-R[c],  Z[t], -csqrtxdg[c][t],  x[c],  z[t]])
+                cnf.add_clause([-R[c],  Z[t], -csqrtxdg[c][t], -z[c],  z[t]])
+                cnf.add_clause([-R[c],  Z[c], -Z[t], -csqrtxdg[c][t], -z[t]])
+                cnf.add_clause([-R[c], -Z[t], -csqrtxdg[c][t],  x[c], -z[t]])
+                cnf.add_clause([-R[c], -Z[c], -csqrtxdg[c][t],  x[t], -z[c]])
+                cnf.add_clause([-R[c], -Z[c], -csqrtxdg[c][t], -z[c], -z[t]])
+                cnf.add_clause([ R[c],  Z[c],  Z[t], -csqrtxdg[c][t],  x[c], -z[c], -z[t]])
+                cnf.add_clause([ R[c],  Z[c],  Z[t], -csqrtxdg[c][t],  x[t], -z[c], -z[t]])
+                cnf.add_clause([ R[c],  Z[c], -Z[t], -csqrtxdg[c][t],  x[t], -z[c],  z[t]])
+                cnf.add_clause([ R[c],  Z[c], -Z[t], -csqrtxdg[c][t], -x[t],  z[c],  z[t]])
+                cnf.add_clause([ R[c], -Z[c],  Z[t], -csqrtxdg[c][t],  x[c],  z[c], -z[t]])
+                cnf.add_clause([ R[c], -Z[c],  Z[t], -csqrtxdg[c][t], -x[c],  z[c],  z[t]])
+                cnf.add_clause([-R[c],  Z[c], -csqrtxdg[c][t], -x[c], -x[t], -z[t]])
+                cnf.add_clause([ R[c],  Z[c], -Z[t], -csqrtxdg[c][t], -x[c], -z[c],  z[t]])
+                cnf.add_clause([ R[c], -Z[c],  Z[t], -csqrtxdg[c][t], -x[t],  z[c], -z[t]])
+                cnf.add_clause([-R[c],  Z[c], -csqrtxdg[c][t],  x[c], -x[t], -z[c],  z[t]])
+                cnf.add_clause([-R[c],  Z[t], -csqrtxdg[c][t], -x[c],  x[t],  z[c], -z[t]])
+                cnf.add_clause([ R[c], -Z[c], -Z[t], -csqrtxdg[c][t],  x[c],  x[t],  z[c],  z[t]])
+                cnf.add_clause([ R[c], -Z[c], -Z[t], -csqrtxdg[c][t], -x[c],  z[c], -z[t]])
+                cnf.add_clause([ R[c], -Z[c], -Z[t], -csqrtxdg[c][t], -x[t], -z[c],  z[t]])
+                cnf.add_clause([-R[c], -Z[c], -Z[t], -csqrtxdg[c][t], -x[c],  z[c],  z[t]])
+                cnf.add_clause([-R[c], -Z[c], -Z[t], -csqrtxdg[c][t], -x[t],  z[c],  z[t]])
+                # x[c] | x[t] | (Implies(csqrtx[c][t] | csqrtxdg[c][t], Equivalent(Z[t], x[t])))
+                cnf.add_clause([-Z[t], -csqrtx[c][t],  x[c],  x[t]])
+                cnf.add_clause([-Z[t], -csqrtxdg[c][t],  x[c],  x[t]])
+                # Implies(csqrtx[c][t], Equivalent(R[c], (x[c] & z[c] & ~Z[c]) ^ (x[t] & z[t] & ~Z[t]) ^ ((Z[c] ^ z[c]) & (Z[t] ^ z[t]) & (~x[c] | ~x[t]))))
+                cnf.add_clause([-R[c],  Z[c], -csqrtx[c][t],  x[t],  z[c]])
+                cnf.add_clause([-R[c],  Z[c], -csqrtx[c][t],  z[c],  z[t]])
+                cnf.add_clause([-R[c],  Z[t], -csqrtx[c][t],  x[c],  z[t]])
+                cnf.add_clause([-R[c], -Z[c],  Z[t], -csqrtx[c][t],  z[t]])
+                cnf.add_clause([-R[c], -Z[t], -csqrtx[c][t],  x[c], -z[t]])
+                cnf.add_clause([-R[c], -Z[c], -csqrtx[c][t],  x[t], -z[c]])
+                cnf.add_clause([-R[c], -Z[t], -csqrtx[c][t],  z[c], -z[t]])
+                cnf.add_clause([-R[c], -Z[c], -Z[t], -csqrtx[c][t], -z[c]])
+                cnf.add_clause([ R[c],  Z[c],  Z[t], -csqrtx[c][t], -x[t],  z[c], -z[t]])
+                cnf.add_clause([ R[c],  Z[c],  Z[t], -csqrtx[c][t], -x[c], -z[c],  z[t]])
+                cnf.add_clause([ R[c],  Z[c], -Z[t], -csqrtx[c][t],  x[c], -z[c],  z[t]])
+                cnf.add_clause([ R[c], -Z[c],  Z[t], -csqrtx[c][t],  x[t],  z[c], -z[t]])
+                cnf.add_clause([ R[c], -Z[c], -Z[t], -csqrtx[c][t],  x[c],  z[c],  z[t]])
+                cnf.add_clause([ R[c], -Z[c], -Z[t], -csqrtx[c][t],  x[t],  z[c],  z[t]])
+                cnf.add_clause([-R[c], -Z[t], -csqrtx[c][t], -x[c], -x[t],  z[c]])
+                cnf.add_clause([ R[c],  Z[c], -csqrtx[c][t], -x[c], -x[t], -z[c],  z[t]])
+                cnf.add_clause([ R[c],  Z[t], -csqrtx[c][t], -x[c], -x[t],  z[c], -z[t]])
+                cnf.add_clause([-R[c],  Z[c], -Z[t], -csqrtx[c][t], -x[c],  x[t],  z[t]])
+                cnf.add_clause([-R[c], -Z[c],  Z[t], -csqrtx[c][t],  x[c], -x[t],  z[c]])
+                cnf.add_clause([ R[c],  Z[c],  Z[t], -csqrtx[c][t],  x[c],  x[t], -z[c], -z[t]])
+                cnf.add_clause([ R[c],  Z[c], -Z[t], -csqrtx[c][t], -x[c], -z[c], -z[t]])
+                cnf.add_clause([ R[c], -Z[c],  Z[t], -csqrtx[c][t], -x[t], -z[c], -z[t]])
+                cnf.add_clause([-R[c],  Z[c],  Z[t], -csqrtx[c][t], -x[c], -z[c], -z[t]])
+                cnf.add_clause([-R[c],  Z[c],  Z[t], -csqrtx[c][t], -x[t], -z[c], -z[t]])
+                # Implies(csqrtx[c][t] | csqrtxdg[c][t], ~R[t])
+                cnf.add_clause([-R[t], -csqrtx[c][t]])
+                cnf.add_clause([-R[t], -csqrtxdg[c][t]])
+                # Implies(csqrtx[c][t] | csqrtxdg[c][t], Equivalent(U[c], x[c] | x[t]))
+                cnf.add_clause([ U[c], -csqrtx[c][t], -x[c]])
+                cnf.add_clause([ U[c], -csqrtx[c][t], -x[t]])
+                cnf.add_clause([ U[c], -csqrtxdg[c][t], -x[c]])
+                cnf.add_clause([ U[c], -csqrtxdg[c][t], -x[t]])
+                cnf.add_clause([-U[c], -csqrtx[c][t],  x[c],  x[t]])
+                cnf.add_clause([-U[c], -csqrtxdg[c][t],  x[c],  x[t]])
+                # Implies(csqrtx[c][t] | csqrtxdg[c][t], ~U[t])
+                cnf.add_clause([-U[t], -csqrtx[c][t]])
+                cnf.add_clause([-U[t], -csqrtxdg[c][t]])
 
-            for c in range(n):
-                if c == k:
-                    continue
-                for t in range(n):
-                    if t == c or t == k:
-                        continue
-    
-                    # Implies(ccxg[k][c][t], Equivalent(X[k], x[k]))
-                    cnf.add_clause([ X[k], -ccxg[k][c][t], -x[k]])
-                    cnf.add_clause([-X[k], -ccxg[k][c][t],  x[k]])
-                    # Implies(ccxg[k][c][t], Equivalent(X[c], x[c]))
-                    cnf.add_clause([ X[c], -ccxg[k][c][t], -x[c]])
-                    cnf.add_clause([-X[c], -ccxg[k][c][t],  x[c]])
-                    # Implies(ccxg[k][c][t], Equivalent(X[t], x[t] ^ (x[c] & x[k])))
-                    cnf.add_clause([ X[t], -ccxg[k][c][t],  x[c], -x[t]])
-                    cnf.add_clause([ X[t], -ccxg[k][c][t],  x[k], -x[t]])
-                    cnf.add_clause([-X[t], -ccxg[k][c][t],  x[c],  x[t]])
-                    cnf.add_clause([-X[t], -ccxg[k][c][t],  x[k],  x[t]])
-                    cnf.add_clause([ X[t], -ccxg[k][c][t], -x[c], -x[k],  x[t]])
-                    cnf.add_clause([-X[t], -ccxg[k][c][t], -x[c], -x[k], -x[t]])
-                    # Implies(ccxg[k][c][t], Equivalent(Z[k], z[k] ^ (x[c] & ~x[t])))
-                    cnf.add_clause([ Z[k], -ccxg[k][c][t],  x[c], -z[k]])
-                    cnf.add_clause([-Z[k], -ccxg[k][c][t],  x[c],  z[k]])
-                    cnf.add_clause([ Z[k], -ccxg[k][c][t], -x[t], -z[k]])
-                    cnf.add_clause([-Z[k], -ccxg[k][c][t], -x[t],  z[k]])
-                    cnf.add_clause([ Z[k], -ccxg[k][c][t], -x[c],  x[t],  z[k]])
-                    cnf.add_clause([-Z[k], -ccxg[k][c][t], -x[c],  x[t], -z[k]])
-                    # Implies(ccxg[k][c][t], Equivalent(Z[c], z[c] ^ (x[k] & ~x[t])))
-                    cnf.add_clause([ Z[c], -ccxg[k][c][t],  x[k], -z[c]])
-                    cnf.add_clause([-Z[c], -ccxg[k][c][t],  x[k],  z[c]])
-                    cnf.add_clause([ Z[c], -ccxg[k][c][t], -x[t], -z[c]])
-                    cnf.add_clause([-Z[c], -ccxg[k][c][t], -x[t],  z[c]])
-                    cnf.add_clause([ Z[c], -ccxg[k][c][t], -x[k],  x[t],  z[c]])
-                    cnf.add_clause([-Z[c], -ccxg[k][c][t], -x[k],  x[t], -z[c]])
-                    # Implies(ccxg[k][c][t], Equivalent(Z[t], z[t]))
-                    cnf.add_clause([ Z[t], -ccxg[k][c][t], -z[t]])
-                    cnf.add_clause([-Z[t], -ccxg[k][c][t],  z[t]])
-                    # Implies(ccxg[k][c][t], Equivalent(R[k], (x[t] & z[t]) ^ (x[c] & x[k] & ~x[t]) ^ (x[c] & x[t] & ~x[k]) ^ (x[k] & x[t] & ~x[c])))
-                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[c],  x[t]])
-                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[k],  x[t]])
-                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[c],  x[k],  z[t]])
-                    cnf.add_clause([ R[k], -ccxg[k][c][t], -x[c], -x[k],  x[t]])
-                    cnf.add_clause([ R[k], -ccxg[k][c][t], -x[c], -x[k], -z[t]])
-                    cnf.add_clause([-R[k], -ccxg[k][c][t],  x[c], -x[k], -z[t]])
-                    cnf.add_clause([-R[k], -ccxg[k][c][t], -x[c],  x[k], -z[t]])
-                    cnf.add_clause([ R[k], -ccxg[k][c][t],  x[c],  x[k], -x[t], -z[t]])
-                    cnf.add_clause([ R[k], -ccxg[k][c][t],  x[c], -x[k], -x[t],  z[t]])
-                    cnf.add_clause([ R[k], -ccxg[k][c][t], -x[c],  x[k], -x[t],  z[t]])
-                    cnf.add_clause([-R[k], -ccxg[k][c][t], -x[c], -x[k], -x[t],  z[t]])
-                    # Implies(ccxg[k][c][t], ~R[c])
-                    cnf.add_clause([-R[c], -ccxg[k][c][t]])
-                    # Implies(ccxg[k][c][t], ~R[t])
-                    cnf.add_clause([-R[t], -ccxg[k][c][t]])
-                    # Implies(ccxg[k][c][t], ~U[k])
-                    cnf.add_clause([-U[k], -ccxg[k][c][t]])
-                    # Implies(ccxg[k][c][t], ~U[c])
-                    cnf.add_clause([-U[c], -ccxg[k][c][t]])
-                    # Implies(ccxg[k][c][t], ~U[t])
-                    cnf.add_clause([-U[t], -ccxg[k][c][t]])
-
-          
-            cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
-            cxs_k = (
-                # k as first control
-                [ ccxg[k][c2][t]
-                for c2 in range(n) if c2 != k
-                for t  in range(n) if t not in (k, c2) ]
-            + # k as second control
-                [ ccxg[c1][k][t]
-                for c1 in range(n) if c1 != k
-                for t  in range(n) if t not in (k, c1) ]
-            + # k as target
-                [ ccxg[c1][c2][k]
-                for c1 in range(n) if c1 != k
-                for c2 in range(n) if c2 not in (k, c1) ]
-            )
+            cxs_k = [cx[k][i] for i in range(n) if i!=k] + [cx[i][k] for i in range(n) if i!=k]
+            csqrtxs_k = [csqrtx[k][i] for i in range(n) if i!=k] + [csqrtx[i][k] for i in range(n) if i!=k]
+            csqrtxdgs_k = [csqrtxdg[k][i] for i in range(n) if i!=k] + [csqrtxdg[i][k] for i in range(n) if i!=k]
             gate_controlers = [idg[k]]
             if not limit_gates or h_layer:
                 gate_controlers += [hg[k]]
             gate_controlers += [sg[k]]
             if not limit_gates or not h_layer:
                 gate_controlers += [tdg[k], tg[k]]
-                gate_controlers += cgs_k
                 gate_controlers += cxs_k
+                gate_controlers += csqrtxs_k + csqrtxdgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer>=2:
@@ -1131,7 +1238,7 @@ class pauli2cnf:
                 # Tdg -> !l_T
                 cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
                 # I -> I until CX
-                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cxs_k)
           
             if cnf.syn_gate_layer>=5:
                 # T -> !l_T | !ll_T | !lll_T | !llll_T
@@ -1143,10 +1250,12 @@ class pauli2cnf:
             for t in range(n):
                 if c!=t:
                     if cnf.syn_gate_layer>=2:
+                        # CSqrtX(c,t) -> !past(CSqrtX(c,t))
+                        # cnf.add_clause([-csqrtx[c][t], -cnf.get_syn_var_past_layer(Name ='csqrtx', bit = [c,t])])
                         # CX(c,t) -> !past(CX(c,t))
-                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
+                        cnf.add_clause([-cx[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
                         # CX(c,t) -> !past(I(c)) or !past(I(t))
-                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+                        cnf.add_clause([-cx[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
         
                     if cnf.syn_gate_layer>=3:
                         # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))

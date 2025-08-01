@@ -156,6 +156,12 @@ def main():
     print("        cnf.vars.z[k] = Z")
     print()
     
+    # T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
+    # Tdg_r = tdg >> Equivalent(Rk, x[k] & ~z[k] & Zk)
+    # T_x = (tg | tdg) >> Equivalent(Xk, x[k])
+    # T_z = (tg | tdg) >> Equivalent(Zk, z[k]) | x[k]
+    # T_u = (tg | tdg) >> Equivalent(Uk, x[k])
+
     # T:
     print("    def T2CNF(cnf, k):")
     print("        x = cnf.vars.x")
@@ -261,6 +267,8 @@ def main():
     print("        x[c], x[t] = x[t], x[c]")
     print("        z[c], z[t] = z[t], z[c]")
     print()
+    add_sign(True)
+    print()
 
     #ISWAP
     print("    def ISWAP2CNF(cnf, c, t):")
@@ -271,17 +279,27 @@ def main():
     print()
 
     #CS
-    Zt   = symbols('Zt')
     print("    def CS2CNF(cnf, c, t):")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print()
+    print("        Zc = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Zc)")
+    to_py(	       x[c] | x[t] | Equivalent(Zc, z[c]))
+    print()
     print("        Zt = cnf.add_var()")
     print("        cnf.vars.ZVar.append(Zt)")
-    to_py(	       Equivalent(Zt, z[t] ^ (x[c] & x[t])))
+    to_py(	       x[c] | x[t] | Equivalent(Zt, z[t]))
     print()
-    add_sign(x[c] & x[t] & z[t])
+    add_sign( (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((~x[c] | ~x[t]) & (z[t] ^ Zt) & (z[c] ^ Zc) ))
     print()
+    print("        u = cnf.add_var()")
+    print("        cnf.vars.UVar.append(u)")
+    print("        cnf.add_weight( u, Decimal(1/2))")
+    print("        cnf.add_weight(-u, 1)")
+    to_py(	       Equivalent(u, x[c] | x[t]))
+    print()
+    print("        cnf.vars.z[c] = Zc")
     print("        cnf.vars.z[t] = Zt")
     print()
 
@@ -290,36 +308,46 @@ def main():
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print()
+    print("        Zc = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Zc)")
+    to_py(	       x[c] | x[t] | Equivalent(Zc, z[c]))
+    print()
     print("        Zt = cnf.add_var()")
     print("        cnf.vars.ZVar.append(Zt)")
-    to_py(	       Equivalent(Zt, z[t] ^ (x[c] & x[t])))
+    to_py(	       x[c] | x[t] | Equivalent(Zt, z[t]))
     print()
-    add_sign(x[c] & x[t] & ~z[t])
+    add_sign( (x[c] & ~z[c] & Zc) ^ (x[t] & ~z[t] & Zt) ^ ((~x[c] | ~x[t]) & (z[t] ^ Zt) & (z[c] ^ Zc) ))
     print()
+    print("        u = cnf.add_var()")
+    print("        cnf.vars.UVar.append(u)")
+    print("        cnf.add_weight( u, Decimal(1/2))")
+    print("        cnf.add_weight(-u, 1)")
+    to_py(	       Equivalent(u, x[c] | x[t]))
+    print()
+    print("        cnf.vars.z[c] = Zc")
     print("        cnf.vars.z[t] = Zt")
     print()
 
-    #CCX
-    print("    def CCX2CNF(cnf, k, c, t):")
-    print("        # Controlled-SqrtX(k, t) = H(t) CS(k, t) H(t)")
-    print("        pauli2cnf.H2CNF(cnf, t)")
-    print("        pauli2cnf.CS2CNF(cnf, k, t)")
-    print("        pauli2cnf.H2CNF(cnf, t)")
-    print()
-    print("        # Controlled-SqrtX(c, t) = H(t) CS(c, t) H(t)")
+    # C√X
+    print("    def CSqrtX2CNF(cnf, c, t):")
     print("        pauli2cnf.H2CNF(cnf, t)")
     print("        pauli2cnf.CS2CNF(cnf, c, t)")
     print("        pauli2cnf.H2CNF(cnf, t)")
     print()
-    print("        # Controlled-X(k, c)")
-    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
-    print()
-    print("        # Controlled-SqrtXdg(c, t) = H(t) CSdg(c, t) H(t)")
+
+    # C√Xdg
+    print("    def CSqrtXdg2CNF(cnf, c, t):")
     print("        pauli2cnf.H2CNF(cnf, t)")
     print("        pauli2cnf.CSdg2CNF(cnf, c, t)")
     print("        pauli2cnf.H2CNF(cnf, t)")
     print()
-    print("        # Controlled-X(k, c)")
+
+    #CCX
+    print("    def CCX2CNF(cnf, k, c, t):")
+    print("        pauli2cnf.CSqrtX2CNF(cnf, k, t)")
+    print("        pauli2cnf.CSqrtX2CNF(cnf, c, t)")
+    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
+    print("        pauli2cnf.CSqrtXdg2CNF(cnf, c, t)")
     print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
     print()
 
@@ -534,14 +562,13 @@ def main():
     T_z = (tg | tdg) >> Equivalent(Zk, z[k]) | x[k]
     T_u = (tg | tdg) >> Equivalent(Uk, x[k])
 
-    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u, Tdg_r, T_r, T_x, T_z, T_u]
-    #single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, S_r, S_x, S_z, S_u]
-    #single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u, Tdg_r, T_r, T_x, T_z, T_u]
-    
+    single_qb_gate_properties = [I_r, I_x, I_z, I_u, H_r, H_x, H_z, H_u]
+    #single_qb_gate_properties += [Tdg_r, T_r, T_x, T_z, T_u]
+    #single_qb_gate_properties += [S_r, S_x, S_z, S_u]
 
     # dynamic two bit gate:
 
-    cg_ct    = symbols('cg[c][t]')
+    cx_ct = symbols('cx[c][t]')
     Xc = symbols('X[c]')
     Xt = symbols('X[t]')
     Zc = symbols('Z[c]')
@@ -551,59 +578,40 @@ def main():
     Uc = symbols('U[c]')
     Ut = symbols('U[t]')
 
-    CX_xc = cg_ct >> Equivalent(Xc, x[c])
-    CX_xt = cg_ct >> Equivalent(Xt, x[t] ^ x[c])
-    CX_zc = cg_ct >> Equivalent(Zc, z[t] ^ z[c])
-    CX_zt = cg_ct >> Equivalent(Zt, z[t])
-    CX_rc = cg_ct >> Equivalent(Rc, x[c] & z[t] & (~x[t] ^ z[c]))
-    CX_rt = cg_ct >> Equivalent(Rt, False)
-    CX_uc = cg_ct >> Equivalent(Uc, False)
-    CX_ut = cg_ct >> Equivalent(Ut, False)
+    CX_xc = cx_ct >> Equivalent(Xc, x[c])
+    CX_xt = cx_ct >> Equivalent(Xt, x[t] ^ x[c])
+    CX_zc = cx_ct >> Equivalent(Zc, z[t] ^ z[c])
+    CX_zt = cx_ct >> Equivalent(Zt, z[t])
+    CX_rc = cx_ct >> Equivalent(Rc, x[c] & z[t] & (~x[t] ^ z[c]))
+    CX_rt = cx_ct >> Equivalent(Rt, False)
+    CX_uc = cx_ct >> Equivalent(Uc, False)
+    CX_ut = cx_ct >> Equivalent(Ut, False)
+
+    cz_ct    = symbols('cz[c][t]')
+    CZ_xc = cz_ct >> Equivalent(Xc, x[c])
+    CZ_xt = cz_ct >> Equivalent(Xt, x[t])
+    CZ_zc = cz_ct >> Equivalent(Zc, z[c] ^ x[t])
+    CZ_zt = cz_ct >> Equivalent(Zt, z[t] ^ x[c])
+    CZ_rc = cz_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
+    CZ_rt = cz_ct >> Equivalent(Rt, False)
+    CZ_uc = cz_ct >> Equivalent(Uc, False)
+    CZ_ut = cz_ct >> Equivalent(Ut, False)
+
+    csqrtx_ct    = symbols('csqrtx[c][t]')
+    csqrtxdg_ct  = symbols('csqrtxdg[c][t]')
+    CSqrtX_xc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Xc, x[c])
+    CSqrtX_xt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Xt, z[t])
+    CSqrtX_zc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Zc, z[c]) | x[c] | x[t]
+    CSqrtX_zt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Zt, x[t]) | x[c] | x[t]
+    CSqrtX_rc   = csqrtx_ct >> Equivalent(Rc, (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((~x[c] | ~x[t]) & (z[t] ^ Zt) & (z[c] ^ Zc) ))
+    CSqrtXdg_rc = csqrtxdg_ct >> Equivalent(Rc, (x[c] & ~z[c] & Zc) ^ (x[t] & ~z[t] & Zt) ^ ((~x[c] | ~x[t]) & (z[t] ^ Zt) & (z[c] ^ Zc)))
+    CSqrtX_rt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Rt, False)
+    CSqrtX_uc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Uc, x[c] | x[t])
+    CSqrtX_ut = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Ut, False)
 
     double_qb_gate_properties = [CX_xc, CX_xt, CX_zc, CX_zt, CX_rc, CX_rt, CX_uc, CX_ut]
-
-    # CZ_xc = cg_ct >> Equivalent(Xc, x[c])
-    # CZ_xt = cg_ct >> Equivalent(Xt, x[t])
-    # CZ_zc = cg_ct >> Equivalent(Zc, z[c] ^ x[t])
-    # CZ_zt = cg_ct >> Equivalent(Zt, z[t] ^ x[c])
-    # CZ_rc = cg_ct >> Equivalent(Rc, x[t] & x[c] & (z[t] ^ z[c]))
-    # CZ_rt = cg_ct >> Equivalent(Rt, False)
-    # CZ_uc = cg_ct >> Equivalent(Uc, False)
-    # CZ_ut = cg_ct >> Equivalent(Ut, False)
-
-    # double_qb_gate_properties = [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
-
-    # three bit gate properties
-
-    ccxg_kct    = symbols('ccxg[k][c][t]')
-    Xk = symbols('X[k]')
-    Xc = symbols('X[c]')
-    Xt = symbols('X[t]')
-    Zk = symbols('Z[k]')
-    Zc = symbols('Z[c]')
-    Zt = symbols('Z[t]')
-    Rk = symbols('R[k]')
-    Rc = symbols('R[c]')
-    Rt = symbols('R[t]')
-    Uk = symbols('U[k]')
-    Uc = symbols('U[c]')
-    Ut = symbols('U[t]')
-
-    CCX_xk = ccxg_kct >> Equivalent(Xk, x[k])
-    CCX_xc = ccxg_kct >> Equivalent(Xc, x[c])
-    CCX_zk = ccxg_kct >> Equivalent(Zk, z[k] ^ (~x[t] & x[c]))
-    CCX_zc = ccxg_kct >> Equivalent(Zc, z[c] ^ (~x[t] & x[k]))
-    CCX_xt = ccxg_kct >> Equivalent(Xt, x[t] ^ (x[k] & x[c]))
-    CCX_zt = ccxg_kct >> Equivalent(Zt, z[t])
-    CCX_rk = ccxg_kct >> Equivalent(Rk, (x[k] & x[c] & ~x[t]) ^ (~x[k] & x[c] & x[t]) ^ (x[k] & ~x[c] & x[t]) ^ (x[t] & z[t]))
-    CCX_rc = ccxg_kct >> Equivalent(Rc, False)
-    CCX_rt = ccxg_kct >> Equivalent(Rt, False)
-    CCX_uk = ccxg_kct >> Equivalent(Uk, False)
-    CCX_uc = ccxg_kct >> Equivalent(Uc, False)
-    CCX_ut = ccxg_kct >> Equivalent(Ut, False)
-
-    triple_qb_gate_properties = [CCX_xk, CCX_xc, CCX_xt, CCX_zk, CCX_zc, CCX_zt, CCX_rk, CCX_rc, CCX_rt, CCX_uk, CCX_uc, CCX_ut]
-
+    double_qb_gate_properties += [CSqrtX_xc, CSqrtX_xt, CSqrtX_zc, CSqrtXdg_rc, CSqrtX_zt, CSqrtX_rc, CSqrtX_rt, CSqrtX_uc, CSqrtX_ut]
+    # double_qb_gate_properties += [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
     
     print('''
     def AMO(cnf, var_list):
@@ -613,22 +621,6 @@ def main():
         # at most one:
         [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
     ''')
-
-    # # AMO using a cnt picker instead of directly one-hot
-    # print('''
-    # def AMO(cnf, var_list):
-    #     picker = [cnf.add_var() for _ in range(math.ceil(math.log(len(var_list), 2)))]
-    #     for cnt in range(2**len(picker)):
-    #       clause = []
-    #       bin_str = format(cnt, f'{len(picker)}b')
-    #       for i in range(len(picker)):
-    #           clause.append(-picker[i] if bin_str[i]=="1" else picker[i])
-    #       if cnt < len(var_list):
-    #           for v in clause:
-    #               cnf.add_clause([-var_list[cnt], -v])
-    #           clause.append(var_list[cnt])
-    #       cnf.add_clause(clause)
-    # ''')
 
     print()
     print()
@@ -660,31 +652,15 @@ def main():
         if not limit_gates or not h_layer:
             tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
             tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
-            cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
-            ccxg = [
-                        [
-                            [
-                                cnf.add_var(syn_gate_pick=True, Name='ccx', bits=[c1, c2, t]) 
-                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
-                            ]
-                            for c2 in range(n)
-                        ]
-                        for c1 in range(n)
-                    ]
+            cx = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtx = [[cnf.add_var(syn_gate_pick = True, Name = 'csqrtx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtxdg = [[cnf.add_var(syn_gate_pick = True, Name = 'csqrtxdg', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         else:
             tdg = [0.5 for _ in range(n)]
             tg = [0.5 for _ in range(n)]
-            cg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
-            ccxg = [
-                        [
-                            [
-                                0.5 
-                                if (c1 != c2 and c1 != t and c2 != t) else None for t in range(n)
-                            ]
-                            for c2 in range(n)
-                        ]
-                        for c1 in range(n)
-                    ]
+            cx = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtx = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            csqrtxdg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
         for k in range(n):
     ''')
     for p in single_qb_gate_properties:
@@ -698,40 +674,17 @@ def main():
     for p in double_qb_gate_properties:
         to_py(p, prefix="        ") 
     print('''
-            for c in range(n):
-                if c == k:
-                    continue
-                for t in range(n):
-                    if t == c or t == k:
-                        continue
-    ''')
-    for p in triple_qb_gate_properties:
-        to_py(p, prefix="            ")
-    print('''
-          
-            cgs_k = [cg[k][i] for i in range(n) if i!=k] + [cg[i][k] for i in range(n) if i!=k]
-            cxs_k = (
-                # k as first control
-                [ ccxg[k][c2][t]
-                for c2 in range(n) if c2 != k
-                for t  in range(n) if t not in (k, c2) ]
-            + # k as second control
-                [ ccxg[c1][k][t]
-                for c1 in range(n) if c1 != k
-                for t  in range(n) if t not in (k, c1) ]
-            + # k as target
-                [ ccxg[c1][c2][k]
-                for c1 in range(n) if c1 != k
-                for c2 in range(n) if c2 not in (k, c1) ]
-            )
+            cxs_k = [cx[k][i] for i in range(n) if i!=k] + [cx[i][k] for i in range(n) if i!=k]
+            csqrtxs_k = [csqrtx[k][i] for i in range(n) if i!=k] + [csqrtx[i][k] for i in range(n) if i!=k]
+            csqrtxdgs_k = [csqrtxdg[k][i] for i in range(n) if i!=k] + [csqrtxdg[i][k] for i in range(n) if i!=k]
             gate_controlers = [idg[k]]
             if not limit_gates or h_layer:
                 gate_controlers += [hg[k]]
             gate_controlers += [sg[k]]
             if not limit_gates or not h_layer:
                 gate_controlers += [tdg[k], tg[k]]
-                gate_controlers += cgs_k
                 gate_controlers += cxs_k
+                gate_controlers += csqrtxs_k + csqrtxdgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer>=2:
@@ -742,7 +695,7 @@ def main():
                 # Tdg -> !l_T
                 cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
                 # I -> I until CX
-                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cgs_k)
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cxs_k)
           
             if cnf.syn_gate_layer>=5:
                 # T -> !l_T | !ll_T | !lll_T | !llll_T
@@ -754,10 +707,12 @@ def main():
             for t in range(n):
                 if c!=t:
                     if cnf.syn_gate_layer>=2:
+                        # CSqrtX(c,t) -> !past(CSqrtX(c,t))
+                        # cnf.add_clause([-csqrtx[c][t], -cnf.get_syn_var_past_layer(Name ='csqrtx', bit = [c,t])])
                         # CX(c,t) -> !past(CX(c,t))
-                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
+                        cnf.add_clause([-cx[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
                         # CX(c,t) -> !past(I(c)) or !past(I(t))
-                        cnf.add_clause([-cg[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
+                        cnf.add_clause([-cx[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])
         
                     if cnf.syn_gate_layer>=3:
                         # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
