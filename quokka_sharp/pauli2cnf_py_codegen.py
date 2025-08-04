@@ -599,12 +599,33 @@ def main():
 
     csqrtx_ct    = symbols('csqrtx[c][t]')
     csqrtxdg_ct  = symbols('csqrtxdg[c][t]')
+    # xc3 = xc0
     CSqrtX_xc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Xc, x[c])
-    CSqrtX_xt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Xt, z[t])
-    CSqrtX_zc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Zc, z[c]) | x[c] | x[t]
-    CSqrtX_zt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Zt, x[t]) | x[c] | x[t]
-    CSqrtX_rc   = csqrtx_ct >> Equivalent(Rc, (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((~x[c] | ~x[t]) & (z[t] ^ Zt) & (z[c] ^ Zc) ))
-    CSqrtXdg_rc = csqrtxdg_ct >> Equivalent(Rc, (x[c] & ~z[c] & Zc) ^ (x[t] & ~z[t] & Zt) ^ ((~x[c] | ~x[t]) & (z[t] ^ Zt) & (z[c] ^ Zc)))
+    # xt3 = xt0 or xc0 or zt0
+    CSqrtX_xt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Xt, x[t]) | x[c] | z[t]
+    # zc3 = zc0 or xc0 or zt0
+    CSqrtX_zc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Zc, z[c]) | x[c] | z[t]
+    # zt3 = zt0
+    CSqrtX_zt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Zt, z[t])
+    # s3  = s0    ^ (xt0 and zt0) \
+    #             ^ (xc0 and zc0 and (not (zc0 or xc0 or zt0))) \
+    #             ^ (xt0 and zt0 and (not (xt0 or xc0 or zt0))) \
+    #             ^ ((not xc0 or not zt0) and (xt0 ^ (xt0 or xc0 or zt0)) and (zc0 ^ (zc0 or xc0 or zt0))) \
+    #             ^ (zt0 and (xt0 or xc0 or zt0))
+    CSqrtX_rc   = csqrtx_ct >> Equivalent(Rc, 
+                                          (x[t] and z[t]) \
+                                        ^ (x[c] & z[c] & ~(z[c] | x[c] | z[t])) \
+                                        ^ (x[t] & z[t] & ~(x[t] | x[c] | z[t])) \
+                                        ^ ((~x[c] | ~z[t]) & (x[t] ^ (x[t] | x[c] | z[t])) & (z[c] ^ (z[c] | x[c] | z[t]))) \
+                                        ^ (z[t] & (x[t] | x[c] | z[t]))
+                                )
+    CSqrtXdg_rc = csqrtxdg_ct >> Equivalent(Rc, 
+                                              (x[t] and z[t]) \
+                                            ^ (x[c] & ~z[c] & (z[c] | x[c] | z[t])) \
+                                            ^ (x[t] & ~z[t] & (x[t] | x[c] | z[t])) \
+                                            ^ ((~x[c] | ~z[t]) & (x[t] ^ (x[t] | x[c] | z[t])) & (z[c] ^ (z[c] | x[c] | z[t])))
+                                            ^ (z[t] & (x[t] | x[c] | z[t]))
+                                        )
     CSqrtX_rt = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Rt, False)
     CSqrtX_uc = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Uc, x[c] | x[t])
     CSqrtX_ut = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Ut, False)

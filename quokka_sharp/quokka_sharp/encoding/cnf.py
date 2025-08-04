@@ -594,6 +594,14 @@ class CNF:
                 j = int(element[1])
                 k = int(element[2])
                 to_CNF.CSdg2CNF(self,j,k) 
+            elif gate == 'csqrtx':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSqrtX2CNF(self,j,k)
+            elif gate == 'csqrtxdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSqrtXdg2CNF(self,j,k)
             elif gate[0] == 'r':
                 angle = element[1]
                 k = int(element[2])

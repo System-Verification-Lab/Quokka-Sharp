@@ -5,9 +5,9 @@ from decimal import Decimal, getcontext
 # set the precision of rotation angles
 getcontext().prec = 32
 
-HermiGates = ['id', 'h', 'cx', 'cz', 'cy', 'swap', 'iswap', 'x', 'z', 'y', 'ccx']
+HermiGates = ['id', 'h', 'cx', 'cz', 'cy', 'swap', 'iswap', 'x', 'z', 'y', 'ccx', 'cs', 'csdg', 'csqrtx', 'csqrtxdg']
 RotationGates = ['rx', 'ry', 'rz']
-NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 'cs': 'csdg', 'csdg': 'cs',  
+NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 'cs': 'csdg', 'csdg': 'cs', 'csqrtx': 'csqrtxdg', 'csqrtxdg': 'csqrtx',
                 'rx': 'rxdg', 'rx': 'rxdg', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
 
 class Circuit:
@@ -210,7 +210,8 @@ def QASMparser(filename) -> Circuit:
 
         elif gate == 'cx' or gate == 'cz' or gate == 'cy' or \
                 gate == 'swap' or gate == 'iswap' or \
-                    gate == 'cs' or gate == 'csdg':
+                    gate == 'cs' or gate == 'csdg' or \
+                        gate == 'csqrtx' or gate == 'csqrtxdg':
             if(line[1].count('[') == 1):
                 qubitc = get_num(line[1])
                 qubitr = get_num(line[2])
