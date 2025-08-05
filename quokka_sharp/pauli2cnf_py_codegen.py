@@ -556,36 +556,49 @@ def main():
     print()
     print('''
     def SynLayer2CNF(cnf, limit_gates=False, h_layer=False):
-        n = cnf.n + cnf.ancillas
+        """
+        Add a synthesis layer to the CNF object, encoding all possible single- and two-qubit gates for each qubit.
+        Args:
+            cnf: The CNF object to which the layer is added.
+            limit_gates: If True, restricts the set of allowed gates (e.g., for h_layer).
+            h_layer: If True, restricts to only H gates and disables T/Tdg/CX for this layer.
+        """
+        n = cnf.n + cnf.ancillas  # Total number of qubits (including ancillas)
         x = cnf.vars.x
         z = cnf.vars.z
+        # Allocate new variables for the next layer's X and Z for each qubit
         X = [cnf.add_var() for _ in range(n)]
         Z = [cnf.add_var() for _ in range(n)]
-          
+        
+        # Add R variables (for sign) and their weights
         R = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
-          
+        
+        # Add U variables (for sqrt(1/2) normalization) and their weights, unless restricted
         if not limit_gates or not h_layer:
             U = [cnf.add_var() for _ in range(n)]
             [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
             [cnf.add_weight(-U[k], 1) for k in range(n)]
         else:
-            U = [0.5 for _ in range(n)]
-          
-        idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
+            U = [0.5 for _ in range(n)]  # Dummy value if not used (0.5 is always false)
+        
+        # Add gate selector variables for each qubit and gate type
+        idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]  # Identity
         if not limit_gates or h_layer:
-            hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
+            hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]  # H
         else:
             hg = [0.5 for _ in range(n)]
         if not limit_gates or not h_layer:
-            tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]
-            tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]
+            tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]  # T-dagger
+            tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]    # T
+            # CX gate selectors for all pairs (c != t)
             cg = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         else:
             tdg = [0.5 for _ in range(n)]
             tg = [0.5 for _ in range(n)]
             cg = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+        # For each qubit, encode the logic for all possible gates
         for k in range(n):
     ''')
     for p in single_qb_gate_properties:

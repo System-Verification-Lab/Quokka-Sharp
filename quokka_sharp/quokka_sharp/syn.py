@@ -116,13 +116,14 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
     p = None
 
     def cleanup():
+        # Called on timeout to kill the process
         if printing: print(f"TIMEOUT expiered")
         if p is not None:
             p.kill()
 
     try:
         with timeout(TIMEOUT, on_timeout=cleanup):
-
+            # Set expected probability and value type based on encoding
             if onehot_xz:
                 expected_prob = 2*cnf.n
                 expected_abs_value = False
@@ -144,8 +145,10 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
                 num_layers = 1
             cnf_copy_init = copy.deepcopy(cnf)
             if h_sandwich:
+                # Add H gates layer if requested
                 cnf_copy_init.add_syn_layer(1, limit_gates=True, h_layer=True)
             if initial_depth:
+                # Add initial depth if specified
                 cnf_copy_init.add_syn_layer(initial_depth)
             cnf_copy = cnf_copy_init
             cnf_revert = cnf_copy
@@ -156,8 +159,10 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
                 # if printing: print(f"Global Time: {datetime.datetime.now()}")
                 start = time.time()
                 if printing: print(f"Iteration: {it_counter}")
+                # Set file prefix for output files
                 files_prefix = (("onehotXZ" if onehot_xz else "fullP") if not cnf.computational_basis else "comp") + "_" + ("HSan" if h_sandwich else "Reg") 
 
+                # Prepare CNF for this iteration
                 if bin_search:
                     cnf_copy = copy.deepcopy(cnf_copy_init)
                     cnf_copy.add_syn_layer(num_layers, limit_gates=h_sandwich, h_layer=False)
@@ -175,24 +180,22 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
                         cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
                     file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
 
-                # if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
-                # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
+                # Build the command to run the external tool
                 command = (tool_invocation.split(' ') + 
                         ["-i", file] + 
                         ["--complex", ("1" if cnf.computational_basis else "0")] + 
                         ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                         )
-                # if printing: print(" ".join(command))
                 out_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.out")
                 err_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.err")
                 res_file = os.path.join(cnf_file_root, f"{files_prefix}_{it_counter}_d4.res")
-                # if printing: print(f"Out file: {out_file}")
-                # if printing: print(f"Err file: {err_file}")
+                # Run the external tool
                 with open(out_file, 'w') as out:
                     with open(err_file, 'w') as err:
                         p = Popen(command, stdout=out, stderr=err)
                 pid = None
                 err = 0
+                # Wait for process to finish
                 while pid == p.pid:
                     pid, err = os.wait()
                 res, cerr = p.communicate()
@@ -200,32 +203,26 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
                     return f"ERROR{err}", 0, res, cnf_copy.syn_gate_layer
                 if cerr:
                     return f"ERROR{cerr}", 0, res, cnf_copy.syn_gate_layer
+                # Parse the result
                 found, weight, assignment = get_result(out_file, expected_prob, abs_value=expected_abs_value)
-                # if printing: print(f"found:{found}, weight:{weight}")
                 if printing: print(f"fidelity:{weight}")
                 if weight == "CRASH":
-                    # if printing: print(err, cerr)
                     return "CRASH", 0, "", cnf_copy.syn_gate_layer
-                
+                # Generate QASM from assignment
                 qasm = cnf_copy.get_syn_qasm(assignment)
                 with open(res_file, "w") as f:
                     f.write(qasm)
-                    # if printing: print(f"Res file: {res_file}")
-
+                # Binary search logic
                 if bin_search:
                     if found:
                         bin_ub = num_layers
                         bin_ub_results = (weight, qasm)
                     else: 
                         bin_lb = num_layers
-                    
-                    # if printing: print(f"bin_lb: {bin_lb}, bin_ub: {bin_ub}, weight: {weight}")
-
                     if bin_lb + 1 == bin_ub:
                         if found == False:
                             weight, qasm = bin_ub_results
                         done = True
-
                     if bin_ub:
                         num_layers = int((bin_lb + bin_ub) / 2)
                     else:
@@ -236,13 +233,11 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
                 if printing: print(f"Run Time: {time.time()-start}")
                 it_counter+=1
 
-            # if printing: print()
-            # if printing: print(f"Global Time: {datetime.datetime.now()}")
+            # Return result if found
             return "FOUND", weight, qasm, cnf_copy.syn_gate_layer
 
     except TimeoutException as error:
         if printing: print(f"Run Time: {time.time()-start}")
-        # if printing: print(f"Global Time: {datetime.datetime.now()}")
         t_found, t_weight, t_assignment = get_result(out_file, expected_prob, expected_abs_value)
         if t_found:
             return "FOUND", t_weight, cnf_copy.get_syn_qasm(t_assignment), cnf_copy.syn_gate_layer
