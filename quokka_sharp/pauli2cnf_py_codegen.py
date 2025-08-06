@@ -267,8 +267,6 @@ def main():
     print("        x[c], x[t] = x[t], x[c]")
     print("        z[c], z[t] = z[t], z[c]")
     print()
-    add_sign(True)
-    print()
 
     #ISWAP
     print("    def ISWAP2CNF(cnf, c, t):")
