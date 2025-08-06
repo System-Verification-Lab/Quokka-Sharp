@@ -577,15 +577,15 @@ class CNF:
             elif gate == 'cy':
                 j = int(element[1])
                 k = int(element[2])
-                to_CNF.CZ2CNF(self,j,k)  
+                to_CNF.CY2CNF(self,j,k)  
             elif gate == 'swap':
                 j = int(element[1])
                 k = int(element[2])
-                to_CNF.CZ2CNF(self,j,k)  
+                to_CNF.SWAP2CNF(self,j,k)  
             elif gate == 'iswap':
                 j = int(element[1])
                 k = int(element[2])
-                to_CNF.CZ2CNF(self,j,k)  
+                to_CNF.ISWAP2CNF(self,j,k)  
             elif gate == 'cs':
                 j = int(element[1])
                 k = int(element[2])

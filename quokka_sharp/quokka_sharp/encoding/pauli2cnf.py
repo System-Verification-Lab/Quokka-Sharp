@@ -11,7 +11,6 @@ class pauli2cnf:
     def H2CNF(cnf, k):
         x = cnf.vars.x
         z = cnf.vars.z
-
         # adding sign if x[k] & z[k]
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
@@ -474,24 +473,10 @@ class pauli2cnf:
     def SWAP2CNF(cnf, c, t):
         x = cnf.vars.x
         z = cnf.vars.z
-
+        
         x[c], x[t] = x[t], x[c]
         z[c], z[t] = z[t], z[c]
 
-        # adding sign if True
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
-            # R
-            cnf.add_clause([ R])
-        else: 
-            r = cnf.vars.r
-            cnf.vars.r = R
-            # Equivalent(R, ~r)
-            cnf.add_clause([ R,  r])
-            cnf.add_clause([-R, -r])
 
     def ISWAP2CNF(cnf, c, t):
         pauli2cnf.SWAP2CNF(cnf, c, t)
