@@ -42,19 +42,19 @@ qasmfile2 = args.qasmfile2
 # '''
 # Equivalence checking
 # '''
-# # Parse the circuit
-# circuit1 = qk.encoding.QASMparser(qasmfile1)
-# # Parse another circuit
-# circuit2 = qk.encoding.QASMparser(qasmfile2)
-# # Get (circuit1)(circuit2)^dagger
-# circuit2.dagger()
-# circuit1.append(circuit2)
-# # Get CNF for the merged circuit (for computational basis instead of Pauli, use `computational_basis = True`)
-# cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-# # Users can set a different number N of parallel processes when the check mode is "linear". For other modes, "N" should be 1.
-# res = qk.CheckEquivalence(cnf, check = "linear", N=16)
-# # The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
-# print(res)
+# Parse the circuit
+circuit1 = qk.encoding.QASMparser(qasmfile1)
+# Parse another circuit
+circuit2 = qk.encoding.QASMparser(qasmfile2)
+# Get (circuit1)(circuit2)^dagger
+circuit2.dagger()
+circuit1.append(circuit2)
+# Get CNF for the merged circuit (for computational basis instead of Pauli, use `computational_basis = True`)
+cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
+# Users can set a different number N of parallel processes when the check mode is "linear". For other modes, "N" should be 1.
+res = qk.CheckEquivalence(cnf, check = "linear", N=16)
+# The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
+print(res)
 
 '''
 Verification
@@ -72,17 +72,17 @@ Synthesis
 '''
 # Change the tool_invocation in config.json to be the maximum weighted model counter.
 
-# Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile1)
-# Get (circuit)^dagger
-circuit.dagger()
-# Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
-cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
-result, weight, solution, layers = qk.Synthesis(cnf, cnf_dir)
-print(f"Result: {result}")
-print(f"Weight: {weight}")
-print(f"Solution: {solution}")
-print(f"Layers: {layers}")
+# # Parse the circuits
+# circuit = qk.encoding.QASMparser(qasmfile1)
+# # Get (circuit)^dagger
+# circuit.dagger()
+# # Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
+# cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
+# result, weight, solution, layers = qk.Synthesis(cnf, cnf_dir)
+# print(f"Result: {result}")
+# print(f"Weight: {weight}")
+# print(f"Solution: {solution}")
+# print(f"Layers: {layers}")
 # The result will be "FOUND" if a solution was found, 
 # "CRASH" if there was a problem such as an invalid cnf or not enough mem, 
 # "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.

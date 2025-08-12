@@ -267,7 +267,7 @@ def main():
     print("        x[c], x[t] = x[t], x[c]")
     print("        z[c], z[t] = z[t], z[c]")
     print()
-    add_sign(True)
+    #add_sign(True)
     print()
 
     #ISWAP
@@ -330,26 +330,80 @@ def main():
 
     # C√X
     print("    def CSqrtX2CNF(cnf, c, t):")
-    print("        pauli2cnf.H2CNF(cnf, t)")
-    print("        pauli2cnf.CS2CNF(cnf, c, t)")
-    print("        pauli2cnf.H2CNF(cnf, t)")
+    print("        x = cnf.vars.x")
+    print("        z = cnf.vars.z")
+    print()
+    print("        Zc = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Zc)")
+    to_py(	       x[c] | z[t] | Equivalent(Zc, z[c]))
+    print()
+    print("        Xt = cnf.add_var()")
+    print("        cnf.vars.XVar.append(Xt)")
+    to_py(	       x[c] | z[t] | Equivalent(Xt, x[t]))
+    print()
+    add_sign(   
+                (x[c] & x[t] & Xt & z[c] & ~Zc) | 
+                (Xt & z[c] & Zc & z[t] & ~x[t]) | 
+                (x[c] & Xt & Zc & ~x[t] & ~z[c]) | 
+                (x[t] & z[c] & z[t] & ~Xt & ~Zc) | 
+                (x[c] & z[c] & ~x[t] & ~Xt & ~Zc) | 
+                (Xt & z[t] & ~x[t] & ~z[c] & ~Zc) | 
+                (x[c] & x[t] & Zc & ~Xt & ~z[c] & ~z[t]) | 
+                (x[t] & Zc & z[t] & ~x[c] & ~Xt & ~z[c])
+            )
+    print()
+    print("        u = cnf.add_var()")
+    print("        cnf.vars.UVar.append(u)")
+    print("        cnf.add_weight( u, Decimal(1/2))")
+    print("        cnf.add_weight(-u, 1)")
+    to_py(	       Equivalent(u, x[c] | z[t]))
+    print()
+    print("        cnf.vars.z[c] = Zc")
+    print("        cnf.vars.x[t] = Xt")
     print()
 
     # C√Xdg
     print("    def CSqrtXdg2CNF(cnf, c, t):")
-    print("        pauli2cnf.H2CNF(cnf, t)")
-    print("        pauli2cnf.CSdg2CNF(cnf, c, t)")
-    print("        pauli2cnf.H2CNF(cnf, t)")
+    print("        x = cnf.vars.x")
+    print("        z = cnf.vars.z")
+    print()
+    print("        Zc = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Zc)")
+    to_py(	       x[c] | z[t] | Equivalent(Zc, z[c]))
+    print()
+    print("        Xt = cnf.add_var()")
+    print("        cnf.vars.XVar.append(Xt)")
+    to_py(	       x[c] | z[t] | Equivalent(Xt, x[t]))
+    print()
+    add_sign(   
+                (x[c] & x[t] & Xt & Zc & ~z[c]) | 
+                (x[t] & z[c] & Zc & z[t] & ~Xt) | 
+                (x[c] & x[t] & z[c] & ~Xt & ~Zc) | 
+                (Xt & Zc & z[t] & ~x[t] & ~z[c]) | 
+                (x[c] & Zc & ~x[t] & ~Xt & ~z[c]) | 
+                (x[t] & z[t] & ~Xt & ~z[c] & ~Zc) | 
+                (x[c] & Xt & z[c] & ~x[t] & ~Zc & ~z[t]) | 
+                (Xt & z[c] & z[t] & ~x[c] & ~x[t] & ~Zc)
+            )
+    print()
+    print("        u = cnf.add_var()")
+    print("        cnf.vars.UVar.append(u)")
+    print("        cnf.add_weight( u, Decimal(1/2))")
+    print("        cnf.add_weight(-u, 1)")
+    to_py(	       Equivalent(u, x[c] | z[t]))
+    print()
+    print("        cnf.vars.z[c] = Zc")
+    print("        cnf.vars.x[t] = Xt")
     print()
 
     #CCX
     print("    def CCX2CNF(cnf, k, c, t):")
-    print("        pauli2cnf.CSqrtX2CNF(cnf, k, t)")
-    print("        pauli2cnf.CSqrtX2CNF(cnf, c, t)")
-    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
-    print("        pauli2cnf.CSqrtXdg2CNF(cnf, c, t)")
-    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
-    print()
+    # print("        pauli2cnf.CSqrtX2CNF(cnf, k, t)")
+    # print("        pauli2cnf.CSqrtX2CNF(cnf, c, t)")
+    # print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
+    # print("        pauli2cnf.CSqrtXdg2CNF(cnf, c, t)")
+    # print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
+    # print()
 
     #RZ
     print("    def RZ2CNF(cnf, k, theta):")
@@ -631,7 +685,7 @@ def main():
     CSqrtX_ut = (csqrtx_ct | csqrtxdg_ct) >> Equivalent(Ut, False)
 
     double_qb_gate_properties = [CX_xc, CX_xt, CX_zc, CX_zt, CX_rc, CX_rt, CX_uc, CX_ut]
-    double_qb_gate_properties += [CSqrtX_xc, CSqrtX_xt, CSqrtX_zc, CSqrtXdg_rc, CSqrtX_zt, CSqrtX_rc, CSqrtX_rt, CSqrtX_uc, CSqrtX_ut]
+    #double_qb_gate_properties += [CSqrtX_xc, CSqrtX_xt, CSqrtX_zc, CSqrtXdg_rc, CSqrtX_zt, CSqrtX_rc, CSqrtX_rt, CSqrtX_uc, CSqrtX_ut]
     # double_qb_gate_properties += [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
     
     print('''
@@ -696,8 +750,8 @@ def main():
         to_py(p, prefix="        ") 
     print('''
             cxs_k = [cx[k][i] for i in range(n) if i!=k] + [cx[i][k] for i in range(n) if i!=k]
-            csqrtxs_k = [csqrtx[k][i] for i in range(n) if i!=k] + [csqrtx[i][k] for i in range(n) if i!=k]
-            csqrtxdgs_k = [csqrtxdg[k][i] for i in range(n) if i!=k] + [csqrtxdg[i][k] for i in range(n) if i!=k]
+            #csqrtxs_k = [csqrtx[k][i] for i in range(n) if i!=k] + [csqrtx[i][k] for i in range(n) if i!=k]
+            #csqrtxdgs_k = [csqrtxdg[k][i] for i in range(n) if i!=k] + [csqrtxdg[i][k] for i in range(n) if i!=k]
             gate_controlers = [idg[k]]
             if not limit_gates or h_layer:
                 gate_controlers += [hg[k]]
@@ -705,7 +759,7 @@ def main():
             if not limit_gates or not h_layer:
                 gate_controlers += [tdg[k], tg[k]]
                 gate_controlers += cxs_k
-                gate_controlers += csqrtxs_k + csqrtxdgs_k
+               #gate_controlers += csqrtxs_k + csqrtxdgs_k
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer>=2:
