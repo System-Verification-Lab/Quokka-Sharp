@@ -396,12 +396,12 @@ def main():
 
     #CCX
     print("    def CCX2CNF(cnf, k, c, t):")
-    # print("        pauli2cnf.CSqrtX2CNF(cnf, k, t)")
-    # print("        pauli2cnf.CSqrtX2CNF(cnf, c, t)")
-    # print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
-    # print("        pauli2cnf.CSqrtXdg2CNF(cnf, c, t)")
-    # print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
-    # print()
+    print("        pauli2cnf.CSqrtX2CNF(cnf, k, t)")
+    print("        pauli2cnf.CSqrtX2CNF(cnf, c, t)")
+    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
+    print("        pauli2cnf.CSqrtXdg2CNF(cnf, c, t)")
+    print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
+    print()
 
     #RZ
     print("    def RZ2CNF(cnf, k, theta):")
