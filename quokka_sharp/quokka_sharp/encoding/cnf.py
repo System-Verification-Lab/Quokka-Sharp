@@ -585,7 +585,10 @@ class CNF:
             elif gate == 'iswap':
                 j = int(element[1])
                 k = int(element[2])
-                to_CNF.ISWAP2CNF(self,j,k)  
+                to_CNF.SWAP2CNF(self,j,k)
+                to_CNF.CZ2CNF(self,j,k)
+                to_CNF.S2CNF(self,j)
+                to_CNF.S2CNF(self,k) 
             elif gate == 'cs':
                 j = int(element[1])
                 k = int(element[2])
