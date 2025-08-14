@@ -5,10 +5,12 @@ from decimal import Decimal, getcontext
 # set the precision of rotation angles
 getcontext().prec = 32
 
-HermiGates = ['id', 'h', 'cx', 'cz', 'cy', 'swap', 'iswap', 'x', 'z', 'y', 'ccx', 'cs', 'csdg', 'csqrtx', 'csqrtxdg']
+HermiGates = ['id', 'h', 'cx', 'cz', 'cy', 'swap', 'x', 'z', 'y', 'ccx']
 RotationGates = ['rx', 'ry', 'rz']
-NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 'cs': 'csdg', 'csdg': 'cs', 'csqrtx': 'csqrtxdg', 'csqrtxdg': 'csqrtx',
-                'rx': 'rxdg', 'rx': 'rxdg', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
+NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 
+                'iswap': 'iswapdg', 'iswapdg': 'iswap',
+                'cs': 'csdg', 'csdg': 'cs', 'csqrtx': 'csqrtxdg', 'csqrtxdg': 'csqrtx',
+                'rx': 'rxdg', 'rxdg': 'rx', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
 
 class Circuit:
     """

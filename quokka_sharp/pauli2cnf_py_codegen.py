@@ -584,7 +584,7 @@ def main():
     # ==========[ Synthesis ]============ #''')
 
     ENABLE_H = True
-    ENABLE_T = True
+    ENABLE_T = False
     ENABLE_CZ = False
     ENABLE_CSQRTX = True
 
@@ -754,14 +754,18 @@ def main():
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
         
-        # Add U variables (for sqrt(1/2) normalization) and their weights, unless restricted
+        # Add U variables (for normalization) and their weights, unless restricted
         if not limit_gates or not h_layer:
-            U = [cnf.add_var() for _ in range(n)]
+            if ENABLE_T and ENABLE_CSQRTX:
+                raise Exception("Cannot enable both T and CSqrtX gates in the same layer. Please choose one.")
             if ENABLE_CSQRTX:
+                U = [cnf.add_var() for _ in range(n)]
                 [cnf.add_weight(U[k], str(Decimal(1/2))) for k in range(n)]
-            else:
+                [cnf.add_weight(-U[k], 1) for k in range(n)]
+            if ENABLE_T:
+                U = [cnf.add_var() for _ in range(n)]
                 [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
-            [cnf.add_weight(-U[k], 1) for k in range(n)]
+                [cnf.add_weight(-U[k], 1) for k in range(n)]
         else:
             U = [0.5 for _ in range(n)]  # Dummy value if not used (0.5 is always false)
         

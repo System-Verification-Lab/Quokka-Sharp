@@ -1231,7 +1231,7 @@ class pauli2cnf:
         """
     
 
-        ENABLE_H = False  # Disable H gate properties
+        ENABLE_H = True  # Enable H gate properties
 
         ENABLE_T = False  # Disable T gate properties
 
@@ -1251,14 +1251,18 @@ class pauli2cnf:
         [cnf.add_weight(R[k], -1) for k in range(n)]
         [cnf.add_weight(-R[k], 1) for k in range(n)]
         
-        # Add U variables (for sqrt(1/2) normalization) and their weights, unless restricted
+        # Add U variables (for normalization) and their weights, unless restricted
         if not limit_gates or not h_layer:
-            U = [cnf.add_var() for _ in range(n)]
+            if ENABLE_T and ENABLE_CSQRTX:
+                raise Exception("Cannot enable both T and CSqrtX gates in the same layer. Please choose one.")
             if ENABLE_CSQRTX:
+                U = [cnf.add_var() for _ in range(n)]
                 [cnf.add_weight(U[k], str(Decimal(1/2))) for k in range(n)]
-            else:
+                [cnf.add_weight(-U[k], 1) for k in range(n)]
+            if ENABLE_T:
+                U = [cnf.add_var() for _ in range(n)]
                 [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
-            [cnf.add_weight(-U[k], 1) for k in range(n)]
+                [cnf.add_weight(-U[k], 1) for k in range(n)]
         else:
             U = [0.5 for _ in range(n)]  # Dummy value if not used (0.5 is always false)
         
@@ -1305,6 +1309,18 @@ class pauli2cnf:
             cnf.add_clause([-Z[k], -idg[k],  z[k]])
             # Implies(idg[k], ~U[k])
             cnf.add_clause([-U[k], -idg[k]])
+            # Implies(hg[k], Equivalent(R[k], x[k] & z[k]))
+            cnf.add_clause([-R[k], -hg[k],  x[k]])
+            cnf.add_clause([-R[k], -hg[k],  z[k]])
+            cnf.add_clause([ R[k], -hg[k], -x[k], -z[k]])
+            # Implies(hg[k], Equivalent(X[k], z[k]))
+            cnf.add_clause([ X[k], -hg[k], -z[k]])
+            cnf.add_clause([-X[k], -hg[k],  z[k]])
+            # Implies(hg[k], Equivalent(Z[k], x[k]))
+            cnf.add_clause([ Z[k], -hg[k], -x[k]])
+            cnf.add_clause([-Z[k], -hg[k],  x[k]])
+            # Implies(hg[k], ~U[k])
+            cnf.add_clause([-U[k], -hg[k]])
 
             c = k
             for t in range(n):
