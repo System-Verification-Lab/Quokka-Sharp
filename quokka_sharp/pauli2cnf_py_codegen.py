@@ -584,7 +584,7 @@ def main():
     # ==========[ Synthesis ]============ #''')
 
     ENABLE_H = True
-    ENABLE_T = False
+    ENABLE_T = True
     ENABLE_CZ = False
     ENABLE_CSQRTX = True
 
@@ -694,8 +694,8 @@ def main():
                                             (Xt & z[c] & z[t] & ~x[c] & ~x[t] & ~Zc)
                                             )
     CSqrtX_rt = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Rt, False)
-    CSqrtX_uc = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Ut, x[c] | z[t])
-    CSqrtX_ut = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Uc, False)
+    CSqrtX_uc = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Ut, False)
+    CSqrtX_ut = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Uc, x[c] | z[t])
 
     if ENABLE_CSQRTX:
         double_qb_gate_properties += [CSqrtX_xc, CSqrtX_xt, CSqrtX_zc, CSqrtX_zt, CSqrtX_rc, CSqrtXdg_rc, CSqrtX_rt, CSqrtX_uc, CSqrtX_ut]
@@ -757,7 +757,10 @@ def main():
         # Add U variables (for sqrt(1/2) normalization) and their weights, unless restricted
         if not limit_gates or not h_layer:
             U = [cnf.add_var() for _ in range(n)]
-            [cnf.add_weight(U[k], str(Decimal(1/2))) for k in range(n)]
+            if ENABLE_CSQRTX:
+                [cnf.add_weight(U[k], str(Decimal(1/2))) for k in range(n)]
+            else:
+                [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
             [cnf.add_weight(-U[k], 1) for k in range(n)]
         else:
             U = [0.5 for _ in range(n)]  # Dummy value if not used (0.5 is always false)
@@ -842,8 +845,9 @@ def main():
                     cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
                 # I -> I until CX
                 cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cx_k)
-                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + csqrtx_k)
-                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + csqrtxdg_k)
+
+                # cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + csqrtx_k)
+                # cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + csqrtxdg_k)
           
             if ENABLE_T and cnf.syn_gate_layer>=5:
                 # T -> !l_T | !ll_T | !lll_T | !llll_T
@@ -860,12 +864,12 @@ def main():
                         cnf.add_clause([-cxgate[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
                         # CX(c,t) -> !past(I(c)) or !past(I(t))
                         cnf.add_clause([-cxgate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
-                        # CSqrtX
-                        cnf.add_clause([-csqrtxgate[c][t], -cnf.get_syn_var_past_layer(Name ='csqrtx', bit = [c,t])])
-                        cnf.add_clause([-csqrtxgate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
-                        # CSqrtXdg
-                        cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name ='csqrtxdg', bit = [c,t])])
-                        cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
+                        # # CSqrtX
+                        # cnf.add_clause([-csqrtxgate[c][t], -cnf.get_syn_var_past_layer(Name ='csqrtx', bit = [c,t])])
+                        # cnf.add_clause([-csqrtxgate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
+                        # # CSqrtXdg
+                        # cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name ='csqrtxdg', bit = [c,t])])
+                        # cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
                     if ENABLE_T and cnf.syn_gate_layer>=3:
                         # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
                         cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='tdg', bit = c, past=2), -tg[c]])
