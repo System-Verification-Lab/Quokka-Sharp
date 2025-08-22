@@ -11,7 +11,15 @@ NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's',
                 'iswap': 'iswapdg', 'iswapdg': 'iswap',
                 'cs': 'csdg', 'csdg': 'cs', 'csqrtx': 'csqrtxdg', 'csqrtxdg': 'csqrtx',
                 'rx': 'rxdg', 'rxdg': 'rx', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
-
+FeedbackMap = {
+    'x': 'cx',
+    'y': 'cy',
+    'z': 'cz',
+    's': 'cs',
+    'sdg': 'csdg',
+    'sqrtx': 'csqrtx',
+    'sqrtxdg': 'csqrtxdg',
+}
 class Circuit:
     """
     A class to represent a quantum circuit.
@@ -20,8 +28,10 @@ class Circuit:
         self.n: int = 0
         self.tgate: int = 0
         self.circ = []
+        self.measurements = {}
         self.has_rotations = False
         self.ancillas = 0
+        self.cregs = {}
     
     def depth(self):
         """
@@ -55,15 +65,24 @@ class Circuit:
         Adds a Toffoli gate (CCX) to the circuit.
         """
         self.circ.append(['ccx', qubitc1, qubitc2, qubitr])
-        
-    def add_measurement(self, multi_or_single: bool):
+
+    def add_if(self, c_name: str, value: int, inner_op: list, c_bit: int | None = None):
         """
-        Adds a measurement gate to the circuit.
+        Adds a classically conditioned op: if (c_name[c_bit]==value) <inner_op>.
         """
-        if multi_or_single:
-            self.circ.append('mm')
-        else:
-            self.circ.append('m')
+        cond_key = (c_name, c_bit) if c_bit is not None else c_name
+        self.circ.append(['if', cond_key, value] + inner_op)
+
+    def add_measure(self, qubit: int, cname: str, cbit: int):
+        """
+        Adds a map from qubit to classical bit.
+        """
+        if cname not in self.cregs:
+            raise Exception(f"Measurement register {cname} not defined.")
+        if cbit >= self.cregs[cname]:
+            raise Exception(f"Measurement bit {cbit} out of range for register {cname}.")
+        #self.measurements.append(['measure', qubit, cname, cbit])
+        self.measurements[(cname, cbit)] = qubit
 
     def dagger(self):
         """
@@ -87,6 +106,9 @@ class Circuit:
         self.n = min(self.n, other.n)
         self.ancillas = max(self.n, other.n) - min(self.n, other.n)
         self.tgate = self.tgate + other.tgate
+        # merge classical regs (taking max of sizes if duplicated names appear)
+        for k, v in other.cregs.items():
+            self.cregs[k] = max(self.cregs.get(k, 0), v)
 
     def to_qasm(self):
         """
@@ -109,6 +131,52 @@ class Circuit:
                     s += f" q[{b}]"
                 s += f" ;\n"
         return s
+    
+    def translate_if_statements(self):
+        """
+        Replace ['if', cname, val, <op> ...] to classically controlled gates.
+        """
+
+        new_circ = []
+        for item in self.circ:
+
+            if not (isinstance(item, list) and item and item[0] == 'if'):
+                new_circ.append(item)
+                continue
+
+            cond_key = item[1]
+            val = int(item[2])
+            op  = item[3]
+            q   = item[4] if len(item) > 4 else None
+
+            if isinstance(cond_key, tuple):
+                cname, cbit = cond_key
+            else:
+                cname, cbit = cond_key, 0
+
+            if op not in FeedbackMap or not isinstance(q, int):
+                new_circ.append(item)
+                continue
+
+            ctrl = self.measurements.get((cname, cbit))
+            if ctrl is None:
+                continue
+
+            self.measurements.pop((cname, cbit))
+
+            controlledgate = FeedbackMap[op]
+            v = int(val) & 1 # test the condition
+
+            if v == 1:
+                new_circ.append([controlledgate, ctrl, q, 'if'])
+            else:
+                # X sandwich
+                new_circ.append(['x', ctrl])
+                new_circ.append([controlledgate, ctrl, q, 'if'])
+                new_circ.append(['x', ctrl])
+
+        self.circ = new_circ
+
 
 def get_num(s: str):
     """
@@ -122,6 +190,18 @@ def get_num(s: str):
         if s[i].isdigit():
             num = num + s[i]
     return globals()[qreg][int(num)]
+
+def get_creg_bit(s: str):
+    """
+    Parses 'cName[j]' into ('cName', j).
+    E.g. 'creg[3]' -> ('creg', 3)
+    """
+    s = s.rstrip(';')
+    idx1 = s.index('[')
+    idx2 = s.index(']')
+    name = s[0:idx1]
+    bit = int(s[idx1+1:idx2])
+    return name, bit
 
 def frac_to_float(frac: str):
     """
@@ -177,6 +257,28 @@ def get_angle(angle: str):
     except:
         raise Exception(angle, "is not supported")
 
+if_statement_regex = re.compile(
+    r'^\(\s*(?P<creg>[A-Za-z_]\w*)(?:\[(?P<bit>\d+)\])?\s*==\s*(?P<val>\d+)\s*\)$'
+)
+
+def parse_condition(token: str, cregs: dict):
+    m = if_statement_regex.match(token)
+    if not m:
+        raise Exception(f"Illegal if-condition: {token}")
+    cname = m.group('creg')
+    cbit = m.group('bit')
+    val = int(m.group('val'))
+    if cbit is not None:
+        bit = int(cbit)
+        size = cregs.get(cname, 1)
+        if bit < 0 or bit >= size:
+            raise Exception(f"if-condition bit out of range: {cname}[{bit}] (size {size})")
+        if val not in (0,1):
+            raise Exception("Bit-indexed condition must compare to 0 or 1.")
+        return cname, bit, val
+    else:
+        return cname, None, val
+
 def QASMparser(filename) -> Circuit:
     """
     Parses a QASM file and returns a Circuit object.
@@ -204,11 +306,36 @@ def QASMparser(filename) -> Circuit:
                 globals()[qreg][i] = i + circuit.n
             circuit.n += num
 
-        elif(line[0] == 'barrier' or line[0] == 'measure'):
+        elif(line[0] == 'barrier'):
             raise Exception("Syntax error:" + line[0])
             
-        elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include' or line[0] == 'creg':
+        elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include':
             continue
+
+        elif line[0] == 'creg':
+            reg = line[1].rstrip(';')
+            idx1 = reg.find('[')
+            idx2 = reg.find(']')
+            cname = reg[0:idx1]
+            csize = int(reg[idx1+1:idx2])
+            circuit.cregs[cname] = csize
+            globals()[cname] = list(range(csize))
+
+        elif line[0] == 'if':
+            # pattern: ['if', '(c0[0]==1)', '<gate|measure>', ...]
+            cname, cbit, cval = parse_condition(line[1], circuit.cregs)
+            op = line[2]
+
+            if op in ('id','z','y','x','h','s','sdg','t','tdg'):
+                qubit = get_num(line[3])
+                circuit.add_if(cname, cval, [op, qubit], cbit)
+            else:
+                raise Exception(f"Unsupported conditional op: {op}")
+        
+        elif line[0] == 'measure':
+            qubit = get_num(line[1])
+            cname, cbit = get_creg_bit(line[3])
+            circuit.add_measure(qubit, cname, cbit)
 
         elif gate == 'cx' or gate == 'cz' or gate == 'cy' or \
                 gate == 'swap' or gate == 'iswap' or \
@@ -270,4 +397,9 @@ def QASMparser(filename) -> Circuit:
             gate = line[0]
             raise Exception(str(gate) + " undefined.")
 
+    circuit.translate_if_statements()
+    for item in circuit.measurements:
+        cname, cbit = item
+        qubit = circuit.measurements[item]
+        circuit.circ.append(['measure', qubit, cname, cbit])
     return circuit

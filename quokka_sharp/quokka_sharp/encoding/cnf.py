@@ -104,7 +104,7 @@ class Variables:
             if self.computational_basis:
                 self.cnf.square_result = True
             else:
-                self.cnf.power_two_normalisation += n
+                self.normalize(n)
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
             if self.computational_basis:
@@ -116,13 +116,19 @@ class Variables:
                 for i in range(1, self.n):
                     self.cnf.add_clause([-self.x[i]], prepend)
                     self.cnf.add_clause([-self.z[i]], prepend)
-                self.cnf.power_two_normalisation += 1
+                self.normalize(1)
         elif type(basis) == dict:
             self.projector(basis, prepend=False)
-            if self.computational_basis == False:
-                self.cnf.power_two_normalisation += len(basis)
+            self.normalize(len(basis))
         else:
             Exception("Please choose firstzero, allzero or a list of qubits measurement")
+
+    def normalize(self, inc):
+        """
+        Increase CNF normalization factor by inc.
+        """
+        if self.computational_basis == False:
+            self.cnf.power_two_normalisation += inc
             
     def projectAllZero(self, prepend=False):
         """
@@ -311,6 +317,14 @@ class CNF:
             self.finalize()
         self.vars.projectAllZero()
 
+    def rightProject(self, spec: dict):
+        assert not self.computational_basis
+        if not self.locked:
+            self.finalize()
+        for i, val in spec.items():
+            self.add_clause([-self.vars.x[i]])
+        self.vars.normalize(len(spec))
+
     def rightProjectZXi(self, Z_or_X, i):
         """
         Add a clause to project the final state of a specific qubit to X or Z and the rest to I, and finalize the CNF encoding.
@@ -389,6 +403,12 @@ class CNF:
         self.vars.measurement(basis, False) 
         if not self.locked:
             self.finalize() 
+
+    def add_normalization(self):
+        """
+        Increment CNF normalization factor if a measurement is replaced by a controlled gate.
+        """
+        self.vars.normalize(1)
             
     def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None, projection_var = False):
         """
@@ -437,7 +457,6 @@ class CNF:
             return 0.5
 
 
-    # TODO: what's -.5 and .5?
     def add_clause(self, cons: list, prepend=False, comment=None):   
         """
         Add a clause to the CNF encoding.
@@ -539,6 +558,8 @@ class CNF:
             from .pauli2cnf import pauli2cnf as to_CNF
 
         for element in circuit.circ:
+            if len(element) == 4 and element[3] == 'if':
+                self.add_normalization()
             gate = element[0]
             if gate == 'id':
                 pass
@@ -638,10 +659,9 @@ class CNF:
                 qubitc2 = int(element[2])
                 qubitr  = int(element[3])
                 to_CNF.CCX2CNF(self, qubitc1, qubitc2, qubitr)
-            # elif gate == 'm':
-            #     self.rightProjectZXi(True, 0)
-            # elif gate == 'mm':
-            #     self.rightProjectAllZero()
+            elif gate == 'measure':
+                qubit = int(element[1])
+                self.add_measurement({qubit: 0})
             else:
                 raise Exception(str(gate) + " undefined."+ str(element))
             

@@ -25,18 +25,18 @@ qasmfile2 = args.qasmfile2
 # '''
 # Simulation
 # '''
-# # Parse the circuit where the encoding will decompose ccx gate into Clifford+T.
-# circuit1 = qk.encoding.QASMparser(qasmfile1)
-# # Encode the circuit (for computational basis, use `computational_basis = True`)
-# cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-# # Set the input state to be the all-zero state |0...0>.
-# cnf.leftProjectAllZero()
-# # Add measurement specification. We offer 'allzero' as a parameter for a simple way to specify a measure with all-zero state.
-# cnf.add_measurement({0:0})
-# # Export to benchmarks
-# cnf.write_to_file("circ.cnf", )
-# prob = qk.Simulate(cnf)
-
+# Parse the circuit where the encoding will decompose ccx gate into Clifford+T.
+circuit1 = qk.encoding.QASMparser(qasmfile1)
+# Encode the circuit (for computational basis, use `computational_basis = True`)
+cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
+# Set the input state to be the all-zero state |0...0>.
+cnf.leftProjectAllZero()
+# Make sure output qubit is 0 since input qubit is set to 0.
+cnf.rightProject({2: 0})
+# Export to benchmarks
+cnf.write_to_file(cnf_dir + "/input_circuit.cnf")
+prob = qk.Simulate(cnf, cnf_dir)
+print(f"Probability: {prob}")
 # The result will be a float if the probability was computed,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 # '''
@@ -72,17 +72,17 @@ Synthesis
 '''
 # Change the tool_invocation in config.json to be the maximum weighted model counter.
 
-# Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile1)
-# Get (circuit)^dagger
-circuit.dagger()
-# Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
-cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
-result, weight, solution, layers = qk.Synthesis(cnf, cnf_dir)
-print(f"Result: {result}")
-print(f"Weight: {weight}")
-print(f"Solution: {solution}")
-print(f"Layers: {layers}")
+# # Parse the circuits
+# circuit = qk.encoding.QASMparser(qasmfile1)
+# # Get (circuit)^dagger
+# circuit.dagger()
+# # Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
+# cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
+# result, weight, solution, layers = qk.Synthesis(cnf, cnf_dir)
+# print(f"Result: {result}")
+# print(f"Weight: {weight}")
+# print(f"Solution: {solution}")
+# print(f"Layers: {layers}")
 # The result will be "FOUND" if a solution was found, 
 # "CRASH" if there was a problem such as an invalid cnf or not enough mem, 
 # "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.
