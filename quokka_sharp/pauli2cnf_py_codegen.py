@@ -188,7 +188,7 @@ def main():
     print("        cnf.vars.z[k] = Z")  
     print()
 
-    #CNOT
+    # CNOT
     print("    def CNOT2CNF(cnf, c, t):")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")

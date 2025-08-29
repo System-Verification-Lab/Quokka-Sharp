@@ -9,6 +9,7 @@ HermiGates = ['id', 'h', 'cx', 'cz', 'cy', 'swap', 'x', 'z', 'y', 'ccx']
 RotationGates = ['rx', 'ry', 'rz']
 NHermitGates = {'t': 'tdg', 'tdg': 't', 's': 'sdg', 'sdg': 's', 
                 'iswap': 'iswapdg', 'iswapdg': 'iswap',
+                'ct': 'ctdg', 'ctdg': 'ct',
                 'cs': 'csdg', 'csdg': 'cs', 'csqrtx': 'csqrtxdg', 'csqrtxdg': 'csqrtx',
                 'rx': 'rxdg', 'rxdg': 'rx', 'rz': 'rzdg', 'rzdg': 'rz', 'ry': 'rydg', 'rydg': 'ry'}
 FeedbackMap = {
@@ -16,6 +17,8 @@ FeedbackMap = {
     'y': 'cy',
     'z': 'cz',
     's': 'cs',
+    't': 'ct',
+    'tdg': 'ctdg',
     'sdg': 'csdg',
     'sqrtx': 'csqrtx',
     'sqrtxdg': 'csqrtxdg',
@@ -306,12 +309,6 @@ def QASMparser(filename) -> Circuit:
                 globals()[qreg][i] = i + circuit.n
             circuit.n += num
 
-        elif(line[0] == 'barrier'):
-            raise Exception("Syntax error:" + line[0])
-            
-        elif line[0] == '//' or line[0] == 'OPENQASM' or line[0] == 'include':
-            continue
-
         elif line[0] == 'creg':
             reg = line[1].rstrip(';')
             idx1 = reg.find('[')
@@ -321,8 +318,17 @@ def QASMparser(filename) -> Circuit:
             circuit.cregs[cname] = csize
             globals()[cname] = list(range(csize))
 
+        elif(line[0] == 'barrier'):
+            raise Exception("Syntax error:" + line[0])
+            
+        elif line[0] == '//' or \
+            (gate[0] == '/' and gate[1] == '/') or \
+                line[0] == 'OPENQASM' or \
+                    line[0] == 'include':
+            continue
+
         elif line[0] == 'if':
-            # pattern: ['if', '(c0[0]==1)', '<gate|measure>', ...]
+            # pattern: ['if', '(c0[0]==1)', '<gate>', ...]
             cname, cbit, cval = parse_condition(line[1], circuit.cregs)
             op = line[2]
 
@@ -340,7 +346,8 @@ def QASMparser(filename) -> Circuit:
         elif gate == 'cx' or gate == 'cz' or gate == 'cy' or \
                 gate == 'swap' or gate == 'iswap' or \
                     gate == 'cs' or gate == 'csdg' or \
-                        gate == 'csqrtx' or gate == 'csqrtxdg':
+                        gate == 'csqrtx' or gate == 'csqrtxdg' or \
+                            gate == 'ct' or gate == 'ctdg':
             if(line[1].count('[') == 1):
                 qubitc = get_num(line[1])
                 qubitr = get_num(line[2])

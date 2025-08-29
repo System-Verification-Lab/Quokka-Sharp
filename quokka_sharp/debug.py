@@ -9,7 +9,7 @@ import os
 parser = argparse.ArgumentParser(description="QuokkaSharp Debug Script")
 parser.add_argument("--tmp", type=str, required=True, help="Path to write CNFs")
 parser.add_argument("--qasmfile1", type=str, required=True, help="Path to the first QASM file")
-parser.add_argument("--qasmfile2", type=str, required=False, help="Path to the first QASM file")
+parser.add_argument("--qasmfile2", type=str, required=False, help="Path to the second QASM file")
 args = parser.parse_args()
 
 cnf_dir = args.tmp
@@ -17,44 +17,51 @@ qasmfile1 = args.qasmfile1
 base, ext = os.path.splitext(qasmfile1)
 if base.endswith("1"):
     base = base[:-1]
-#qasmfile2 = f"{base}2{ext}"
-
 qasmfile2 = args.qasmfile2
 
 
 # '''
 # Simulation
 # '''
-# Parse the circuit where the encoding will decompose ccx gate into Clifford+T.
-circuit1 = qk.encoding.QASMparser(qasmfile1)
-# Encode the circuit (for computational basis, use `computational_basis = True`)
-cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-# Set the input state to be the all-zero state |0...0>.
-cnf.leftProjectAllZero()
-# Make sure output qubit is 0 since input qubit is set to 0.
-cnf.rightProject({2: 0})
-# Export to benchmarks
-cnf.write_to_file(cnf_dir + "/input_circuit.cnf")
-prob = qk.Simulate(cnf, cnf_dir)
-print(f"Probability: {prob}")
+# # Parse the circuit where the encoding will decompose ccx gate into Clifford+T.
+# circuit1 = qk.encoding.QASMparser(qasmfile1)
+# # Encode the circuit (for computational basis, use `computational_basis = True`)
+# cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
+# # Set the input state to be the all-zero state |0...0>.
+# cnf.leftProjectAllZero()
+# # Make sure output qubit is 0 since input qubit is set to 0.
+# cnf.rightProject({2: 0})
+# # Export to benchmarks
+# cnf.write_to_file(cnf_dir + "/input_circuit.cnf")
+# prob = qk.Simulate(cnf, cnf_dir)
+# print(f"Probability: {prob}")
 # The result will be a float if the probability was computed,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
 # '''
 # Equivalence checking
 # '''
-# # Parse the circuit
-# circuit1 = qk.encoding.QASMparser(qasmfile1)
-# # Parse another circuit
-# circuit2 = qk.encoding.QASMparser(qasmfile2)
-# # Get (circuit1)(circuit2)^dagger
-# circuit2.dagger()
-# circuit1.append(circuit2)
-# # Get CNF for the merged circuit (for computational basis instead of Pauli, use `computational_basis = True`)
-# cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-# # Users can set a different number N of parallel processes when the check mode is "linear". For other modes, "N" should be 1.
-# res = qk.CheckEquivalence(cnf, check = "linear", N=16)
-# # The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
-# print(res)
+# Parse the circuit
+circuit1 = qk.encoding.QASMparser(qasmfile1)
+# Parse another circuit
+circuit2 = qk.encoding.QASMparser(qasmfile2)
+# Get (circuit1)(circuit2)^dagger
+circuit2.dagger()
+circuit1.append(circuit2)
+# Get CNF for the merged circuit (for computational basis instead of Pauli, use `computational_basis = True`)
+cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
+# Users can set a different number N of parallel processes when the check mode is "linear". For other modes, "N" should be 1.
+#outputs = [2]
+outputs = None
+res = qk.CheckEquivalence(cnf, check = "linear", outputs = outputs, N=16)
+# The result will be "True" if the circuits are equivalent, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
+if res == True:
+    print("Equivalent", end='')
+else:
+    print("Not Equivalent", end='')
+if outputs is not None:
+    print(f" on qubits {outputs}")
+else :
+    print()
 
 '''
 Verification

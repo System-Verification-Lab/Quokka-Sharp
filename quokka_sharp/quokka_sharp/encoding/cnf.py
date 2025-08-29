@@ -625,6 +625,22 @@ class CNF:
                 j = int(element[1])
                 k = int(element[2])
                 to_CNF.CSdg2CNF(self,j,k) 
+            elif gate == 'ct':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.RZ2CNF(self,j, np.pi/8)
+                to_CNF.RZ2CNF(self,k, np.pi/8)
+                to_CNF.CNOT2CNF(self,j,k)
+                to_CNF.RZ2CNF(self,k, -np.pi/8)
+                to_CNF.CNOT2CNF(self,j,k)
+            elif gate == 'ctdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CNOT2CNF(self,j,k)
+                to_CNF.RZ2CNF(self,k, np.pi/8)
+                to_CNF.CNOT2CNF(self,j,k)
+                to_CNF.RZ2CNF(self,k, -np.pi/8)
+                to_CNF.RZ2CNF(self,j, -np.pi/8)
             elif gate == 'csqrtx':
                 j = int(element[1])
                 k = int(element[2])

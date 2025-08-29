@@ -1,5 +1,5 @@
 {
-  "DEBUG": true,
+  "DEBUG": false,
   "TIMEOUT": 5000,
   "ToolInvocation": "/home/muhos/quantum/quokka/gpmc -mode=1",
   "D4ToolInvocation": "/home/muhos/quantum/quokka/maxT_static",

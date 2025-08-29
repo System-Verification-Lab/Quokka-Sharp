@@ -84,7 +84,7 @@ def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "cyclic", N=16):
+def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "cyclic", outputs = None, N=16):
     """
     Check if the given circuit is equivalent to the identity
     Args:
@@ -111,6 +111,8 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                     pass
         with timeout(TIMEOUT, on_timeout=cleanup):
             if check == "cyclic":
+                if outputs is not None:
+                    raise ValueError("Output indices not supported for cyclic check")
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
@@ -120,12 +122,16 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                 else:
                     square_prob = False
             elif (check == "cyclic_linear") or (check == "cyc_lin"):
+                if outputs is not None:
+                    raise ValueError("Output indices not supported for cyclic check")
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
                 expected_prob = Decimal(2*cnf.n)
                 square_prob = False
             elif check == "cyclic_noY":
+                if outputs is not None:
+                    raise ValueError("Output indices not supported for cyclic check")
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
@@ -135,7 +141,16 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
                 else:
-                    for i in range(cnf.n):
+                    if outputs is not None:
+                        indices = list(outputs)  # e.g. [2,5,6]
+                    else:
+                        indices = range(cnf.n)
+
+                    for i in indices:
+                        if not (0 <= i < cnf.n):
+                            raise ValueError(f"output index {i} out of range 0..{cnf.n-1}")
+
+                    for i in indices:
                         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
                         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
                     expected_prob = 1
