@@ -154,29 +154,60 @@ class Circuit:
 
             if isinstance(cond_key, tuple):
                 cname, cbit = cond_key
+                # Single bit condition
+                if op not in FeedbackMap or not isinstance(q, int):
+                    new_circ.append(item)
+                    continue
+
+                ctrl = self.measurements.get((cname, cbit))
+                if ctrl is None:
+                    continue
+
+                self.measurements.pop((cname, cbit))
+
+                controlledgate = FeedbackMap[op]
+                v = int(val) & 1 # test the condition
+
+                if v == 1:
+                    new_circ.append([controlledgate, ctrl, q])
+                else:
+                    # X sandwich
+                    new_circ.append(['x', ctrl])
+                    new_circ.append([controlledgate, ctrl, q])
+                    new_circ.append(['x', ctrl])
             else:
-                cname, cbit = cond_key, 0
+                # Whole register condition
+                cname = cond_key
+                if op not in FeedbackMap or not isinstance(q, int):
+                    new_circ.append(item)
+                    continue
 
-            if op not in FeedbackMap or not isinstance(q, int):
-                new_circ.append(item)
-                continue
+                # Find all measured bits for this register
+                reg_measurements = {}
+                for (m_cname, m_cbit), m_qubit in list(self.measurements.items()):
+                    if m_cname == cname:
+                        reg_measurements[m_cbit] = m_qubit
+                        self.measurements.pop((m_cname, m_cbit))
 
-            ctrl = self.measurements.get((cname, cbit))
-            if ctrl is None:
-                continue
+                if not reg_measurements:
+                    continue
 
-            self.measurements.pop((cname, cbit))
-
-            controlledgate = FeedbackMap[op]
-            v = int(val) & 1 # test the condition
-
-            if v == 1:
-                new_circ.append([controlledgate, ctrl, q, 'if'])
-            else:
-                # X sandwich
-                new_circ.append(['x', ctrl])
-                new_circ.append([controlledgate, ctrl, q, 'if'])
-                new_circ.append(['x', ctrl])
+                controlledgate = FeedbackMap[op]
+                
+                reg_size = self.cregs.get(cname, 1)
+                for bit_pos in range(reg_size):
+                    if bit_pos in reg_measurements:
+                        ctrl_qubit = reg_measurements[bit_pos]
+                        expected_bit = (val >> bit_pos) & 1  # Extract bit at position bit_pos
+                        
+                        if expected_bit == 1:
+                            # If we expect bit to be 1, apply controlled gate directly
+                            new_circ.append([controlledgate, ctrl_qubit, q])
+                        else:
+                            # If we expect bit to be 0, apply X sandwich
+                            new_circ.append(['x', ctrl_qubit])
+                            new_circ.append([controlledgate, ctrl_qubit, q])
+                            new_circ.append(['x', ctrl_qubit])
 
         self.circ = new_circ
 
@@ -280,6 +311,11 @@ def parse_condition(token: str, cregs: dict):
             raise Exception("Bit-indexed condition must compare to 0 or 1.")
         return cname, bit, val
     else:
+        # Whole register comparison
+        size = cregs.get(cname, 1)
+        max_val = (1 << size) - 1 
+        if val < 0 or val > max_val:
+            raise Exception(f"Register value {val} out of range for {cname} (size {size}, max {max_val})")
         return cname, None, val
 
 def QASMparser(filename) -> Circuit:
