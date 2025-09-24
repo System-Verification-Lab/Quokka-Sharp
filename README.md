@@ -3,7 +3,7 @@
 
 - Install GPMC solver: Follow instructions in [GPMC git](https://github.com/System-Verification-Lab/GPMC) to install GPMC.
 
-- Install d4max solver: Follow instructions in [d4v2 git](https://github.com/crillab/d4v2) to install d4max.
+- Install d4max solver: Follow instructions in [d4v2 git](https://github.com/jm62300/d4) to install d4max.
 
 - Install pip: Follow instructions in [pip Installation](https://pip.pypa.io/en/stable/installation/) to install pip. 
 
