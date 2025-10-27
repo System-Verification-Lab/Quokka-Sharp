@@ -226,10 +226,6 @@ def get_num(s: str):
     return globals()[qreg][int(num)]
 
 def get_creg_bit(s: str):
-    """
-    Parses 'cName[j]' into ('cName', j).
-    E.g. 'creg[3]' -> ('creg', 3)
-    """
     s = s.rstrip(';')
     idx1 = s.index('[')
     idx2 = s.index(']')
