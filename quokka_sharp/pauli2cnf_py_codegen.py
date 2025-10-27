@@ -51,7 +51,6 @@ def to_py(func, prefix="", simplify=True, force=True):
                 print(", ", end="")
         print("])")
 
-# TODO: why we add weight of -1 to R and 1 to -R?
 def add_sign(func, prefix = ""):
     print(prefix+f"        # adding sign if {func}")
     print(prefix+"        R = cnf.add_var()")
@@ -66,7 +65,7 @@ def add_sign(func, prefix = ""):
     to_py(	                  Equivalent(R, r ^ func), prefix+"    ")
 
 def add_sqrt_half(func, prefix = ""):
-    print(prefix+f"        # adding sqrt_half if {func}")
+    print(prefix+f"       # adding sqrt_half if {func}")
     print(prefix+"        U = cnf.add_var()")
     print(prefix+"        cnf.vars.UVar.append(U)")
     print(prefix+"        if cnf.weighted: ")
@@ -397,30 +396,34 @@ def main():
     print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
     print()
 
-    #RZ
+    # RZ
     print("    def RZ2CNF(cnf, k, theta):")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
     print()
     print("        Z = cnf.add_var()")
     print("        cnf.vars.ZVar.append(Z)")
-    to_py(	       x[k] | Equivalent(Z, z[k]))
+    to_py(         x[k] | Equivalent(Z, z[k]))
     print()
     print("        u1 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u1)")
-    print("        cnf.add_weight( u1, Decimal(math.cos(theta)))")
+    print("        w_cos = cnf.get_xvar(f\"x_RZ_{k}_0\")")
+    print("        cnf.add_weight(u1, w_cos)")       # symbolic weight
     print("        cnf.add_weight(-u1, 1)")
-    to_py(	       Equivalent(u1, x[k] & (((z[k] & Z)) | (~z[k] & ~Z))))
-    print()   
+    to_py(         Equivalent(u1, x[k] & (((z[k] & Z)) | (~z[k] & ~Z))))
+    print()
     print("        u2 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u2)")
-    print("        cnf.add_weight( u2, Decimal(math.sin(theta)))")
+    print("        w_sin = cnf.get_xvar(f\"x_RZ_{k}_1\")")
+    print("        cnf.add_weight(u2, w_sin)")       # symbolic weight
     print("        cnf.add_weight(-u2, 1)")
-    to_py(	       Equivalent(u2, x[k] & (((~z[k] & Z)) | (z[k] & ~Z))))
+    to_py(         Equivalent(u2, x[k] & (((~z[k] & Z)) | (z[k] & ~Z))))
     print()
     add_sign(x[k] & z[k] & ~Z)
     print()
     print("        cnf.vars.z[k] = Z")
+    print()
+    print("        cnf.symbolic_circles.append((w_cos, w_sin))")
     print()
 
     #RX
@@ -434,13 +437,15 @@ def main():
     print()   
     print("        u1 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u1)")
-    print("        cnf.add_weight( u1, Decimal(math.cos(theta)))")
+    print("        w_cos = cnf.get_xvar(f\"x_RX_{k}_0\")")
+    print("        cnf.add_weight( u1, w_cos)")
     print("        cnf.add_weight(-u1, 1)")
     to_py(	       Equivalent(u1, z[k] & ((x[k] & X) | (~x[k] & ~X))))
     print()   
     print("        u2 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u2)")
-    print("        cnf.add_weight( u2, Decimal(math.sin(theta)))")
+    print("        w_sin = cnf.get_xvar(f\"x_RX_{k}_1\")")
+    print("        cnf.add_weight( u2, w_sin)")
     print("        cnf.add_weight(-u2, 1)")
     to_py(	       Equivalent(u2, z[k] & ((~x[k] & X) | (x[k] & ~X))))
     print()
@@ -448,6 +453,7 @@ def main():
     print()
     print("        cnf.vars.x[k] = X")
     print()
+    print("        cnf.symbolic_circles.append((w_cos, w_sin))")
     print()
   
     # composiotion layer

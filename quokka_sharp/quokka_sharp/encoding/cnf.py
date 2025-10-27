@@ -220,10 +220,13 @@ class CNF:
     def __init__(self, n = 0, ancillas=0, computational_basis=False, weighted = True, ganak = False, unitary_encoding = False, Unitary = None):
         self.clause = 0
         self.n = n
+        self.next_x = 0
         self.ancillas = ancillas
         self.circuit = None
         self.locked = False
         self.cons_list = []
+        self.sym2x = {}
+        self.symbolic_circles = []
         self.weighted = weighted
         self.weight_list = io.StringIO()
         self.power_two_normalisation = 0
@@ -270,7 +273,13 @@ class CNF:
         else:
             self.vars = Variables(self, computational_basis, unitary_encoding, Unitary) # variables at timestep m (end of circuit)
             self.vars_init = self.vars.copy()     # variables at timestep 0
-        
+
+    def get_xvar(self, name):
+        if name not in self.sym2x:
+            self.sym2x[name] = f"x{self.next_x}"
+            self.next_x += 1
+        return self.sym2x[name]
+
     def copy(self):
         """
         Create a deep copy of the CNF object.
