@@ -342,6 +342,8 @@ class CNF:
         Args:
             spec (dict): A dictionary specifying the projector. The keys are qubit indices and the values are 0 or 1.
         """
+        if not self.computational_basis:
+            self.power_two_normalisation -= len(spec)
         if not self.locked:
             self.finalize()
         self.vars.projector(spec, prepend=False)
