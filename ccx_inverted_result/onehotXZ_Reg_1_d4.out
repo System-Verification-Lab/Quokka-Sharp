@@ -1,0 +1,77 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 60
+c [INITIAL INPUT] Number of clauses: 992
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 361
+c [INITIAL INPUT] Number of ternary clauses: 164
+c [INITIAL INPUT] Number of clauses larger than 3: 467
+c [INITIAL INPUT] Number of literals: 3760
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BACKBONE] Time to compute the backbone: 0.000304
+c [BACKBONE] Number of SAT calls: 22
+c [BACKBONE] Backbone size: 0
+c [BACKBONE] Number of units detected by calling the solver: 0
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 60
+c [PREPROCESSED INPUT] Number of clauses: 560
+c [PREPROCESSED INPUT] Number of unit clauses: 2
+c [PREPROCESSED INPUT] Number of binary clauses: 383
+c [PREPROCESSED INPUT] Number of ternary clauses: 67
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 108
+c [PREPROCESSED INPUT] Number of literals: 1483
+c
+c
+c [MAX VARIABLES] list: 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 
+c
+c Run with the classic mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) 
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 4
+c [MAXT] Set the threshold limit: 6
+c Warm start process (11): 1/29
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|   max#count|
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 87
+c Number of split formula (max): 0
+c Number of split formula (ind): 4
+c Number of decision: 246
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 121
+c Number of negative hit: 203
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 86
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 0.00248
+c
+v 37 -38 -39 -40 -41 -42 -43 -44 -45 -46 -47 -48 -49 -50 -51 52 -53 -54 -55 -56 -57 -58 -59 -60 0
+o 4.50000000000000000000000000000000000000000000000000
+c [MAX-T] Elapsed time: 0.03926957899999999890283675085811410099267959594727 seconds

@@ -177,8 +177,10 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
 
                 # if printing: print(f"num_layers: {cnf_copy.syn_gate_layer}")
                 # if printing: print(f"num qubits: {cnf_copy.n} + {cnf_copy.ancillas}")
+                solver = "glucose"
                 command = (tool_invocation.split(' ') + 
                         ["-i", file] + 
+                        ["-s", solver] + 
                         ["--complex", ("1" if cnf.computational_basis else "0")] + 
                         ["--threshold", str(expected_prob * fidelity_threshold) + (" 0" if cnf.computational_basis else "")]
                         )

@@ -1,0 +1,35 @@
+Iteration: 0
+fidelity:0.75
+Run Time: 0.03423762321472168
+
+Iteration: 1
+fidelity:0.75
+Run Time: 0.04125094413757324
+
+Iteration: 2
+fidelity:0.75
+Run Time: 0.15990018844604492
+
+Iteration: 3
+fidelity:0.75
+Run Time: 3.3945000171661377
+
+Iteration: 4
+fidelity:0.83333333333333333333333333333333
+Run Time: 141.85815119743347
+
+Iteration: 5
+fidelity:1
+Run Time: 577.7818098068237
+Result: FOUND
+Weight: 1
+Solution: OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[3];
+cx q[1] q[0] ;
+csqrtx q[0] q[2] ;
+cx q[1] q[0] ;
+csqrtxdg q[1] q[2] ;
+csqrtxdg q[0] q[2] ;
+
+Layers: 5

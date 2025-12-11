@@ -934,7 +934,7 @@ class pauli2cnf:
         u1 = cnf.add_var()
         cnf.vars.UVar.append(u1)
         w_cos = cnf.get_xvar(f"x_RZ_{k}_0")
-        cnf.add_weight(u1, f"(1/2)*{w_cos}")
+        cnf.add_weight(u1, w_cos)
         cnf.add_weight(-u1, 1)
         # Equivalent(u1, x[k] & ((Z & z[k]) | (~Z & ~z[k])))
         cnf.add_clause([-u1,  x[k]])
@@ -946,7 +946,7 @@ class pauli2cnf:
         u2 = cnf.add_var()
         cnf.vars.UVar.append(u2)
         w_sin = cnf.get_xvar(f"x_RZ_{k}_1")
-        cnf.add_weight(u2, f"(1/2)*{w_sin}")
+        cnf.add_weight(u2, w_sin)
         cnf.add_weight(-u2, 1)
         # Equivalent(u2, x[k] & ((Z & ~z[k]) | (z[k] & ~Z)))
         cnf.add_clause([-u2,  x[k]])
@@ -982,6 +982,7 @@ class pauli2cnf:
         cnf.vars.z[k] = Z
 
         cnf.symbolic_circles.append((w_cos, w_sin))
+
     def RX2CNF(cnf, k, theta):
         x = cnf.vars.x
         z = cnf.vars.z
@@ -995,7 +996,7 @@ class pauli2cnf:
         u1 = cnf.add_var()
         cnf.vars.UVar.append(u1)
         w_cos = cnf.get_xvar(f"x_RX_{k}_0")
-        cnf.add_weight( u1, f"(1/2)*{w_cos}")
+        cnf.add_weight( u1, w_cos)
         cnf.add_weight(-u1, 1)
         # Equivalent(u1, z[k] & ((X & x[k]) | (~X & ~x[k])))
         cnf.add_clause([-u1,  z[k]])
@@ -1007,7 +1008,7 @@ class pauli2cnf:
         u2 = cnf.add_var()
         cnf.vars.UVar.append(u2)
         w_sin = cnf.get_xvar(f"x_RX_{k}_1")
-        cnf.add_weight( u2, f"(1/2)*{w_sin}")
+        cnf.add_weight( u2, w_sin)
         cnf.add_weight(-u2, 1)
         # Equivalent(u2, z[k] & ((X & ~x[k]) | (x[k] & ~X)))
         cnf.add_clause([-u2,  z[k]])
@@ -1043,6 +1044,7 @@ class pauli2cnf:
         cnf.vars.x[k] = X
 
         cnf.symbolic_circles.append((w_cos, w_sin))
+
 
  
     def Composition(cnf, composition_dictionary):
@@ -1234,7 +1236,7 @@ class pauli2cnf:
         """
     
 
-        ENABLE_H = False  # Disable H gate properties
+        ENABLE_H = True  # Enable H gate properties
 
         ENABLE_T = False  # Disable T gate properties
 
@@ -1312,6 +1314,18 @@ class pauli2cnf:
             cnf.add_clause([-Z[k], -idg[k],  z[k]])
             # Implies(idg[k], ~U[k])
             cnf.add_clause([-U[k], -idg[k]])
+            # Implies(hg[k], Equivalent(R[k], x[k] & z[k]))
+            cnf.add_clause([-R[k], -hg[k],  x[k]])
+            cnf.add_clause([-R[k], -hg[k],  z[k]])
+            cnf.add_clause([ R[k], -hg[k], -x[k], -z[k]])
+            # Implies(hg[k], Equivalent(X[k], z[k]))
+            cnf.add_clause([ X[k], -hg[k], -z[k]])
+            cnf.add_clause([-X[k], -hg[k],  z[k]])
+            # Implies(hg[k], Equivalent(Z[k], x[k]))
+            cnf.add_clause([ Z[k], -hg[k], -x[k]])
+            cnf.add_clause([-Z[k], -hg[k],  x[k]])
+            # Implies(hg[k], ~U[k])
+            cnf.add_clause([-U[k], -hg[k]])
 
             c = k
             for t in range(n):
@@ -1477,12 +1491,13 @@ class pauli2cnf:
                         # CX(c,t) -> !past(I(c)) or !past(I(t))
                         cnf.add_clause([-cxgate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
                         # CSqrtX/dg
-                        # No 2-qubit gate added after empty layer on same qubits
-                        cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='id', bit=c), -cnf.get_syn_var_past_layer(Name='id', bit=t)])
-                        cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='id', bit=c), -cnf.get_syn_var_past_layer(Name='id', bit=t)])   
-                        # No immediate inverse
-                        cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='csqrtxdg', bit=[c,t])])
-                        cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='csqrtx',   bit=[c,t])])                
+                        if ENABLE_CSQRTX:
+                            # No 2-qubit gate added after empty layer on same qubits
+                            cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='id', bit=c), -cnf.get_syn_var_past_layer(Name='id', bit=t)])
+                            cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='id', bit=c), -cnf.get_syn_var_past_layer(Name='id', bit=t)])   
+                            # No immediate inverse
+                            cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='csqrtxdg', bit=[c,t])])
+                            cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='csqrtx',   bit=[c,t])])                
                         
                     if ENABLE_T and cnf.syn_gate_layer>=3:
                         # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
