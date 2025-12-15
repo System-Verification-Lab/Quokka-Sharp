@@ -10,7 +10,7 @@ DEFAULT_CONFIG = {
     "D4ToolInvocation": "../../../d4v2/build/maxT_static",
     "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
     "FPE"       : 1e-12,
-    "Precision" : 32
+    "Precision" : 50
 }
 
 def load_config():
