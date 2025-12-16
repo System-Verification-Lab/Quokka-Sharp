@@ -20,7 +20,7 @@ precision       = CONFIG["Precision"]
 getcontext().prec = precision
 
 
-def WMC(wmc_file, square):
+def WMC(wmc_file, square, amplitude):
     """
     Parse the output of WMC to get the weighted model counting result
     Args:
@@ -34,13 +34,13 @@ def WMC(wmc_file, square):
     p = Popen(tool_command, stdout=PIPE)
     try: 
         result = p.communicate(timeout = TIMEOUT)
-        return parse_wmc_result(result, square)
+        return parse_wmc_result(result, square, amplitude)
     except TimeoutExpired:
         os.system("kill -9 " + str(p.pid))
         return "TIMEOUT"
 
 
-def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
+def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir(), amplitude = False):
     """
     Simulate a quantum circuit and give the corresponding probability
     Args:
@@ -48,12 +48,19 @@ def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
     Returns:
         result      :  the probability of the circuit
     """
+    norm = (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
+    if DEBUG:
+        print(norm)
     if cnf.weighted:
         filename = os.path.join(cnf_file_root, "for_sim.cnf")
         cnf.write_to_file(filename)
-        result = WMC(filename, square = cnf.square_result)
-        if result != "TIMEOUT":
-            result = Decimal(result) * (Decimal(1/2)**Decimal(cnf.power_two_normalisation))
+        result = WMC(filename, square = cnf.square_result, amplitude = amplitude)
+        if result != "TIMEOUT" and amplitude:
+           result = {"real": result['real'] * norm, "imag": result['imag'] * norm}           
+        elif result != "TIMEOUT":
+            result = Decimal(result) * norm
+        if DEBUG:
+            print(result)
         return result
     else:
         sum_results = 0

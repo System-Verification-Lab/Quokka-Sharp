@@ -38,7 +38,7 @@ def parse_complex_decimal(s: str):
     imag_s = (m.group(2) or "0").replace("+-", "-")
     return Decimal(real_s), Decimal(imag_s)
 
-def parse_wmc_result(result, square: bool):
+def parse_wmc_result(result, square: bool, amplitude = False):
     """Parse the output of WMC to get the weighted model counting result."""
     ans_str = re.findall( re.compile(get_result), str(result))
     if DEBUG: print("weighted model counting result:", ans_str)
@@ -56,7 +56,9 @@ def parse_wmc_result(result, square: bool):
 
     if DEBUG:
         print(real)
-        
+    
+    if amplitude:
+        return {"real": real, "imag": imag}
 
     if abs(real) < FPE and abs(imag) < FPE:
         return 0
