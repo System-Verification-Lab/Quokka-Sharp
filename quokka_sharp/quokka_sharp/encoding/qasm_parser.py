@@ -79,6 +79,15 @@ class Circuit:
             self.circ.append('mm')
         else:
             self.circ.append('m')
+            
+    def add_h_ancilla(self, i):
+        """
+        For dirty check add H gate to the ancilla qubit
+        Args:
+            i : ancilla qubit
+        """
+        self.circ.insert(0,['h', i])
+        self.circ.append(['h', i])
 
     def dagger(self):
         """
