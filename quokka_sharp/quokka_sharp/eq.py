@@ -4,7 +4,7 @@ import random
 import tempfile
 from subprocess import PIPE, Popen
 import traceback
-
+import time, signal
 from .encoding.cnf import CNF
 from .utils.utils import parse_wmc_result
 from .utils.timeout import timeout, TimeoutException
@@ -96,6 +96,21 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
         True if the circuits are equivalent otherwise False
     """
     global procdict  # make sure handler sees this
+
+    def kill_all_groups(procdict, sig):
+        for p in list(procdict.values()):
+            try:
+                os.killpg(p.pid, sig)
+            except Exception:
+                pass
+
+    def reap_all(procdict):
+        for p in list(procdict.values()):
+            try:
+                p.communicate(timeout=0.2)
+            except Exception:
+                pass
+    
     
     if DEBUG: print()
     if DEBUG: print(f"comp: {cnf.computational_basis}, check: {check}")
@@ -103,34 +118,45 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
     try:
         cnf_file_list = []
         procdict = {}
+
+        deadline = time.monotonic() + TIMEOUT
+
         def cleanup():
-            for p in procdict.values():
-                try:
-                    p.kill()
-                except Exception:
-                    pass
+            """
+            Cleanup handler invoked on timeout or early termination.
+
+            Terminates all remaining subprocesses by killing their
+            entire process groups, then reaps them.
+            """
+            kill_all_groups(procdict, signal.SIGTERM)
+            time.sleep(0.2)
+            kill_all_groups(procdict, signal.SIGKILL)
+            reap_all(procdict)
+            procdict.clear()
+
         with timeout(TIMEOUT, on_timeout=cleanup):
             if check == "cyclic":
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = False))
-                expected_prob = Decimal(4**cnf.n)
                 if cnf.computational_basis:
-                    square_prob = True
+                    expected_prob = Decimal(2**cnf.n)
+                    expected_abs_value = False
                 else:
-                    square_prob = False
-            elif (check == "cyclic_linear") or (check == "cyc_lin"):
+                    expected_prob = Decimal(4**cnf.n)
+                    expected_abs_value = False
+            elif check == "cyclic_linear":
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_2n = True))
                 expected_prob = Decimal(2*cnf.n)
-                square_prob = False
+                expected_abs_value = False
             elif check == "cyclic_noY":
                 if N > 1:
                     raise InvalidProcessNumException
                 cnf_file_list.append(identity_check(cnf, cnf_file_root, constrain_no_Y = True))
                 expected_prob = Decimal(3**cnf.n)
-                square_prob = False
+                expected_abs_value = False
             elif check == "linear":
                 if cnf.computational_basis:
                     assert False, "2n check is not supported for computational basis"
@@ -139,7 +165,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                         cnf_file_list.append(basis(i, True, cnf, cnf_file_root))
                         cnf_file_list.append(basis(i, False, cnf, cnf_file_root))
                     expected_prob = 1
-                    square_prob = False
+                    expected_abs_value = False
             else:
                 raise ValueError(f"Invalid check type {check}")
             if DEBUG: print(f"expected: {expected_prob}")
@@ -154,44 +180,61 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                 for i in range(min(N, length)):
                     cnf_file = cnf_file_list[i]
                     tool_file_command = tool_command + [cnf_file]
-                    if DEBUG: print(" ".join(tool_file_command))
-                    p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE)
+                    
+                    if DEBUG: 
+                        print(" ".join(tool_file_command))
+                        
+                    p = Popen(tool_file_command, stdout= PIPE, stderr=PIPE, start_new_session=True)
                     procdict[p.pid] = p
+                    
                 if len(procdict) == 0:
                     break
-                while True:
-                    pid, _ = os.wait()
-                    if pid in procdict.keys():
-                        res = procdict[pid].communicate()
-                        result = get_result(res[0], expected_prob, square_prob)
-                        if result != True:
-                            break
-                        else:
-                            procdict.pop(pid)
-                    if len(procdict) == 0:
-                        break
+                
+                while procdict:
+                    # Enforce a single shared timeout for all subprocesses
+                    if time.monotonic() > deadline:
+                        cleanup()
+                        return "TIMEOUT"
+                    
+                    #  Non-blocking wait: allows periodic timeout checks
+                    pid, _ = os.waitpid(-1, os.WNOHANG)
+                    if pid == 0:
+                        # No subprocess has exited yet
+                        time.sleep(0.05)
+                        continue
+                    p = procdict.get(pid)
+                    
+                    if p is None:
+                        # Reaped an unrelated child process
+                        continue
+                    
+                    out, err = p.communicate()
+                    result = get_result(out, expected_prob, expected_abs_value)
 
-                if result != True:
-                    break
+                    if result != True:
+                        # Early termination: kill all remaining subprocesses
+                        cleanup()
+                        return result
+                    
+                    procdict.pop(pid, None)
 
                 if length > N:
                     cnf_file_list = cnf_file_list[N: length]
                 else:
                     break
-            procdict = {}
             return result
     except TimeoutException:
         return "TIMEOUT"
     except InvalidProcessNumException:
         return "ERROR - bad process number"
-    except Exception:
-        print(traceback.format_exc())
+    except Exception as e:
+        print(e)
         return "ERROR - unknown error"
     finally:
-        for pid in procdict.keys():
-            try:
-                procdict[pid].kill()
-                procdict[pid].communicate()
-            except Exception:
-                pass
+        # Final safety net: ensure no subprocess survives this function.
+        try:
+            kill_all_groups(procdict, signal.SIGKILL)
+            reap_all(procdict)
+        except Exception:
+            pass
         procdict = {}
