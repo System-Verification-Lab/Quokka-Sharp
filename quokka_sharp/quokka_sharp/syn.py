@@ -8,17 +8,10 @@ from subprocess import PIPE, Popen
 
 from .encoding.cnf import CNF
 from decimal import Decimal, getcontext
-from .config import CONFIG
+from . import config as qc
 from .utils.timeout import timeout, TimeoutException
 
-# Global constants from config
-DEBUG           = CONFIG["DEBUG"]
-TIMEOUT         = CONFIG["TIMEOUT"]
-tool_invocation = CONFIG["D4ToolInvocation"]
-FPE             = CONFIG["FPE"]
-precision       = CONFIG["Precision"]
 
-getcontext().prec = precision
 
 def get_result(result_file, expexted_prob, abs_value):
     """
@@ -33,6 +26,12 @@ def get_result(result_file, expexted_prob, abs_value):
         weight: the weight of the simulation
         assignment: the assignment of the qubits
     """
+
+    # Global constants from config
+    FPE             = qc.CONFIG["FPE"]
+    precision       = qc.CONFIG["Precision"]
+
+    getcontext().prec = precision    
 
     with open(result_file, 'r') as file:
         result_str = file.read()
@@ -91,7 +90,14 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = DEBUG):
+def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+    printing        = qc.CONFIG["DEBUG"]
+    # Global constants from config
+    TIMEOUT         = qc.CONFIG["TIMEOUT"]
+    tool_invocation = qc.CONFIG["D4ToolInvocation"]
+    precision       = qc.CONFIG["Precision"]
+
+    getcontext().prec = precision
     """
     Function to synthesize a quantum circuit
     Args:

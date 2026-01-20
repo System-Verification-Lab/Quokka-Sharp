@@ -5,19 +5,15 @@ import tempfile
 from decimal import Decimal, getcontext
 
 # Importing necessary configurations
-from .config import CONFIG
+from . import config as qc
+
 from .encoding.cnf import CNF
 from .utils.utils import parse_wmc_result
 
 # Global constants from config
-DEBUG           = CONFIG["DEBUG"]
-TIMEOUT         = CONFIG["TIMEOUT"]
-tool_invocation = CONFIG["ToolInvocation"]
-get_result      = CONFIG["GetResult"]
-FPE             = CONFIG["FPE"]
-precision       = CONFIG["Precision"]
 
-getcontext().prec = precision
+
+
 
 
 def WMC(wmc_file, square):
@@ -29,6 +25,9 @@ def WMC(wmc_file, square):
     Returns:
         result           :  the probability of the circuit
     """
+    TIMEOUT         = qc.CONFIG["TIMEOUT"]
+    tool_invocation = qc.CONFIG["ToolInvocation"]
+
     tool_command = tool_invocation.split(' ')
     tool_command.append(wmc_file)
     p = Popen(tool_command, stdout=PIPE)
@@ -48,6 +47,8 @@ def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
     Returns:
         result      :  the probability of the circuit
     """
+    DEBUG           = qc.CONFIG["DEBUG"]
+
     if cnf.weighted:
         filename = os.path.join(cnf_file_root, "for_sim.cnf")
         cnf.write_to_file(filename)

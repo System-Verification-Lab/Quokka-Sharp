@@ -1,9 +1,9 @@
 from subprocess import Popen, PIPE, TimeoutExpired
 
-from ..config import CONFIG
+from .. import config as qc
 
-tool_invocation = CONFIG["ToolInvocation"]
-get_result      = CONFIG["GetResult"]
+tool_invocation = qc.CONFIG["ToolInvocation"]
+get_result      = qc.CONFIG["GetResult"]
 
 procdict = {}
 

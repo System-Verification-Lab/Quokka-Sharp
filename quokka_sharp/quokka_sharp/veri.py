@@ -1,6 +1,7 @@
 from .encoding.cnf import CNF
 from .sim import Simulate
-from .sim import FPE
+from . import config as qc
+
 
 def Verify(cnf: "CNF", precons, postcons):
     """
@@ -12,6 +13,8 @@ def Verify(cnf: "CNF", precons, postcons):
     Returns:
         result      :  "True" if the circuit is equivalent to the identity, "False" if not, "TIMEOUT" if the simulation times out.
     """
+    FPE             = qc.CONFIG["FPE"]
+
     cnf.precondition(precons)
     cnf.postcondition(postcons)
     prob = Simulate(cnf)

@@ -2,14 +2,9 @@ import re
 from decimal import Decimal, getcontext
 from ..utils.timeout import MemoutError
 
-from ..config import CONFIG
+from .. import config as qc
 
-tool_invocation = CONFIG["ToolInvocation"]
-get_result      = CONFIG["GetResult"]
-DEBUG           = CONFIG["DEBUG"]
-FPE             = CONFIG["FPE"]
-Precision       = CONFIG["Precision"]
-getcontext().prec = Precision 
+
 
 _num = r'[+\-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+\-]?\d+)?'
 _pat = re.compile(rf'^\s*({_num})?\s*([+\-]\s*{_num})?\s*[ij]?\s*$')
@@ -39,6 +34,11 @@ def parse_complex_decimal(s: str):
     return Decimal(real_s), Decimal(imag_s)
 
 def parse_wmc_result(result, square: bool):
+    get_result      = qc.CONFIG["GetResult"]
+    DEBUG           = qc.CONFIG["DEBUG"]
+    FPE             = qc.CONFIG["FPE"]
+    Precision       = qc.CONFIG["Precision"]
+    getcontext().prec = Precision 
     """Parse the output of WMC to get the weighted model counting result."""
     ans_str = re.findall( re.compile(get_result), str(result))
     if DEBUG: print("weighted model counting result:", ans_str)

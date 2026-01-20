@@ -27,3 +27,12 @@ def load_config():
     return DEFAULT_CONFIG
 
 CONFIG = load_config()
+
+def reload_config():
+    """
+    Reload CONFIG from `config_path` (if provided) or from env var QUOKKA_CONFIG.
+    Returns the updated CONFIG dict.
+    """
+    global CONFIG
+    CONFIG = load_config()
+    return CONFIG

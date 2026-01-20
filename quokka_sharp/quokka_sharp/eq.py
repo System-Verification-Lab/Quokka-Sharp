@@ -8,18 +8,11 @@ import time, signal
 from .encoding.cnf import CNF
 from .utils.utils import parse_wmc_result
 from .utils.timeout import timeout, TimeoutException
-from .config import CONFIG
+from . import config as qc
 
 from decimal import Decimal, getcontext
 
-# Global constants from config
-DEBUG           = CONFIG["DEBUG"]
-TIMEOUT         = CONFIG["TIMEOUT"]
-tool_invocation = CONFIG["ToolInvocation"]
-FPE             = CONFIG["FPE"]
-precision       = CONFIG["Precision"]
 
-getcontext().prec = precision
 
 procdict = {}
 
@@ -30,6 +23,7 @@ class InvalidProcessNumException(Exception):
 
 
 def get_result(result, expected_prob, sqaure):
+    
     """
     Analyse the weighted model counting result to decide the circuits are equivalent or not:
     if the result matches the expected probablity then the circuits are equivalent otherwise they are not.
@@ -40,6 +34,13 @@ def get_result(result, expected_prob, sqaure):
     Returns:
         True if the circuits are equivalent otherwise False
     """
+    
+    # Global constants from config
+    DEBUG           = qc.CONFIG["DEBUG"]
+    FPE             = qc.CONFIG["FPE"]
+    precision       = qc.CONFIG["Precision"]
+
+    getcontext().prec = precision
     prob = parse_wmc_result(result, sqaure)
     if DEBUG: print("probability:", prob)
     if abs(prob - expected_prob) < (expected_prob * Decimal(FPE)):
@@ -96,6 +97,14 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
         True if the circuits are equivalent otherwise False
     """
     global procdict  # make sure handler sees this
+
+    # Global constants from config
+    DEBUG           = qc.CONFIG["DEBUG"]
+    TIMEOUT         = qc.CONFIG["TIMEOUT"]
+    tool_invocation = qc.CONFIG["ToolInvocation"]
+    precision       = qc.CONFIG["Precision"]
+
+    getcontext().prec = precision
 
     def kill_all_groups(procdict, sig):
         for p in list(procdict.values()):
