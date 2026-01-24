@@ -142,16 +142,31 @@ class Variables:
             prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
         """
         assert(not self.computational_basis)
-        if Z_or_X:
-            off_var = self.x; on_var = self.z
-        else:
-            on_var = self.x; off_var = self.z
-        for i in range(self.n):
-            self.cnf.add_clause([-off_var[i]], prepend)
-            if i == idx:
-                self.cnf.add_clause([on_var[i]], prepend)
-            else:
-                self.cnf.add_clause([-on_var[i]], prepend)
+        if Z_or_X == 2:
+            for i in range(self.n):
+                if i == idx:
+                    self.cnf.add_clause([self.x[i]], prepend)
+                    self.cnf.add_clause([self.z[i]], prepend)
+                    print("variables:",self.x[i], self.z[i])
+                else:
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                    print("idx:",idx,"index:", i, "variables:",self.x[i], self.z[i])
+                    if i == idx: print("yes")
+            print("Y")
+        else:                     
+            if Z_or_X:
+                print("Z")
+                off_var = self.x; on_var = self.z
+            elif Z_or_X == False:
+                print("X")
+                on_var = self.x; off_var = self.z
+            for i in range(self.n):
+                self.cnf.add_clause([-off_var[i]], prepend)
+                if i == idx:
+                    self.cnf.add_clause([on_var[i]], prepend)
+                else:
+                    self.cnf.add_clause([-on_var[i]], prepend)
 
     def projector(self, spec, prepend):
         """
@@ -767,3 +782,4 @@ def Composition2CNF(composition_dictionary, ancillas = 0) -> CNF:
     cnf = CNF(composition_dictionary["qubits"], computational_basis = False, weighted = True, ancillas=ancillas)
     cnf.encode_composition(composition_dictionary)
     return cnf
+
