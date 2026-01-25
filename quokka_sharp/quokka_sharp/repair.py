@@ -9,7 +9,7 @@ import tempfile
 tool_invocation = CONFIG["ToolInvocation"]
 DEBUG           = CONFIG["DEBUG"]
 TIMEOUT         = CONFIG["TIMEOUT"]
-
+FPE             = CONFIG["FPE"]
 
 
 def check_basis(i, start_basis, end_basis, cnf:'CNF', cnf_file_root):
@@ -34,7 +34,7 @@ def check_normalization(coeff_list):
     for i in coeff_list:
         res += i**2
     if DEBUG: print("normalization:", res)
-    if res == 1:
+    if abs(res - 1) < FPE:
         return True
     else:
         return False
