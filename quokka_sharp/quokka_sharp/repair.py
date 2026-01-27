@@ -77,51 +77,75 @@ def check_entanglement(i, cnf:'CNF', cnf_file_root):
 
 import numpy as np
 
+import numpy as np
+
 def solve_thetas(alpha, beta, atol=1e-9):
     """
-    Solve theta_1, theta_2 such that
-        Rz(theta_2) Rx(theta_1) (alpha · Pauli) -> X
-        Rz(theta_2) Rx(theta_1) (beta  · Pauli) -> Z
+    Solve (phi, theta, psi) such that
+        U = Rz(phi) Rx(theta) Rz(psi)
+    and
+        U (alpha · Pauli) U† = X
+        U (beta  · Pauli) U† = Z
 
     alpha, beta: length-3 arrays [X, Y, Z] coefficients
-    returns: (theta_1, theta_2)
+    returns: (phi, theta, psi)
     """
 
     alpha = np.asarray(alpha, dtype=float)
     beta  = np.asarray(beta,  dtype=float)
 
-    # ---- basic sanity checks ----
-    if not np.isclose(beta[0], 0.0, atol=atol):
-        raise ValueError("No solution: beta[0] must be 0.")
-
+    # ---- sanity checks ----
     if not np.isclose(np.linalg.norm(alpha), 1.0, atol=atol):
         raise ValueError("alpha must be a unit vector.")
-
     if not np.isclose(np.linalg.norm(beta), 1.0, atol=atol):
         raise ValueError("beta must be a unit vector.")
-
     if not np.isclose(np.dot(alpha, beta), 0.0, atol=atol):
         raise ValueError("alpha and beta must be orthogonal.")
 
-    # ---- theta_1 from beta ----
-    # beta = (0, sin(theta_1), cos(theta_1))
-    theta_1 = np.arctan2(beta[1], beta[2])
+    # ------------------------------------------------------------
+    # Step 1: choose theta, phi so that Rz(phi) Rx(theta) beta = Z
+    # ------------------------------------------------------------
+    # After Rx(theta):
+    #   beta -> ( b0,
+    #             b1 cosθ - b2 sinθ,
+    #             b1 sinθ + b2 cosθ )
+    #
+    # We want Y = 0, Z = 1 after Rx, and then Z-rotation won't change Z.
 
-    sin_t1 = np.sin(theta_1)
+    b0, b1, b2 = beta
 
-    # ---- theta_2 from alpha ----
-    # alpha_0 = cos(theta_2)
-    cos_t2 = alpha[0]
+    # Solve b1 sinθ + b2 cosθ = 1  -> aligns beta with Z
+    theta = np.arctan2(b1, b2)
 
-    if abs(sin_t1) > atol:
-        sin_t2 = alpha[2] / sin_t1
-    else:
-        # theta_1 ≈ 0 or π → use alpha_1 instead
-        sin_t2 = -alpha[1] / np.cos(theta_1)
+    s, c = np.sin(theta), np.cos(theta)
 
-    theta_2 = np.arctan2(sin_t2, cos_t2)
+    # After Rx(theta), beta is already (b0, 0, 1) up to sign of b0
+    # Now use Rz(phi) to kill X component
+    # Rz(phi): (x,y) -> (x cosφ - y sinφ, x sinφ + y cosφ)
+    # Here y = 0, so we want x cosφ = 0
+    phi = np.pi / 2 if abs(b0) > atol else 0.0
 
-    return theta_1, theta_2
+    # ------------------------------------------------------------
+    # Step 2: determine psi so that alpha goes to +X
+    # ------------------------------------------------------------
+    # First rotate alpha by Rz(phi) Rx(theta)
+    def Rx(v):
+        x, y, z = v
+        return np.array([x, y*c - z*s, y*s + z*c])
+
+    def Rz(v, ang):
+        x, y, z = v
+        ca, sa = np.cos(ang), np.sin(ang)
+        return np.array([ca*x - sa*y, sa*x + ca*y, z])
+
+    alpha1 = Rx(alpha)
+    alpha2 = Rz(alpha1, phi)
+
+    # Now alpha2 lies in XY plane (orthogonal to Z),
+    # so choose psi to rotate it onto +X
+    psi = -np.arctan2(alpha2[1], alpha2[0])
+
+    return phi, theta, psi
 
 def Repair(cnf: "CNF", i, cnf_file_root = tempfile.gettempdir()):
     res = check_entanglement(i, cnf, cnf_file_root)
@@ -129,6 +153,6 @@ def Repair(cnf: "CNF", i, cnf_file_root = tempfile.gettempdir()):
         return("cannot fix")
     else:
         alpha = res[0]; beta = res[1]
-        theta1, theta_2 = solve_thetas(alpha, beta)
-        return(theta1, theta_2)
+        theta_1, theta_2, theta_3 = solve_thetas(alpha, beta)
+        return(theta_1, theta_2, theta_3)
         
