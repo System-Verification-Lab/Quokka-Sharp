@@ -1236,7 +1236,7 @@ class pauli2cnf:
         """
     
 
-        ENABLE_H = True  # Enable H gate properties
+        ENABLE_H = False  # Disable H gate properties
 
         ENABLE_T = False  # Disable T gate properties
 
@@ -1314,18 +1314,6 @@ class pauli2cnf:
             cnf.add_clause([-Z[k], -idg[k],  z[k]])
             # Implies(idg[k], ~U[k])
             cnf.add_clause([-U[k], -idg[k]])
-            # Implies(hg[k], Equivalent(R[k], x[k] & z[k]))
-            cnf.add_clause([-R[k], -hg[k],  x[k]])
-            cnf.add_clause([-R[k], -hg[k],  z[k]])
-            cnf.add_clause([ R[k], -hg[k], -x[k], -z[k]])
-            # Implies(hg[k], Equivalent(X[k], z[k]))
-            cnf.add_clause([ X[k], -hg[k], -z[k]])
-            cnf.add_clause([-X[k], -hg[k],  z[k]])
-            # Implies(hg[k], Equivalent(Z[k], x[k]))
-            cnf.add_clause([ Z[k], -hg[k], -x[k]])
-            cnf.add_clause([-Z[k], -hg[k],  x[k]])
-            # Implies(hg[k], ~U[k])
-            cnf.add_clause([-U[k], -hg[k]])
 
             c = k
             for t in range(n):
@@ -1462,6 +1450,7 @@ class pauli2cnf:
                 gate_controlers += cz_k
                 gate_controlers += csqrtx_k
                 gate_controlers += csqrtxdg_k 
+
             pauli2cnf.AMO(cnf, gate_controlers)
           
             if cnf.syn_gate_layer>=2:
@@ -1508,5 +1497,6 @@ class pauli2cnf:
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z
     
+        print("Gate controlers: ", gate_controlers)
     
     
