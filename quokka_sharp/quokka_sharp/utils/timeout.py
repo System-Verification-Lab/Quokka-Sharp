@@ -19,6 +19,10 @@ class MemoutError(Exception):
     """Raised when a memory limit is exceeded or result indicates MEMOUT"""
     pass
 
+class MCError(Exception):
+    """Raised when model counter has reported an error."""
+    pass
+
 @contextmanager
 def timeout(seconds, on_timeout=None):
     def _handle_timeout(signum, frame):

@@ -1,6 +1,6 @@
 import re
 from decimal import Decimal, getcontext
-from ..utils.timeout import MemoutError
+from ..utils.timeout import MemoutError, MCError
 
 from .. import config as qc
 
@@ -47,7 +47,11 @@ def parse_wmc_result(result, square: bool):
         if DEBUG: print("output:", result)
         if DEBUG: print("regex:", get_result)
         if DEBUG: print("ans_str:", ans_str)
-        raise MemoutError
+        raise MCError(
+        f"Model counter produced no parseable result\n"
+        f"  output = {result}\n"
+        f"  regex  = {get_result}\n"
+        f"  ans    = {ans_str}")
     ans_str = ans_str[0].replace("\\n", "").replace(" ", "").replace("i", "j").replace("+-", "-")
     # ans = complex(ans_str)
     # real, imag = Decimal(ans.real), Decimal(ans.imag)
