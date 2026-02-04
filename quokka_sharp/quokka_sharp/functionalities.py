@@ -11,10 +11,16 @@ class functionalities:
 		:param N: The number of parallel calles to the WMC, relevant only if check is "linear".
 		:return: Boolean indicating whether the two circuits are equivalent.
 		"""
-		# Parse the circuit
-		circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-		# Parse another circuit
-		circuit2 = qk.encoding.QASMparser(qasmfile2, True)
+		if basis == "comp":
+			# Parse the circuit
+			circuit1 = qk.encoding.QASMparser(qasmfile1, False)
+			# Parse another circuit
+			circuit2 = qk.encoding.QASMparser(qasmfile2, False)
+		else:
+			# Parse the circuit
+			circuit1 = qk.encoding.QASMparser(qasmfile1, True)
+			# Parse another circuit
+			circuit2 = qk.encoding.QASMparser(qasmfile2, True)      
 		# Get (circuit1)^dagger(circuit2)
 		circuit2.dagger()
 		circuit1.append(circuit2)
@@ -32,8 +38,11 @@ class functionalities:
 		:return: Simulation result, a float representing the probability of the measurement outcome.
 		"""
 		# Parse the circuit
-		circuit1 = qk.encoding.QASMparser(qasmfile, True)  # TODO: instead of hardcoded true paramater; use CCX in computational basis
-		# Encode the circuit
+		if basis =="comp":
+			circuit1 = qk.encoding.QASMparser(qasmfile, False)  # TODO: instead of hardcoded true paramater; use CCX in computational basis
+		else:
+			circuit1 = qk.encoding.QASMparser(qasmfile, True) 
+ 		# Encode the circuit
 		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"), weighted=True)
 		cnf.leftProjectAllZero()
 		cnf.add_measurement(measurement)
@@ -69,7 +78,11 @@ class functionalities:
 		:return: Verification result, which can be "True", "False", or "TIMEOUT".
 		"""
 		# Parse the circuit
-		circuit = qk.encoding.QASMparser(qasmfile, True)
+		if basis == "comp":
+			circuit = qk.encoding.QASMparser(qasmfile, False)
+			print(circuit)
+		else:
+			circuit = qk.encoding.QASMparser(qasmfile, True)
 		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 		# "id" or "2n"
