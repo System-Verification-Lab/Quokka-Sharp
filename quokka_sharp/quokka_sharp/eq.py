@@ -43,7 +43,7 @@ def get_result(result, expected_prob, sqaure, epsilon):
     getcontext().prec = precision
     prob = parse_wmc_result(result, sqaure)
     if DEBUG: print("probability:", prob)
-    if abs(prob - expected_prob) < (expected_prob * (Decimal(FPE) + epsilon)):
+    if abs(prob - expected_prob) < (expected_prob * (Decimal(FPE) + Decimal(epsilon))):
         return True
     else:
         return False

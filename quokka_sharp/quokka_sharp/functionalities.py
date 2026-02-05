@@ -11,7 +11,6 @@ class functionalities:
 		:param N: The number of parallel calles to the WMC, relevant only if check is "linear".
 		:return: Boolean indicating whether the two circuits are equivalent.
 		"""
-		epsilon = 0
 		if basis == "comp":
 			# Parse the circuit
 			circuit1 = qk.encoding.QASMparser(qasmfile1, False)
@@ -28,7 +27,7 @@ class functionalities:
 		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
 		# "id" or "2n"
-		return qk.CheckEquivalence(cnf, check = check, N = N)
+		return qk.CheckEquivalence(cnf, check = check, N = N, epsilon = epsilon)
 	
 	def sim(qasmfile, basis, measurement): 
 		"""
