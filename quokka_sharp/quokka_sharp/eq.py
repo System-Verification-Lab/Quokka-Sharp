@@ -22,7 +22,7 @@ class InvalidProcessNumException(Exception):
     pass
 
 
-def get_result(result, expected_prob, sqaure):
+def get_result(result, expected_prob, sqaure, epsilon):
     
     """
     Analyse the weighted model counting result to decide the circuits are equivalent or not:
@@ -43,7 +43,7 @@ def get_result(result, expected_prob, sqaure):
     getcontext().prec = precision
     prob = parse_wmc_result(result, sqaure)
     if DEBUG: print("probability:", prob)
-    if abs(prob - expected_prob) < (expected_prob * Decimal(FPE)):
+    if abs(prob - expected_prob) < (expected_prob * (Decimal(FPE) + epsilon)):
         return True
     else:
         return False
@@ -85,7 +85,7 @@ def identity_check(cnf:'CNF', cnf_file_root, constrain_2n = False, constrain_no_
     cnf_temp.write_to_file(cnf_file)
     return cnf_file
 
-def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "cyclic", N=16):
+def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = "cyclic", N=16, epsilon = 0):
     """
     Check if the given circuit is equivalent to the identity
     Args:
@@ -218,7 +218,7 @@ def CheckEquivalence(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), check = 
                         continue
                     
                     out, err = p.communicate()
-                    result = get_result(out, expected_prob, expected_abs_value)
+                    result = get_result(out, expected_prob, expected_abs_value, epsilon)
 
                     if result != True:
                         # Early termination: kill all remaining subprocesses

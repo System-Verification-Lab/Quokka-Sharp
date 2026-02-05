@@ -1,7 +1,7 @@
 import quokka_sharp as qk
 
 class functionalities:
-	def eq(qasmfile1, qasmfile2, basis, check, N = 1): 
+	def eq(qasmfile1, qasmfile2, basis, check, N = 1, epsilon = 0): 
 		"""
 		Compare two quantum circuits given in QASM format.
 		:param qasmfile1: Path to the first QASM file.
@@ -11,6 +11,7 @@ class functionalities:
 		:param N: The number of parallel calles to the WMC, relevant only if check is "linear".
 		:return: Boolean indicating whether the two circuits are equivalent.
 		"""
+		epsilon = 0
 		if basis == "comp":
 			# Parse the circuit
 			circuit1 = qk.encoding.QASMparser(qasmfile1, False)
@@ -68,7 +69,7 @@ class functionalities:
 
 		return qk.Synthesis(cnf, onehot_xz = cyc_lin_encoding, fidelity_threshold = fid, cnf_file_root=files_root)
         
-	def veri(qasmfile, basis, precons, postcons): 
+	def veriy(qasmfile, basis, precons, postcons): 
 		"""
 		Verify a quantum circuit given in QASM format against preconditions and postconditions.
 		:param qasmfile: Path to the QASM file.
@@ -80,7 +81,6 @@ class functionalities:
 		# Parse the circuit
 		if basis == "comp":
 			circuit = qk.encoding.QASMparser(qasmfile, False)
-			print(circuit)
 		else:
 			circuit = qk.encoding.QASMparser(qasmfile, True)
 		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
