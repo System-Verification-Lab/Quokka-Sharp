@@ -62,9 +62,9 @@ qasmfile2 = "test2.qasm"
 '''
 Simulation
 '''
-# Parse the circuit where the encoding will decompose ccx gate into Clifford+T.
-circuit1 = qk.encoding.QASMparser(qasmfile1, translate_ccx = True)
-# Encode the circuit (for computational basis, use `computational_basis = True`)
+# Parse the circuit.
+circuit1 = qk.encoding.QASMparser(qasmfile1)
+# Encode the circuit (for computational basis, use `computational_basis = True`).
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
 # Set the input state to be the all-zero state |0...0>.
 cnf.leftProjectAllZero()
@@ -78,10 +78,10 @@ prob = qk.Simulate(cnf)
 '''
 Equivalence checking
 '''
-# Parse the circuit
-circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-# Parse another circuit
-circuit2 = qk.encoding.QASMparser(qasmfile2, True)
+# Parse the circuit.
+circuit1 = qk.encoding.QASMparser(qasmfile1)
+# Parse another circuit.
+circuit2 = qk.encoding.QASMparser(qasmfile2)
 # Get (circuit1)(circuit2)^dagger
 circuit2.dagger()
 circuit1.append(circuit2)
@@ -94,11 +94,11 @@ res = qk.CheckEquivalence(cnf, check = "linear", N=16)
 '''
 Verification
 '''
-# Parse the circuit
-circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-# Encode the circuit in Pauli basis (can change to True for the computational basis)
+# Parse the circuit.
+circuit1 = qk.encoding.QASMparser(qasmfile1)
+# Encode the circuit in Pauli basis (can change to True for the computational basis).
 cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = False)
-# Verify for pre and post conditions given in dictionary format
+# Verify for pre and post conditions given in dictionary format.
 res = qk.Verify(cnf, precons={0:0}, postcons={0:0})
 # The result will be "True" if the conditions hold, "False" if not,  "TIMEOUT" if the tool ran out of time, and  "MEMOUT" if the tool ran out of memory and crashed.
 
@@ -107,11 +107,11 @@ Synthesis
 '''
 # Change the tool_invocation in config.json to be the maximum weighted model counter.
 
-# Parse the circuits
-circuit = qk.encoding.QASMparser(qasmfile1, True)
-# Get (circuit)^dagger
+# Parse the circuits.
+circuit = qk.encoding.QASMparser(qasmfile1)
+# Get (circuit)^dagger.
 circuit.dagger()
-# Get CNF for the circuit in Pauli basis (can change to True for the computational basis)
+# Get CNF for the circuit in Pauli basis (can change to True for the computational basis).
 cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
 result, weight, solution, layers = qk.Synthesis(cnf)
 # The result will be "FOUND" if a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.

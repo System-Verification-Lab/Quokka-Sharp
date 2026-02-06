@@ -11,16 +11,10 @@ class functionalities:
 		:param N: The number of parallel calles to the WMC, relevant only if check is "linear".
 		:return: Boolean indicating whether the two circuits are equivalent.
 		"""
-		if basis == "comp":
-			# Parse the circuit
-			circuit1 = qk.encoding.QASMparser(qasmfile1, False)
-			# Parse another circuit
-			circuit2 = qk.encoding.QASMparser(qasmfile2, False)
-		else:
-			# Parse the circuit
-			circuit1 = qk.encoding.QASMparser(qasmfile1, True)
-			# Parse another circuit
-			circuit2 = qk.encoding.QASMparser(qasmfile2, True)      
+		# Parse the circuit
+		circuit1 = qk.encoding.QASMparser(qasmfile1)
+		# Parse another circuit
+		circuit2 = qk.encoding.QASMparser(qasmfile2)      
 		# Get (circuit1)^dagger(circuit2)
 		circuit2.dagger()
 		circuit1.append(circuit2)
@@ -38,10 +32,7 @@ class functionalities:
 		:return: Simulation result, a float representing the probability of the measurement outcome.
 		"""
 		# Parse the circuit
-		if basis =="comp":
-			circuit1 = qk.encoding.QASMparser(qasmfile, False)  # TODO: instead of hardcoded true paramater; use CCX in computational basis
-		else:
-			circuit1 = qk.encoding.QASMparser(qasmfile, True) 
+		circuit1 = qk.encoding.QASMparser(qasmfile) 
  		# Encode the circuit
 		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"), weighted=True)
 		cnf.leftProjectAllZero()
@@ -63,7 +54,7 @@ class functionalities:
 			- qasm(str): A QASM representation of the synthesized circuit.
 			- layers(int): The number of layers in the synthesized circuit.
 		"""
-		circuit = qk.encoding.QASMparser(qasmfile, True)
+		circuit = qk.encoding.QASMparser(qasmfile)
 		circuit.dagger()
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 
@@ -79,10 +70,7 @@ class functionalities:
 		:return: Verification result, which can be "True", "False", or "TIMEOUT".
 		"""
 		# Parse the circuit
-		if basis == "comp":
-			circuit = qk.encoding.QASMparser(qasmfile, False)
-		else:
-			circuit = qk.encoding.QASMparser(qasmfile, True)
+		circuit = qk.encoding.QASMparser(qasmfile)
 		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 		# "id" or "2n"
