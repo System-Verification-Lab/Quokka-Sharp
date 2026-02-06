@@ -65,7 +65,7 @@ def add_sign(func, prefix = ""):
     to_py(	                  Equivalent(R, r ^ func), prefix+"    ")
 
 def add_sqrt_half(func, prefix = ""):
-    print(prefix+f"       # adding sqrt_half if {func}")
+    print(prefix+f"        # adding sqrt_half if {func}")
     print(prefix+"        U = cnf.add_var()")
     print(prefix+"        cnf.vars.UVar.append(U)")
     print(prefix+"        if cnf.weighted: ")
@@ -791,12 +791,7 @@ def main():
     to_py(I_x, prefix="    ")
     to_py(I_z, prefix="    ")
     to_py(I_u, prefix="    ")
-
-    print('''
-            # S / Sdg (when enabled and not an H-only layer)
-            if ('''+ "True" +''' if ''' + "True" + ''' else False):  # placeholder to keep indent
-                pass
-    ''')
+    print()
 
     # Emit guarded S/Sdg
     print("            if ENABLE_S and (not limit_gates or not h_layer):")
@@ -805,6 +800,7 @@ def main():
     to_py(S_x,    prefix="        ")
     to_py(S_z,    prefix="        ")
     to_py(S_u,    prefix="        ")
+    print()
 
     # H
     print("            if ENABLE_H and (not limit_gates or h_layer):")
@@ -812,6 +808,7 @@ def main():
     to_py(H_x, prefix="        ")
     to_py(H_z, prefix="        ")
     to_py(H_u, prefix="        ")
+    print()
 
     # T/Tdg
     print("            if ENABLE_T and (not limit_gates or not h_layer):")
@@ -820,6 +817,7 @@ def main():
     to_py(T_x,   prefix="        ")
     to_py(T_z,   prefix="        ")
     to_py(T_u,   prefix="        ")
+    print()
 
     # two-qubit properties guarded per-family
     print('''
@@ -904,7 +902,7 @@ def main():
                     cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name='tdg', bit=k)])
                     cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name='t',   bit=k)])
 
-                # I -> I until any enabled 2Q touches k
+                # I -> I until any enabled 2-qubit gate touches k
                 long_or = []
                 if ENABLE_CX:     long_or += cx_k
                 if ENABLE_CZ:     long_or += cz_k
