@@ -104,7 +104,7 @@ class Variables:
             if self.computational_basis:
                 self.cnf.square_result = True
             else:
-                self.cnf.power_two_normalisation += n
+                self.normalize(n)
         elif basis == "firstzero":
             self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
             if self.computational_basis:
@@ -116,13 +116,19 @@ class Variables:
                 for i in range(1, self.n):
                     self.cnf.add_clause([-self.x[i]], prepend)
                     self.cnf.add_clause([-self.z[i]], prepend)
-                self.cnf.power_two_normalisation += 1
+                self.normalize(1)
         elif type(basis) == dict:
             self.projector(basis, prepend=False)
-            if self.computational_basis == False:
-                self.cnf.power_two_normalisation += len(basis)
+            self.normalize(len(basis))
         else:
             Exception("Please choose firstzero, allzero or a list of qubits measurement")
+
+    def normalize(self, inc):
+        """
+        Increase CNF normalization factor by inc.
+        """
+        if self.computational_basis == False:
+            self.cnf.power_two_normalisation += inc
             
     def projectAllZero(self, prepend=False):
         """
@@ -391,6 +397,12 @@ class CNF:
         self.vars.measurement(basis, False) 
         if not self.locked:
             self.finalize() 
+
+    def add_normalization(self):
+        """
+        Increment CNF normalization factor if a measurement is replaced by a controlled gate.
+        """
+        self.vars.normalize(1)
             
     def add_var(self, syn_gate_pick = False, Name ="UnNamed", bits = None, projection_var = False):
         """
@@ -540,6 +552,8 @@ class CNF:
             from .pauli2cnf import pauli2cnf as to_CNF
 
         for element in circuit.circ:
+            if len(element) == 4 and element[3] == 'if':
+                self.add_normalization()
             gate = element[0]
             if gate == 'id':
                 pass
@@ -575,14 +589,60 @@ class CNF:
                 j = int(element[1])
                 k = int(element[2])
                 to_CNF.CZ2CNF(self,j,k)  
-            # elif gate == 'cs':
-            #     j = int(element[1])
-            #     k = int(element[2])
-            #     to_CNF.CS2CNF(self,j,k)  
-            # elif gate == 'csdg':
-            #     j = int(element[1])
-            #     k = int(element[2])
-            #     to_CNF.CSdg2CNF(self,j,k) 
+            elif gate == 'cy':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CY2CNF(self,j,k)  
+            elif gate == 'swap':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.SWAP2CNF(self,j,k)  
+            elif gate == 'iswap':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.SWAP2CNF(self,j,k)
+                to_CNF.CZ2CNF(self,j,k)
+                to_CNF.S2CNF(self,j)
+                to_CNF.S2CNF(self,k) 
+            elif gate == 'iswapdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.Sdg2CNF(self,k) 
+                to_CNF.Sdg2CNF(self,j)
+                to_CNF.CZ2CNF(self,j,k)
+                to_CNF.SWAP2CNF(self,j,k)
+            elif gate == 'cs':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CS2CNF(self,j,k)  
+            elif gate == 'csdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSdg2CNF(self,j,k) 
+            elif gate == 'ct':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.RZ2CNF(self,j, np.pi/8)
+                to_CNF.RZ2CNF(self,k, np.pi/8)
+                to_CNF.CNOT2CNF(self,j,k)
+                to_CNF.RZ2CNF(self,k, -np.pi/8)
+                to_CNF.CNOT2CNF(self,j,k)
+            elif gate == 'ctdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CNOT2CNF(self,j,k)
+                to_CNF.RZ2CNF(self,k, np.pi/8)
+                to_CNF.CNOT2CNF(self,j,k)
+                to_CNF.RZ2CNF(self,k, -np.pi/8)
+                to_CNF.RZ2CNF(self,j, -np.pi/8)
+            elif gate == 'csqrtx':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSqrtX2CNF(self,j,k)
+            elif gate == 'csqrtxdg':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CSqrtXdg2CNF(self,j,k)
             elif gate[0] == 'r':
                 angle = element[1]
                 k = int(element[2])
@@ -609,10 +669,9 @@ class CNF:
                 qubitc2 = int(element[2])
                 qubitr  = int(element[3])
                 to_CNF.CCX2CNF(self, qubitc1, qubitc2, qubitr)
-            # elif gate == 'm':
-            #     self.rightProjectZXi(True, 0)
-            # elif gate == 'mm':
-            #     self.rightProjectAllZero()
+            elif gate == 'measure':
+                qubit = int(element[1])
+                self.add_measurement({qubit: 0})
             else:
                 raise Exception(str(gate) + " undefined."+ str(element))
             
@@ -625,12 +684,11 @@ class CNF:
         from .pauli2cnf import pauli2cnf as to_CNF
         to_CNF.Composition2CNF(self, composition_dictionary)
 
-    def add_syn_layer(self, n=1, gate_set=set(), limit_gates=False, h_layer=False):
+    def add_syn_layer(self, n=1, limit_gates=False, h_layer=False):
         """
         Add a layer of gates to the CNF encoding for synthesis.
         Args:
             n (int): The number of gates to be added.
-            gate_set (set): A set specifying the gates to be added.
             limit_gates (bool): If True, limit the number of gates in the layer.
             h_layer (bool): Relevent only if limit_gates. If True, only allow Hadamard layer, else allow any gate but Hadamard.
         """
@@ -643,20 +701,19 @@ class CNF:
             self.syn_gate_layer += 1
             self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer] = {}
             if self.computational_basis:
-                to_CNF.SynLayer2CNF(self, gate_set=gate_set)
+                to_CNF.SynLayer2CNF(self)
             else:
-                to_CNF.SynLayer2CNF(self, gate_set=gate_set, limit_gates=limit_gates, h_layer=h_layer)
+                to_CNF.SynLayer2CNF(self, limit_gates=limit_gates, h_layer=h_layer)
 
-    def get_syn_circuit(self, assignment, translate_ccx=True) -> Circuit:
+    def get_syn_circuit(self, assignment) -> Circuit:
         """
         Convert an assignment for the syn variable to a corresponding Circuit object.
         Args:
             assignment (list): The assignment of variables.
-            translate_ccx (bool): If True, translate CCX gates to CNOT and T gates.
         Returns:
             Circuit: The corresponding Circuit object.
         """
-        circuit = Circuit(translate_ccx)
+        circuit = Circuit()
         circuit.n = self.n
         for v in assignment:
             if int(v) > 0:
