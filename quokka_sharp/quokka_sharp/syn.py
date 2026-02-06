@@ -90,7 +90,7 @@ def identity_check(cnf:'CNF', cnf_file_root, files_prefix, indx, onehot_xz = Fal
     cnf_temp.write_to_file(cnf_file, syntesis_fomat=True)
     return cnf_file
 
-def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
+def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), gate_set = set(), fidelity_threshold = 1, bin_search=False, initial_depth=0, onehot_xz = False, h_sandwich = False, printing = False):
     printing        = qc.CONFIG["DEBUG"]
     # Global constants from config
     TIMEOUT         = qc.CONFIG["TIMEOUT"]
@@ -101,14 +101,15 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), fidelity_thresh
     """
     Function to synthesize a quantum circuit
     Args:
-        cnf              :  the encoded cnf of the input circuit
-        cnf_file_root    :  the path to the output file
+        cnf               :  the encoded cnf of the input circuit
+        cnf_file_root     :  the path to the output file
+        gate_set          :  the set of gates to use for the synthesis
         fidelity_threshold:  the threshold for the fidelity
-        bin_search       :  when the value is true use binary search to find the optimal depth
-        initial_depth    :  the initial depth of the circuit
-        onehot_xz       :  when the value is true use one-hot encoding for x and z
-        h_sandwich      :  when the value is true use h-sandwich encoding
-        printing         :  when the value is true print the output
+        bin_search        :  when the value is true use binary search to find the optimal depth
+        initial_depth     :  the initial depth of the circuit
+        onehot_xz         :  when the value is true use one-hot encoding for x and z
+        h_sandwich        :  when the value is true use h-sandwich encoding
+        printing          :  when the value is true print the output
     Returns:
         (status, weight, qasm, depth) :  a tuple containing the result of the simulation
         status: "FOUND" if the simulation is successful, "TIMEOUT"/"CRASH"/"ERROR" otherwise

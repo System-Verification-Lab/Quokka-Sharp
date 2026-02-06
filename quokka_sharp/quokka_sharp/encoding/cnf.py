@@ -625,11 +625,12 @@ class CNF:
         from .pauli2cnf import pauli2cnf as to_CNF
         to_CNF.Composition2CNF(self, composition_dictionary)
 
-    def add_syn_layer(self, n=1, limit_gates=False, h_layer=False):
+    def add_syn_layer(self, n=1, gate_set=set(), limit_gates=False, h_layer=False):
         """
         Add a layer of gates to the CNF encoding for synthesis.
         Args:
             n (int): The number of gates to be added.
+            gate_set (set): A set specifying the gates to be added.
             limit_gates (bool): If True, limit the number of gates in the layer.
             h_layer (bool): Relevent only if limit_gates. If True, only allow Hadamard layer, else allow any gate but Hadamard.
         """
@@ -642,9 +643,9 @@ class CNF:
             self.syn_gate_layer += 1
             self.syn_gate_picking_vars_by_layer_and_gate[self.syn_gate_layer] = {}
             if self.computational_basis:
-                to_CNF.SynLayer2CNF(self)
+                to_CNF.SynLayer2CNF(self, gate_set=gate_set)
             else:
-                to_CNF.SynLayer2CNF(self, limit_gates=limit_gates, h_layer=h_layer)
+                to_CNF.SynLayer2CNF(self, gate_set=gate_set, limit_gates=limit_gates, h_layer=h_layer)
 
     def get_syn_circuit(self, assignment, translate_ccx=True) -> Circuit:
         """

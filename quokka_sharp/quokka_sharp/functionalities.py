@@ -48,7 +48,7 @@ class functionalities:
 		cnf.add_measurement(measurement)
 		return qk.Simulate(cnf)
 	
-	def syn(qasmfile, basis, cyc_lin_encoding=False, fid=1, files_root=None): 
+	def syn(qasmfile, basis, cyc_lin_encoding=False, fid=1, files_root=None, gate_set={'h', 'cx', 't'}): 
 		"""
 		Synthesize a quantum circuit given in QASM format.
 		:param qasmfile: Path to the QASM file.
@@ -56,6 +56,7 @@ class functionalities:
 		:param cyc_lin_encoding: Whether to use the cyclic linear encoding, relevant only for the Pauli basis.
 		:param fid: Fidelity threshold for the synthesis.
 		:param files_root: Root directory for the cnf and MWMC output files.
+		:param gate_set: A set of gates to use for the synthesis, relevant only for the Pauli basis. Default is {'h', 'cx', 't'}.
 		:return: A tuple with four elements:
 			- outcome(str): The outcome of the synthesis, which can be "FOUND", "TIMEOUT", or "CRASH".
 			- weight(float): The weight of the best synthesized circuit.
@@ -66,7 +67,7 @@ class functionalities:
 		circuit.dagger()
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 
-		return qk.Synthesis(cnf, onehot_xz = cyc_lin_encoding, fidelity_threshold = fid, cnf_file_root=files_root)
+		return qk.Synthesis(cnf, onehot_xz = cyc_lin_encoding, fidelity_threshold = fid, cnf_file_root=files_root, gate_set=gate_set)
         
 	def veriy(qasmfile, basis, precons, postcons): 
 		"""

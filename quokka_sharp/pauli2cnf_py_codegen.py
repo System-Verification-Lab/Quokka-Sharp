@@ -567,20 +567,9 @@ def main():
         cnf.vars.z = Zs
     ''')
 
-    # Synthesis
+    # =============================[ Synthesis ]============================== #
 
-    print('''
-    # ==========[ Synthesis ]============ #''')
-
-    ENABLE_H = True
-    ENABLE_T = False
-    ENABLE_CZ = False
-    ENABLE_CSQRTX = True
-    
-
-
-    # dynamic single bit gate:
-
+    ### dynamic single bit gate (selectors used on the synthesis side) ###
     idg   = symbols('idg[k]')
     hg    = symbols('hg[k]')
     sg    = symbols('sg[k]')
@@ -588,41 +577,40 @@ def main():
     tg    = symbols('tg[k]')
     tdg   = symbols('tdg[k]')
 
+    # per-qubit next state and weights/signs used in the emitted code
     Xk = symbols('X[k]')
     Zk = symbols('Z[k]')
     Rk = symbols('R[k]')
     Uk = symbols('U[k]')
 
+    # Single-qubit property formulas (left side is the selector)
+    # Identity
     I_r = idg >> Equivalent(Rk, False)
     I_x = idg >> Equivalent(Xk, x[k])
     I_z = idg >> Equivalent(Zk, z[k])
     I_u = idg >> Equivalent(Uk, False)
 
+    # H
     H_r = hg >> Equivalent(Rk, x[k] & z[k])
     H_x = hg >> Equivalent(Xk, z[k])
     H_z = hg >> Equivalent(Zk, x[k])
     H_u = hg >> Equivalent(Uk, False)
 
-    S_r = sg >> Equivalent(Rk, x[k] & z[k])
-    Sdg_r = sdg >> Equivalent(Rk, x[k] & ~z[k])
-    S_x = (sg | sdg) >> Equivalent(Xk, x[k])
-    S_z = (sg | sdg) >> Equivalent(Zk, x[k] ^ z[k])
-    S_u = (sg | sdg) >> Equivalent(Uk, False)
+    # S / Sdg
+    S_r    = sg  >> Equivalent(Rk, x[k] &  z[k])
+    Sdg_r  = sdg >> Equivalent(Rk, x[k] & ~z[k])
+    S_x    = (sg | sdg) >> Equivalent(Xk, x[k])
+    S_z    = (sg | sdg) >> Equivalent(Zk, x[k] ^ z[k])
+    S_u    = (sg | sdg) >> Equivalent(Uk, False)
 
-    T_r = tg >> Equivalent(Rk, x[k] & z[k] & ~Zk)
-    Tdg_r = tdg >> Equivalent(Rk, x[k] & ~z[k] & Zk)
-    T_x = (tg | tdg) >> Equivalent(Xk, x[k])
-    T_z = (tg | tdg) >> Equivalent(Zk, z[k]) | x[k]
-    T_u = (tg | tdg) >> Equivalent(Uk, x[k])
+    # T / Tdg
+    T_r    = tg  >> Equivalent(Rk, x[k] &  z[k] & ~Zk)
+    Tdg_r  = tdg >> Equivalent(Rk, x[k] & ~z[k] &  Zk)
+    T_x    = (tg | tdg) >> Equivalent(Xk, x[k])
+    T_z    = (tg | tdg) >> Equivalent(Zk, z[k]) | x[k]
+    T_u    = (tg | tdg) >> Equivalent(Uk, x[k])
 
-    single_qb_gate_properties = [I_r, I_x, I_z, I_u]
-    if ENABLE_H:
-        single_qb_gate_properties += [H_r, H_x, H_z, H_u]
-    if ENABLE_T:
-        single_qb_gate_properties += [Tdg_r, T_r, T_x, T_z, T_u]
-    
-    # dynamic two bit gate:
-    # CX
+    ### dynamic two bit gate (selectors used on the synthesis side) ###
     cxgate_ct = symbols('cxgate[c][t]')
     Xc = symbols('X[c]')
     Xt = symbols('X[t]')
@@ -633,6 +621,7 @@ def main():
     Uc = symbols('U[c]')
     Ut = symbols('U[t]')
 
+    # CX properties
     CX_xc = cxgate_ct >> Equivalent(Xc, x[c])
     CX_xt = cxgate_ct >> Equivalent(Xt, x[t] ^ x[c])
     CX_zc = cxgate_ct >> Equivalent(Zc, z[t] ^ z[c])
@@ -642,9 +631,7 @@ def main():
     CX_uc = cxgate_ct >> Equivalent(Uc, False)
     CX_ut = cxgate_ct >> Equivalent(Ut, False)
 
-    double_qb_gate_properties = [CX_xc, CX_xt, CX_zc, CX_zt, CX_rc, CX_rt, CX_uc, CX_ut]
-
-    # CZ
+    # CZ properties
     czgate_ct = symbols('czgate[c][t]')
     CZ_xc = czgate_ct >> Equivalent(Xc, x[c])
     CZ_xt = czgate_ct >> Equivalent(Xt, x[t])
@@ -655,229 +642,312 @@ def main():
     CZ_uc = czgate_ct >> Equivalent(Uc, False)
     CZ_ut = czgate_ct >> Equivalent(Ut, False)
 
-    if ENABLE_CZ:
-        double_qb_gate_properties += [CZ_xc, CZ_xt, CZ_zc, CZ_zt, CZ_rc, CZ_rt, CZ_uc, CZ_ut]
-
-    # CSqrtX
-    csqrtxgate_ct = symbols('csqrtxgate[c][t]')
+    # CSqrtX / CSqrtXdg properties
+    csqrtxgate_ct   = symbols('csqrtxgate[c][t]')
     csqrtxdggate_ct = symbols('csqrtxdggate[c][t]')
     CSqrtX_xc = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Xc, x[c])
     CSqrtX_xt = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Xt, x[t]) | x[c] | z[t]
     CSqrtX_zc = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Zc, z[c]) | x[c] | z[t]
     CSqrtX_zt = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Zt, z[t])
-    CSqrtX_rc = csqrtxgate_ct >> Equivalent(Rc, 
-                                            (x[c] & x[t] & Xt & z[c] & ~Zc) | 
-                                            (Xt & z[c] & Zc & z[t] & ~x[t]) | 
-                                            (x[c] & Xt & Zc & ~x[t] & ~z[c]) | 
-                                            (x[t] & z[c] & z[t] & ~Xt & ~Zc) | 
-                                            (x[c] & z[c] & ~x[t] & ~Xt & ~Zc) | 
-                                            (Xt & z[t] & ~x[t] & ~z[c] & ~Zc) | 
-                                            (x[c] & x[t] & Zc & ~Xt & ~z[c] & ~z[t]) | 
-                                            (x[t] & Zc & z[t] & ~x[c] & ~Xt & ~z[c])
-                                            )
-    CSqrtXdg_rc = csqrtxdggate_ct >> Equivalent(Rc, 
-                                            (x[c] & x[t] & Xt & Zc & ~z[c]) | 
-                                            (x[t] & z[c] & Zc & z[t] & ~Xt) | 
-                                            (x[c] & x[t] & z[c] & ~Xt & ~Zc) | 
-                                            (Xt & Zc & z[t] & ~x[t] & ~z[c]) | 
-                                            (x[c] & Zc & ~x[t] & ~Xt & ~z[c]) | 
-                                            (x[t] & z[t] & ~Xt & ~z[c] & ~Zc) | 
-                                            (x[c] & Xt & z[c] & ~x[t] & ~Zc & ~z[t]) | 
-                                            (Xt & z[c] & z[t] & ~x[c] & ~x[t] & ~Zc)
-                                            )
+    CSqrtX_rc = csqrtxgate_ct >> Equivalent(Rc,
+                        (x[c] & x[t] & Xt & z[c] & ~Zc) |
+                        (Xt & z[c] & Zc & z[t] & ~x[t]) |
+                        (x[c] & Xt & Zc & ~x[t] & ~z[c]) |
+                        (x[t] & z[c] & z[t] & ~Xt & ~Zc) |
+                        (x[c] & z[c] & ~x[t] & ~Xt & ~Zc) |
+                        (Xt & z[t] & ~x[t] & ~z[c] & ~Zc) |
+                        (x[c] & x[t] & Zc & ~Xt & ~z[c] & ~z[t]) |
+                        (x[t] & Zc & z[t] & ~x[c] & ~Xt & ~z[c])
+                    )
+    CSqrtXdg_rc = csqrtxdggate_ct >> Equivalent(Rc,
+                        (x[c] & x[t] & Xt & Zc & ~z[c]) |
+                        (x[t] & z[c] & Zc & z[t] & ~Xt) |
+                        (x[c] & x[t] & z[c] & ~Xt & ~Zc) |
+                        (Xt & Zc & z[t] & ~x[t] & ~z[c]) |
+                        (x[c] & Zc & ~x[t] & ~Xt & ~z[c]) |
+                        (x[t] & z[t] & ~Xt & ~z[c] & ~Zc) |
+                        (x[c] & Xt & z[c] & ~x[t] & ~Zc & ~z[t]) |
+                        (Xt & z[c] & z[t] & ~x[c] & ~x[t] & ~Zc)
+                    )
     CSqrtX_rt = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Rt, False)
     CSqrtX_uc = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Ut, False)
     CSqrtX_ut = (csqrtxgate_ct | csqrtxdggate_ct) >> Equivalent(Uc, x[c] | z[t])
 
-    if ENABLE_CSQRTX:
-        double_qb_gate_properties += [CSqrtX_xc, CSqrtX_xt, CSqrtX_zc, CSqrtX_zt, CSqrtX_rc, CSqrtXdg_rc, CSqrtX_rt, CSqrtX_uc, CSqrtX_ut]
-
-    
     print('''
     def AMO(cnf, var_list):
         assert None not in var_list
         # at least one:
         cnf.add_clause(var_list)
         # at most one:
-        [cnf.add_clause([-var_list[a],-var_list[b]]) for a in range(len(var_list)) for b in range(a+1, len(var_list))]
+        [cnf.add_clause([-var_list[a], -var_list[b]])
+         for a in range(len(var_list)) for b in range(a+1, len(var_list))]
     ''')
 
     print('''
-    def SynLayer2CNF(cnf, limit_gates=False, h_layer=False):
+    def SynLayer2CNF(cnf, gate_set=set(), limit_gates=False, h_layer=False):
         """
         Add a synthesis layer to the CNF object, encoding all possible single- and two-qubit gates for each qubit.
         Args:
             cnf: The CNF object to which the layer is added.
-            limit_gates: If True, restricts the set of allowed gates (e.g., for h_layer).
-            h_layer: If True, restricts to only H gates and disables T/Tdg/CX for this layer.
+            gate_set: A set specifying which gates to include (e.g., {'h','s','t','cx','cz','csqrtx'}).
+            limit_gates: If True, restricts the set of allowed gates (e.g., for an H-only layer).
+            h_layer: If True, restricts to only H gates and disables (S / T / 2-qubit Gates) for this layer.
         """
-    ''')
+        # Runtime gate toggles from gate_set
+        ENABLE_H = ENABLE_S = ENABLE_T = ENABLE_CX = ENABLE_CZ = ENABLE_CSQRTX = False
+        for g in gate_set:
+            gl = str(g).lower()
+            if gl == 'h':       ENABLE_H = True
+            elif gl == 's':     ENABLE_S = True
+            elif gl == 't':     ENABLE_T = True
+            elif gl == 'cx':    ENABLE_CX = True
+            elif gl == 'cz':    ENABLE_CZ = True
+            elif gl == 'csqrtx':ENABLE_CSQRTX = True
 
-    print('''
-        ENABLE_H = ''', end="")
-    print("True  # Enable H gate properties" if ENABLE_H else "False  # Disable H gate properties")
-    # print('''
-    #     ENABLE_S = ''', end="")
-    # print("True  # Enable S gate properties" if ENABLE_S else "False  # Disable S gate properties")
-    print('''
-        ENABLE_T = ''', end="")
-    print("True  # Enable T gate properties" if ENABLE_T else "False  # Disable T gate properties")
-    # print('''
-    #     ENABLE_CX = ''', end="")
-    # print("True  # Enable CX gate properties" if ENABLE_CX else "False  # Disable CX gate properties")
-    print('''
-        ENABLE_CZ = ''', end="")
-    print("True  # Enable CZ gate properties" if ENABLE_CZ else "False  # Disable CZ gate properties")
-
-    print('''
-        ENABLE_CSQRTX = ''', end="")
-    print("True  # Enable CSqrtX gate properties" if ENABLE_CSQRTX else "False  # Disable CSqrtX gate properties")
-    
-    print('''
-        n = cnf.n + cnf.ancillas  # Total number of qubits (including ancillas)
+        n = cnf.n + cnf.ancillas
         x = cnf.vars.x
         z = cnf.vars.z
-        # Allocate new variables for the next layer's X and Z for each qubit
+
+        # Allocate next-layer X/Z
         X = [cnf.add_var() for _ in range(n)]
         Z = [cnf.add_var() for _ in range(n)]
-        
-        # Add R variables (for sign) and their weights
+
+        # Per-qubit sign R (weighted)
         R = [cnf.add_var() for _ in range(n)]
-        [cnf.add_weight(R[k], -1) for k in range(n)]
-        [cnf.add_weight(-R[k], 1) for k in range(n)]
-        
-        # Add U variables (for normalization) and their weights, unless restricted
+        for k in range(n):
+            cnf.add_weight(R[k], -1)
+            cnf.add_weight(-R[k], 1)
+
+        # Per-qubit U (normalization), choose T vs CSqrtX
         if not limit_gates or not h_layer:
             if ENABLE_T and ENABLE_CSQRTX:
-                raise Exception("Cannot enable both T and CSqrtX gates in the same layer. Please choose one.")
+                raise Exception("Cannot enable both T and CSqrtX in the same layer.")
             if ENABLE_CSQRTX:
                 U = [cnf.add_var() for _ in range(n)]
-                [cnf.add_weight(U[k], str(Decimal(1/2))) for k in range(n)]
-                [cnf.add_weight(-U[k], 1) for k in range(n)]
+                for k in range(n):
+                    cnf.add_weight(U[k], str(Decimal(1/2)))
+                    cnf.add_weight(-U[k], 1)
             if ENABLE_T:
                 U = [cnf.add_var() for _ in range(n)]
-                [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
-                [cnf.add_weight(-U[k], 1) for k in range(n)]
+                for k in range(n):
+                    cnf.add_weight(U[k], str(Decimal(1/2).sqrt()))
+                    cnf.add_weight(-U[k], 1)
         else:
-            U = [0.5 for _ in range(n)]  # Dummy value if not used (0.5 is always false)
-        
-        # Add gate selector variables for each qubit and gate type
-        idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]  # Identity
+            U = [0.5 for _ in range(n)]
+
+        # Gate selectors (created only when allowed this layer)
+        idg = [cnf.add_var(syn_gate_pick=True, Name='id', bits=[k]) for k in range(n)]
+
         if ENABLE_H:
             if not limit_gates or h_layer:
-                hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]  # H
+                hg = [cnf.add_var(syn_gate_pick=True, Name='h', bits=[k]) for k in range(n)]
             else:
                 hg = [0.5 for _ in range(n)]
-        if not limit_gates or not h_layer:
-            if ENABLE_T:
-                tdg = [cnf.add_var(syn_gate_pick = True, Name = 'tdg', bits = [k]) for k in range(n)]  # T-dagger
-                tg = [cnf.add_var(syn_gate_pick = True, Name = 't', bits = [k]) for k in range(n)]    # T
-            # CX gate selectors for all pairs (c != t)
-            cxgate = [[cnf.add_var(syn_gate_pick = True, Name = 'cx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
-            # CZ gate selectors for all pairs (c != t)  
-            if ENABLE_CZ:    
-                czgate = [[cnf.add_var(syn_gate_pick = True, Name = 'cz', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
-            # CSqrtX gate selectors for all pairs (c != t)
-            if ENABLE_CSQRTX:
-                csqrtxgate = [[cnf.add_var(syn_gate_pick = True, Name = 'csqrtx', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
-                csqrtxdggate = [[cnf.add_var(syn_gate_pick = True, Name = 'csqrtxdg', bits = [c,t]) if c!=t else None for t in range(n)] for c in range(n)]
         else:
-            if ENABLE_T:
-                tdg = [0.5 for _ in range(n)]
-                tg = [0.5 for _ in range(n)]
-            cxgate = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
-            if ENABLE_CZ:
-                czgate = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
-            if ENABLE_CSQRTX:
-                csqrtxgate = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
-                csqrtxdggate = [[0.5 if c!=t else None for t in range(n)] for c in range(n)]
+            hg = [0.5 for _ in range(n)]
+
+        if ENABLE_S and (not limit_gates or not h_layer):
+            sg  = [cnf.add_var(syn_gate_pick=True, Name='s',   bits=[k]) for k in range(n)]
+            sdg = [cnf.add_var(syn_gate_pick=True, Name='sdg', bits=[k]) for k in range(n)]
+        else:
+            sg  = [0.5 for _ in range(n)]
+            sdg = [0.5 for _ in range(n)]
+
+        if ENABLE_T and (not limit_gates or not h_layer):
+            tdg = [cnf.add_var(syn_gate_pick=True, Name='tdg', bits=[k]) for k in range(n)]
+            tg  = [cnf.add_var(syn_gate_pick=True, Name='t',   bits=[k]) for k in range(n)]
+        else:
+            tdg = [0.5 for _ in range(n)]
+            tg  = [0.5 for _ in range(n)]
+
+        # 2-qubit selectors
+        if ENABLE_CX and (not limit_gates or not h_layer):
+            cxgate = [[cnf.add_var(syn_gate_pick=True, Name='cx', bits=[c, t]) if c != t else None
+                       for t in range(n)] for c in range(n)]
+        else:
+            cxgate = [[0.5 if c != t else None for t in range(n)] for c in range(n)]
+
+        if ENABLE_CZ and (not limit_gates or not h_layer):
+            czgate = [[cnf.add_var(syn_gate_pick=True, Name='cz', bits=[c, t]) if c != t else None
+                       for t in range(n)] for c in range(n)]
+        else:
+            czgate = [[0.5 if c != t else None for t in range(n)] for c in range(n)]
+
+        if ENABLE_CSQRTX and (not limit_gates or not h_layer):
+            csqrtxgate   = [[cnf.add_var(syn_gate_pick=True, Name='csqrtx',   bits=[c, t]) if c != t else None
+                             for t in range(n)] for c in range(n)]
+            csqrtxdggate = [[cnf.add_var(syn_gate_pick=True, Name='csqrtxdg', bits=[c, t]) if c != t else None
+                             for t in range(n)] for c in range(n)]
+        else:
+            csqrtxgate   = [[0.5 if c != t else None for t in range(n)] for c in range(n)]
+            csqrtxdggate = [[0.5 if c != t else None for t in range(n)] for c in range(n)]
+
         # For each qubit, encode the logic for all possible gates
         for k in range(n):
     ''')
-    for p in single_qb_gate_properties:
-        to_py(	       p, prefix="    ")  
+
+    # I (always emitted)
+    to_py(I_r, prefix="    ")
+    to_py(I_x, prefix="    ")
+    to_py(I_z, prefix="    ")
+    to_py(I_u, prefix="    ")
+
+    print('''
+            # S / Sdg (when enabled and not an H-only layer)
+            if ('''+ "True" +''' if ''' + "True" + ''' else False):  # placeholder to keep indent
+                pass
+    ''')
+
+    # Emit guarded S/Sdg
+    print("            if ENABLE_S and (not limit_gates or not h_layer):")
+    to_py(S_r,    prefix="        ")
+    to_py(Sdg_r,  prefix="        ")
+    to_py(S_x,    prefix="        ")
+    to_py(S_z,    prefix="        ")
+    to_py(S_u,    prefix="        ")
+
+    # H
+    print("            if ENABLE_H and (not limit_gates or h_layer):")
+    to_py(H_r, prefix="        ")
+    to_py(H_x, prefix="        ")
+    to_py(H_z, prefix="        ")
+    to_py(H_u, prefix="        ")
+
+    # T/Tdg
+    print("            if ENABLE_T and (not limit_gates or not h_layer):")
+    to_py(Tdg_r, prefix="        ")
+    to_py(T_r,   prefix="        ")
+    to_py(T_x,   prefix="        ")
+    to_py(T_z,   prefix="        ")
+    to_py(T_u,   prefix="        ")
+
+    # two-qubit properties guarded per-family
     print('''
             c = k
             for t in range(n):
-                if t==c:
+                if t == c:
                     continue
+
+                # CX properties
+                if ENABLE_CX and (not limit_gates or not h_layer):
     ''')
-    for p in double_qb_gate_properties:
-        to_py(	           p, prefix="        ")   
+    to_py(CX_xc, prefix="            ")
+    to_py(CX_xt, prefix="            ")
+    to_py(CX_zc, prefix="            ")
+    to_py(CX_zt, prefix="            ")
+    to_py(CX_rc, prefix="            ")
+    to_py(CX_rt, prefix="            ")
+    to_py(CX_uc, prefix="            ")
+    to_py(CX_ut, prefix="            ")
+
     print('''
-          
-            # Add the AMO clause for the gate controlers
+                # CZ properties
+                if ENABLE_CZ and (not limit_gates or not h_layer):
+    ''')
+    to_py(CZ_xc, prefix="            ")
+    to_py(CZ_xt, prefix="            ")
+    to_py(CZ_zc, prefix="            ")
+    to_py(CZ_zt, prefix="            ")
+    to_py(CZ_rc, prefix="            ")
+    to_py(CZ_rt, prefix="            ")
+    to_py(CZ_uc, prefix="            ")
+    to_py(CZ_ut, prefix="            ")
+
+    print('''
+                # CSqrtX / CSqrtXdg properties
+                if ENABLE_CSQRTX and (not limit_gates or not h_layer):
+    ''')
+    to_py(CSqrtX_xc,   prefix="            ")
+    to_py(CSqrtX_xt,   prefix="            ")
+    to_py(CSqrtX_zc,   prefix="            ")
+    to_py(CSqrtX_zt,   prefix="            ")
+    to_py(CSqrtX_rc,   prefix="            ")
+    to_py(CSqrtXdg_rc, prefix="            ")
+    to_py(CSqrtX_rt,   prefix="            ")
+    to_py(CSqrtX_uc,   prefix="            ")
+    to_py(CSqrtX_ut,   prefix="            ")
+
+    # AMO + layer-to-layer constraints (runtime guarded)
+    print('''
+            # Build AMO controller set
+            def integer_only(lst):
+                return [v for v in lst if isinstance(v, int) and v != 0]
+
             gate_controlers = [idg[k]]
             if ENABLE_H and (not limit_gates or h_layer):
                 gate_controlers += [hg[k]]
+            if ENABLE_S and (not limit_gates or not h_layer):
+                gate_controlers += [sg[k], sdg[k]]
             if ENABLE_T and (not limit_gates or not h_layer):
                 gate_controlers += [tdg[k], tg[k]]
-            cx_k = []
-            cz_k = []
-            csqrtx_k = []
-            csqrtxdg_k = []
-            cx_k = [cxgate[k][i] for i in range(n) if i!=k] + [cxgate[i][k] for i in range(n) if i!=k]
-            if ENABLE_CZ:
-                cz_k = [czgate[k][i] for i in range(n) if i!=k] + [czgate[i][k] for i in range(n) if i!=k]
-            if ENABLE_CSQRTX:
-                csqrtx_k = [csqrtxgate[k][i] for i in range(n) if i!=k] + [csqrtxgate[i][k] for i in range(n) if i!=k]
-                csqrtxdg_k = [csqrtxdggate[k][i] for i in range(n) if i!=k] + [csqrtxdggate[i][k] for i in range(n) if i!=k]
-            
-            if not limit_gates or not h_layer:
-                gate_controlers += cx_k
-                gate_controlers += cz_k
-                gate_controlers += csqrtx_k
-                gate_controlers += csqrtxdg_k 
-            pauli2cnf.AMO(cnf, gate_controlers)
-          
-            if cnf.syn_gate_layer>=2:
-                if ENABLE_H:
-                    # H -> !l_H
-                    cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name ='h', bit = k)])
-                if ENABLE_T:      
-                    # T -> !l_Tdg
-                    cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name ='tdg', bit = k)])
-                    # Tdg -> !l_T
-                    cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name ='t', bit = k)])
-                # I -> I until any 2-qubit gates
-                cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='id', bit = k), idg[k]] + cx_k + cz_k + csqrtx_k + csqrtxdg_k)
-          
-            if ENABLE_T and cnf.syn_gate_layer>=5:
-                # T -> !l_T | !ll_T | !lll_T | !llll_T
-                cnf.add_clause([-tg[k]] + [-cnf.get_syn_var_past_layer(Name ='t', bit = k, past=p) for p in range(1, 5)])
-                # Tdg -> !l_Tdg | !ll_Tdg | !lll_Tdg | !llll_Tdg
-                cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name ='tdg', bit = k, past=p) for p in range(1, 5)])
 
+            cx_k = integer_only([cxgate[k][i] for i in range(n) if i != k] + [cxgate[i][k] for i in range(n) if i != k])
+            cz_k = integer_only([czgate[k][i] for i in range(n) if i != k] + [czgate[i][k] for i in range(n) if i != k])
+            csqrtx_k   = integer_only([csqrtxgate[k][i]   for i in range(n) if i != k] + [csqrtxgate[i][k]   for i in range(n) if i != k])
+            csqrtxdg_k = integer_only([csqrtxdggate[k][i] for i in range(n) if i != k] + [csqrtxdggate[i][k] for i in range(n) if i != k])
+
+            if not limit_gates or not h_layer:
+                if ENABLE_CX:     gate_controlers += cx_k
+                if ENABLE_CZ:     gate_controlers += cz_k
+                if ENABLE_CSQRTX: gate_controlers += csqrtx_k + csqrtxdg_k
+
+            pauli2cnf.AMO(cnf, gate_controlers)
+
+            # Layer-to-layer pruning
+            if cnf.syn_gate_layer >= 2:
+                if ENABLE_H:
+                    cnf.add_clause([-hg[k],  -cnf.get_syn_var_past_layer(Name='h',   bit=k)])
+                if ENABLE_S:
+                    cnf.add_clause([-sg[k],  -cnf.get_syn_var_past_layer(Name='sdg', bit=k)])
+                    cnf.add_clause([-sdg[k], -cnf.get_syn_var_past_layer(Name='s',   bit=k)])
+                if ENABLE_T:
+                    cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name='tdg', bit=k)])
+                    cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name='t',   bit=k)])
+
+                # I -> I until any enabled 2Q touches k
+                long_or = []
+                if ENABLE_CX:     long_or += cx_k
+                if ENABLE_CZ:     long_or += cz_k
+                if ENABLE_CSQRTX: long_or += csqrtx_k + csqrtxdg_k
+                cnf.add_clause([-cnf.get_syn_var_past_layer(Name='id', bit=k), idg[k]] + long_or)
+
+            if ENABLE_T and cnf.syn_gate_layer >= 5:
+                cnf.add_clause([-tg[k]]  + [-cnf.get_syn_var_past_layer(Name='t',   bit=k, past=p)   for p in range(1, 5)])
+                cnf.add_clause([-tdg[k]] + [-cnf.get_syn_var_past_layer(Name='tdg', bit=k, past=p)  for p in range(1, 5)])
+
+            # Pairwise per (c,t)
             c = k
             for t in range(n):
-                if c!=t:
-                    if cnf.syn_gate_layer>=2:
-                        # CX(c,t) -> !past(CX(c,t))
-                        cnf.add_clause([-cxgate[c][t], -cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t])])
-                        # CX(c,t) -> !past(I(c)) or !past(I(t))
-                        cnf.add_clause([-cxgate[c][t], -cnf.get_syn_var_past_layer(Name ='id', bit = c), -cnf.get_syn_var_past_layer(Name ='id', bit = t)])                       
-                        # CSqrtX/dg
+                if c != t:
+                    if cnf.syn_gate_layer >= 2:
+                        if ENABLE_CX:
+                            cnf.add_clause([-cxgate[c][t], -cnf.get_syn_var_past_layer(Name='cx', bit=[c, t])])
+                            cnf.add_clause([-cxgate[c][t],
+                                            -cnf.get_syn_var_past_layer(Name='id', bit=c),
+                                            -cnf.get_syn_var_past_layer(Name='id', bit=t)])
                         if ENABLE_CSQRTX:
-                            # No 2-qubit gate added after empty layer on same qubits
-                            cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='id', bit=c), -cnf.get_syn_var_past_layer(Name='id', bit=t)])
-                            cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='id', bit=c), -cnf.get_syn_var_past_layer(Name='id', bit=t)])   
+                            cnf.add_clause([-csqrtxgate[c][t],
+                                            -cnf.get_syn_var_past_layer(Name='id', bit=c),
+                                            -cnf.get_syn_var_past_layer(Name='id', bit=t)])
+                            cnf.add_clause([-csqrtxdggate[c][t],
+                                            -cnf.get_syn_var_past_layer(Name='id', bit=c),
+                                            -cnf.get_syn_var_past_layer(Name='id', bit=t)])
                             # No immediate inverse
-                            cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='csqrtxdg', bit=[c,t])])
-                            cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='csqrtx',   bit=[c,t])])                
-                        
-                    if ENABLE_T and cnf.syn_gate_layer>=3:
-                        # past(CX(c,t)) -> !past(past(T(c))) or !Tdg(c))
-                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='tdg', bit = c, past=2), -tg[c]])
-                        # past(CX(c,t)) -> !past(past(Tdg(c))) or !T(c))
-                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name ='cx', bit = [c,t]), -cnf.get_syn_var_past_layer(Name ='t', bit = c, past=2), -tdg[c]])
-        
+                            cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='csqrtxdg', bit=[c, t])])
+                            cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='csqrtx',   bit=[c, t])])
+
+                    if ENABLE_T and ENABLE_CX and cnf.syn_gate_layer >= 3:
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='tdg', bit=c, past=2),
+                                        -tg[c]])
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='t', bit=c, past=2),
+                                        -tdg[c]])
+
+        # write back next-layer Pauli flags
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z
-    
-    
     ''')
-
-
 
 if __name__ == "__main__":
     main()
