@@ -567,7 +567,7 @@ def main():
         cnf.vars.z = Zs
     ''')
 
-    # =============================[ Synthesis ]============================== #
+# =============================[ Synthesis ]============================== #
 
     ### dynamic single bit gate (selectors used on the synthesis side) ###
     idg   = symbols('idg[k]')
@@ -703,6 +703,9 @@ def main():
             elif gl == 'cx':    ENABLE_CX = True
             elif gl == 'cz':    ENABLE_CZ = True
             elif gl == 'csqrtx':ENABLE_CSQRTX = True
+        if not gate_set:
+            ENABLE_H = True
+            ENABLE_CX = True
 
         n = cnf.n + cnf.ancillas
         x = cnf.vars.x
@@ -718,22 +721,21 @@ def main():
             cnf.add_weight(R[k], -1)
             cnf.add_weight(-R[k], 1)
 
-        # Per-qubit U (normalization), choose T vs CSqrtX
+        # Per-qubit U (normalization)
+        if ENABLE_T and ENABLE_CSQRTX:
+            raise Exception("Cannot enable both T and CSqrtX in the same layer.")
+        U = [0.5 for _ in range(n)]
         if not limit_gates or not h_layer:
-            if ENABLE_T and ENABLE_CSQRTX:
-                raise Exception("Cannot enable both T and CSqrtX in the same layer.")
             if ENABLE_CSQRTX:
                 U = [cnf.add_var() for _ in range(n)]
                 for k in range(n):
-                    cnf.add_weight(U[k], str(Decimal(1/2)))
+                    cnf.add_weight(U[k], str(Decimal(1) / Decimal(2)))
                     cnf.add_weight(-U[k], 1)
             if ENABLE_T:
                 U = [cnf.add_var() for _ in range(n)]
                 for k in range(n):
-                    cnf.add_weight(U[k], str(Decimal(1/2).sqrt()))
+                    cnf.add_weight(U[k], str((Decimal(1) / Decimal(2)).sqrt()))
                     cnf.add_weight(-U[k], 1)
-        else:
-            U = [0.5 for _ in range(n)]
 
         # Gate selectors (created only when allowed this layer)
         idg = [cnf.add_var(syn_gate_pick=True, Name='id', bits=[k]) for k in range(n)]
@@ -786,14 +788,12 @@ def main():
         for k in range(n):
     ''')
 
-    # I (always emitted)
     to_py(I_r, prefix="    ")
     to_py(I_x, prefix="    ")
     to_py(I_z, prefix="    ")
     to_py(I_u, prefix="    ")
     print()
 
-    # Emit guarded S/Sdg
     print("            if ENABLE_S and (not limit_gates or not h_layer):")
     to_py(S_r,    prefix="        ")
     to_py(Sdg_r,  prefix="        ")
@@ -802,7 +802,6 @@ def main():
     to_py(S_u,    prefix="        ")
     print()
 
-    # H
     print("            if ENABLE_H and (not limit_gates or h_layer):")
     to_py(H_r, prefix="        ")
     to_py(H_x, prefix="        ")
@@ -810,7 +809,6 @@ def main():
     to_py(H_u, prefix="        ")
     print()
 
-    # T/Tdg
     print("            if ENABLE_T and (not limit_gates or not h_layer):")
     to_py(Tdg_r, prefix="        ")
     to_py(T_r,   prefix="        ")
@@ -819,7 +817,6 @@ def main():
     to_py(T_u,   prefix="        ")
     print()
 
-    # two-qubit properties guarded per-family
     print('''
             c = k
             for t in range(n):
@@ -865,7 +862,6 @@ def main():
     to_py(CSqrtX_uc,   prefix="            ")
     to_py(CSqrtX_ut,   prefix="            ")
 
-    # AMO + layer-to-layer constraints (runtime guarded)
     print('''
             # Build AMO controller set
             def integer_only(lst):
@@ -901,12 +897,11 @@ def main():
                 if ENABLE_T:
                     cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name='tdg', bit=k)])
                     cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name='t',   bit=k)])
-
-                # I -> I until any enabled 2-qubit gate touches k
                 long_or = []
                 if ENABLE_CX:     long_or += cx_k
                 if ENABLE_CZ:     long_or += cz_k
                 if ENABLE_CSQRTX: long_or += csqrtx_k + csqrtxdg_k
+                if ENABLE_S:      long_or += [sg[k], sdg[k]]
                 cnf.add_clause([-cnf.get_syn_var_past_layer(Name='id', bit=k), idg[k]] + long_or)
 
             if ENABLE_T and cnf.syn_gate_layer >= 5:
@@ -930,7 +925,6 @@ def main():
                             cnf.add_clause([-csqrtxdggate[c][t],
                                             -cnf.get_syn_var_past_layer(Name='id', bit=c),
                                             -cnf.get_syn_var_past_layer(Name='id', bit=t)])
-                            # No immediate inverse
                             cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='csqrtxdg', bit=[c, t])])
                             cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='csqrtx',   bit=[c, t])])
 
@@ -942,7 +936,6 @@ def main():
                                         -cnf.get_syn_var_past_layer(Name='t', bit=c, past=2),
                                         -tdg[c]])
 
-        # write back next-layer Pauli flags
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z
     ''')
