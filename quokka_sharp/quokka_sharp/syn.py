@@ -153,10 +153,10 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), gate_set = set(
             cnf_copy_init = copy.deepcopy(cnf)
             if h_sandwich:
                 # Add H gates layer if requested
-                cnf_copy_init.add_syn_layer(1, limit_gates=True, h_layer=True)
+                cnf_copy_init.add_syn_layer(gate_set, 1, limit_gates=True, h_layer=True)
             if initial_depth:
                 # Add initial depth if specified
-                cnf_copy_init.add_syn_layer(initial_depth)
+                cnf_copy_init.add_syn_layer(gate_set, initial_depth)
             cnf_copy = cnf_copy_init
             cnf_revert = cnf_copy
             skip_first = True
@@ -172,8 +172,8 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), gate_set = set(
                 # Prepare CNF for this iteration
                 if bin_search:
                     cnf_copy = copy.deepcopy(cnf_copy_init)
-                    cnf_copy.add_syn_layer(num_layers, limit_gates=h_sandwich, h_layer=False)
-                    cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
+                    cnf_copy.add_syn_layer(gate_set, num_layers, limit_gates=h_sandwich, h_layer=False)
+                    cnf_copy.add_syn_layer(gate_set, 1, limit_gates=h_sandwich, h_layer=True)
                     file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
                 else:
                     if h_sandwich:
@@ -181,10 +181,10 @@ def Synthesis(cnf: 'CNF', cnf_file_root = tempfile.gettempdir(), gate_set = set(
                     if skip_first:
                         skip_first = False
                     else:
-                        cnf_copy.add_syn_layer()
+                        cnf_copy.add_syn_layer(gate_set)
                     if h_sandwich:
                         cnf_revert = copy.deepcopy(cnf_copy)
-                        cnf_copy.add_syn_layer(1, limit_gates=h_sandwich, h_layer=True)
+                        cnf_copy.add_syn_layer(gate_set, 1, limit_gates=h_sandwich, h_layer=True)
                     file = identity_check(cnf_copy, cnf_file_root, files_prefix, it_counter, onehot_xz = onehot_xz)
 
                 # Build the command to run the external tool

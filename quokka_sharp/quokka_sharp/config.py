@@ -3,11 +3,12 @@
 import os
 import json
 
+# Assume binaries are in $HOME/bin.
 DEFAULT_CONFIG = {
     "DEBUG": False,
     "TIMEOUT": 300,
-    "ToolInvocation": "../../GPMC/bin/gpmc -mode=1",
-    "D4ToolInvocation": "../../../d4v2/build/maxT_static",
+    "ToolInvocation": "gpmc -mode=1",
+    "D4ToolInvocation": "maxT_static",
     "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
     "FPE"       : 1e-12,
     "Precision" : 50

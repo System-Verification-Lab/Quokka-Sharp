@@ -228,28 +228,10 @@ def main():
     print()
 
     #CY
-    Xt   = symbols('Xt')
     print("    def CY2CNF(cnf, c, t):")
-    print("        x = cnf.vars.x")
-    print("        z = cnf.vars.z")
-    print()
-    print("        Zc = cnf.add_var()")
-    print("        cnf.vars.ZVar.append(Zc)")
-    to_py(	       Equivalent(Zc, z[c] ^ z[t] ^ x[t]))
-    print()
-    print("        Zt = cnf.add_var()")
-    print("        cnf.vars.ZVar.append(Zt)")
-    to_py(	       Equivalent(Zt, z[t] ^ x[c]))
-    print()
-    print("        Xt = cnf.add_var()")
-    print("        cnf.vars.XVar.append(Xt)")
-    to_py(	       Equivalent(Xt, x[t] ^ x[c]))
-    print()
-    add_sign(x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t]))
-    print()
-    print("        cnf.vars.z[c] = Zc")
-    print("        cnf.vars.z[t] = Zt")
-    print("        cnf.vars.x[t] = Xt")
+    print("        pauli2cnf.Sdg2CNF(cnf, t)")
+    print("        pauli2cnf.CNOT2CNF(cnf, c, t)")
+    print("        pauli2cnf.S2CNF(cnf, t)")
     print()
 
     #SWAP
@@ -320,6 +302,7 @@ def main():
     print()
 
     # C√X
+    Xt   = symbols('Xt')
     print("    def CSqrtX2CNF(cnf, c, t):")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
@@ -874,6 +857,7 @@ def main():
                 gate_controlers += [sg[k], sdg[k]]
             if ENABLE_T and (not limit_gates or not h_layer):
                 gate_controlers += [tdg[k], tg[k]]
+            gate_controlers = integer_only(gate_controlers)
 
             cx_k = integer_only([cxgate[k][i] for i in range(n) if i != k] + [cxgate[i][k] for i in range(n) if i != k])
             cz_k = integer_only([czgate[k][i] for i in range(n) if i != k] + [czgate[i][k] for i in range(n) if i != k])

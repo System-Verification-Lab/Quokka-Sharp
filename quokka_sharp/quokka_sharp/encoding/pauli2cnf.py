@@ -406,70 +406,9 @@ class pauli2cnf:
         cnf.vars.z[t] = Zt
 
     def CY2CNF(cnf, c, t):
-        x = cnf.vars.x
-        z = cnf.vars.z
-
-        Zc = cnf.add_var()
-        cnf.vars.ZVar.append(Zc)
-        # Equivalent(Zc, x[t] ^ z[c] ^ z[t])
-        cnf.add_clause([ Zc,  x[t],  z[c], -z[t]])
-        cnf.add_clause([ Zc,  x[t], -z[c],  z[t]])
-        cnf.add_clause([ Zc, -x[t],  z[c],  z[t]])
-        cnf.add_clause([-Zc,  x[t],  z[c],  z[t]])
-        cnf.add_clause([ Zc, -x[t], -z[c], -z[t]])
-        cnf.add_clause([-Zc,  x[t], -z[c], -z[t]])
-        cnf.add_clause([-Zc, -x[t],  z[c], -z[t]])
-        cnf.add_clause([-Zc, -x[t], -z[c],  z[t]])
-
-        Zt = cnf.add_var()
-        cnf.vars.ZVar.append(Zt)
-        # Equivalent(Zt, x[c] ^ z[t])
-        cnf.add_clause([ Zt,  x[c], -z[t]])
-        cnf.add_clause([ Zt, -x[c],  z[t]])
-        cnf.add_clause([-Zt,  x[c],  z[t]])
-        cnf.add_clause([-Zt, -x[c], -z[t]])
-
-        Xt = cnf.add_var()
-        cnf.vars.XVar.append(Xt)
-        # Equivalent(Xt, x[c] ^ x[t])
-        cnf.add_clause([ Xt,  x[c], -x[t]])
-        cnf.add_clause([ Xt, -x[c],  x[t]])
-        cnf.add_clause([-Xt,  x[c],  x[t]])
-        cnf.add_clause([-Xt, -x[c], -x[t]])
-
-        # adding sign if x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t])
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
-            # Equivalent(R, x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t]))
-            cnf.add_clause([-R,  x[c]])
-            cnf.add_clause([-R,  x[t],  z[c]])
-            cnf.add_clause([-R, -z[c],  z[t]])
-            cnf.add_clause([-R, -x[t], -z[t]])
-            cnf.add_clause([ R, -x[c], -x[t],  z[c],  z[t]])
-            cnf.add_clause([ R, -x[c],  x[t], -z[c], -z[t]])
-        else: 
-            r = cnf.vars.r
-            cnf.vars.r = R
-            # Equivalent(R, r ^ (x[c] & (x[t] ^ z[c]) & (x[t] ^ z[t])))
-            cnf.add_clause([ R, -r,  x[c]])
-            cnf.add_clause([-R,  r,  x[c]])
-            cnf.add_clause([ R, -r,  x[t],  z[c]])
-            cnf.add_clause([-R,  r,  x[t],  z[c]])
-            cnf.add_clause([ R, -r, -z[c],  z[t]])
-            cnf.add_clause([-R,  r, -z[c],  z[t]])
-            cnf.add_clause([ R, -r, -x[t], -z[t]])
-            cnf.add_clause([-R,  r, -x[t], -z[t]])
-            cnf.add_clause([ R,  r, -x[c], -x[t],  z[c],  z[t]])
-            cnf.add_clause([ R,  r, -x[c],  x[t], -z[c], -z[t]])
-            cnf.add_clause([-R, -r, -x[c], -x[t],  z[c],  z[t]])
-            cnf.add_clause([-R, -r, -x[c],  x[t], -z[c], -z[t]])
-
-        cnf.vars.z[c] = Zc
-        cnf.vars.z[t] = Zt
-        cnf.vars.x[t] = Xt
+        pauli2cnf.Sdg2CNF(cnf, t)
+        pauli2cnf.CNOT2CNF(cnf, c, t)
+        pauli2cnf.S2CNF(cnf, t)
 
     def SWAP2CNF(cnf, c, t):
         x = cnf.vars.x
@@ -1564,6 +1503,7 @@ class pauli2cnf:
                 gate_controlers += [sg[k], sdg[k]]
             if ENABLE_T and (not limit_gates or not h_layer):
                 gate_controlers += [tdg[k], tg[k]]
+            gate_controlers = integer_only(gate_controlers)
 
             cx_k = integer_only([cxgate[k][i] for i in range(n) if i != k] + [cxgate[i][k] for i in range(n) if i != k])
             cz_k = integer_only([czgate[k][i] for i in range(n) if i != k] + [czgate[i][k] for i in range(n) if i != k])
