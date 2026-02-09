@@ -113,7 +113,9 @@ circuit = qk.encoding.QASMparser(qasmfile1)
 circuit.dagger()
 # Get CNF for the circuit in Pauli basis (can change to True for the computational basis).
 cnf = qk.encoding.QASM2CNF(circuit, computational_basis = False)
-result, weight, solution, layers = qk.Synthesis(cnf)
+# Choose the synthesis gate set (supported: {'h', 't', 's', 'cx', 'cz', 'csqrtx'}). 
+# Choose either 't' or 'csqrtx' to synthesis 'ccx' gate but not both.
+result, weight, solution, layers = qk.Synthesis(cnf, gate_set = {'h', 'cx', 's'})
 # The result will be "FOUND" if a solution was found, "CRASH" if there was a problem such as an invalid cnf or not enough mem, "ERROR#" if the tool finished with an error, and "TIMEOUT" if the tool ran out of time.
 # In the case of "TIMEOUT", the best solution found will be returned.
 # weight will give the achieved fidelity (should be 1 if "FOUND", less if "TIMEOUT") of the (best) found circuit.
