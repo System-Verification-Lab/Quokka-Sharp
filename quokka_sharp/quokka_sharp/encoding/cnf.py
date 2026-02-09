@@ -72,10 +72,12 @@ class Variables:
             Variables: A deep copy of the Variables object.
         """
         cnf = self.cnf
+        var = self.var
         self.cnf = None
         self_copy = copy.deepcopy(self)
         self.cnf = cnf
         self_copy.cnf = cnf
+        self_copy.var = var
         return self_copy
 
     def add_var(self):
@@ -210,19 +212,14 @@ class Variables:
                 self.cnf.add_clause([-x[i]], prepend)
                 if i in qubitset:
                     if spec[i] == 1:
-                        if prepend == False:
-                            z_new = self.add_var()
-                            print("z_new: ", z_new, self.var)
-                            print("var count", self.var)
-                            print(id(self), id(self.add_var()))
-
-                            self.cnf.add_clause([z_new, -z[i]], prepend) 
-                            self.cnf.add_clause([-z_new, z[i]], prepend)
-                            self.cnf.add_weight(z_new, -1)
-                            self.cnf.add_weight(-z_new, 1)   
-                        else:
-                            self.cnf.add_weight(z[i], -1)
-                            self.cnf.add_weight(-z[i], 1)                          
+                        R = self.add_var()
+                            # X2CNF flip 1 to 0
+                        self.cnf.add_weight(R, -1)
+                        self.cnf.add_weight(-R, 1)
+                        # Equivalent(R, z[k])
+                        self.cnf.add_clause([ R, -z[i]], prepend)
+                        self.cnf.add_clause([-R,  z[i]], prepend)
+                      
                 else:
                     self.cnf.add_clause([-z[i]], prepend)            
     
@@ -322,6 +319,8 @@ class CNF:
         self.vars_init.cnf = self
         new.vars.cnf = new
         new.vars_init.cnf = new
+        
+        
 
     def finalize(self):
         """
@@ -384,7 +383,6 @@ class CNF:
             self.vars_init.projector(spec, prepend=True)
         elif kind == "pauli":
             self.vars_init.projectPauli(spec, prepend=True)
-            print(kind)
         else:
             raise ValueError("The specification is illegal.")
             
@@ -410,21 +408,20 @@ class CNF:
             "pauli"  if vals <= {"X", "Y", "Z", "I"} else
             "illegal"
         )
+        # update var count incase precondition add var
+        self.vars.var = self.vars_init.var
         
         # postcondition
         if kind == "bit":
             self.vars.projector(spec, prepend=False)
         elif kind == "pauli":
             self.vars.projectPauli(spec, prepend=False)
-            print(kind)
         else:
             raise ValueError("The specification is illegal.")    
-
         # if not self.computational_basis:
         #     self.power_two_normalisation -= len(spec)
         if not self.locked:
             self.finalize()
-    
     def add_identity_clauses(self, constrain_2n = False, constrain_no_Y = False):
         """
         Add clauses dictating that the initial state matches the final state.
@@ -594,8 +591,6 @@ class CNF:
 
     def write_to_file(self, cnf_file, syntesis_fomat = False, projectionset = []):
         with open(cnf_file, 'w') as the_file:
-            print("variable count: ",self.vars.var)
-            print("variable count: ",self.cons_list)
             the_file.writelines("p cnf " + str(self.vars.var)+" "+str(self.clause)+"\n")
             if len(projectionset) > 0:
                 the_file.writelines("c p show " + self.ProjectionSet(projectionset) + " 0\n")
