@@ -60,7 +60,7 @@ class functionalities:
 
 		return qk.Synthesis(cnf, onehot_xz = cyc_lin_encoding, fidelity_threshold = fid, cnf_file_root=files_root, gate_set=gate_set)
         
-	def veriy(qasmfile, basis, precons, postcons): 
+	def verify(qasmfile, basis, precons, postcons): 
 		"""
 		Verify a quantum circuit given in QASM format against preconditions and postconditions.
 		:param qasmfile: Path to the QASM file.
