@@ -185,7 +185,7 @@ class Variables:
                 self.cnf.add_clause([-z[i]], prepend)
             
 
-    def projector(self, spec, prepend):
+    def projector(self, spec, var_curr, prepend):
         """
         Add a projector clause to the CNF encoding.
         Args:
@@ -194,6 +194,9 @@ class Variables:
         """
         x = self.x
         qubitset = list(spec.keys())
+        
+        var_increase = 0
+        
         if self.computational_basis:
             # precondition
             for i in qubitset: 
@@ -212,7 +215,9 @@ class Variables:
                 self.cnf.add_clause([-x[i]], prepend)
                 if i in qubitset:
                     if spec[i] == 1:
-                        R = self.add_var()
+                        var_curr += 1
+                        var_increase += 1
+                        R = var_curr
                             # X2CNF flip 1 to 0
                         self.cnf.add_weight(R, -1)
                         self.cnf.add_weight(-R, 1)
@@ -221,7 +226,8 @@ class Variables:
                         self.cnf.add_clause([-R,  z[i]], prepend)
                       
                 else:
-                    self.cnf.add_clause([-z[i]], prepend)            
+                    self.cnf.add_clause([-z[i]], prepend) 
+        return var_increase           
     
     def encode_unitary_static(self, U):
         """
@@ -378,14 +384,20 @@ class CNF:
             "pauli"  if vals <= {"X", "Y", "Z", "I"} else
             "illegal"
         )
+        var_curr = self.vars.var
         # precondition
         if kind == "bit":
-            self.vars_init.projector(spec, prepend=True)
+            var_increase = self.vars_init.projector(spec, var_curr, prepend=True)
+            # update var count incase precondition add var
+            self.vars.var += var_increase
+            print(f"var_increase: {var_increase}")
         elif kind == "pauli":
             self.vars_init.projectPauli(spec, prepend=True)
         else:
             raise ValueError("The specification is illegal.")
-            
+        
+        
+        
         # normalization
         if self.computational_basis:
             self.power_two_normalisation += self.n - len(spec)
@@ -408,12 +420,11 @@ class CNF:
             "pauli"  if vals <= {"X", "Y", "Z", "I"} else
             "illegal"
         )
-        # update var count incase precondition add var
-        self.vars.var = self.vars_init.var
-        
+        var_curr = self.vars.var
         # postcondition
         if kind == "bit":
-            self.vars.projector(spec, prepend=False)
+            var_increase = self.vars.projector(spec, var_curr, prepend=False)
+            self.vars.var += var_increase
         elif kind == "pauli":
             self.vars.projectPauli(spec, prepend=False)
         else:
