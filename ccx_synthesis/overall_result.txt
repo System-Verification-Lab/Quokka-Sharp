@@ -31,5 +31,3 @@ csqrtx q[0] q[2] ;
 cx q[1] q[0] ;
 csqrtxdg q[1] q[2] ;
 csqrtxdg q[0] q[2] ;
-
-Layers: 5

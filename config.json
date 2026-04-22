@@ -1,6 +1,6 @@
 {
   "DEBUG": true,
-  "TIMEOUT": 5000,
+  "TIMEOUT": 1000,
   "ToolInvocation": "/home/muhos/quantum/quokka/gpmc -mode=1",
   "D4ToolInvocation": "/home/muhos/quantum/quokka/maxT_static",
   "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
