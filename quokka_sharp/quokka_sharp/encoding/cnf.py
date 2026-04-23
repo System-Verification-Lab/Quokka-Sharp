@@ -162,10 +162,10 @@ class Variables:
                 self.cnf.add_clause([-on_var[i]], prepend)
 
     def projectPauli(self, spec, prepend):
+        assert(not self.computational_basis)
         x = self.x
         z = self.z
         qubitset = list(spec.keys())
-        assert(not self.computational_basis)
         for i in range(self.n):
             if i in qubitset:
                 if spec[i] == "X":
@@ -390,7 +390,6 @@ class CNF:
             var_increase = self.vars_init.projector(spec, var_curr, prepend=True)
             # update var count incase precondition add var
             self.vars.var += var_increase
-            print(f"var_increase: {var_increase}")
         elif kind == "pauli":
             self.vars_init.projectPauli(spec, prepend=True)
         else:
