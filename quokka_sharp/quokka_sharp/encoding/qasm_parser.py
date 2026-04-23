@@ -522,7 +522,7 @@ def QASMparser(filename) -> Circuit:
             gate_angle = re.findall(r"(.*?)\((.*?)\)",gate)[0]
             rgate = gate_angle[0]
             raw = gate_angle[1]
-            if re.fullmatch(r'[A-Za-z_]\w*', raw):
+            if raw != "pi" and re.fullmatch(r'[A-Za-z_]\w*', raw):
                 angle = raw
             else:
                 angle = get_angle(raw)
