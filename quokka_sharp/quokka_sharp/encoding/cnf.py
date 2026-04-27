@@ -806,27 +806,53 @@ class CNF:
                     assert False
         return circuit
 
-    def get_syn_qasm(self, assignment) -> str:
-        """
-        Convert an assignment for the syn variable to a corresponding QASM string.
-        Args:
-            assignment (list): The assignment of variables.
-        Returns:
-            str: The corresponding QASM string.
-        """
-        s = "OPENQASM 2.0;\n"
-        s += "include \"qelib1.inc\";\n"
-        s += f"qreg q[{self.n + + self.ancillas}];\n"
-        for v in assignment:
-            if int(v) > 0:
-                gate = self.syn_gate_picking_vars[int(v)]
-                if gate['Name'] == "id":
-                    continue
-                s += f"{gate['Name']}"
-                for b in gate['bits']:
-                    s += f" q[{b}]"
-                s += f" ;\n"
-        return s         
+    # def get_syn_qasm(self, assignment) -> str:
+    #     """
+    #     Convert an assignment for the syn variable to a corresponding QASM string.
+    #     Args:
+    #         assignment (list): The assignment of variables.
+    #     Returns:
+    #         str: The corresponding QASM string.
+    #     """
+    #     s = "OPENQASM 2.0;\n"
+    #     s += "include \"qelib1.inc\";\n"
+    #     s += f"qreg q[{self.n + + self.ancillas}];\n"
+    #     for v in assignment:
+    #         if int(v) > 0:
+    #             gate = self.syn_gate_picking_vars[int(v)]
+    #             if gate['Name'] == "id":
+    #                 continue
+    #             s += f"{gate['Name']}"
+    #             for b in gate['bits']:
+    #                 s += f" q[{b}]"
+    #             s += f" ;\n"
+    #     return s     
+
+
+
+def get_syn_qasm(self, assignment) -> str:
+    """
+    Convert an assignment for the syn variable to a corresponding QASM string.
+    Args:
+        assignment (list): The assignment of variables.
+    Returns:
+        str: The corresponding QASM string.
+    """
+    s = "OPENQASM 2.0;\n"
+    s += 'include "qelib1.inc";\n'
+    s += f"qreg q[{self.n + self.ancillas}];\n"
+
+    for v in assignment:
+        if int(v) > 0:
+            gate = self.syn_gate_picking_vars[int(v)]
+
+            if gate["Name"] == "id":
+                continue
+
+            args = ",".join(f"q[{b}]" for b in gate["bits"])
+            s += f"{gate['Name']} {args};\n"
+
+    return s
         
 def generate_signed_combinations(lst):
     """
