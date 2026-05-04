@@ -5,6 +5,8 @@
 
 - Install d4max solver: Follow instructions in [d4v2 git](https://github.com/jm62300/d4) to install d4max.
 
+- Install Ganak: the relevant binaries across different platforms can be downloaded here: [Ganak](https://github.com/meelgroup/ganak/releases/tag/release%2F2.4.4).
+
 - Install pip: Follow instructions in [pip Installation](https://pip.pypa.io/en/stable/installation/) to install pip. 
 
 
@@ -40,15 +42,111 @@ An example of a config file for GPMC is given as follows:
 {
   "DEBUG": false,
   "TIMEOUT": 300,
-  "ToolInvocation": "/path/to/GPMC/bin/gpmc -mode=1",
+  "ToolInvocation": "/path/to/gpmc -mode=1",
   "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
   "FPE": 1e-12
 }
 ```
 
+An example of a config file for GANAK is given as follows:
+```json
+{
+  "DEBUG": false,
+  "TIMEOUT": 1,
+  "ToolInvocation": "/path/to/ganak --mode=6",
+  "GetResult": "c s exact arb cpx (.+?)\\\\nc",
+  "FPE": 1e-12
+}
+```
+An example of a config file for D4max is given as follows:
+
+```json
+{
+  "DEBUG": true,
+  "TIMEOUT": 1000,
+  "ToolInvocation": "/path/to/bin/gpmc -mode=1",
+  "D4ToolInvocation": "/path/to/d4maxT",
+  "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
+  "FPE": 1e-12,
+  "Precision": 32
+```
 All the input circuits should be in [QASM format](https://openqasm.com/).
 Here are some simple walkthroughs on how to use the tool. 
-For simple usage and more detailed examples, refer to the /quokka_sharp/quokka_sharp/functionalities.py file. 
+We offer four functions to use Quokka# all four functionalities:
+
+```python
+prob = qk.functionalities.sim(
+    qasmfile="circ1.qasm",
+    basis="comp",
+    measurement="allzero"
+)
+
+"""
+Simulate a quantum circuit given in QASM format.
+:param qasmfile: Path to the QASM file.
+:param basis: The basis to use for the simulation, either "comp" for computational basis or "pauli" for Pauli basis.
+:param measurement: The type of measurement to compute the probability for, either "allzero" for an amplitude, "firstzero" for a single qubit, or a dictionary with qubit indices and their expected values, for example {0:1,1:0}.
+:return: Simulation result, a float representing the probability of the measurement outcome.
+"""
+
+res = qk.functionalities.verify(
+    "circ.qasm",
+    basis = "comp",
+    precons={0: 0, 1: 0},
+    postcons={0: 0}
+)
+
+"""
+Verify a quantum circuit given in QASM format against preconditions and postconditions.
+:param qasmfile: Path to the QASM file.
+:param basis: The basis to use for the verification, either "comp" for computational basis or "pauli" for Pauli basis.
+:param precons: A dictionary with qubit indices and their expected values describing the preconditions to enforce before the circuit execution.
+:param postcons: A dictionary with qubit indices and their expected values describing the postconditions to check after the circuit execution.
+:return: Verification result, which can be "True", "False", or "TIMEOUT".
+"""
+
+res = qk.functionalities.eq(
+    "circ1.qasm",
+    "circ2.qasm",
+    basis = "comp",
+    check="linear",
+    epsilon=0
+)
+
+"""
+Compare two quantum circuits given in QASM format.
+:param qasmfile1: Path to the first QASM file.
+:param qasmfile2: Path to the second QASM file.
+:param basis: The basis to use for the comparison, either "comp" for computational basis or "pauli" for Pauli basis.
+:param check: The type of check to use, either "cyclic", "linear", or "cyclic_linear". Must be "cyclic" if basis is "comp".
+:param N: The number of parallel calls to the WMC, relevant only if check is "linear".
+:return: Boolean indicating whether the two circuits are equivalent.
+"""
+
+res, weight, solution, layers = qk.functionalities.syn(
+    "circ1.qasm",
+    epsilon=0,
+    gate_set={"h", "cx", "s"}
+)
+
+"""
+Synthesize a quantum circuit given in QASM format.
+:param qasmfile: Path to the QASM file.
+:param basis: The basis to use for the synthesis, either "comp" for computational basis or "pauli" for Pauli basis.
+:param cyc_lin_encoding: Whether to use the cyclic linear encoding, relevant only for the Pauli basis.
+:param fid: Fidelity threshold for the synthesis.
+:param files_root: Root directory for the CNF and MWMC output files.
+:param gate_set: A set of gates to use for the synthesis, relevant only for the Pauli basis. Default is {"h", "cx", "t"}.
+:return: A tuple with four elements:
+    - outcome(str): The outcome of the synthesis, which can be "FOUND", "TIMEOUT", or "CRASH".
+    - weight(float): The weight of the best synthesized circuit.
+    - qasm(str): A QASM representation of the synthesized circuit.
+    - layers(int): The number of layers in the synthesized circuit.
+"""
+```
+
+
+To give a detailed walkthrough of the main steps involved in each functionality, we provide the following code snippets.
 
 ```python
 import quokka_sharp as qk
