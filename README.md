@@ -258,7 +258,7 @@ pip install ./quokka_sharp --force-reinstall
 
 ## Evaluation
 
-For evaluation of Quokka# please refer to [quokka-sharp-artifacts](https://github.com/System-Verification-Lab/quokka-sharp-artifacts)
+For evaluation of Quokka# please refer to [quokka-sharp-ae26]([https://github.com/System-Verification-Lab/quokka-sharp-artifacts](https://github.com/JingyiMei98/quokka-sharp-ae26))
 
 
 ## 📚 Citation
