@@ -1,7 +1,6 @@
 # Quokka-Sharp
 
-Quokka-Sharp is a quantum circuit tool based on model counting. It provides four functionalities: **Simulate**, **Verify**, **Equivalence Checking**, and **Synthesis**. For more details see the [Quokka-Sharp repository](https://github.com/System-Verification-Lab/Quokka-Sharp).
-
+Quokka-Sharp is a quantum circuit tool based on model counting. It provides four functionalities: **Simulate**, **Verify**, **Equivalence Checking**, and **Synthesis**.
 ---
 
 ## Prerequisites
