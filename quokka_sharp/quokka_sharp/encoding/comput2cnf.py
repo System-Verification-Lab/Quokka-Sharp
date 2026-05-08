@@ -496,8 +496,9 @@ class comput2cnf:
             cnf.add_clause([ R,  r, -x[c], -x[t]], comment="- ")
             cnf.add_clause([-R, -r, -x[c], -x[t]], comment="- ")
 
-
-
+    def SWAP2CNF(cnf, c, t):
+        x = cnf.vars.x
+        x[c], x[t] = x[t], x[c]
 
     def SynLayer2CNF(cnf):
         n = cnf.n
