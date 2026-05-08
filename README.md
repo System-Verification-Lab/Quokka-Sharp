@@ -296,19 +296,6 @@ Unit tests for `QASMparser`, `QASM2CNF`, `dagger()`, `append()`, and `write_to_f
 
 Invalid paths, invalid basis strings, empty pre/postconditions, and probability sum checks.
 
----
-
-## Known Library Bugs
-
-The following issues are in the `quokka_sharp` library, not in this test suite:
-
-| Bug | Symptom | Workaround |
-|---|---|---|
-| `Variables.projector()` missing `var_curr` argument | `TypeError` on any `measurement={...}` call | Use `"allzero"` or `"firstzero"`; or append X gates to flip target qubits and measure `"allzero"` |
-| `allzero` in comp basis returns marginal P(q[0]=0) instead of joint P(all=0) | Multi-qubit `allzero` gives wrong result | Use Pauli basis for multi-qubit allzero tests |
-
----
-
 ## Interactive Example
 
 `example_quokka_sharp.py` demonstrates all four functionalities. Edit the variables at the top of each section and run:
