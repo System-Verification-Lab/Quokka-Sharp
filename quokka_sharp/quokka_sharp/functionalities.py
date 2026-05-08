@@ -1,4 +1,5 @@
 import quokka_sharp as qk
+from .utils.utils import validate_basis
 
 class functionalities:
 	def eq(qasmfile1, qasmfile2, basis, check, N = 1, epsilon = 0): 
@@ -18,6 +19,7 @@ class functionalities:
 		# Get (circuit1)^dagger(circuit2)
 		circuit2.dagger()
 		circuit1.append(circuit2)
+		basis = validate_basis(basis)
 		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
 		# "id" or "2n"
@@ -32,7 +34,8 @@ class functionalities:
 		:return: Simulation result, a float representing the probability of the measurement outcome.
 		"""
 		# Parse the circuit
-		circuit1 = qk.encoding.QASMparser(qasmfile) 
+		circuit1 = qk.encoding.QASMparser(qasmfile)
+		basis = validate_basis(basis)
  		# Encode the circuit
 		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"), weighted=True)
 		cnf.leftProjectAllZero()
@@ -56,6 +59,7 @@ class functionalities:
 		"""
 		circuit = qk.encoding.QASMparser(qasmfile)
 		circuit.dagger()
+		basis = validate_basis(basis)
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 
 		return qk.Synthesis(cnf, onehot_xz = cyc_lin_encoding, fidelity_threshold = fid, cnf_file_root=files_root, gate_set=gate_set)
@@ -69,9 +73,12 @@ class functionalities:
 		:param postcons:A dictionary with qubit indices and their expected values describing the postconditions to check after the circuit execution.
 		:return: Verification result, which can be "True", "False", or "TIMEOUT".
 		"""
+
 		# Parse the circuit
 		circuit = qk.encoding.QASMparser(qasmfile)
-		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
+		basis = validate_basis(basis)
+		
+  		# Get CNF for the merged circuit (for computational base instaed of cliffordt, use `computational_basis = True`)
 		cnf = qk.encoding.QASM2CNF(circuit, computational_basis = (basis == "comp"))
 		# "id" or "2n"
 		res = qk.Verify(cnf, precons, postcons)
