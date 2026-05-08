@@ -125,7 +125,6 @@ Compare two quantum circuits given in QASM format.
 
 res, weight, solution, layers = qk.functionalities.syn(
     "circ1.qasm",
-    epsilon=0,
     gate_set={"h", "cx", "s"}
 )
 
