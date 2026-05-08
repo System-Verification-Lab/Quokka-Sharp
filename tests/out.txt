@@ -1,0 +1,1260 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/meij/Desktop/coding/Quokka-Sharp-final/tests
+plugins: anyio-4.0.0
+collected 97 items
+
+test_quokka_sharp.py ....F...........FFF.FFF.F.F......................F. [ 52%]
+...........FFFFFFFFFFF.......F...F...FF                                  [ 92%]
+test_quokka_smoke.py .......                                             [100%]
+
+=================================== FAILURES ===================================
+________________________ TestSimulation.test_x_dict_one ________________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c55a50>
+
+    def test_x_dict_one(self):
+        # X|0> = |1>  →  P(q0=1) = 1.0
+>       p = qk.functionalities.sim(qasm("single_qubit", "x.qasm"), basis="comp", measurement={0: 1})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x108cac890>
+basis = {0: 1}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+_________________________ TestSimulation.test_bell_p11 _________________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c5e1d0>
+
+    def test_bell_p11(self):
+        # Bell: P(11) = 0.5
+>       p = qk.functionalities.sim(qasm("multi_qubit", "bell.qasm"), basis="comp", measurement={0: 1, 1: 1})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x1089d6cd0>
+basis = {0: 1, 1: 1}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+_________________________ TestSimulation.test_bell_p01 _________________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c5e810>
+
+    def test_bell_p01(self):
+        # Bell: P(01) = 0.0
+>       p = qk.functionalities.sim(qasm("multi_qubit", "bell.qasm"), basis="comp", measurement={0: 0, 1: 1})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x108c55ad0>
+basis = {0: 0, 1: 1}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+______________ TestSimulation.test_bell_probabilities_sum_to_one _______________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c5ee50>
+
+    def test_bell_probabilities_sum_to_one(self):
+        # P(00) + P(01) + P(10) + P(11) = 1.0
+        total = 0.0
+        for b0 in (0, 1):
+            for b1 in (0, 1):
+>               p = qk.functionalities.sim(qasm("multi_qubit", "bell.qasm"), basis="comp", measurement={0: b0, 1: b1})
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:169: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x1096f8ed0>
+basis = {0: 0, 1: 0}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+_________________________ TestSimulation.test_ghz_p111 _________________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c5fad0>
+
+    def test_ghz_p111(self):
+        # GHZ: P(111) = 0.5
+>       p = qk.functionalities.sim(qasm("multi_qubit", "ghz_3q.qasm"), basis="comp", measurement={0: 1, 1: 1, 2: 1})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x1096d39d0>
+basis = {0: 1, 1: 1, 2: 1}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+______________ TestSimulation.test_ghz_p000_plus_p111_equals_one _______________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c566d0>
+
+    def test_ghz_p000_plus_p111_equals_one(self):
+        f = qasm("multi_qubit", "ghz_3q.qasm")
+>       p000 = qk.functionalities.sim(f, basis="comp", measurement={0: 0, 1: 0, 2: 0})
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x109734d90>
+basis = {0: 0, 1: 0, 2: 0}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+______________________ TestSimulation.test_qft_2q_uniform ______________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c5f710>
+
+    def test_qft_2q_uniform(self):
+        # QFT|00> → equal superposition → each outcome has probability 0.25
+        f = qasm("multi_qubit", "qft_2q.qasm")
+        for b0 in (0, 1):
+            for b1 in (0, 1):
+>               p = qk.functionalities.sim(f, basis="comp", measurement={0: b0, 1: b1})
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:197: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:35: in sim
+    circuit1 = qk.encoding.QASMparser(qasmfile)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+filename = '/Users/meij/Desktop/coding/Quokka-Sharp-final/tests/qasm_fixtures/multi_qubit/qft_2q.qasm'
+
+    def QASMparser(filename) -> Circuit:
+        """
+        Parses a QASM file and returns a Circuit object.
+        """
+        qasm_list = []
+        with open(filename,"r") as qasm:
+            for line in qasm:
+                qasm_list.append(line.rsplit())
+        circuit = Circuit()
+        for line in qasm_list:
+            if len(line) == 0:
+                continue
+            gate = line[0]
+            if any(item in ["qreg"] for item in line):
+                idx1 = line[1].find('[')
+                idx2 = line[1].find(']')
+                qreg = line[1][0:idx1]
+                num = int(line[1][idx1+1:idx2])
+                globals()[qreg] = [0] * num
+                for i in range(num):
+                    globals()[qreg][i] = i + circuit.n
+                circuit.n += num
+    
+            elif gate == 'qubit':
+                if len(line) >= 2:
+                    qname = line[1].rstrip(';')
+                    globals()[qname] = [i + circuit.n for i in range(1)]
+                    circuit.n += 1
+    
+            elif gate.startswith('qubit['):
+                tok = line[0]
+                idx1 = tok.find('['); idx2 = tok.find(']')
+                num = int(tok[idx1+1:idx2])
+                qname = line[1].rstrip(';')
+                globals()[qname] = [i + circuit.n for i in range(num)]
+                circuit.n += num
+    
+            elif line[0] == 'bit' or gate.startswith('bit['):
+                if line[0] == 'bit':
+                    reg = line[1].rstrip(';')
+                    cname = reg
+                    csize = 1
+                else:
+                    tok = line[0]
+                    idx1 = tok.find('['); idx2 = tok.find(']')
+                    csize = int(tok[idx1+1:idx2])
+                    cname = line[1].rstrip(';')
+                circuit.cregs[cname] = csize
+                globals()[cname] = list(range(csize))
+    
+            elif line[0] == 'creg':
+                reg = line[1].rstrip(';')
+                idx1 = reg.find('[')
+                idx2 = reg.find(']')
+                cname = reg[0:idx1]
+                csize = int(reg[idx1+1:idx2])
+                circuit.cregs[cname] = csize
+                globals()[cname] = list(range(csize))
+    
+            elif gate.startswith('angle'):
+                continue
+    
+            elif(line[0] == 'barrier'):
+                raise Exception("Syntax error:" + line[0])
+    
+            elif line[0] == '//' or \
+                (gate[0] == '/' and gate[1] == '/') or \
+                    line[0].startswith('OPENQASM') or \
+                        line[0] == 'include':
+                continue
+    
+            elif line[0] == 'if':
+                cname, cbit, cval = parse_condition(line[1], circuit.cregs)
+                op = line[2]
+                if op in ('id','z','y','x','h','s','sdg','t','tdg'):
+                    qubit = get_num(line[3])
+                    circuit.add_if(cname, cval, [op, qubit], cbit)
+                else:
+                    raise Exception(f"Unsupported conditional op: {op}")
+    
+            elif len(line) >= 4 and line[1] == '=' and line[2] == 'measure':
+                cname, cbit = get_creg_bit(line[0])
+                qubit = get_num(line[3])
+                circuit.add_measure(qubit, cname, cbit)
+    
+            elif line[0] == 'measure':
+                qubit = get_num(line[1])
+                cname, cbit = get_creg_bit(line[3])
+                circuit.add_measure(qubit, cname, cbit)
+    
+            elif gate == 'cx' or gate == 'cz' or gate == 'cy' or \
+                    gate == 'swap' or gate == 'iswap' or \
+                        gate == 'cs' or gate == 'csdg' or \
+                            gate == 'csqrtx' or gate == 'csqrtxdg' or \
+                                gate == 'ct' or gate == 'ctdg':
+                if(line[1].count('[') == 1):
+                    qubitc = get_num(line[1])
+                    qubitr = get_num(line[2])
+                else:
+                    qubits = line[1].split(',')
+                    qubitc = get_num(qubits[0])
+                    qubitr = get_num(qubits[1])
+                circuit.add_double(gate, qubitc, qubitr)
+    
+            elif gate == 'id' or gate == 'z' or gate == 'y' or gate == 'x' or gate == 'h':
+                qubit = get_num(line[1])
+                circuit.add_single(gate, qubit)
+    
+            elif gate == 'rz(pi)' or gate == 'rz(1.0*pi)':
+                qubit = get_num(line[1])
+                circuit.add_single('z',qubit)
+    
+            elif gate == 's' or gate == "rz(0.5*pi)" or gate == "rz(pi/2)":
+                qubit = get_num(line[1])
+                circuit.add_single("s", qubit)
+    
+            elif gate == 'sdg' or gate == 'rz(-0.5*pi)' or gate == "rz(-pi/2)":
+                qubit = get_num(line[1])
+                circuit.add_single("sdg", qubit)
+    
+            elif gate == 't' or gate == "rz(0.25*pi)" or gate == "rz(pi/4)":
+                qubit = get_num(line[1])
+                circuit.add_single("t", qubit)
+    
+            elif gate == 'tdg' or gate == 'rz(-0.25*pi)' or gate == "rz(-pi/4)":
+                qubit = get_num(line[1])
+                circuit.add_single("tdg", qubit)
+    
+            elif gate == 'ccx':
+                if(line[1].count('[') == 1):
+                    qubitc1 = get_num(line[1])
+                    qubitc2 = get_num(line[2])
+                    qubitr = get_num(line[3])
+                else:
+                    qubits = line[1].split(',')
+                    qubitc1 = get_num(qubits[0])
+                    qubitc2 = get_num(qubits[1])
+                    qubitr = get_num(qubits[2])
+                circuit.add_ccx(qubitc1, qubitc2, qubitr)
+    
+            elif len(gate) > 4 and gate[0:2] in RotationGates:
+                gate_angle = re.findall(r"(.*?)\((.*?)\)",gate)[0]
+                rgate = gate_angle[0]
+                raw = gate_angle[1]
+                if raw != "pi" and re.fullmatch(r'[A-Za-z_]\w*', raw):
+                    angle = raw
+                else:
+                    angle = get_angle(raw)
+                qubit = get_num(line[1])
+                circuit.add_rotation(rgate, angle, qubit)
+            else:
+                gate = line[0]
+>               raise Exception(str(gate) + " undefined.")
+E               Exception: cp(pi/2) undefined.
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/qasm_parser.py:533: Exception
+______________________ TestSimulation.test_cx_x_cx_result ______________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c5d6d0>
+
+    def test_cx_x_cx_result(self):
+        # X·CX·X on |00>: gives |01>  →  P({0:0,1:1}) = 1.0
+>       p = qk.functionalities.sim(qasm("multi_qubit", "cx_x_cx.qasm"), basis="comp", measurement={0: 0, 1: 1})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:207: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x109622350>
+basis = {0: 0, 1: 1}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+____________________ TestSimulation.test_low_level_simulate ____________________
+
+self = <test_quokka_sharp.TestSimulation object at 0x108c64310>
+
+    def test_low_level_simulate(self):
+        circuit = qk.encoding.QASMparser(qasm("single_qubit", "h.qasm"))
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis=True)
+        cnf.leftProjectAllZero()
+>       cnf.add_measurement({0: 0})
+
+test_quokka_sharp.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x109865290>
+basis = {0: 0}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+_ TestEquivalenceChecking.test_equiv_pair[eq5_3cx_swap.qasm-eq5_swap.qasm-comp-cyclic] _
+
+self = <test_quokka_sharp.TestEquivalenceChecking object at 0x108c6e550>
+lhs = 'eq5_3cx_swap.qasm', rhs = 'eq5_swap.qasm', basis = 'comp'
+check = 'cyclic'
+
+    @pytest.mark.parametrize("lhs,rhs,basis,check", [
+        ("eq1_hh.qasm",       "eq1_identity.qasm", "pauli", "linear"),
+        ("eq1_hh.qasm",       "eq1_identity.qasm", "comp",  "cyclic"),
+        ("eq2_ss.qasm",       "eq2_z.qasm",        "pauli", "linear"),
+        ("eq2_ss.qasm",       "eq2_z.qasm",        "comp",  "cyclic"),
+        ("eq3_hxh.qasm",      "eq3_z.qasm",        "pauli", "linear"),
+        ("eq3_hxh.qasm",      "eq3_z.qasm",        "comp",  "cyclic"),
+        ("eq4_cxcx.qasm",     "eq4_id2q.qasm",     "comp",  "cyclic"),
+        ("eq5_3cx_swap.qasm", "eq5_swap.qasm",     "comp",  "cyclic"),
+        ("eq6_tt.qasm",       "eq6_s.qasm",        "pauli", "linear"),
+        ("eq6_tt.qasm",       "eq6_s.qasm",        "comp",  "cyclic"),
+    ])
+    def test_equiv_pair(self, lhs, rhs, basis, check):
+>       res = qk.functionalities.eq(
+            qasm("equiv_pairs", lhs),
+            qasm("equiv_pairs", rhs),
+            basis=basis, check=check, epsilon=0,
+        )
+
+test_quokka_sharp.py:348: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:22: in eq
+    cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:890: in QASM2CNF
+    cnf.encode_circuit(circuit)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.CNF object at 0x109647050>
+circuit = <quokka_sharp.encoding.qasm_parser.Circuit object at 0x109644dd0>
+
+    def encode_circuit(self, circuit : Circuit):
+        """
+        Encode a quantum circuit into the CNF encoding.
+        Args:
+            circuit (Circuit): The quantum circuit to be encoded.
+        """
+        if not self.circuit:
+            self.circuit = copy.deepcopy(circuit)
+        else:
+            self.circuit.append(copy.deepcopy(circuit))
+    
+        if self.computational_basis:
+            from .comput2cnf import comput2cnf as to_CNF
+        else:
+            from .pauli2cnf import pauli2cnf as to_CNF
+    
+        for element in circuit.circ:
+            if len(element) == 4 and element[3] == 'if':
+                self.add_normalization()
+            gate = element[0]
+            if gate == 'id':
+                pass
+            elif gate == 'h':
+                k = int(element[1])
+                to_CNF.H2CNF(self,k)
+            elif gate == 'x':
+                k = int(element[1])
+                to_CNF.X2CNF(self,k)
+            elif gate == 'y':
+                k = int(element[1])
+                to_CNF.Y2CNF(self,k)
+            elif gate == 'z':
+                k = int(element[1])
+                to_CNF.Z2CNF(self,k)
+            elif gate == 's':
+                k = int(element[1])
+                to_CNF.S2CNF(self,k)
+            elif gate == 'sdg':
+                k = int(element[1])
+                to_CNF.Sdg2CNF(self,k)
+            elif gate == 't':
+                k = int(element[1])
+                to_CNF.T2CNF(self, k)
+            elif gate == 'tdg':
+                k = int(element[1])
+                to_CNF.Tdg2CNF(self,k)
+            elif gate == 'cx':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CNOT2CNF(self,j,k)
+            elif gate == 'cz':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CZ2CNF(self,j,k)
+            elif gate == 'cy':
+                j = int(element[1])
+                k = int(element[2])
+                to_CNF.CY2CNF(self,j,k)
+            elif gate == 'swap':
+                j = int(element[1])
+                k = int(element[2])
+>               to_CNF.SWAP2CNF(self,j,k)
+              ^^^^^^^^^^^^^^^
+E               AttributeError: type object 'comput2cnf' has no attribute 'SWAP2CNF'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:677: AttributeError
+_______ TestSynthesis.test_syn_structure[syn01_h_target.qasm-gate_set0] ________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c71e90>
+target = 'syn01_h_target.qasm', gate_set = {'cx', 'h', 's'}
+
+    @pytest.mark.parametrize("target,gate_set", [
+        ("syn01_h_target.qasm",        {"h", "cx", "s"}),
+        ("syn02_x_target.qasm",        {"h", "cx", "s"}),
+        ("syn03_z_target.qasm",        {"h", "cx", "s"}),
+        ("syn05_t_target.qasm",        {"h", "cx", "t"}),
+        ("syn06_identity_target.qasm", {"h", "cx", "s"}),
+    ])
+    def test_syn_structure(self, target, gate_set):
+        """syn() always returns a valid 4-tuple with a known outcome string."""
+>       result = qk.functionalities.syn(qasm("synthesis", target), epsilon=0, gate_set=gate_set)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:429: TypeError
+_______ TestSynthesis.test_syn_structure[syn02_x_target.qasm-gate_set1] ________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c73410>
+target = 'syn02_x_target.qasm', gate_set = {'cx', 'h', 's'}
+
+    @pytest.mark.parametrize("target,gate_set", [
+        ("syn01_h_target.qasm",        {"h", "cx", "s"}),
+        ("syn02_x_target.qasm",        {"h", "cx", "s"}),
+        ("syn03_z_target.qasm",        {"h", "cx", "s"}),
+        ("syn05_t_target.qasm",        {"h", "cx", "t"}),
+        ("syn06_identity_target.qasm", {"h", "cx", "s"}),
+    ])
+    def test_syn_structure(self, target, gate_set):
+        """syn() always returns a valid 4-tuple with a known outcome string."""
+>       result = qk.functionalities.syn(qasm("synthesis", target), epsilon=0, gate_set=gate_set)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:429: TypeError
+_______ TestSynthesis.test_syn_structure[syn03_z_target.qasm-gate_set2] ________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c73550>
+target = 'syn03_z_target.qasm', gate_set = {'cx', 'h', 's'}
+
+    @pytest.mark.parametrize("target,gate_set", [
+        ("syn01_h_target.qasm",        {"h", "cx", "s"}),
+        ("syn02_x_target.qasm",        {"h", "cx", "s"}),
+        ("syn03_z_target.qasm",        {"h", "cx", "s"}),
+        ("syn05_t_target.qasm",        {"h", "cx", "t"}),
+        ("syn06_identity_target.qasm", {"h", "cx", "s"}),
+    ])
+    def test_syn_structure(self, target, gate_set):
+        """syn() always returns a valid 4-tuple with a known outcome string."""
+>       result = qk.functionalities.syn(qasm("synthesis", target), epsilon=0, gate_set=gate_set)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:429: TypeError
+_______ TestSynthesis.test_syn_structure[syn05_t_target.qasm-gate_set3] ________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c73690>
+target = 'syn05_t_target.qasm', gate_set = {'cx', 'h', 't'}
+
+    @pytest.mark.parametrize("target,gate_set", [
+        ("syn01_h_target.qasm",        {"h", "cx", "s"}),
+        ("syn02_x_target.qasm",        {"h", "cx", "s"}),
+        ("syn03_z_target.qasm",        {"h", "cx", "s"}),
+        ("syn05_t_target.qasm",        {"h", "cx", "t"}),
+        ("syn06_identity_target.qasm", {"h", "cx", "s"}),
+    ])
+    def test_syn_structure(self, target, gate_set):
+        """syn() always returns a valid 4-tuple with a known outcome string."""
+>       result = qk.functionalities.syn(qasm("synthesis", target), epsilon=0, gate_set=gate_set)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:429: TypeError
+____ TestSynthesis.test_syn_structure[syn06_identity_target.qasm-gate_set4] ____
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c737d0>
+target = 'syn06_identity_target.qasm', gate_set = {'cx', 'h', 's'}
+
+    @pytest.mark.parametrize("target,gate_set", [
+        ("syn01_h_target.qasm",        {"h", "cx", "s"}),
+        ("syn02_x_target.qasm",        {"h", "cx", "s"}),
+        ("syn03_z_target.qasm",        {"h", "cx", "s"}),
+        ("syn05_t_target.qasm",        {"h", "cx", "t"}),
+        ("syn06_identity_target.qasm", {"h", "cx", "s"}),
+    ])
+    def test_syn_structure(self, target, gate_set):
+        """syn() always returns a valid 4-tuple with a known outcome string."""
+>       result = qk.functionalities.syn(qasm("synthesis", target), epsilon=0, gate_set=gate_set)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:429: TypeError
+____________________ TestSynthesis.test_found_weight_is_one ____________________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c73a50>
+
+    def test_found_weight_is_one(self):
+        """When synthesis finds an exact solution, fidelity = 1.0."""
+>       outcome, weight, _, _ = qk.functionalities.syn(
+            qasm("synthesis", "syn01_h_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"}
+        )
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:437: TypeError
+____________________ TestSynthesis.test_found_qasm_nonempty ____________________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c73dd0>
+
+    def test_found_qasm_nonempty(self):
+        """When synthesis finds a solution, it returns a non-empty QASM string."""
+>       outcome, _, qasm_str, _ = qk.functionalities.syn(
+            qasm("synthesis", "syn01_h_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"}
+        )
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:445: TypeError
+___________________ TestSynthesis.test_found_layers_positive ___________________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c80450>
+
+    def test_found_layers_positive(self):
+        """When synthesis finds a solution, layers >= 1."""
+>       outcome, _, _, layers = qk.functionalities.syn(
+            qasm("synthesis", "syn01_h_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"}
+        )
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:453: TypeError
+_____________ TestSynthesis.test_synthesised_circuit_is_equivalent _____________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c80a90>
+
+    def test_synthesised_circuit_is_equivalent(self):
+        """If synthesis finds a circuit, it must be equivalent to the target."""
+        import tempfile, os
+        target = qasm("synthesis", "syn01_h_target.qasm")
+>       outcome, _, qasm_str, _ = qk.functionalities.syn(target, epsilon=0, gate_set={"h", "cx", "s"})
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:463: TypeError
+__________________ TestSynthesis.test_2q_synthesis_structure ___________________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c81190>
+
+    def test_2q_synthesis_structure(self):
+        """2-qubit synthesis (CX target) returns a valid tuple."""
+>       result = qk.functionalities.syn(qasm("synthesis", "syn04_cx_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: functionalities.syn() got an unexpected keyword argument 'epsilon'
+
+test_quokka_sharp.py:479: TypeError
+____________________ TestSynthesis.test_low_level_synthesis ____________________
+
+self = <test_quokka_sharp.TestSynthesis object at 0x108c81890>
+
+    def test_low_level_synthesis(self):
+        circuit = qk.encoding.QASMparser(qasm("synthesis", "syn01_h_target.qasm"))
+        circuit.dagger()
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis=False)
+>       result = qk.Synthesis(cnf, gate_set={"h", "cx", "s"})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_quokka_sharp.py:488: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/syn.py:202: in Synthesis
+    p = Popen(command, stdout=out, stderr=err)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1026: in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: 255 args: ['', '-i', '/var/folders/vw/lzyczvy50_7g0r68qh...>
+args = ['', '-i', '/var/folders/vw/lzyczvy50_7g0r68qhw4r8zngkgzsl/T/fullP_Reg_0_quokka_syn.cnf', '--complex', '0', '--threshold', ...]
+executable = b'', preexec_fn = None, close_fds = True, pass_fds = (), cwd = None
+env = None, startupinfo = None, creationflags = 0, shell = False, p2cread = -1
+p2cwrite = -1, c2pread = -1, c2pwrite = 11, errread = -1, errwrite = 12
+restore_signals = True, gid = None, gids = None, uid = None, umask = -1
+start_new_session = False, process_group = -1
+
+    def _execute_child(self, args, executable, preexec_fn, close_fds,
+                       pass_fds, cwd, env,
+                       startupinfo, creationflags, shell,
+                       p2cread, p2cwrite,
+                       c2pread, c2pwrite,
+                       errread, errwrite,
+                       restore_signals,
+                       gid, gids, uid, umask,
+                       start_new_session, process_group):
+        """Execute program (POSIX version)"""
+    
+        if isinstance(args, (str, bytes)):
+            args = [args]
+        elif isinstance(args, os.PathLike):
+            if shell:
+                raise TypeError('path-like args is not allowed when '
+                                'shell is true')
+            args = [args]
+        else:
+            args = list(args)
+    
+        if shell:
+            # On Android the default shell is at '/system/bin/sh'.
+            unix_shell = ('/system/bin/sh' if
+                      hasattr(sys, 'getandroidapilevel') else '/bin/sh')
+            args = [unix_shell, "-c"] + args
+            if executable:
+                args[0] = executable
+    
+        if executable is None:
+            executable = args[0]
+    
+        sys.audit("subprocess.Popen", executable, args, cwd, env)
+    
+        if (_USE_POSIX_SPAWN
+                and os.path.dirname(executable)
+                and preexec_fn is None
+                and not close_fds
+                and not pass_fds
+                and cwd is None
+                and (p2cread == -1 or p2cread > 2)
+                and (c2pwrite == -1 or c2pwrite > 2)
+                and (errwrite == -1 or errwrite > 2)
+                and not start_new_session
+                and process_group == -1
+                and gid is None
+                and gids is None
+                and uid is None
+                and umask < 0):
+            self._posix_spawn(args, executable, env, restore_signals,
+                              p2cread, p2cwrite,
+                              c2pread, c2pwrite,
+                              errread, errwrite)
+            return
+    
+        orig_executable = executable
+    
+        # For transferring possible exec failure from child to parent.
+        # Data format: "exception name:hex errno:description"
+        # Pickle is not used; it is complex and involves memory allocation.
+        errpipe_read, errpipe_write = os.pipe()
+        # errpipe_write must not be in the standard io 0, 1, or 2 fd range.
+        low_fds_to_close = []
+        while errpipe_write < 3:
+            low_fds_to_close.append(errpipe_write)
+            errpipe_write = os.dup(errpipe_write)
+        for low_fd in low_fds_to_close:
+            os.close(low_fd)
+        try:
+            try:
+                # We must avoid complex work that could involve
+                # malloc or free in the child process to avoid
+                # potential deadlocks, thus we do all this here.
+                # and pass it to fork_exec()
+    
+                if env is not None:
+                    env_list = []
+                    for k, v in env.items():
+                        k = os.fsencode(k)
+                        if b'=' in k:
+                            raise ValueError("illegal environment variable name")
+                        env_list.append(k + b'=' + os.fsencode(v))
+                else:
+                    env_list = None  # Use execv instead of execve.
+                executable = os.fsencode(executable)
+                if os.path.dirname(executable):
+                    executable_list = (executable,)
+                else:
+                    # This matches the behavior of os._execvpe().
+                    executable_list = tuple(
+                        os.path.join(os.fsencode(dir), executable)
+                        for dir in os.get_exec_path(env))
+                fds_to_keep = set(pass_fds)
+                fds_to_keep.add(errpipe_write)
+                self.pid = _fork_exec(
+                        args, executable_list,
+                        close_fds, tuple(sorted(map(int, fds_to_keep))),
+                        cwd, env_list,
+                        p2cread, p2cwrite, c2pread, c2pwrite,
+                        errread, errwrite,
+                        errpipe_read, errpipe_write,
+                        restore_signals, start_new_session,
+                        process_group, gid, gids, uid, umask,
+                        preexec_fn, _USE_VFORK)
+                self._child_created = True
+            finally:
+                # be sure the FD is closed no matter what
+                os.close(errpipe_write)
+    
+            self._close_pipe_fds(p2cread, p2cwrite,
+                                 c2pread, c2pwrite,
+                                 errread, errwrite)
+    
+            # Wait for exec to fail or succeed; possibly raising an
+            # exception (limited in size)
+            errpipe_data = bytearray()
+            while True:
+                part = os.read(errpipe_read, 50000)
+                errpipe_data += part
+                if not part or len(errpipe_data) > 50000:
+                    break
+        finally:
+            # be sure the FD is closed no matter what
+            os.close(errpipe_read)
+    
+        if errpipe_data:
+            try:
+                pid, sts = os.waitpid(self.pid, 0)
+                if pid == self.pid:
+                    self._handle_exitstatus(sts)
+                else:
+                    self.returncode = sys.maxsize
+            except ChildProcessError:
+                pass
+    
+            try:
+                exception_name, hex_errno, err_msg = (
+                        errpipe_data.split(b':', 2))
+                # The encoding here should match the encoding
+                # written in by the subprocess implementations
+                # like _posixsubprocess
+                err_msg = err_msg.decode()
+            except ValueError:
+                exception_name = b'SubprocessError'
+                hex_errno = b'0'
+                err_msg = 'Bad exception data from child: {!r}'.format(
+                              bytes(errpipe_data))
+            child_exception_type = getattr(
+                    builtins, exception_name.decode('ascii'),
+                    SubprocessError)
+            if issubclass(child_exception_type, OSError) and hex_errno:
+                errno_num = int(hex_errno, 16)
+                if err_msg == "noexec:chdir":
+                    err_msg = ""
+                    # The error must be from chdir(cwd).
+                    err_filename = cwd
+                elif err_msg == "noexec":
+                    err_msg = ""
+                    err_filename = None
+                else:
+                    err_filename = orig_executable
+                if errno_num != 0:
+                    err_msg = os.strerror(errno_num)
+                if err_filename is not None:
+>                   raise child_exception_type(errno_num, err_msg, err_filename)
+E                   PermissionError: [Errno 13] Permission denied: ''
+
+/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py:1955: PermissionError
+_________________ TestEncodingAndParser.test_cnf_write_to_file _________________
+
+self = <test_quokka_sharp.TestEncodingAndParser object at 0x108c84d10>
+tmp_path = PosixPath('/private/var/folders/vw/lzyczvy50_7g0r68qhw4r8zngkgzsl/T/pytest-of-meij/pytest-15/test_cnf_write_to_file0')
+
+    def test_cnf_write_to_file(self, tmp_path):
+        circuit = qk.encoding.QASMparser(qasm("single_qubit", "h.qasm"))
+        cnf = qk.encoding.QASM2CNF(circuit, computational_basis=True)
+        cnf.leftProjectAllZero()
+>       cnf.add_measurement({0: 0})
+
+test_quokka_sharp.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x1095c7210>
+basis = {0: 0}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+___________________ TestEdgeCases.test_invalid_basis_raises ____________________
+
+self = <test_quokka_sharp.TestEdgeCases object at 0x108c80810>
+
+    def test_invalid_basis_raises(self):
+>       with pytest.raises(Exception):
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+test_quokka_sharp.py:546: Failed
+_________________ TestEdgeCases.test_bell_psi_minus_no_allzero _________________
+
+self = <test_quokka_sharp.TestEdgeCases object at 0x108c86890>
+
+    def test_bell_psi_minus_no_allzero(self):
+        # |Psi-> has no |00> component
+        p = qk.functionalities.sim(qasm("multi_qubit", "bell_psi_minus.qasm"), basis="comp", measurement="allzero")
+>       assert_prob(p, 0.0)
+
+test_quokka_sharp.py:574: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+result = Decimal('0.50000000000000000000000000000021349069077055867136')
+expected = 0.0, fpe = 1e-09
+
+    def assert_prob(result, expected: float, fpe: float = FPE):
+        """Assert a probability result equals expected, handling Decimal return type."""
+        skip_if_solver_issue(result)
+>       assert abs(to_float(result) - expected) < fpe, (
+            f"Expected probability ≈ {expected}, got {result!r}"
+        )
+E       AssertionError: Expected probability ≈ 0.0, got Decimal('0.50000000000000000000000000000021349069077055867136')
+E       assert 0.5 < 1e-09
+E        +  where 0.5 = abs((0.5 - 0.0))
+E        +    where 0.5 = to_float(Decimal('0.50000000000000000000000000000021349069077055867136'))
+
+test_quokka_sharp.py:54: AssertionError
+_________________ TestEdgeCases.test_bernstein_vazirani_result _________________
+
+self = <test_quokka_sharp.TestEdgeCases object at 0x108c86bd0>
+
+    def test_bernstein_vazirani_result(self):
+        # BV(s=01) should output |01> on data qubits
+>       p = qk.functionalities.sim(
+            qasm("multi_qubit", "bernstein_vazirani_2q.qasm"),
+            basis="comp",
+            measurement={0: 0, 1: 1, 2: 1},
+        )
+
+test_quokka_sharp.py:578: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/functionalities.py:39: in sim
+    cnf.add_measurement(measurement)
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:475: in add_measurement
+    self.vars.measurement(basis, False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <quokka_sharp.encoding.cnf.Variables object at 0x1098aa0d0>
+basis = {0: 0, 1: 1, 2: 1}, prepend = False
+
+    def measurement(self, basis, prepend=False):
+        """
+        Add a measurement clause to the CNF encoding.
+        Args:
+            basis (str or dict): The measurement basis. Can be "allzero", "firstzero", or a dictionary specifying the measurement.
+            - "allzero": All qubits are measured in the |0> state.
+            - "firstzero": The first qubit is measured in the |0> state, and the rest are measured in the I state.
+            - dict: A dictionary specifying the measurement for each qubit e.g. {0: 1, 1: 0} means qubit 0 is measured in the |1> state and qubit 1 in the |0> state.
+            prepend (bool): If True, the clause is added at the beginning of the CNF encoding, otherwise at the end.
+        """
+        n = self.n
+        if basis == "allzero":
+            for i in range(self.n):
+                self.cnf.add_clause([-self.x[i]], prepend)
+            if self.computational_basis:
+                self.cnf.square_result = True
+            else:
+                self.normalize(n)
+        elif basis == "firstzero":
+            self.cnf.add_clause([-self.x[0]], prepend, comment="firstzero mesurment")
+            if self.computational_basis:
+                circuit_copy = copy.deepcopy(self.cnf.circuit)
+                circuit_copy.dagger()
+                self.cnf.encode_circuit(circuit_copy)
+                self.cnf.add_identity_clauses()
+            else:
+                for i in range(1, self.n):
+                    self.cnf.add_clause([-self.x[i]], prepend)
+                    self.cnf.add_clause([-self.z[i]], prepend)
+                self.normalize(1)
+        elif type(basis) == dict:
+>           self.projector(basis, prepend=False)
+E           TypeError: Variables.projector() missing 1 required positional argument: 'var_curr'
+
+/opt/homebrew/lib/python3.11/site-packages/quokka_sharp/encoding/cnf.py:123: TypeError
+=========================== short test summary info ============================
+FAILED test_quokka_sharp.py::TestSimulation::test_x_dict_one - TypeError: Var...
+FAILED test_quokka_sharp.py::TestSimulation::test_bell_p11 - TypeError: Varia...
+FAILED test_quokka_sharp.py::TestSimulation::test_bell_p01 - TypeError: Varia...
+FAILED test_quokka_sharp.py::TestSimulation::test_bell_probabilities_sum_to_one
+FAILED test_quokka_sharp.py::TestSimulation::test_ghz_p111 - TypeError: Varia...
+FAILED test_quokka_sharp.py::TestSimulation::test_ghz_p000_plus_p111_equals_one
+FAILED test_quokka_sharp.py::TestSimulation::test_qft_2q_uniform - Exception:...
+FAILED test_quokka_sharp.py::TestSimulation::test_cx_x_cx_result - TypeError:...
+FAILED test_quokka_sharp.py::TestSimulation::test_low_level_simulate - TypeEr...
+FAILED test_quokka_sharp.py::TestEquivalenceChecking::test_equiv_pair[eq5_3cx_swap.qasm-eq5_swap.qasm-comp-cyclic]
+FAILED test_quokka_sharp.py::TestSynthesis::test_syn_structure[syn01_h_target.qasm-gate_set0]
+FAILED test_quokka_sharp.py::TestSynthesis::test_syn_structure[syn02_x_target.qasm-gate_set1]
+FAILED test_quokka_sharp.py::TestSynthesis::test_syn_structure[syn03_z_target.qasm-gate_set2]
+FAILED test_quokka_sharp.py::TestSynthesis::test_syn_structure[syn05_t_target.qasm-gate_set3]
+FAILED test_quokka_sharp.py::TestSynthesis::test_syn_structure[syn06_identity_target.qasm-gate_set4]
+FAILED test_quokka_sharp.py::TestSynthesis::test_found_weight_is_one - TypeEr...
+FAILED test_quokka_sharp.py::TestSynthesis::test_found_qasm_nonempty - TypeEr...
+FAILED test_quokka_sharp.py::TestSynthesis::test_found_layers_positive - Type...
+FAILED test_quokka_sharp.py::TestSynthesis::test_synthesised_circuit_is_equivalent
+FAILED test_quokka_sharp.py::TestSynthesis::test_2q_synthesis_structure - Typ...
+FAILED test_quokka_sharp.py::TestSynthesis::test_low_level_synthesis - Permis...
+FAILED test_quokka_sharp.py::TestEncodingAndParser::test_cnf_write_to_file - ...
+FAILED test_quokka_sharp.py::TestEdgeCases::test_invalid_basis_raises - Faile...
+FAILED test_quokka_sharp.py::TestEdgeCases::test_bell_psi_minus_no_allzero - ...
+FAILED test_quokka_sharp.py::TestEdgeCases::test_bernstein_vazirani_result - ...
+======================== 25 failed, 72 passed in 3.94s =========================

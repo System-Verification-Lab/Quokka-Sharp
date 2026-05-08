@@ -1,0 +1,5 @@
+// neq1_h.qasm  ←→  neq1_x.qasm  (NOT EQUIVALENT)
+OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[1];
+h q[0];

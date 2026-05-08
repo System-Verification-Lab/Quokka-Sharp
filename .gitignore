@@ -13,6 +13,5 @@ experiment/run_benchmarks/results/*.png
 experiment/run_benchmarks/results/*.tex
 experiment/run_benchmarks/tmp/*
 tmp/*
-tests
 quokka_sharp/debug.py
 config.json

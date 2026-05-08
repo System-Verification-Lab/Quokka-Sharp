@@ -1,0 +1,8 @@
+{
+  "DEBUG": false,
+  "TIMEOUT": 2,
+  "ToolInvocation": "/path/to/gpmc -mode=1",
+  "D4ToolInvocation": "/path/to/d4max",
+  "GetResult": "exact.double.prec-sci.(.+?)\\\\nc s",
+  "FPE": 1E-12
+}
