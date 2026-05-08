@@ -150,7 +150,7 @@ outcome, weight, qasm_str, layers = qk.functionalities.syn(
 # layers  : circuit depth
 ```
 
-> **Note:** Use either `"t"` or `"csqrtx"` for CCX synthesis, but not both simultaneously.
+> **Note:** Use either `"t"` or `"csqrtx"` for CCX synthesis, but not both simultaneously. Currently, we only implemented choosing different gate sets in Pauli basis.
 
 ---
 ---
