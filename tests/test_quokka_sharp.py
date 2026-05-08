@@ -314,83 +314,8 @@ class TestVerification:
         skip_if_solver_issue(res)
         assert res in ("True", True)
 
-
-# ---------------------------------------------------------------------------
-# 3.  Equivalence Checking Tests
-# ---------------------------------------------------------------------------
-
-class TestEquivalenceChecking:
-    """Tests for qk.functionalities.eq().  Fixtures in equiv_pairs/."""
-
-    # ── Equivalent pairs ────────────────────────────────────────────────────
-
-    @pytest.mark.parametrize("lhs,rhs,basis,check", [
-        ("eq1_hh.qasm",       "eq1_identity.qasm", "pauli", "linear"),
-        ("eq1_hh.qasm",       "eq1_identity.qasm", "comp",  "cyclic"),
-        ("eq2_ss.qasm",       "eq2_z.qasm",        "pauli", "linear"),
-        ("eq2_ss.qasm",       "eq2_z.qasm",        "comp",  "cyclic"),
-        ("eq3_hxh.qasm",      "eq3_z.qasm",        "pauli", "linear"),
-        ("eq3_hxh.qasm",      "eq3_z.qasm",        "comp",  "cyclic"),
-        ("eq4_cxcx.qasm",     "eq4_id2q.qasm",     "comp",  "cyclic"),
-        ("eq5_3cx_swap.qasm", "eq5_swap.qasm",     "comp",  "cyclic"),
-        ("eq6_tt.qasm",       "eq6_s.qasm",        "pauli", "linear"),
-        ("eq6_tt.qasm",       "eq6_s.qasm",        "comp",  "cyclic"),
-    ])
-    def test_equiv_pair(self, lhs, rhs, basis, check):
-        res = qk.functionalities.eq(
-            qasm("equiv_pairs", lhs),
-            qasm("equiv_pairs", rhs),
-            basis=basis, check=check, epsilon=0,
-        )
-        skip_if_solver_issue(res)
-        assert res in (True, "True"), f"{lhs} should be equiv to {rhs}"
-
-    def test_circuit_equiv_itself(self):
-        # Self-equivalence: a circuit is always equal to itself
-        f = qasm("single_qubit", "h.qasm")
-        res = qk.functionalities.eq(f, f, basis="comp", check="cyclic", epsilon=0)
-        skip_if_solver_issue(res)
-        assert res in (True, "True")
-
-    # ── Non-equivalent pairs ─────────────────────────────────────────────────
-
-    @pytest.mark.parametrize("lhs,rhs,basis,check", [
-        ("neq1_h.qasm",    "neq1_x.qasm",    "comp",  "cyclic"),
-        ("neq1_h.qasm",    "neq1_x.qasm",    "pauli", "linear"),
-        ("neq2_h.qasm",    "neq2_hs.qasm",   "pauli", "linear"),
-        ("neq3_bell.qasm", "neq3_cx.qasm",   "comp",  "cyclic"),
-        ("neq4_z.qasm",    "neq4_s.qasm",    "pauli", "linear"),
-        ("neq4_z.qasm",    "neq4_s.qasm",    "comp",  "cyclic"),
-    ])
-    def test_non_equiv_pair(self, lhs, rhs, basis, check):
-        res = qk.functionalities.eq(
-            qasm("equiv_pairs", lhs),
-            qasm("equiv_pairs", rhs),
-            basis=basis, check=check, epsilon=0,
-        )
-        skip_if_solver_issue(res)
-        assert res in (False, "False"), f"{lhs} should NOT be equiv to {rhs}"
    # ── Pauli basis, Pauli-operator stabilizer pre/post ──────────────────────
-    #
-    # Stabilizer notation:
-    #   "Z"  → +Z eigenstate = |0⟩
-    #   "-Z" → -Z eigenstate = |1⟩
-    #   "X"  → +X eigenstate = |+⟩ = (|0⟩+|1⟩)/√2
-    #   "-X" → -X eigenstate = |−⟩ = (|0⟩-|1⟩)/√2
-    #   "Y"  → +Y eigenstate = |i+⟩ = (|0⟩+i|1⟩)/√2
-    #   "I"  → no constraint (any state)
-    #
-    # Key quantum-mechanical facts used below:
-    #   H |0⟩  = |+⟩       H: Z  → X
-    #   H |+⟩  = |0⟩       H: X  → Z
-    #   X |0⟩  = |1⟩       X: Z  → -Z
-    #   X |+⟩  = |+⟩       X: X  → X   (X commutes with X-stabilizer)
-    #   Z |+⟩  = |−⟩       Z: X  → -X
-    #   Z |0⟩  = |0⟩       Z: Z  → Z   (Z preserves Z-eigenstate)
-    #   S |+⟩  = |i+⟩      S: X  → Y
-    #   CNOT: Z⊗I → Z⊗Z,  I⊗X → X⊗X  (stabilizer propagation)
- 
-    # ── H gate: Z → X ────────────────────────────────────────────────────────
+   # ── H gate: Z → X ────────────────────────────────────────────────────────
  
     def test_h_z_to_x_pass(self):
         # H|0⟩ = |+⟩  →  pre={0:"Z"} post={0:"X"} should be True
@@ -572,6 +497,63 @@ class TestEquivalenceChecking:
             precons={0: "I"}, postcons={0: "I"},
         )
         assert res in ("True", "False", "TIMEOUT", "MEMOUT", True, False)
+
+
+# ---------------------------------------------------------------------------
+# 3.  Equivalence Checking Tests
+# ---------------------------------------------------------------------------
+
+class TestEquivalenceChecking:
+    """Tests for qk.functionalities.eq().  Fixtures in equiv_pairs/."""
+
+    # ── Equivalent pairs ────────────────────────────────────────────────────
+
+    @pytest.mark.parametrize("lhs,rhs,basis,check", [
+        ("eq1_hh.qasm",       "eq1_identity.qasm", "pauli", "linear"),
+        ("eq1_hh.qasm",       "eq1_identity.qasm", "comp",  "cyclic"),
+        ("eq2_ss.qasm",       "eq2_z.qasm",        "pauli", "linear"),
+        ("eq2_ss.qasm",       "eq2_z.qasm",        "comp",  "cyclic"),
+        ("eq3_hxh.qasm",      "eq3_z.qasm",        "pauli", "linear"),
+        ("eq3_hxh.qasm",      "eq3_z.qasm",        "comp",  "cyclic"),
+        ("eq4_cxcx.qasm",     "eq4_id2q.qasm",     "comp",  "cyclic"),
+        ("eq5_3cx_swap.qasm", "eq5_swap.qasm",     "comp",  "cyclic"),
+        ("eq6_tt.qasm",       "eq6_s.qasm",        "pauli", "linear"),
+        ("eq6_tt.qasm",       "eq6_s.qasm",        "comp",  "cyclic"),
+    ])
+    def test_equiv_pair(self, lhs, rhs, basis, check):
+        res = qk.functionalities.eq(
+            qasm("equiv_pairs", lhs),
+            qasm("equiv_pairs", rhs),
+            basis=basis, check=check, epsilon=0,
+        )
+        skip_if_solver_issue(res)
+        assert res in (True, "True"), f"{lhs} should be equiv to {rhs}"
+
+    def test_circuit_equiv_itself(self):
+        # Self-equivalence: a circuit is always equal to itself
+        f = qasm("single_qubit", "h.qasm")
+        res = qk.functionalities.eq(f, f, basis="comp", check="cyclic", epsilon=0)
+        skip_if_solver_issue(res)
+        assert res in (True, "True")
+
+    # ── Non-equivalent pairs ─────────────────────────────────────────────────
+
+    @pytest.mark.parametrize("lhs,rhs,basis,check", [
+        ("neq1_h.qasm",    "neq1_x.qasm",    "comp",  "cyclic"),
+        ("neq1_h.qasm",    "neq1_x.qasm",    "pauli", "linear"),
+        ("neq2_h.qasm",    "neq2_hs.qasm",   "pauli", "linear"),
+        ("neq3_bell.qasm", "neq3_cx.qasm",   "comp",  "cyclic"),
+        ("neq4_z.qasm",    "neq4_s.qasm",    "pauli", "linear"),
+        ("neq4_z.qasm",    "neq4_s.qasm",    "comp",  "cyclic"),
+    ])
+    def test_non_equiv_pair(self, lhs, rhs, basis, check):
+        res = qk.functionalities.eq(
+            qasm("equiv_pairs", lhs),
+            qasm("equiv_pairs", rhs),
+            basis=basis, check=check, epsilon=0,
+        )
+        skip_if_solver_issue(res)
+        assert res in (False, "False"), f"{lhs} should NOT be equiv to {rhs}"
  
     # ── Low-level API ────────────────────────────────────────────────────────
 
