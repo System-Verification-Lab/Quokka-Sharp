@@ -609,7 +609,7 @@ class TestEquivalenceChecking:
 # ---------------------------------------------------------------------------
 
 class TestSynthesis:
-    """Tests for qk.functionalities.syn().  Fixtures in synthesis/."""
+    """Tests for qk.functionalities.syn().  Fixtures in cl/."""
 
     @pytest.mark.parametrize("target,gate_set", [
         ("syn01_h_target.qasm",        {"h", "cx", "s"}),
@@ -620,7 +620,7 @@ class TestSynthesis:
     ])
     def test_syn_structure(self, target, gate_set):
         """syn() always returns a valid 4-tuple with a known outcome string."""
-        result = qk.functionalities.syn(qasm("synthesis", target), epsilon=0, gate_set=gate_set)
+        result = qk.functionalities.syn(qasm("synthesis", target), basis="pauli", files_root="tmp", fid=1.0, cyc_lin_encoding=True, gate_set=gate_set)
         assert isinstance(result, tuple) and len(result) == 4
         outcome, weight, qasm_str, layers = result
         valid = {"FOUND", "TIMEOUT", "CRASH"}
@@ -629,7 +629,7 @@ class TestSynthesis:
     def test_found_weight_is_one(self):
         """When synthesis finds an exact solution, fidelity = 1.0."""
         outcome, weight, _, _ = qk.functionalities.syn(
-            qasm("synthesis", "syn01_h_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"}
+            qasm("synthesis", "syn01_h_target.qasm"),basis="pauli", fid=1.0,files_root="tmp",  gate_set={"h", "cx", "s"}
         )
         if outcome == "FOUND":
             assert abs(float(weight) - 1.0) < FPE
@@ -637,7 +637,7 @@ class TestSynthesis:
     def test_found_qasm_nonempty(self):
         """When synthesis finds a solution, it returns a non-empty QASM string."""
         outcome, _, qasm_str, _ = qk.functionalities.syn(
-            qasm("synthesis", "syn01_h_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"}
+            qasm("synthesis", "syn01_h_target.qasm"), basis="pauli", fid=1.0,files_root="tmp",  gate_set={"h", "cx", "s"}
         )
         if outcome == "FOUND":
             assert isinstance(qasm_str, str) and len(qasm_str) > 0
@@ -645,7 +645,7 @@ class TestSynthesis:
     def test_found_layers_positive(self):
         """When synthesis finds a solution, layers >= 1."""
         outcome, _, _, layers = qk.functionalities.syn(
-            qasm("synthesis", "syn01_h_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"}
+            qasm("synthesis", "syn01_h_target.qasm"), basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"}
         )
         if outcome == "FOUND":
             assert isinstance(layers, int) and layers >= 1
@@ -654,7 +654,7 @@ class TestSynthesis:
         """If synthesis finds a circuit, it must be equivalent to the target."""
         import tempfile, os
         target = qasm("synthesis", "syn01_h_target.qasm")
-        outcome, _, qasm_str, _ = qk.functionalities.syn(target, epsilon=0, gate_set={"h", "cx", "s"})
+        outcome, _, qasm_str, _ = qk.functionalities.syn(target, basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"})
         if outcome != "FOUND":
             pytest.skip(f"Synthesis did not find a solution: {outcome}")
         # Write synthesised QASM to a temp file and check equivalence
@@ -670,7 +670,7 @@ class TestSynthesis:
 
     def test_2q_synthesis_structure(self):
         """2-qubit synthesis (CX target) returns a valid tuple."""
-        result = qk.functionalities.syn(qasm("synthesis", "syn04_cx_target.qasm"), epsilon=0, gate_set={"h", "cx", "s"})
+        result = qk.functionalities.syn(qasm("synthesis", "syn04_cx_target.qasm"), basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"})
         assert isinstance(result, tuple) and len(result) == 4
 
     # ── Low-level API ────────────────────────────────────────────────────────
