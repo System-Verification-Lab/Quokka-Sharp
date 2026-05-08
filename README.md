@@ -350,7 +350,7 @@ Example output:
 # ── Simulation ──────────────────────────────────────────────
 SIM_FILE        = fixture("multi_qubit", "bell.qasm")
 SIM_BASIS       = "comp"          # "comp" or "pauli"
-SIM_MEASUREMENT = "allzero"       # "allzero", "firstzero"
+SIM_MEASUREMENT = "allzero"       # "allzero", "firstzero", "{0:0,1:0}"
                                   
 
 # ── Verification ────────────────────────────────────────────
