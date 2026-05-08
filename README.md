@@ -103,12 +103,11 @@ res = qk.functionalities.verify(
 )
 
 # Pauli basis — stabilizer strings
-# "Z" = |0⟩   "-Z" = |1⟩   "X" = |+⟩   "-X" = |−⟩   "Y" = |i+⟩   "I" = any
 res = qk.functionalities.verify(
     "circuit.qasm",
     basis="pauli",
-    precons={0: "Z"},        # qubit 0 starts in |0⟩
-    postcons={0: "X"},       # qubit 0 ends in |+⟩
+    precons={0: "Z"},        # qubit 0 starts with the subspace defined by Z
+    postcons={0: "X"},       # qubit 0 ends in with the subspace defined by X
 )
 # Returns "True", "False", "TIMEOUT", or "MEMOUT"
 ```
@@ -242,16 +241,7 @@ qk.functionalities.verify("toffoli.qasm", basis="comp",
     precons={0: 1, 1: 1, 2: 0}, postcons={0: 1, 1: 1, 2: 1})  # → True
 ```
 
-**Pauli basis** — stabilizer strings `{qubit: "Z"|"-Z"|"X"|"-X"|"Y"|"I"}`:
-
-| String | State | Meaning |
-|---|---|---|
-| `"Z"` | \|0⟩ | +Z eigenstate |
-| `"-Z"` | \|1⟩ | −Z eigenstate |
-| `"X"` | \|+⟩ | +X eigenstate |
-| `"-X"` | \|−⟩ | −X eigenstate |
-| `"Y"` | \|i+⟩ | +Y eigenstate |
-| `"I"` | any | unconstrained |
+**Pauli basis** — stabilizer strings `{qubit: "Z"|"X"|"Y"|"I"}`:
 
 ```python
 # H swaps Z and X stabilizers: |0⟩ → |+⟩
