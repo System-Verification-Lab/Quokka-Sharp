@@ -120,7 +120,7 @@ class Variables:
                     self.cnf.add_clause([-self.z[i]], prepend)
                 self.normalize(1)
         elif type(basis) == dict:
-            self.projector(basis, prepend=False)
+            self.projector(basis, var_curr=self.var, prepend=False)
             self.normalize(len(basis))
         else:
             Exception("Please choose firstzero, allzero or a list of qubits measurement")
