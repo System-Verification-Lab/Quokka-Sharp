@@ -351,7 +351,7 @@ Example output:
 SIM_FILE        = fixture("multi_qubit", "bell.qasm")
 SIM_BASIS       = "comp"          # "comp" or "pauli"
 SIM_MEASUREMENT = "allzero"       # "allzero", "firstzero"
-                                  # Note: dict form {0:1} has a known bug
+                                  
 
 # ── Verification ────────────────────────────────────────────
 VER_FILE     = fixture("verify", "v01_x_flip.qasm")
