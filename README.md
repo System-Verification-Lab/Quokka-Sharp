@@ -222,7 +222,6 @@ Verifies `qk.functionalities.sim()` in both computational and Pauli bases.
 | HZH | comp | allzero | 0.0 (= X) |
 | Bell | comp | allzero | 0.5 — P(00) |
 | GHZ | comp | allzero | 0.5 — P(000) |
-| 2-qubit QFT | comp | allzero | 0.25 (uniform superposition) |
 | Bell Ψ− | pauli | allzero | 0.0 |
 
 ### 2 · Verification (`TestVerification`)
