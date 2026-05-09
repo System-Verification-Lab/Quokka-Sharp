@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '2.7.4'
+VERSION = '2.7.5'
 DESCRIPTION = 'Quokka Sharp'
 LONG_DESCRIPTION = '''
                     Quokka Sharp for simulating and equivalence checking 
