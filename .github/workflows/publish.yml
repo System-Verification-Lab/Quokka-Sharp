@@ -30,9 +30,12 @@ jobs:
 
       - name: Build package
         working-directory: quokka_sharp
-        run: python -m build
-
+        run: python -m build quokka-sharp --outdir dist
+      
+      - name: Show dist
+        run: ls -lah dist
+      
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: quokka-sharp/dist
+          packages-dir: dist
