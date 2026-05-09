@@ -28,13 +28,33 @@ jobs:
       - name: Install build tools
         run: python -m pip install --upgrade build
 
+      - name: Find package directory
+        id: package
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Top-level files:"
+          ls -lah
+
+          SETUP_PATH=$(find . -maxdepth 5 -name setup.py | head -n 1)
+
+          if [ -z "$SETUP_PATH" ]; then
+            echo "No setup.py found"
+            exit 1
+          fi
+
+          PACKAGE_DIR=$(dirname "$SETUP_PATH")
+          echo "Found setup.py at: $SETUP_PATH"
+          echo "Package directory: $PACKAGE_DIR"
+
+          echo "package_dir=$PACKAGE_DIR" >> "$GITHUB_OUTPUT"
+
       - name: Build package
-        working-directory: quokka_sharp
-        run: python -m build quokka-sharp --outdir dist
-      
+        run: python -m build "${{ steps.package.outputs.package_dir }}" --outdir dist
+
       - name: Show dist
         run: ls -lah dist
-      
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
