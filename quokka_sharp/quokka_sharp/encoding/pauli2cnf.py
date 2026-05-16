@@ -16,8 +16,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k] & z[k])
             cnf.add_clause([-R,  x[k]])
             cnf.add_clause([-R,  z[k]])
@@ -42,8 +41,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, z[k])
             cnf.add_clause([ R, -z[k]])
             cnf.add_clause([-R,  z[k]])
@@ -64,8 +62,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k] ^ z[k])
             cnf.add_clause([ R,  x[k], -z[k]])
             cnf.add_clause([ R, -x[k],  z[k]])
@@ -91,8 +88,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k])
             cnf.add_clause([ R, -x[k]])
             cnf.add_clause([-R,  x[k]])
@@ -121,8 +117,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k] & z[k])
             cnf.add_clause([-R,  x[k]])
             cnf.add_clause([-R,  z[k]])
@@ -156,8 +151,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k] & ~z[k])
             cnf.add_clause([-R,  x[k]])
             cnf.add_clause([-R, -z[k]])
@@ -189,8 +183,7 @@ class pauli2cnf:
         U = cnf.add_var()
         cnf.vars.UVar.append(U)
         if cnf.weighted: 
-            cnf.add_weight(U, str(Decimal(1/2).sqrt()))
-            cnf.add_weight(-U, 1)
+            cnf.add_weight(U, (Decimal(1) / Decimal(2)).sqrt(), 1)
             # Equivalent(U, x[k])
             cnf.add_clause([ U, -x[k]])
             cnf.add_clause([-U,  x[k]])
@@ -215,8 +208,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k] & z[k] & ~Z)
             cnf.add_clause([-R,  x[k]])
             cnf.add_clause([-R,  z[k]])
@@ -251,8 +243,7 @@ class pauli2cnf:
         U = cnf.add_var()
         cnf.vars.UVar.append(U)
         if cnf.weighted: 
-            cnf.add_weight(U, str(Decimal(1/2).sqrt()))
-            cnf.add_weight(-U, 1)
+            cnf.add_weight(U, (Decimal(1) / Decimal(2)).sqrt(), 1)
             # Equivalent(U, x[k])
             cnf.add_clause([ U, -x[k]])
             cnf.add_clause([-U,  x[k]])
@@ -277,8 +268,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, Z & x[k] & ~z[k])
             cnf.add_clause([-R,  Z])
             cnf.add_clause([-R,  x[k]])
@@ -323,8 +313,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[c] & z[t] & (z[c] ^ ~x[t]))
             cnf.add_clause([-R,  x[c]])
             cnf.add_clause([-R,  z[t]])
@@ -376,8 +365,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[c] & x[t] & (z[c] ^ z[t]))
             cnf.add_clause([-R,  x[c]])
             cnf.add_clause([-R,  x[t]])
@@ -443,8 +431,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, (x[c] & z[c] & ~Zc) ^ (x[t] & z[t] & ~Zt) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
             cnf.add_clause([-R,  Zc,  x[t],  z[c]])
             cnf.add_clause([-R,  Zc,  z[c],  z[t]])
@@ -525,8 +512,7 @@ class pauli2cnf:
 
         u = cnf.add_var()
         cnf.vars.UVar.append(u)
-        cnf.add_weight( u, Decimal(1/2))
-        cnf.add_weight(-u, 1)
+        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)
         # Equivalent(u, x[c] | x[t])
         cnf.add_clause([ u, -x[c]])
         cnf.add_clause([ u, -x[t]])
@@ -555,8 +541,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, (Zc & x[c] & ~z[c]) ^ (Zt & x[t] & ~z[t]) ^ ((Zc ^ z[c]) & (Zt ^ z[t]) & (~x[c] | ~x[t])))
             cnf.add_clause([-R,  Zc,  Zt,  z[c]])
             cnf.add_clause([-R,  Zc,  x[t],  z[c]])
@@ -637,8 +622,7 @@ class pauli2cnf:
 
         u = cnf.add_var()
         cnf.vars.UVar.append(u)
-        cnf.add_weight( u, Decimal(1/2))
-        cnf.add_weight(-u, 1)
+        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)
         # Equivalent(u, x[c] | x[t])
         cnf.add_clause([ u, -x[c]])
         cnf.add_clause([ u, -x[t]])
@@ -667,8 +651,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, (Xt & Zc & z[c] & z[t] & ~x[t]) | (Xt & x[c] & x[t] & z[c] & ~Zc) | (Xt & Zc & x[c] & ~x[t] & ~z[c]) | (x[t] & z[c] & z[t] & ~Xt & ~Zc) | (Xt & z[t] & ~Zc & ~x[t] & ~z[c]) | (x[c] & z[c] & ~Xt & ~Zc & ~x[t]) | (Zc & x[c] & x[t] & ~Xt & ~z[c] & ~z[t]) | (Zc & x[t] & z[t] & ~Xt & ~x[c] & ~z[c]))
             cnf.add_clause([-R,  x[c],  z[t]])
             cnf.add_clause([-R,  Xt,  Zc,  z[c]])
@@ -740,8 +723,7 @@ class pauli2cnf:
 
         u = cnf.add_var()
         cnf.vars.UVar.append(u)
-        cnf.add_weight( u, Decimal(1/2))
-        cnf.add_weight(-u, 1)
+        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)
         # Equivalent(u, x[c] | z[t])
         cnf.add_clause([ u, -x[c]])
         cnf.add_clause([ u, -z[t]])
@@ -770,8 +752,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, (Xt & Zc & x[c] & x[t] & ~z[c]) | (Zc & x[t] & z[c] & z[t] & ~Xt) | (Xt & Zc & z[t] & ~x[t] & ~z[c]) | (x[c] & x[t] & z[c] & ~Xt & ~Zc) | (Zc & x[c] & ~Xt & ~x[t] & ~z[c]) | (x[t] & z[t] & ~Xt & ~Zc & ~z[c]) | (Xt & x[c] & z[c] & ~Zc & ~x[t] & ~z[t]) | (Xt & z[c] & z[t] & ~Zc & ~x[c] & ~x[t]))
             cnf.add_clause([-R,  x[c],  z[t]])
             cnf.add_clause([-R,  Xt,  Zc,  x[t]])
@@ -843,8 +824,7 @@ class pauli2cnf:
 
         u = cnf.add_var()
         cnf.vars.UVar.append(u)
-        cnf.add_weight( u, Decimal(1/2))
-        cnf.add_weight(-u, 1)
+        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)
         # Equivalent(u, x[c] | z[t])
         cnf.add_clause([ u, -x[c]])
         cnf.add_clause([ u, -z[t]])
@@ -872,8 +852,7 @@ class pauli2cnf:
 
         u1 = cnf.add_var()
         cnf.vars.UVar.append(u1)
-        cnf.add_weight( u1, Decimal(math.cos(theta)))
-        cnf.add_weight(-u1, 1)
+        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)
         # Equivalent(u1, x[k] & ((Z & z[k]) | (~Z & ~z[k])))
         cnf.add_clause([-u1,  x[k]])
         cnf.add_clause([ Z, -u1, -z[k]])
@@ -883,8 +862,7 @@ class pauli2cnf:
 
         u2 = cnf.add_var()
         cnf.vars.UVar.append(u2)
-        cnf.add_weight( u2, Decimal(math.sin(theta)))
-        cnf.add_weight(-u2, 1)
+        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)
         # Equivalent(u2, x[k] & ((Z & ~z[k]) | (z[k] & ~Z)))
         cnf.add_clause([-u2,  x[k]])
         cnf.add_clause([ Z, -u2,  z[k]])
@@ -896,8 +874,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, x[k] & z[k] & ~Z)
             cnf.add_clause([-R,  x[k]])
             cnf.add_clause([-R,  z[k]])
@@ -930,8 +907,7 @@ class pauli2cnf:
 
         u1 = cnf.add_var()
         cnf.vars.UVar.append(u1)
-        cnf.add_weight( u1, Decimal(math.cos(theta)))
-        cnf.add_weight(-u1, 1)
+        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)
         # Equivalent(u1, z[k] & ((X & x[k]) | (~X & ~x[k])))
         cnf.add_clause([-u1,  z[k]])
         cnf.add_clause([ X, -u1, -x[k]])
@@ -941,8 +917,7 @@ class pauli2cnf:
 
         u2 = cnf.add_var()
         cnf.vars.UVar.append(u2)
-        cnf.add_weight( u2, Decimal(math.sin(theta)))
-        cnf.add_weight(-u2, 1)
+        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)
         # Equivalent(u2, z[k] & ((X & ~x[k]) | (x[k] & ~X)))
         cnf.add_clause([-u2,  z[k]])
         cnf.add_clause([ X, -u2,  x[k]])
@@ -954,8 +929,7 @@ class pauli2cnf:
         R = cnf.add_var()
         cnf.vars.RVar.append(R)
         if cnf.weighted: 
-            cnf.add_weight(R, -1)
-            cnf.add_weight(-R, 1)
+            cnf.add_weight(R, -1, 1)
             # Equivalent(R, X & z[k] & ~x[k])
             cnf.add_clause([-R,  X])
             cnf.add_clause([-R,  z[k]])
@@ -1009,8 +983,7 @@ class pauli2cnf:
             wi = cnf.add_var()
           
             if a_r != 0:
-                cnf.add_weight(wr, a_r, comment=pauli_str)
-                cnf.add_weight(-wr, 1)
+                cnf.add_weight(wr, a_r, 1, comment=pauli_str)
                 weights.append(wr)
                 # w => pauli_str
                 [cnf.add_clause([-wr, c]) for c in conditions]
@@ -1020,8 +993,7 @@ class pauli2cnf:
                 cnf.add_clause([comp])
           
             if a_i != 0:
-                cnf.add_weight(wi, a_i, comment=pauli_str)
-                cnf.add_weight(-wi, 1)
+                cnf.add_weight(wi, a_i, 1, comment=pauli_str)
                 weights.append(wi)
                 # w => pauli_str
                 [cnf.add_clause([-wi, c]) for c in conditions]
@@ -1084,8 +1056,7 @@ class pauli2cnf:
             R = cnf.add_var()
             cnf.vars.RVar.append(R)
             if cnf.weighted: 
-                cnf.add_weight(R, -1)
-                cnf.add_weight(-R, 1)
+                cnf.add_weight(R, -1, 1)
                 # Equivalent(R, (lx[k] | lz[k]) & (x[k] | z[k]) & ((lx[k] & rx[k] & ~x[k]) | (lz[k] & rz[k] & ~z[k]) | (x[k] & ~lx[k] & ~rx[k]) | (z[k] & ~lz[k] & ~rz[k])))
                 cnf.add_clause([-R,  lx[k],  lz[k]])
                 cnf.add_clause([-R,  lx[k],  x[k]])
@@ -1191,8 +1162,7 @@ class pauli2cnf:
         # Per-qubit sign R (weighted)
         R = [cnf.add_var() for _ in range(n)]
         for k in range(n):
-            cnf.add_weight(R[k], -1)
-            cnf.add_weight(-R[k], 1)
+            cnf.add_weight(R[k], -1, 1)
 
         # Per-qubit U (normalization)
         if ENABLE_T and ENABLE_CSQRTX:
@@ -1202,13 +1172,11 @@ class pauli2cnf:
             if ENABLE_CSQRTX:
                 U = [cnf.add_var() for _ in range(n)]
                 for k in range(n):
-                    cnf.add_weight(U[k], str(Decimal(1) / Decimal(2)))
-                    cnf.add_weight(-U[k], 1)
+                    cnf.add_weight(U[k], Decimal(1) / Decimal(2), 1)
             if ENABLE_T:
                 U = [cnf.add_var() for _ in range(n)]
                 for k in range(n):
-                    cnf.add_weight(U[k], str((Decimal(1) / Decimal(2)).sqrt()))
-                    cnf.add_weight(-U[k], 1)
+                    cnf.add_weight(U[k], (Decimal(1) / Decimal(2)).sqrt(), 1)
 
         # Gate selectors (created only when allowed this layer)
         idg = [cnf.add_var(syn_gate_pick=True, Name='id', bits=[k]) for k in range(n)]

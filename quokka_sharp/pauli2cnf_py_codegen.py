@@ -56,8 +56,7 @@ def add_sign(func, prefix = ""):
     print(prefix+"        R = cnf.add_var()")
     print(prefix+"        cnf.vars.RVar.append(R)")
     print(prefix+"        if cnf.weighted: ")
-    print(prefix+"            cnf.add_weight(R, -1)")
-    print(prefix+"            cnf.add_weight(-R, 1)")
+    print(prefix+"            cnf.add_weight(R, -1, 1)")
     to_py(	                  Equivalent(R, func), prefix+"    ")
     print(prefix+"        else: ")
     print(prefix+"            r = cnf.vars.r")
@@ -69,8 +68,7 @@ def add_sqrt_half(func, prefix = ""):
     print(prefix+"        U = cnf.add_var()")
     print(prefix+"        cnf.vars.UVar.append(U)")
     print(prefix+"        if cnf.weighted: ")
-    print(prefix+"            cnf.add_weight(U, str(Decimal(1/2).sqrt()))")
-    print(prefix+"            cnf.add_weight(-U, 1)")
+    print(prefix+"            cnf.add_weight(U, (Decimal(1) / Decimal(2)).sqrt(), 1)")
     to_py(	                  Equivalent(U, func), prefix+"    ")
     print(prefix+"        else: ")
     print(prefix+"            cnf.power_two_normalisation += 0.5 ")
@@ -268,8 +266,7 @@ def main():
     print()
     print("        u = cnf.add_var()")
     print("        cnf.vars.UVar.append(u)")
-    print("        cnf.add_weight( u, Decimal(1/2))")
-    print("        cnf.add_weight(-u, 1)")
+    print("        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)")
     to_py(	       Equivalent(u, x[c] | x[t]))
     print()
     print("        cnf.vars.z[c] = Zc")
@@ -293,8 +290,7 @@ def main():
     print()
     print("        u = cnf.add_var()")
     print("        cnf.vars.UVar.append(u)")
-    print("        cnf.add_weight( u, Decimal(1/2))")
-    print("        cnf.add_weight(-u, 1)")
+    print("        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)")
     to_py(	       Equivalent(u, x[c] | x[t]))
     print()
     print("        cnf.vars.z[c] = Zc")
@@ -328,8 +324,7 @@ def main():
     print()
     print("        u = cnf.add_var()")
     print("        cnf.vars.UVar.append(u)")
-    print("        cnf.add_weight( u, Decimal(1/2))")
-    print("        cnf.add_weight(-u, 1)")
+    print("        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)")
     to_py(	       Equivalent(u, x[c] | z[t]))
     print()
     print("        cnf.vars.z[c] = Zc")
@@ -362,8 +357,7 @@ def main():
     print()
     print("        u = cnf.add_var()")
     print("        cnf.vars.UVar.append(u)")
-    print("        cnf.add_weight( u, Decimal(1/2))")
-    print("        cnf.add_weight(-u, 1)")
+    print("        cnf.add_weight(u, Decimal(1) / Decimal(2), 1)")
     to_py(	       Equivalent(u, x[c] | z[t]))
     print()
     print("        cnf.vars.z[c] = Zc")
@@ -390,14 +384,12 @@ def main():
     print()
     print("        u1 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u1)")
-    print("        cnf.add_weight( u1, Decimal(math.cos(theta)))")
-    print("        cnf.add_weight(-u1, 1)")
+    print("        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)")
     to_py(	       Equivalent(u1, x[k] & (((z[k] & Z)) | (~z[k] & ~Z))))
     print()   
     print("        u2 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u2)")
-    print("        cnf.add_weight( u2, Decimal(math.sin(theta)))")
-    print("        cnf.add_weight(-u2, 1)")
+    print("        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)")
     to_py(	       Equivalent(u2, x[k] & (((~z[k] & Z)) | (z[k] & ~Z))))
     print()
     add_sign(x[k] & z[k] & ~Z)
@@ -416,14 +408,12 @@ def main():
     print()   
     print("        u1 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u1)")
-    print("        cnf.add_weight( u1, Decimal(math.cos(theta)))")
-    print("        cnf.add_weight(-u1, 1)")
+    print("        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)")
     to_py(	       Equivalent(u1, z[k] & ((x[k] & X) | (~x[k] & ~X))))
     print()   
     print("        u2 = cnf.add_var()")
     print("        cnf.vars.UVar.append(u2)")
-    print("        cnf.add_weight( u2, Decimal(math.sin(theta)))")
-    print("        cnf.add_weight(-u2, 1)")
+    print("        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)")
     to_py(	       Equivalent(u2, z[k] & ((~x[k] & X) | (x[k] & ~X))))
     print()
     add_sign(z[k] & ~x[k] & X)
@@ -465,8 +455,7 @@ def main():
             wi = cnf.add_var()
           
             if a_r != 0:
-                cnf.add_weight(wr, a_r, comment=pauli_str)
-                cnf.add_weight(-wr, 1)
+                cnf.add_weight(wr, a_r, 1, comment=pauli_str)
                 weights.append(wr)
                 # w => pauli_str
                 [cnf.add_clause([-wr, c]) for c in conditions]
@@ -476,8 +465,7 @@ def main():
                 cnf.add_clause([comp])
           
             if a_i != 0:
-                cnf.add_weight(wi, a_i, comment=pauli_str)
-                cnf.add_weight(-wi, 1)
+                cnf.add_weight(wi, a_i, 1, comment=pauli_str)
                 weights.append(wi)
                 # w => pauli_str
                 [cnf.add_clause([-wi, c]) for c in conditions]
@@ -701,8 +689,7 @@ def main():
         # Per-qubit sign R (weighted)
         R = [cnf.add_var() for _ in range(n)]
         for k in range(n):
-            cnf.add_weight(R[k], -1)
-            cnf.add_weight(-R[k], 1)
+            cnf.add_weight(R[k], -1, 1)
 
         # Per-qubit U (normalization)
         if ENABLE_T and ENABLE_CSQRTX:
@@ -712,13 +699,11 @@ def main():
             if ENABLE_CSQRTX:
                 U = [cnf.add_var() for _ in range(n)]
                 for k in range(n):
-                    cnf.add_weight(U[k], str(Decimal(1) / Decimal(2)))
-                    cnf.add_weight(-U[k], 1)
+                    cnf.add_weight(U[k], Decimal(1) / Decimal(2), 1)
             if ENABLE_T:
                 U = [cnf.add_var() for _ in range(n)]
                 for k in range(n):
-                    cnf.add_weight(U[k], str((Decimal(1) / Decimal(2)).sqrt()))
-                    cnf.add_weight(-U[k], 1)
+                    cnf.add_weight(U[k], (Decimal(1) / Decimal(2)).sqrt(), 1)
 
         # Gate selectors (created only when allowed this layer)
         idg = [cnf.add_var(syn_gate_pick=True, Name='id', bits=[k]) for k in range(n)]

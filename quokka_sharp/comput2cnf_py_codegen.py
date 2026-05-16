@@ -55,8 +55,7 @@ def add_sign(func, prefix = "", comment=""):
     print(prefix+"        R = cnf.add_var()")
     print(prefix+"        cnf.vars.RVar.append(R)")    
     print(prefix+"        if cnf.weighted: ")
-    print(prefix+"            cnf.add_weight(R, -1)")
-    print(prefix+"            cnf.add_weight(-R, 1)")
+    print(prefix+"            cnf.add_weight(R, -1, 1)")
     to_py(	                  Equivalent(R, func), prefix+"    ", comment="- "+comment)
     print(prefix+"        else: ")
     print(prefix+"            r = cnf.vars.r")
@@ -68,8 +67,7 @@ def add_i(func, prefix = "", comment=""):
     print(prefix+"        I = cnf.add_var()")
     print(prefix+"        cnf.vars.IVar.append(I)")    
     print(prefix+"        if cnf.weighted: ")
-    print(prefix+"            cnf.add_weight(I, 0, 1)")
-    print(prefix+"            cnf.add_weight(-I, 1, 0)")
+    print(prefix+"            cnf.add_weight(I, complex(0, 1), complex(1, 0))")
     to_py(	                  Equivalent(I, func), prefix+"    ", comment="i "+comment)
     print(prefix+"        else: ")
     print(prefix+"            i = cnf.vars.i")
@@ -81,8 +79,7 @@ def add_sqrt_half(func, prefix = "", comment=""):
     print(prefix+"        U = cnf.add_var()")
     print(prefix+"        cnf.vars.UVar.append(U)")    
     print(prefix+"        if cnf.weighted: ")
-    print(prefix+"            cnf.add_weight(U, str(Decimal(1/2).sqrt()))")
-    print(prefix+"            cnf.add_weight(-U, 1)")
+    print(prefix+"            cnf.add_weight(U, (Decimal(1) / Decimal(2)).sqrt(), 1)")
     to_py(	                  Equivalent(U, func), prefix+"    ", comment="sqrt "+comment)
     print(prefix+"        else: ")
     print(prefix+"            cnf.power_two_normalisation += 0.5 ")
@@ -159,8 +156,7 @@ def main():
     print()
     print("        w = cnf.add_var()")
     print("        cnf.vars.UVar.append(w)")
-    print("        cnf.add_weight(w, Decimal(math.cos(theta)), Decimal(math.sin(theta)))")
-    print("        cnf.add_weight(-w, 1, 0)")
+    print("        cnf.add_weight(w, complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), complex(1, 0))")
     to_py(	       Equivalent(w, x[k]), comment="w (RZ)")
     print()
 
@@ -177,8 +173,7 @@ def main():
     print("        if cnf.weighted: ")  # less variables 
     print("            w = cnf.add_var()")
     print("            cnf.vars.UVar.append(w)")
-    print("            cnf.add_weight(w, 0, -1)")
-    print("            cnf.add_weight(-w, 1, 0)")
+    print("            cnf.add_weight(w, complex(0, -1), complex(1, 0))")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Sdg)")
     print("        else:")
     add_i(x[k], prefix="    ", comment="(Sdg)")
@@ -192,8 +187,7 @@ def main():
     print("        if cnf.weighted: ")    
     print("            w = cnf.add_var()")
     print("            cnf.vars.UVar.append(w)")
-    print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt()))")
-    print("            cnf.add_weight(-w, 1, 0)")
+    print("            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), complex(1, 0))")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (T)")
     print("        else:")
     print("            i = cnf.vars.i")
@@ -214,8 +208,7 @@ def main():
     print("        if cnf.weighted: ")    
     print("            w = cnf.add_var()")
     print("            cnf.vars.UVar.append(w)")
-    print("            cnf.add_weight(w, str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt()))")
-    print("            cnf.add_weight(-w, 1, 0)")
+    print("            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), complex(1, 0))")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Tdg)")
     print("        else:")
     print("            i = cnf.vars.i")
@@ -268,8 +261,7 @@ def main():
     print()
     print("        cnf.vars.x[k] = X")
     print()
-    print("        cnf.add_weight(w, Decimal(math.cos(theta/2)), 0)")
-    print("        cnf.add_weight(-w, 0, -Decimal(math.sin(theta/2)))")
+    print("        cnf.add_weight(w, complex(Decimal(math.cos(theta/2)), Decimal(math.sin(theta/2))), complex(0, -Decimal(math.sin(theta/2))))")
     print()
 
     #CZ
@@ -371,14 +363,10 @@ def main():
         U = [cnf.add_var() for _ in range(n)]
         Wp = [cnf.add_var() for _ in range(n)]
         Wn = [cnf.add_var() for _ in range(n)]
-        [cnf.add_weight(R[k], -1) for k in range(n)]
-        [cnf.add_weight(-R[k], 1) for k in range(n)]
-        [cnf.add_weight(U[k], str(Decimal(1/2).sqrt())) for k in range(n)]
-        [cnf.add_weight(-U[k], 1) for k in range(n)]
-        [cnf.add_weight(Wp[k], str(Decimal(1/2).sqrt()), str(Decimal(1/2).sqrt())) for k in range(n)]
-        [cnf.add_weight(-Wp[k], 1, 0) for k in range(n)]
-        [cnf.add_weight(Wn[k], str(Decimal(1/2).sqrt()), str(-Decimal(1/2).sqrt())) for k in range(n)]
-        [cnf.add_weight(-Wn[k], 1, 0) for k in range(n)]
+        [cnf.add_weight(R[k], -1, 1) for k in range(n)]
+        [cnf.add_weight(U[k], (Decimal(1) / Decimal(2)).sqrt(), 1) for k in range(n)]
+        [cnf.add_weight(Wp[k], complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), complex(1, 0)) for k in range(n)]
+        [cnf.add_weight(Wn[k], complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), complex(1, 0)) for k in range(n)]
         
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
         hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
