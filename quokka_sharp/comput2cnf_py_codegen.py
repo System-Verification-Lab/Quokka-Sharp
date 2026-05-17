@@ -67,7 +67,7 @@ def add_i(func, prefix = "", comment=""):
     print(prefix+"        I = cnf.add_var()")
     print(prefix+"        cnf.vars.IVar.append(I)")    
     print(prefix+"        if cnf.weighted: ")
-    print(prefix+"            cnf.add_weight(I, complex(0, 1), complex(1, 0))")
+    print(prefix+"            cnf.add_weight(I, 1j, 1)")
     to_py(	                  Equivalent(I, func), prefix+"    ", comment="i "+comment)
     print(prefix+"        else: ")
     print(prefix+"            i = cnf.vars.i")
@@ -156,7 +156,7 @@ def main():
     print()
     print("        w = cnf.add_var()")
     print("        cnf.vars.UVar.append(w)")
-    print("        cnf.add_weight(w, complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), complex(1, 0))")
+    print("        cnf.add_weight(w, complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), 1)")
     to_py(	       Equivalent(w, x[k]), comment="w (RZ)")
     print()
 
@@ -173,7 +173,7 @@ def main():
     print("        if cnf.weighted: ")  # less variables 
     print("            w = cnf.add_var()")
     print("            cnf.vars.UVar.append(w)")
-    print("            cnf.add_weight(w, complex(0, -1), complex(1, 0))")
+    print("            cnf.add_weight(w, -1j, 1)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Sdg)")
     print("        else:")
     add_i(x[k], prefix="    ", comment="(Sdg)")
@@ -184,10 +184,10 @@ def main():
     #T
     print("    def T2CNF(cnf, k):")
     print("        x = cnf.vars.x")
-    print("        if cnf.weighted: ")    
+    print("        if cnf.weighted: ")
     print("            w = cnf.add_var()")
     print("            cnf.vars.UVar.append(w)")
-    print("            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), complex(1, 0))")
+    print("            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), 1)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (T)")
     print("        else:")
     print("            i = cnf.vars.i")
@@ -208,7 +208,7 @@ def main():
     print("        if cnf.weighted: ")    
     print("            w = cnf.add_var()")
     print("            cnf.vars.UVar.append(w)")
-    print("            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), complex(1, 0))")
+    print("            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), 1)")
     to_py(	           Equivalent(w, x[k]), prefix="    ", comment="w (Tdg)")
     print("        else:")
     print("            i = cnf.vars.i")
@@ -373,8 +373,8 @@ def main():
         Wn = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1, 1) for k in range(n)]
         [cnf.add_weight(U[k], (Decimal(1) / Decimal(2)).sqrt(), 1) for k in range(n)]
-        [cnf.add_weight(Wp[k], complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), complex(1, 0)) for k in range(n)]
-        [cnf.add_weight(Wn[k], complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), complex(1, 0)) for k in range(n)]
+        [cnf.add_weight(Wp[k], complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), 1) for k in range(n)]
+        [cnf.add_weight(Wn[k], complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), 1) for k in range(n)]
         
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
         hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]

@@ -113,7 +113,7 @@ class comput2cnf:
 
         w = cnf.add_var()
         cnf.vars.UVar.append(w)
-        cnf.add_weight(w, complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), complex(1, 0))
+        cnf.add_weight(w, complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), 1)
         # Equivalent(w, x[k])
         cnf.add_clause([ w, -x[k]], comment="w (RZ)")
         cnf.add_clause([-w,  x[k]], comment="w (RZ)")
@@ -125,7 +125,7 @@ class comput2cnf:
         I = cnf.add_var()
         cnf.vars.IVar.append(I)
         if cnf.weighted: 
-            cnf.add_weight(I, complex(0, 1), complex(1, 0))
+            cnf.add_weight(I, 1j, 1)
             # Equivalent(I, x[k])
             cnf.add_clause([ I, -x[k]], comment="i (S)")
             cnf.add_clause([-I,  x[k]], comment="i (S)")
@@ -162,7 +162,7 @@ class comput2cnf:
         if cnf.weighted: 
             w = cnf.add_var()
             cnf.vars.UVar.append(w)
-            cnf.add_weight(w, complex(0, -1), complex(1, 0))
+            cnf.add_weight(w, -1j, 1)
             # Equivalent(w, x[k])
             cnf.add_clause([ w, -x[k]], comment="w (Sdg)")
             cnf.add_clause([-w,  x[k]], comment="w (Sdg)")
@@ -171,7 +171,7 @@ class comput2cnf:
             I = cnf.add_var()
             cnf.vars.IVar.append(I)
             if cnf.weighted: 
-                cnf.add_weight(I, complex(0, 1), complex(1, 0))
+                cnf.add_weight(I, 1j, 1)
                 # Equivalent(I, x[k])
                 cnf.add_clause([ I, -x[k]], comment="i (Sdg)")
                 cnf.add_clause([-I,  x[k]], comment="i (Sdg)")
@@ -225,7 +225,7 @@ class comput2cnf:
         if cnf.weighted: 
             w = cnf.add_var()
             cnf.vars.UVar.append(w)
-            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), complex(1, 0))
+            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), 1)
             # Equivalent(w, x[k])
             cnf.add_clause([ w, -x[k]], comment="w (T)")
             cnf.add_clause([-w,  x[k]], comment="w (T)")
@@ -289,7 +289,7 @@ class comput2cnf:
         if cnf.weighted: 
             w = cnf.add_var()
             cnf.vars.UVar.append(w)
-            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), complex(1, 0))
+            cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), 1)
             # Equivalent(w, x[k])
             cnf.add_clause([ w, -x[k]], comment="w (Tdg)")
             cnf.add_clause([-w,  x[k]], comment="w (Tdg)")
@@ -389,7 +389,7 @@ class comput2cnf:
         I = cnf.add_var()
         cnf.vars.IVar.append(I)
         if cnf.weighted: 
-            cnf.add_weight(I, complex(0, 1), complex(1, 0))
+            cnf.add_weight(I, 1j, 1)
             # I
             cnf.add_clause([ I], comment="i ")
         else: 
@@ -493,8 +493,8 @@ class comput2cnf:
         Wn = [cnf.add_var() for _ in range(n)]
         [cnf.add_weight(R[k], -1, 1) for k in range(n)]
         [cnf.add_weight(U[k], (Decimal(1) / Decimal(2)).sqrt(), 1) for k in range(n)]
-        [cnf.add_weight(Wp[k], complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), complex(1, 0)) for k in range(n)]
-        [cnf.add_weight(Wn[k], complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), complex(1, 0)) for k in range(n)]
+        [cnf.add_weight(Wp[k], complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), 1) for k in range(n)]
+        [cnf.add_weight(Wn[k], complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), 1) for k in range(n)]
         
         idg = [cnf.add_var(syn_gate_pick = True, Name = 'id', bits = [k]) for k in range(n)]
         hg = [cnf.add_var(syn_gate_pick = True, Name = 'h', bits = [k]) for k in range(n)]
