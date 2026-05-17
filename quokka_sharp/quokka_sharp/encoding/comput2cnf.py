@@ -5,6 +5,8 @@ from decimal import Decimal, getcontext
 getcontext().prec = 32
 from .pauli2cnf import pauli2cnf
 
+frac1sqrt2 = (Decimal(1) / Decimal(2)).sqrt()
+
 class comput2cnf:
     """
     This class contains the functions to convert a quantum circuit to CNF clauses in the Computationl basis.
@@ -18,12 +20,7 @@ class comput2cnf:
 
         X = cnf.add_var()
         cnf.vars.XVar.append(X)
-
-        U = cnf.add_var()
-        cnf.vars.UVar.append(U)
-        cnf.add_weight(U, (Decimal(1) / Decimal(2)).sqrt(), 1)
-        # U
-        cnf.add_clause([ U], comment="sqrt ")
+        cnf.add_weight(x[k], frac1sqrt2, frac1sqrt2)
 
         # adding sign if X & x[k]
         R = cnf.add_var()
@@ -66,62 +63,27 @@ class comput2cnf:
 
     def Z2CNF(cnf, k):
         x = cnf.vars.x
-
-        # adding sign if x[k]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[k])
-        cnf.add_clause([ R, -x[k]], comment="- ")
-        cnf.add_clause([-R,  x[k]], comment="- ")
+        cnf.add_weight(x[k], -1, 1)
 
     def RZ2CNF(cnf, k, theta):
         x = cnf.vars.x
-
-        w = cnf.add_var()
-        cnf.vars.UVar.append(w)
-        cnf.add_weight(w, complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), 1)
-        # Equivalent(w, x[k])
-        cnf.add_clause([ w, -x[k]], comment="w (RZ)")
-        cnf.add_clause([-w,  x[k]], comment="w (RZ)")
+        cnf.add_weight(x[k], complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), 1)
 
     def S2CNF(cnf, k):
         x = cnf.vars.x
-
-        # adding i if x[k]
-        I = cnf.add_var()
-        cnf.vars.IVar.append(I)
-        cnf.add_weight(I, 1j, 1)
-        # Equivalent(I, x[k])
-        cnf.add_clause([ I, -x[k]], comment="i (S)")
-        cnf.add_clause([-I,  x[k]], comment="i (S)")
+        cnf.add_weight(x[k], 1j, 1)
 
     def Sdg2CNF(cnf, k):
         x = cnf.vars.x
-        w = cnf.add_var()
-        cnf.vars.UVar.append(w)
-        cnf.add_weight(w, -1j, 1)
-        # Equivalent(w, x[k])
-        cnf.add_clause([ w, -x[k]], comment="w (Sdg)")
-        cnf.add_clause([-w,  x[k]], comment="w (Sdg)")
+        cnf.add_weight(x[k], -1j, 1)
 
     def T2CNF(cnf, k):
         x = cnf.vars.x
-        w = cnf.add_var()
-        cnf.vars.UVar.append(w)
-        cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), (Decimal(1) / Decimal(2)).sqrt()), 1)
-        # Equivalent(w, x[k])
-        cnf.add_clause([ w, -x[k]], comment="w (T)")
-        cnf.add_clause([-w,  x[k]], comment="w (T)")
+        cnf.add_weight(x[k], complex(frac1sqrt2,frac1sqrt2), 1)
 
     def Tdg2CNF(cnf, k):
         x = cnf.vars.x
-        w = cnf.add_var()
-        cnf.vars.UVar.append(w)
-        cnf.add_weight(w, complex((Decimal(1) / Decimal(2)).sqrt(), -(Decimal(1) / Decimal(2)).sqrt()), 1)
-        # Equivalent(w, x[k])
-        cnf.add_clause([ w, -x[k]], comment="w (Tdg)")
-        cnf.add_clause([-w,  x[k]], comment="w (Tdg)")
+        cnf.add_weight(x[k], complex(frac1sqrt2,-frac1sqrt2), 1)
 
     def X2CNF(cnf, k):
         x = cnf.vars.x
@@ -142,21 +104,7 @@ class comput2cnf:
         # Equivalent(X, ~x[k])
         cnf.add_clause([ X,  x[k]], comment="Y gate")
         cnf.add_clause([-X, -x[k]], comment="Y gate")
-
-        # adding sign if x[k]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[k])
-        cnf.add_clause([ R, -x[k]], comment="- ")
-        cnf.add_clause([-R,  x[k]], comment="- ")
-
-        # adding i if True
-        I = cnf.add_var()
-        cnf.vars.IVar.append(I)
-        cnf.add_weight(I, 1j, 1)
-        # I
-        cnf.add_clause([ I], comment="i ")
+        cnf.add_weight(x[k], -1j, 1j)
 
         cnf.vars.x[k] = X
 
@@ -172,28 +120,12 @@ class comput2cnf:
         cnf.add_clause([ X, -w, -x[k]])
         cnf.add_clause([-X,  w, -x[k]])
         cnf.add_clause([-X, -w,  x[k]])
+        cnf.add_weight(w, complex(Decimal(math.cos(theta/2)), 0), complex(0, -Decimal(math.sin(theta/2))))
 
         cnf.vars.x[k] = X
 
-        cnf.add_weight(w, complex(Decimal(math.cos(theta/2)), Decimal(math.sin(theta/2))), complex(0, -Decimal(math.sin(theta/2))))
-
     def CZ2CNF(cnf, c, t):
         x = cnf.vars.x
-
-        Xc = cnf.add_var()
-        cnf.vars.XVar.append(Xc)
-        # Equivalent(Xc, x[c])
-        cnf.add_clause([ Xc, -x[c]])
-        cnf.add_clause([-Xc,  x[c]])
-
-        Xt = cnf.add_var()
-        cnf.vars.XVar.append(Xt)
-        # Equivalent(Xt, x[t])
-        cnf.add_clause([ Xt, -x[t]])
-        cnf.add_clause([-Xt,  x[t]])
-
-        cnf.vars.x[c] = Xc
-        cnf.vars.x[t] = Xt
 
         # adding sign if x[c] & x[t]
         R = cnf.add_var()
