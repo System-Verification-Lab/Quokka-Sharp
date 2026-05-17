@@ -20,16 +20,15 @@ class comput2cnf:
 
         X = cnf.add_var()
         cnf.vars.XVar.append(X)
-        cnf.add_weight(x[k], frac1sqrt2, frac1sqrt2)
 
-        # adding sign if X & x[k]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, X & x[k])
-        cnf.add_clause([-R,  X], comment="- ")
-        cnf.add_clause([-R,  x[k]], comment="- ")
-        cnf.add_clause([ R, -X, -x[k]], comment="- ")
+       # adding weights (-0.7071067811865475244008443621, 0.7071067811865475244008443621) if X & x[k]
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, -0.7071067811865475244008443621, 0.7071067811865475244008443621)
+        # Equivalent(D, X & x[k])
+        cnf.add_clause([-D,  X], comment="i ")
+        cnf.add_clause([-D,  x[k]], comment="i ")
+        cnf.add_clause([ D, -X, -x[k]], comment="i ")
 
         cnf.vars.x[k] = X
 
@@ -92,14 +91,14 @@ class comput2cnf:
     def CZ2CNF(cnf, c, t):
         x = cnf.vars.x
 
-        # adding sign if x[c] & x[t]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[c] & x[t])
-        cnf.add_clause([-R,  x[c]], comment="- ")
-        cnf.add_clause([-R,  x[t]], comment="- ")
-        cnf.add_clause([ R, -x[c], -x[t]], comment="- ")
+       # adding weights (-1, 1) if x[c] & x[t]
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, -1, 1)
+        # Equivalent(D, x[c] & x[t])
+        cnf.add_clause([-D,  x[c]], comment="i CZ gate")
+        cnf.add_clause([-D,  x[t]], comment="i CZ gate")
+        cnf.add_clause([ D, -x[c], -x[t]], comment="i CZ gate")
 
     def CY2CNF(cnf, c, t):
         comput2cnf.Sdg2CNF(cnf, t)
@@ -113,26 +112,26 @@ class comput2cnf:
     def ISWAP2CNF(cnf, c, t):
         x = cnf.vars.x
         comput2cnf.SWAP2CNF(cnf, c, t)
-        # adding i if x[c] ^ x[t]
-        I = cnf.add_var()
-        cnf.vars.IVar.append(I)
-        cnf.add_weight(I, 1j, 1)
-        # Equivalent(I, x[c] ^ x[t])
-        cnf.add_clause([ I,  x[c], -x[t]], comment="i ")
-        cnf.add_clause([ I, -x[c],  x[t]], comment="i ")
-        cnf.add_clause([-I,  x[c],  x[t]], comment="i ")
-        cnf.add_clause([-I, -x[c], -x[t]], comment="i ")
+       # adding weights (1j, 1) if x[c] ^ x[t]
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, 1j, 1)
+        # Equivalent(D, x[c] ^ x[t])
+        cnf.add_clause([ D,  x[c], -x[t]], comment="i ISWAP gate")
+        cnf.add_clause([ D, -x[c],  x[t]], comment="i ISWAP gate")
+        cnf.add_clause([-D,  x[c],  x[t]], comment="i ISWAP gate")
+        cnf.add_clause([-D, -x[c], -x[t]], comment="i ISWAP gate")
 
     def CS2CNF(cnf, c, t):
         x = cnf.vars.x
-        # adding i if x[c] & x[t]
-        I = cnf.add_var()
-        cnf.vars.IVar.append(I)
-        cnf.add_weight(I, 1j, 1)
-        # Equivalent(I, x[c] & x[t])
-        cnf.add_clause([-I,  x[c]], comment="i ")
-        cnf.add_clause([-I,  x[t]], comment="i ")
-        cnf.add_clause([ I, -x[c], -x[t]], comment="i ")
+       # adding weights (1j, 1) if x[c] & x[t]
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, 1j, 1)
+        # Equivalent(D, x[c] & x[t])
+        cnf.add_clause([-D,  x[c]], comment="i CS gate")
+        cnf.add_clause([-D,  x[t]], comment="i CS gate")
+        cnf.add_clause([ D, -x[c], -x[t]], comment="i CS gate")
     def CSdg2CNF(cnf, c, t):
         x = cnf.vars.x
        # adding weights ((-0-1j), 1) if x[c] & x[t]
