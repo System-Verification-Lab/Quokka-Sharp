@@ -477,7 +477,11 @@ class comput2cnf:
 
     def SWAP2CNF(cnf, c, t):
         x = cnf.vars.x
+
         x[c], x[t] = x[t], x[c]
+
+
+
 
     def SynLayer2CNF(cnf):
         n = cnf.n

@@ -282,6 +282,14 @@ def main():
     add_sign(x[c] & x[t])
     print()
 
+    #SWAP
+    print("    def SWAP2CNF(cnf, c, t):")
+    print("        x = cnf.vars.x")
+    print()
+    print("        x[c], x[t] = x[t], x[c]")
+    print()
+
+
  # Synthesis
 
     # dynamic single bit gate:
