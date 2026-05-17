@@ -33,58 +33,6 @@ class comput2cnf:
 
         cnf.vars.x[k] = X
 
-    def CNOT2CNF(cnf, c, t):
-        x = cnf.vars.x
-
-        Xt = cnf.add_var()
-        cnf.vars.XVar.append(Xt)
-        # Equivalent(Xt, x[c] ^ x[t])
-        cnf.add_clause([ Xt,  x[c], -x[t]])
-        cnf.add_clause([ Xt, -x[c],  x[t]])
-        cnf.add_clause([-Xt,  x[c],  x[t]])
-        cnf.add_clause([-Xt, -x[c], -x[t]])
-
-        cnf.vars.x[t] = Xt
-
-    def CCX2CNF(cnf, k, c, t):
-        x = cnf.vars.x
-
-        Xt = cnf.add_var()
-        cnf.vars.XVar.append(Xt)
-        # Equivalent(Xt, x[t] ^ (x[c] & x[k]))
-        cnf.add_clause([ Xt,  x[c], -x[t]])
-        cnf.add_clause([ Xt,  x[k], -x[t]])
-        cnf.add_clause([-Xt,  x[c],  x[t]])
-        cnf.add_clause([-Xt,  x[k],  x[t]])
-        cnf.add_clause([ Xt, -x[c], -x[k],  x[t]])
-        cnf.add_clause([-Xt, -x[c], -x[k], -x[t]])
-
-        cnf.vars.x[t] = Xt
-
-    def Z2CNF(cnf, k):
-        x = cnf.vars.x
-        cnf.add_weight(x[k], -1, 1)
-
-    def RZ2CNF(cnf, k, theta):
-        x = cnf.vars.x
-        cnf.add_weight(x[k], complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), 1)
-
-    def S2CNF(cnf, k):
-        x = cnf.vars.x
-        cnf.add_weight(x[k], 1j, 1)
-
-    def Sdg2CNF(cnf, k):
-        x = cnf.vars.x
-        cnf.add_weight(x[k], -1j, 1)
-
-    def T2CNF(cnf, k):
-        x = cnf.vars.x
-        cnf.add_weight(x[k], complex(frac1sqrt2,frac1sqrt2), 1)
-
-    def Tdg2CNF(cnf, k):
-        x = cnf.vars.x
-        cnf.add_weight(x[k], complex(frac1sqrt2,-frac1sqrt2), 1)
-
     def X2CNF(cnf, k):
         x = cnf.vars.x
 
@@ -108,6 +56,172 @@ class comput2cnf:
 
         cnf.vars.x[k] = X
 
+    def Z2CNF(cnf, k):
+        x = cnf.vars.x
+        cnf.add_weight(x[k], -1, 1)
+
+    def S2CNF(cnf, k):
+        x = cnf.vars.x
+        cnf.add_weight(x[k], 1j, 1)
+
+    def Sdg2CNF(cnf, k):
+        x = cnf.vars.x
+        cnf.add_weight(x[k], -1j, 1)
+
+    def T2CNF(cnf, k):
+        x = cnf.vars.x
+        cnf.add_weight(x[k], complex(frac1sqrt2,frac1sqrt2), 1)
+
+    def Tdg2CNF(cnf, k):
+        x = cnf.vars.x
+        cnf.add_weight(x[k], complex(frac1sqrt2,-frac1sqrt2), 1)
+
+    def CNOT2CNF(cnf, c, t):
+        x = cnf.vars.x
+
+        Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
+        # Equivalent(Xt, x[c] ^ x[t])
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt, -x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[t]])
+
+        cnf.vars.x[t] = Xt
+
+    def CZ2CNF(cnf, c, t):
+        x = cnf.vars.x
+
+        # adding sign if x[c] & x[t]
+        R = cnf.add_var()
+        cnf.vars.RVar.append(R)
+        cnf.add_weight(R, -1, 1)
+        # Equivalent(R, x[c] & x[t])
+        cnf.add_clause([-R,  x[c]], comment="- ")
+        cnf.add_clause([-R,  x[t]], comment="- ")
+        cnf.add_clause([ R, -x[c], -x[t]], comment="- ")
+
+    def CY2CNF(cnf, c, t):
+        comput2cnf.Sdg2CNF(cnf, t)
+        comput2cnf.CNOT2CNF(cnf, c, t)
+        comput2cnf.S2CNF(cnf, t)
+
+    def SWAP2CNF(cnf, c, t):
+        x = cnf.vars.x
+        x[c], x[t] = x[t], x[c]
+
+    def ISWAP2CNF(cnf, c, t):
+        x = cnf.vars.x
+        comput2cnf.SWAP2CNF(cnf, c, t)
+        # adding i if x[c] ^ x[t]
+        I = cnf.add_var()
+        cnf.vars.IVar.append(I)
+        cnf.add_weight(I, 1j, 1)
+        # Equivalent(I, x[c] ^ x[t])
+        cnf.add_clause([ I,  x[c], -x[t]], comment="i ")
+        cnf.add_clause([ I, -x[c],  x[t]], comment="i ")
+        cnf.add_clause([-I,  x[c],  x[t]], comment="i ")
+        cnf.add_clause([-I, -x[c], -x[t]], comment="i ")
+
+    def CS2CNF(cnf, c, t):
+        x = cnf.vars.x
+        # adding i if x[c] & x[t]
+        I = cnf.add_var()
+        cnf.vars.IVar.append(I)
+        cnf.add_weight(I, 1j, 1)
+        # Equivalent(I, x[c] & x[t])
+        cnf.add_clause([-I,  x[c]], comment="i ")
+        cnf.add_clause([-I,  x[t]], comment="i ")
+        cnf.add_clause([ I, -x[c], -x[t]], comment="i ")
+    def CSdg2CNF(cnf, c, t):
+        x = cnf.vars.x
+       # adding weights ((-0-1j), 1) if x[c] & x[t]
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, (-0-1j), 1)
+        # Equivalent(D, x[c] & x[t])
+        cnf.add_clause([-D,  x[c]], comment="i ")
+        cnf.add_clause([-D,  x[t]], comment="i ")
+        cnf.add_clause([ D, -x[c], -x[t]], comment="i ")
+    def CSqrtX2CNF(cnf, c, t):
+        x = cnf.vars.x
+
+        Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
+        # Equivalent(Xt, x[c] ^ x[t])
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt, -x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[t]])
+       # adding weights ((0.5-0.5j), 1) if x[c] & (Xt ^ x[t])
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, (0.5-0.5j), 1)
+        # Equivalent(D, x[c] & (Xt ^ x[t]))
+        cnf.add_clause([-D,  x[c]], comment="i ")
+        cnf.add_clause([-D,  Xt,  x[t]], comment="i ")
+        cnf.add_clause([-D, -Xt, -x[t]], comment="i ")
+        cnf.add_clause([ D,  Xt, -x[c], -x[t]], comment="i ")
+        cnf.add_clause([ D, -Xt, -x[c],  x[t]], comment="i ")
+       # adding weights ((0.5+0.5j), 1) if x[c] & ~(Xt ^ x[t])
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, (0.5+0.5j), 1)
+        # Equivalent(D, x[c] & ~(Xt ^ x[t]))
+        cnf.add_clause([-D,  x[c]], comment="i ")
+        cnf.add_clause([-D,  Xt, -x[t]], comment="i ")
+        cnf.add_clause([-D, -Xt,  x[t]], comment="i ")
+        cnf.add_clause([ D,  Xt, -x[c],  x[t]], comment="i ")
+        cnf.add_clause([ D, -Xt, -x[c], -x[t]], comment="i ")
+
+        cnf.vars.x[t] = Xt
+    def CSqrtXdg2CNF(cnf, c, t):
+        x = cnf.vars.x
+
+        Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
+        # Equivalent(Xt, x[c] ^ x[t])
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt, -x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[t]])
+       # adding weights ((0.5+0.5j), 1) if x[c] & (Xt ^ x[t])
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, (0.5+0.5j), 1)
+        # Equivalent(D, x[c] & (Xt ^ x[t]))
+        cnf.add_clause([-D,  x[c]], comment="i ")
+        cnf.add_clause([-D,  Xt,  x[t]], comment="i ")
+        cnf.add_clause([-D, -Xt, -x[t]], comment="i ")
+        cnf.add_clause([ D,  Xt, -x[c], -x[t]], comment="i ")
+        cnf.add_clause([ D, -Xt, -x[c],  x[t]], comment="i ")
+       # adding weights ((0.5-0.5j), 1) if x[c] & ~(Xt ^ x[t])
+        D = cnf.add_var()
+        cnf.vars.DVar.append(D)
+        cnf.add_weight(D, (0.5-0.5j), 1)
+        # Equivalent(D, x[c] & ~(Xt ^ x[t]))
+        cnf.add_clause([-D,  x[c]], comment="i ")
+        cnf.add_clause([-D,  Xt, -x[t]], comment="i ")
+        cnf.add_clause([-D, -Xt,  x[t]], comment="i ")
+        cnf.add_clause([ D,  Xt, -x[c],  x[t]], comment="i ")
+        cnf.add_clause([ D, -Xt, -x[c], -x[t]], comment="i ")
+
+        cnf.vars.x[t] = Xt
+    def CCX2CNF(cnf, k, c, t):
+        x = cnf.vars.x
+
+        Xt = cnf.add_var()
+        cnf.vars.XVar.append(Xt)
+        # Equivalent(Xt, x[t] ^ (x[c] & x[k]))
+        cnf.add_clause([ Xt,  x[c], -x[t]])
+        cnf.add_clause([ Xt,  x[k], -x[t]])
+        cnf.add_clause([-Xt,  x[c],  x[t]])
+        cnf.add_clause([-Xt,  x[k],  x[t]])
+        cnf.add_clause([ Xt, -x[c], -x[k],  x[t]])
+        cnf.add_clause([-Xt, -x[c], -x[k], -x[t]])
+
+        cnf.vars.x[t] = Xt
+
     def RX2CNF(cnf, k, theta):
         x = cnf.vars.x
         X = cnf.add_var()
@@ -124,22 +238,9 @@ class comput2cnf:
 
         cnf.vars.x[k] = X
 
-    def CZ2CNF(cnf, c, t):
+    def RZ2CNF(cnf, k, theta):
         x = cnf.vars.x
-
-        # adding sign if x[c] & x[t]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[c] & x[t])
-        cnf.add_clause([-R,  x[c]], comment="- ")
-        cnf.add_clause([-R,  x[t]], comment="- ")
-        cnf.add_clause([ R, -x[c], -x[t]], comment="- ")
-
-    def SWAP2CNF(cnf, c, t):
-        x = cnf.vars.x
-
-        x[c], x[t] = x[t], x[c]
+        cnf.add_weight(x[k], complex(Decimal(math.cos(theta)), Decimal(math.sin(theta))), 1)
 
 
 

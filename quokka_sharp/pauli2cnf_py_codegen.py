@@ -193,7 +193,7 @@ def main():
     print("        cnf.vars.x[t] = X")
     print("        cnf.vars.z[c] = Z")
     print()
-    
+
     #CZ
     Zc   = symbols('Zc')
     Zt   = symbols('Zt')
@@ -219,7 +219,7 @@ def main():
     print("    def CY2CNF(cnf, c, t):")
     print("        pauli2cnf.Sdg2CNF(cnf, t)")
     print("        pauli2cnf.CNOT2CNF(cnf, c, t)")
-    print("        pauli2cnf.S2CNF(cnf, t)")
+    print("        pauli2cnf.comput2cnf.S2CNF(cnf, t)")
     print()
 
     #SWAP
@@ -363,30 +363,6 @@ def main():
     print("        pauli2cnf.CNOT2CNF(cnf, k, c)")
     print()
 
-    # RZ
-    print("    def RZ2CNF(cnf, k, theta):")
-    print("        x = cnf.vars.x")
-    print("        z = cnf.vars.z")
-    print()
-    print("        Z = cnf.add_var()")
-    print("        cnf.vars.ZVar.append(Z)")
-    to_py(	       x[k] | Equivalent(Z, z[k]))
-    print()
-    print("        u1 = cnf.add_var()")
-    print("        cnf.vars.UVar.append(u1)")
-    print("        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)")
-    to_py(	       Equivalent(u1, x[k] & (((z[k] & Z)) | (~z[k] & ~Z))))
-    print()   
-    print("        u2 = cnf.add_var()")
-    print("        cnf.vars.UVar.append(u2)")
-    print("        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)")
-    to_py(	       Equivalent(u2, x[k] & (((~z[k] & Z)) | (z[k] & ~Z))))
-    print()
-    add_sign(x[k] & z[k] & ~Z)
-    print()
-    print("        cnf.vars.z[k] = Z")
-    print()
-
     #RX
     print("    def RX2CNF(cnf, k, theta):")
     print("        x = cnf.vars.x")
@@ -411,7 +387,31 @@ def main():
     print("        cnf.vars.x[k] = X")
     print()
     print()
-  
+
+    # RZ
+    print("    def RZ2CNF(cnf, k, theta):")
+    print("        x = cnf.vars.x")
+    print("        z = cnf.vars.z")
+    print()
+    print("        Z = cnf.add_var()")
+    print("        cnf.vars.ZVar.append(Z)")
+    to_py(	       x[k] | Equivalent(Z, z[k]))
+    print()
+    print("        u1 = cnf.add_var()")
+    print("        cnf.vars.UVar.append(u1)")
+    print("        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)")
+    to_py(	       Equivalent(u1, x[k] & (((z[k] & Z)) | (~z[k] & ~Z))))
+    print()   
+    print("        u2 = cnf.add_var()")
+    print("        cnf.vars.UVar.append(u2)")
+    print("        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)")
+    to_py(	       Equivalent(u2, x[k] & (((~z[k] & Z)) | (z[k] & ~Z))))
+    print()
+    add_sign(x[k] & z[k] & ~Z)
+    print()
+    print("        cnf.vars.z[k] = Z")
+    print()
+
     # composition layer
     add_composition()
 
