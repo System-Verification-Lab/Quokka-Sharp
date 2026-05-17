@@ -28,39 +28,17 @@ class pauli2cnf:
 
     def X2CNF(cnf, k):
         z = cnf.vars.z
-
-        # adding sign if z[k]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, z[k])
-        cnf.add_clause([ R, -z[k]])
-        cnf.add_clause([-R,  z[k]])
+        cnf.add_weight(z[k], -1, 1)
 
     def Y2CNF(cnf, k):
         x = cnf.vars.x
         z = cnf.vars.z
-
-        # adding sign if x[k] ^ z[k]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[k] ^ z[k])
-        cnf.add_clause([ R,  x[k], -z[k]])
-        cnf.add_clause([ R, -x[k],  z[k]])
-        cnf.add_clause([-R,  x[k],  z[k]])
-        cnf.add_clause([-R, -x[k], -z[k]])
+        cnf.add_weight(x[k], -1, 1)
+        cnf.add_weight(z[k], -1, 1)
 
     def Z2CNF(cnf, k):
         x = cnf.vars.x
-
-        # adding sign if x[k]
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[k])
-        cnf.add_clause([ R, -x[k]])
-        cnf.add_clause([-R,  x[k]])
+        cnf.add_weight(x[k], -1, 1)
 
     def S2CNF(cnf, k):
         x = cnf.vars.x
@@ -485,48 +463,6 @@ class pauli2cnf:
         pauli2cnf.CSqrtXdg2CNF(cnf, c, t)
         pauli2cnf.CNOT2CNF(cnf, k, c)
 
-    def RZ2CNF(cnf, k, theta):
-        x = cnf.vars.x
-        z = cnf.vars.z
-
-        Z = cnf.add_var()
-        cnf.vars.ZVar.append(Z)
-        # x[k] | (Equivalent(Z, z[k]))
-        cnf.add_clause([ Z,  x[k], -z[k]])
-        cnf.add_clause([-Z,  x[k],  z[k]])
-
-        u1 = cnf.add_var()
-        cnf.vars.UVar.append(u1)
-        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)
-        # Equivalent(u1, x[k] & ((Z & z[k]) | (~Z & ~z[k])))
-        cnf.add_clause([-u1,  x[k]])
-        cnf.add_clause([ Z, -u1, -z[k]])
-        cnf.add_clause([-Z, -u1,  z[k]])
-        cnf.add_clause([ Z,  u1, -x[k],  z[k]])
-        cnf.add_clause([-Z,  u1, -x[k], -z[k]])
-
-        u2 = cnf.add_var()
-        cnf.vars.UVar.append(u2)
-        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)
-        # Equivalent(u2, x[k] & ((Z & ~z[k]) | (z[k] & ~Z)))
-        cnf.add_clause([-u2,  x[k]])
-        cnf.add_clause([ Z, -u2,  z[k]])
-        cnf.add_clause([-Z, -u2, -z[k]])
-        cnf.add_clause([ Z,  u2, -x[k], -z[k]])
-        cnf.add_clause([-Z,  u2, -x[k],  z[k]])
-
-        # adding sign if x[k] & z[k] & ~Z
-        R = cnf.add_var()
-        cnf.vars.RVar.append(R)
-        cnf.add_weight(R, -1, 1)
-        # Equivalent(R, x[k] & z[k] & ~Z)
-        cnf.add_clause([-R,  x[k]])
-        cnf.add_clause([-R,  z[k]])
-        cnf.add_clause([-R, -Z])
-        cnf.add_clause([ R,  Z, -x[k], -z[k]])
-
-        cnf.vars.z[k] = Z
-
     def RX2CNF(cnf, k, theta):
         x = cnf.vars.x
         z = cnf.vars.z
@@ -569,6 +505,48 @@ class pauli2cnf:
 
         cnf.vars.x[k] = X
 
+
+    def RZ2CNF(cnf, k, theta):
+        x = cnf.vars.x
+        z = cnf.vars.z
+
+        Z = cnf.add_var()
+        cnf.vars.ZVar.append(Z)
+        # x[k] | (Equivalent(Z, z[k]))
+        cnf.add_clause([ Z,  x[k], -z[k]])
+        cnf.add_clause([-Z,  x[k],  z[k]])
+
+        u1 = cnf.add_var()
+        cnf.vars.UVar.append(u1)
+        cnf.add_weight(u1, Decimal(math.cos(theta)), 1)
+        # Equivalent(u1, x[k] & ((Z & z[k]) | (~Z & ~z[k])))
+        cnf.add_clause([-u1,  x[k]])
+        cnf.add_clause([ Z, -u1, -z[k]])
+        cnf.add_clause([-Z, -u1,  z[k]])
+        cnf.add_clause([ Z,  u1, -x[k],  z[k]])
+        cnf.add_clause([-Z,  u1, -x[k], -z[k]])
+
+        u2 = cnf.add_var()
+        cnf.vars.UVar.append(u2)
+        cnf.add_weight(u2, Decimal(math.sin(theta)), 1)
+        # Equivalent(u2, x[k] & ((Z & ~z[k]) | (z[k] & ~Z)))
+        cnf.add_clause([-u2,  x[k]])
+        cnf.add_clause([ Z, -u2,  z[k]])
+        cnf.add_clause([-Z, -u2, -z[k]])
+        cnf.add_clause([ Z,  u2, -x[k], -z[k]])
+        cnf.add_clause([-Z,  u2, -x[k],  z[k]])
+
+        # adding sign if x[k] & z[k] & ~Z
+        R = cnf.add_var()
+        cnf.vars.RVar.append(R)
+        cnf.add_weight(R, -1, 1)
+        # Equivalent(R, x[k] & z[k] & ~Z)
+        cnf.add_clause([-R,  x[k]])
+        cnf.add_clause([-R,  z[k]])
+        cnf.add_clause([-R, -Z])
+        cnf.add_clause([ R,  Z, -x[k], -z[k]])
+
+        cnf.vars.z[k] = Z
 
 
     def Composition(cnf, composition_dictionary):

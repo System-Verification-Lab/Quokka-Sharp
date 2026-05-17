@@ -96,23 +96,21 @@ def main():
     # X:
     print("    def X2CNF(cnf, k):")
     print("        z = cnf.vars.z")
-    print()
-    add_sign(z[k])
+    print("        cnf.add_weight(z[k], -1, 1)")
     print()
 
     # Y:
     print("    def Y2CNF(cnf, k):")
     print("        x = cnf.vars.x")
     print("        z = cnf.vars.z")
-    print()
-    add_sign(x[k] ^ z[k])
+    print("        cnf.add_weight(x[k], -1, 1)")
+    print("        cnf.add_weight(z[k], -1, 1)")
     print()
 
     # Z:
     print("    def Z2CNF(cnf, k):")
     print("        x = cnf.vars.x")
-    print()
-    add_sign(x[k])
+    print("        cnf.add_weight(x[k], -1, 1)")
     print()
 
     # S:
@@ -219,7 +217,7 @@ def main():
     print("    def CY2CNF(cnf, c, t):")
     print("        pauli2cnf.Sdg2CNF(cnf, t)")
     print("        pauli2cnf.CNOT2CNF(cnf, c, t)")
-    print("        pauli2cnf.comput2cnf.S2CNF(cnf, t)")
+    print("        pauli2cnf.S2CNF(cnf, t)")
     print()
 
     #SWAP
