@@ -20,6 +20,9 @@ class Variables:
         """
         self.cnf = cnf
         self.n = cnf.n + cnf.ancillas
+        self.i = -1 # HACK: only for unweighted
+        self.r = -1 # HACK: only for unweighted
+        self.u = -1 # HACK: only for unweighted
         self.Udim = 2 ** self.n
         self.var = 0
         self.XVar = []
@@ -44,14 +47,6 @@ class Variables:
                 cnf.add_clause([-self.x[-1]])
                 if not self.computational_basis:
                     cnf.add_clause([-self.z[-1]])
-        if not cnf.weighted:
-            if computational_basis:
-                self.i = self.add_var()
-                cnf.add_clause([-self.i])
-            self.r = self.add_var()
-            cnf.add_clause([-self.r])
-            self.u = self.add_var()
-            cnf.add_clause([-self.u])
         if unitary_encoding:
             self.Unitaryvar = [[0 for _ in range(self.Udim)] for _ in range(self.Udim)]
             Udim = self.Udim
@@ -253,14 +248,13 @@ class CNF:
     """
     Class to manage the CNF encoding of a quantum circuit.
     """
-    def __init__(self, n = 0, ancillas=0, computational_basis=False, weighted = True, ganak = False, unitary_encoding = False, Unitary = None):
+    def __init__(self, n = 0, ancillas=0, computational_basis=False, ganak = False, unitary_encoding = False, Unitary = None):
         self.clause = 0
         self.n = n
         self.ancillas = ancillas
         self.circuit = None
         self.locked = False
         self.cons_list = []
-        self.weighted = weighted
         self.weights = rlist(None)
         self.power_two_normalisation = 0
         self.normalisation = 1
@@ -622,9 +616,7 @@ class CNF:
             weight and neg_weight will be normalized to the same type:
             - Both become complex if either is complex
             - Both become Decimal otherwise
-        """
-        assert self.weighted
-        
+        """      
         # Normalize types to ensure consistency
         # weight, neg_weight = self._normalize_weight_types(weight, neg_weight)
         
@@ -710,6 +702,8 @@ class CNF:
             from .comput2cnf import comput2cnf as to_CNF 
         else:
             from .pauli2cnf import pauli2cnf as to_CNF
+
+        to_CNF.init(self)
 
         for element in circuit.circ:
             if len(element) == 4 and element[3] == 'if':
@@ -982,19 +976,18 @@ def check_unitary_and_qubits(U, tol=1e-12):
     return is_unitary, num_qubits
 
 
-def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancillas = 0, ganak = False) -> CNF:
+def QASM2CNF(circuit: Circuit, computational_basis = False, ancillas = 0, ganak = False) -> CNF:
     """
     Construct a CNF object for a given quantum circuit.
     Args:
         circuit (Circuit): The quantum circuit to be encoded.
         computational_basis (bool): If True, the variables are in the computational basis, otherwise in the Pauli basis.
-        weighted (bool): If True, the CNF encoding is weighted, otherwise it is reduced to unweigted useing multiple solver calls.
         ancillas (int): The number of ancilla qubits.
         ganak (bool): If True, use Ganak encoding.
     Returns:
         CNF: The CNF object representing the quantum circuit.
     """
-    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, weighted = weighted, ganak = ganak)
+    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, ganak = ganak)
     cnf.encode_circuit(circuit)
     return cnf 
 
@@ -1008,6 +1001,6 @@ def Composition2CNF(composition_dictionary, ancillas = 0) -> CNF:
     Returns:
         CNF: The CNF object representing the PauliStrings composition.
     """
-    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, weighted = True, ancillas=ancillas)
+    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, ancillas=ancillas)
     cnf.encode_composition(composition_dictionary)
     return cnf
