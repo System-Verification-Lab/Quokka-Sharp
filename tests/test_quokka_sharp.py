@@ -19,6 +19,7 @@ import decimal
 import pytest
 import quokka_sharp as qk
 
+
 # ---------------------------------------------------------------------------
 # Fixture root
 # ---------------------------------------------------------------------------
@@ -534,7 +535,7 @@ class TestEquivalenceChecking:
         f = qasm("single_qubit", "h.qasm")
         res = qk.functionalities.eq(f, f, basis="comp", check="cyclic", epsilon=0)
         skip_if_solver_issue(res)
-        assert res in (True, "True")
+        assert res == True
 
     # ── Non-equivalent pairs ─────────────────────────────────────────────────
 
