@@ -77,73 +77,131 @@ def check_entanglement(i, cnf:'CNF', cnf_file_root):
 
 import numpy as np
 
-import numpy as np
-
 def solve_thetas(alpha, beta, atol=1e-9):
     """
-    Solve (phi, theta, psi) such that
-        U = Rz(phi) Rx(theta) Rz(psi)
-    and
-        U (alpha · Pauli) U† = X
-        U (beta  · Pauli) U† = Z
+    Find (phi, theta, psi) such that
 
-    alpha, beta: length-3 arrays [X, Y, Z] coefficients
-    returns: (phi, theta, psi)
+        U = Rz(phi) Rx(theta) Rz(psi)
+
+    satisfies, at the Bloch-vector level,
+
+        U alpha = +X
+        U beta  = +Z
+
+    alpha and beta must be orthonormal 3D real vectors.
     """
 
     alpha = np.asarray(alpha, dtype=float)
-    beta  = np.asarray(beta,  dtype=float)
+    beta = np.asarray(beta, dtype=float)
 
-    # ---- sanity checks ----
-    if not np.isclose(np.linalg.norm(alpha), 1.0, atol=atol):
+    # ---------- sanity checks ----------
+    if alpha.shape != (3,) or beta.shape != (3,):
+        raise ValueError("alpha and beta must be length-3 vectors.")
+
+    if not np.isclose(
+        np.linalg.norm(alpha), 1.0, atol=atol, rtol=0.0
+    ):
         raise ValueError("alpha must be a unit vector.")
-    if not np.isclose(np.linalg.norm(beta), 1.0, atol=atol):
+
+    if not np.isclose(
+        np.linalg.norm(beta), 1.0, atol=atol, rtol=0.0
+    ):
         raise ValueError("beta must be a unit vector.")
-    if not np.isclose(np.dot(alpha, beta), 0.0, atol=atol):
+
+    if not np.isclose(
+        np.dot(alpha, beta), 0.0, atol=atol, rtol=0.0
+    ):
         raise ValueError("alpha and beta must be orthogonal.")
 
-    # ------------------------------------------------------------
-    # Step 1: choose theta, phi so that Rz(phi) Rx(theta) beta = Z
-    # ------------------------------------------------------------
-    # After Rx(theta):
-    #   beta -> ( b0,
-    #             b1 cosθ - b2 sinθ,
-    #             b1 sinθ + b2 cosθ )
-    #
-    # We want Y = 0, Z = 1 after Rx, and then Z-rotation won't change Z.
-
-    b0, b1, b2 = beta
-
-    # Solve b1 sinθ + b2 cosθ = 1  -> aligns beta with Z
-    theta = np.arctan2(b1, b2)
-
-    s, c = np.sin(theta), np.cos(theta)
-
-    # After Rx(theta), beta is already (b0, 0, 1) up to sign of b0
-    # Now use Rz(phi) to kill X component
-    # Rz(phi): (x,y) -> (x cosφ - y sinφ, x sinφ + y cosφ)
-    # Here y = 0, so we want x cosφ = 0
-    phi = np.pi / 2 if abs(b0) > atol else 0.0
-
-    # ------------------------------------------------------------
-    # Step 2: determine psi so that alpha goes to +X
-    # ------------------------------------------------------------
-    # First rotate alpha by Rz(phi) Rx(theta)
-    def Rx(v):
+    def apply_rz(v, angle):
         x, y, z = v
-        return np.array([x, y*c - z*s, y*s + z*c])
+        c = np.cos(angle)
+        s = np.sin(angle)
+        return np.array([
+            c * x - s * y,
+            s * x + c * y,
+            z,
+        ])
 
-    def Rz(v, ang):
+    def apply_rx(v, angle):
         x, y, z = v
-        ca, sa = np.cos(ang), np.sin(ang)
-        return np.array([ca*x - sa*y, sa*x + ca*y, z])
+        c = np.cos(angle)
+        s = np.sin(angle)
+        return np.array([
+            x,
+            c * y - s * z,
+            s * y + c * z,
+        ])
 
-    alpha1 = Rx(alpha)
-    alpha2 = Rz(alpha1, phi)
+    bx, by, bz = beta
+    radial = np.hypot(bx, by)
 
-    # Now alpha2 lies in XY plane (orthogonal to Z),
-    # so choose psi to rotate it onto +X
-    psi = -np.arctan2(alpha2[1], alpha2[0])
+    # ---------------------------------------------------------
+    # 1. Choose psi so Rz(psi) beta lies in the YZ plane.
+    # 2. Choose theta so Rx(theta) Rz(psi) beta = +Z.
+    # ---------------------------------------------------------
+    if radial > atol:
+        # With this choice:
+        # Rz(psi) beta = (0, radial, bz)
+        psi = np.arctan2(bx, by)
+
+        # Since beta is unit:
+        # sin(theta) = radial, cos(theta) = bz
+        theta = np.arctan2(radial, bz)
+
+    else:
+        # Euler singularity: beta is approximately +Z or -Z.
+        # psi is not uniquely determined, so choose psi = 0.
+        psi = 0.0
+        theta = 0.0 if bz >= 0.0 else np.pi
+
+    # ---------------------------------------------------------
+    # 3. After the first two rotations, alpha lies in XY.
+    #    Choose phi to rotate it onto +X.
+    # ---------------------------------------------------------
+    alpha_after_psi = apply_rz(alpha, psi)
+    alpha_after_theta = apply_rx(alpha_after_psi, theta)
+
+    phi = -np.arctan2(
+        alpha_after_theta[1],
+        alpha_after_theta[0],
+    )
+
+    def wrap_pi(angle):
+        return (angle + np.pi) % (2.0 * np.pi) - np.pi
+
+    phi = wrap_pi(phi)
+    psi = wrap_pi(psi)
+
+    # ---------- optional internal verification ----------
+    transformed_alpha = apply_rz(
+        apply_rx(apply_rz(alpha, psi), theta),
+        phi,
+    )
+    transformed_beta = apply_rz(
+        apply_rx(apply_rz(beta, psi), theta),
+        phi,
+    )
+
+    if not np.allclose(
+        transformed_alpha,
+        np.array([1.0, 0.0, 0.0]),
+        atol=10 * atol,
+        rtol=0.0,
+    ):
+        raise RuntimeError(
+            f"Failed to map alpha to X: {transformed_alpha}"
+        )
+
+    if not np.allclose(
+        transformed_beta,
+        np.array([0.0, 0.0, 1.0]),
+        atol=10 * atol,
+        rtol=0.0,
+    ):
+        raise RuntimeError(
+            f"Failed to map beta to Z: {transformed_beta}"
+        )
 
     return phi, theta, psi
 
