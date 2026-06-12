@@ -49,7 +49,7 @@ def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
     """
     DEBUG           = qc.CONFIG["DEBUG"]
 
-    if cnf.weighted:
+    if cnf.vars.i == -1:
         filename = os.path.join(cnf_file_root, "for_sim.cnf")
         cnf.write_to_file(filename)
         result = WMC(filename, square = cnf.square_result)
@@ -66,7 +66,7 @@ def Simulate(cnf: "CNF", cnf_file_root = tempfile.gettempdir()):
                     if DEBUG: print(c,s,t)
                     cnf_copy = copy.deepcopy(cnf)
                     if cnf.computational_basis:
-                        cnf_copy.add_clause([-cnf.vars.i] if (c == "r") else [cnf.vars.i], comment="copmplex")
+                        cnf_copy.add_clause([-cnf.vars.i] if (c == "r") else [cnf.vars.i], comment="complex")
                     cnf_copy.add_clause([-cnf.vars.r] if (s == "p") else [cnf.vars.r], comment="sign")
                     cnf_copy.add_clause([-cnf.vars.u] if (t == "e") else [cnf.vars.u], comment="sqrt2 norm")
                     
