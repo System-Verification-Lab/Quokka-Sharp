@@ -70,9 +70,16 @@ def parse_wmc_result(result, square: bool):
         return (real * real + imag * imag) if square else (real * real + imag * imag).sqrt()
     
 def validate_basis(basis: str) -> str:
+    if not isinstance(basis, str):
+        raise TypeError(
+            f"basis must be a string, got {type(basis).__name__}."
+        )
+
     basis = basis.lower()
+
     if basis not in {"pauli", "comp"}:
         raise ValueError(
             f"Invalid basis: {basis!r}. Expected 'pauli' or 'comp'."
         )
+
     return basis
