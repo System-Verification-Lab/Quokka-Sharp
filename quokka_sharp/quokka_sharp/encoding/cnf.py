@@ -1,9 +1,10 @@
 import copy
-import io
 from itertools import product
 import numpy as np
+from decimal import Decimal
 
 from .qasm_parser import Circuit
+from .utils import rlist
 
 class Variables:
     """
@@ -19,6 +20,9 @@ class Variables:
         """
         self.cnf = cnf
         self.n = cnf.n + cnf.ancillas
+        self.i = -1 # HACK: only for unweighted
+        self.r = -1 # HACK: only for unweighted
+        self.u = -1 # HACK: only for unweighted
         self.Udim = 2 ** self.n
         self.var = 0
         self.XVar = []
@@ -43,14 +47,6 @@ class Variables:
                 cnf.add_clause([-self.x[-1]])
                 if not self.computational_basis:
                     cnf.add_clause([-self.z[-1]])
-        if not cnf.weighted:
-            if computational_basis:
-                self.i = self.add_var()
-                cnf.add_clause([-self.i])
-            self.r = self.add_var()
-            cnf.add_clause([-self.r])
-            self.u = self.add_var()
-            cnf.add_clause([-self.u])
         if unitary_encoding:
             self.Unitaryvar = [[0 for _ in range(self.Udim)] for _ in range(self.Udim)]
             Udim = self.Udim
@@ -61,10 +57,9 @@ class Variables:
                         self.cnf.add_clause([-self.Unitaryvar[i][j]])
                     else:
                         if Unitary[i][j].imag == 0:
-                            self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j].real)
+                            self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j].real, 1)
                         else:
-                            self.cnf.add_weight(self.Unitaryvar[i][j], Unitary[i][j].real, Unitary[i][j].imag)
-                        self.cnf.add_weight(-self.Unitaryvar[i][j], 1)
+                            self.cnf.add_weight(self.Unitaryvar[i][j], complex(Unitary[i][j].real, Unitary[i][j].imag), 1)
     def copy(self):
         """
         Create a deep copy of the Variables object.
@@ -219,8 +214,7 @@ class Variables:
                         var_increase += 1
                         R = var_curr
                             # X2CNF flip 1 to 0
-                        self.cnf.add_weight(R, -1)
-                        self.cnf.add_weight(-R, 1)
+                        self.cnf.add_weight(R, -1, 1)
                         # Equivalent(R, z[k])
                         self.cnf.add_clause([ R, -z[i]], prepend)
                         self.cnf.add_clause([-R,  z[i]], prepend)
@@ -247,23 +241,21 @@ class Variables:
                 if U[i][j] == 0:
                     self.cnf.add_clause([-Uvar[i][j]])
                 else:
-                    self.cnf.add_weight(Uvar[i][j], U[i][j])
-                    self.cnf.add_weight(-Uvar[i][j], 1)
+                    self.cnf.add_weight(Uvar[i][j], U[i][j], 1)
                 # add weight Uvar[i][j] --- U[i][j] and not Uvar[i][j] --- 1        
                 
 class CNF:
     """
     Class to manage the CNF encoding of a quantum circuit.
     """
-    def __init__(self, n = 0, ancillas=0, computational_basis=False, weighted = True, ganak = False, unitary_encoding = False, Unitary = None):
+    def __init__(self, n = 0, ancillas=0, computational_basis=False, ganak = False, unitary_encoding = False, Unitary = None):
         self.clause = 0
         self.n = n
         self.ancillas = ancillas
         self.circuit = None
         self.locked = False
         self.cons_list = []
-        self.weighted = weighted
-        self.weight_list = io.StringIO()
+        self.weights = rlist(None)
         self.power_two_normalisation = 0
         self.normalisation = 1
         self.computational_basis = computational_basis
@@ -309,7 +301,13 @@ class CNF:
         else:
             self.vars = Variables(self, computational_basis, unitary_encoding, Unitary) # variables at timestep m (end of circuit)
             self.vars_init = self.vars.copy()     # variables at timestep 0
-        
+
+    @staticmethod
+    def _is_zero_imag_part(value):
+        if isinstance(value, Decimal):
+            return value == 0
+        return abs(value) < 1e-15
+
     def copy(self):
         """
         Create a deep copy of the CNF object.
@@ -542,7 +540,7 @@ class CNF:
             # -0.5 is true, so the clause is satisfied and does not need to be added
             return
         if 0.5 in cons:
-            # 0.5 is false, so the clause is a contrediction!
+            # 0.5 is false, so the clause is a contradiction!
             raise KeyError("used an invalid past variable, and added its true literal to a clause")
         self.clause += 1
         constr = ''
@@ -558,36 +556,114 @@ class CNF:
         else:
             self.cons_list.append(constr)
 
-    def add_weight(self, var, weight, complex_weight=None, comment=None):
+    @staticmethod
+    def _normalize_weight_types(weight, neg_weight):
+        """
+        Normalize weight and neg_weight to have the same type.
+        Both must be either Decimal/real or complex.
+        
+        Args:
+            weight: Weight value (int, float, Decimal, or complex)
+            neg_weight: Negated weight value (int, float, Decimal, or complex)
+            
+        Returns:
+            tuple: (normalized_weight, normalized_neg_weight) with consistent types
+            
+        Raises:
+            TypeError: If types cannot be made consistent
+        """
+        if isinstance(weight, complex) and CNF._is_zero_imag_part(weight.imag):
+            weight = weight.real
+        if isinstance(neg_weight, complex) and CNF._is_zero_imag_part(neg_weight.imag):
+            neg_weight = neg_weight.real
+
+        # Convert to more specific types if needed
+        is_weight_complex = isinstance(weight, complex)
+        is_neg_weight_complex = isinstance(neg_weight, complex)
+        
+        print(is_weight_complex, is_neg_weight_complex)
+        # If either is complex, convert both to complex
+        if is_weight_complex or is_neg_weight_complex:
+            if not is_weight_complex:
+                if isinstance(weight, Decimal):
+                    weight = complex(float(weight), 0)
+                else:
+                    weight = complex(weight, 0)
+            if not is_neg_weight_complex:
+                if isinstance(neg_weight, Decimal):
+                    neg_weight = complex(float(neg_weight), 0)
+                else:
+                    neg_weight = complex(neg_weight, 0)
+        else:
+            # Both should be Decimal/real - convert to Decimal for consistency
+            if not isinstance(weight, Decimal):
+                weight = Decimal(weight)
+            if not isinstance(neg_weight, Decimal):
+                neg_weight = Decimal(neg_weight)
+        
+        return weight, neg_weight
+
+    def add_weight(self, var, weight, neg_weight, comment=None):
         """
         Add a weight to a variable in the CNF encoding.
         Args:
             var (int): The variable index.
-            weight (float): The weight to be added.
-            complex_weight (float): The complex weight to be added (optional).
+            weight: The weight to be added. May be Decimal or complex.
+            neg_weight: The weight for the negated literal `-var`. May be Decimal or complex.
             comment (str): A comment to be added to the weight for debugging purposes (currently disabled since it causes problems for cnf solvers).
-        """
-        assert self.weighted
-        if (complex_weight != None):
-            self.weight_list.write("c p complex ")
+            
+        Note:
+            weight and neg_weight will be normalized to the same type:
+            - Both become complex if either is complex
+            - Both become Decimal otherwise
+        """      
+        # Normalize types to ensure consistency
+        # weight, neg_weight = self._normalize_weight_types(weight, neg_weight)
+        
+        if var < len(self.weights) and self.weights[var] is not None:
+            # Multiply existing (weight, neg_weight) tuple by new values
+            old_w, old_nw = self.weights[var]
+            print(f"MULT ({var}):", old_nw * neg_weight, " ", old_w * weight)
+            self.weights[var] = (old_w * weight, old_nw * neg_weight)
         else:
-            self.weight_list.write("c p weight ")
-        self.weight_list.write(str(var))
-        self.weight_list.write(" ")
-        self.weight_list.write(str(weight))
-        if (complex_weight != None):
-            self.weight_list.write(" ")
-            # support ganak complex format
-            if not self.ganak:
-                self.weight_list.write(str(complex_weight))
-            else: 
-                self.weight_list.write(" + ")
-                self.weight_list.write(str(complex_weight))
-                self.weight_list.write("i")
-        self.weight_list.write(" 0")
-        # if comment: disabled since it causes problems with cnf solvers
-        #     self.weight_list.write("\t\t// " + comment)
-        self.weight_list.write("\n")
+            # Store new (weight, neg_weight) tuple
+            print(f"ADD ({var}):", neg_weight, " ",  weight)
+            self.weights[var] = (weight, neg_weight)
+
+    def _weights_to_string(self, syntesis_fomat=False):
+        """
+        Serialize stored weights to CNF output lines.
+        Args:
+            syntesis_fomat (bool): If True, keep "complex" keyword for synthesis output format.
+        Returns:
+            str: Serialized weight lines.
+        """
+        lines = []
+        for var, entry in enumerate(self.weights):
+            if entry is None:
+                continue
+            weight, neg_weight = entry
+            line = self.encode_weight(var, weight)
+            lines.append(line)
+            line = self.encode_weight(-var, neg_weight)
+            lines.append(line)
+        return ''.join(lines)
+
+    def encode_weight(self, var, weight):
+        is_complex = isinstance(weight, complex)
+        weight_kind = "complex" if is_complex and not self.ganak else "weight"
+            # if not syntesis_fomat:
+            #     weight_kind = "weight"
+        real_part = weight.real if isinstance(weight, complex) else weight
+        line = f"c p {weight_kind} {var} {real_part}"
+        if is_complex:
+                # support ganak complex format
+            if self.ganak:
+                line += f" + {weight.imag}i"
+            else:
+                line += f" {weight.imag}"
+        line += " 0\n"
+        return line
 
     def ProjectionSet(self, VarList):
         """
@@ -607,9 +683,7 @@ class CNF:
             if syntesis_fomat:
                 the_file.write("c max " +' '.join([str(v) for v in self.syn_gate_picking_vars.keys()]) + " 0\n")
                 the_file.write("c ind " +' '.join([str(v) for v in (range(1,self.vars.var+1) - self.syn_gate_picking_vars.keys() - self.syn_projection_vars)]) + " 0\n") 
-            weights_str = self.weight_list.getvalue()
-            if not syntesis_fomat:
-                weights_str = weights_str.replace("complex", "weight")
+            weights_str = self._weights_to_string(syntesis_fomat=syntesis_fomat)
             the_file.write(weights_str)
             the_file.write(''.join(self.cons_list))
 
@@ -628,6 +702,8 @@ class CNF:
             from .comput2cnf import comput2cnf as to_CNF 
         else:
             from .pauli2cnf import pauli2cnf as to_CNF
+
+        to_CNF.init(self)
 
         for element in circuit.circ:
             if len(element) == 4 and element[3] == 'if':
@@ -900,19 +976,18 @@ def check_unitary_and_qubits(U, tol=1e-12):
     return is_unitary, num_qubits
 
 
-def QASM2CNF(circuit: Circuit, computational_basis = False, weighted = True, ancillas = 0, ganak = False) -> CNF:
+def QASM2CNF(circuit: Circuit, computational_basis = False, ancillas = 0, ganak = False) -> CNF:
     """
     Construct a CNF object for a given quantum circuit.
     Args:
         circuit (Circuit): The quantum circuit to be encoded.
         computational_basis (bool): If True, the variables are in the computational basis, otherwise in the Pauli basis.
-        weighted (bool): If True, the CNF encoding is weighted, otherwise it is reduced to unweigted useing multiple solver calls.
         ancillas (int): The number of ancilla qubits.
         ganak (bool): If True, use Ganak encoding.
     Returns:
         CNF: The CNF object representing the quantum circuit.
     """
-    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, weighted = weighted, ganak = ganak)
+    cnf = CNF(circuit.n, ancillas = circuit.ancillas + ancillas, computational_basis = computational_basis, ganak = ganak)
     cnf.encode_circuit(circuit)
     return cnf 
 
@@ -926,6 +1001,6 @@ def Composition2CNF(composition_dictionary, ancillas = 0) -> CNF:
     Returns:
         CNF: The CNF object representing the PauliStrings composition.
     """
-    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, weighted = True, ancillas=ancillas)
+    cnf = CNF(composition_dictionary["qubits"], computational_basis = False, ancillas=ancillas)
     cnf.encode_composition(composition_dictionary)
     return cnf

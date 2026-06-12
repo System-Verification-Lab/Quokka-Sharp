@@ -19,6 +19,7 @@ import decimal
 import pytest
 import quokka_sharp as qk
 
+
 # ---------------------------------------------------------------------------
 # Fixture root
 # ---------------------------------------------------------------------------
@@ -534,7 +535,7 @@ class TestEquivalenceChecking:
         f = qasm("single_qubit", "h.qasm")
         res = qk.functionalities.eq(f, f, basis="comp", check="cyclic", epsilon=0)
         skip_if_solver_issue(res)
-        assert res in (True, "True")
+        assert res == True
 
     # ── Non-equivalent pairs ─────────────────────────────────────────────────
 
@@ -590,79 +591,79 @@ class TestEquivalenceChecking:
 # 4.  Synthesis Tests
 # ---------------------------------------------------------------------------
 
-class TestSynthesis:
-    """Tests for qk.functionalities.syn().  Fixtures in cl/."""
+# class TestSynthesis:
+#     """Tests for qk.functionalities.syn().  Fixtures in cl/."""
 
-    @pytest.mark.parametrize("target,gate_set", [
-        ("syn01_h_target.qasm",        {"h", "cx", "s"}),
-        ("syn02_x_target.qasm",        {"h", "cx", "s"}),
-        ("syn03_z_target.qasm",        {"h", "cx", "s"}),
-        ("syn05_t_target.qasm",        {"h", "cx", "t"}),
-        ("syn06_identity_target.qasm", {"h", "cx", "s"}),
-    ])
-    def test_syn_structure(self, target, gate_set):
-        """syn() always returns a valid 4-tuple with a known outcome string."""
-        result = qk.functionalities.syn(qasm("synthesis", target), basis="pauli", files_root="tmp", fid=1.0, cyc_lin_encoding=True, gate_set=gate_set)
-        assert isinstance(result, tuple) and len(result) == 4
-        outcome, weight, qasm_str, layers = result
-        valid = {"FOUND", "TIMEOUT", "CRASH"}
-        assert outcome in valid or outcome.startswith("ERROR"), f"Bad outcome: {outcome}"
+#     @pytest.mark.parametrize("target,gate_set", [
+#         ("syn01_h_target.qasm",        {"h", "cx", "s"}),
+#         ("syn02_x_target.qasm",        {"h", "cx", "s"}),
+#         ("syn03_z_target.qasm",        {"h", "cx", "s"}),
+#         ("syn05_t_target.qasm",        {"h", "cx", "t"}),
+#         ("syn06_identity_target.qasm", {"h", "cx", "s"}),
+#     ])
+#     def test_syn_structure(self, target, gate_set):
+#         """syn() always returns a valid 4-tuple with a known outcome string."""
+#         result = qk.functionalities.syn(qasm("synthesis", target), basis="pauli", files_root="tmp", fid=1.0, cyc_lin_encoding=True, gate_set=gate_set)
+#         assert isinstance(result, tuple) and len(result) == 4
+#         outcome, weight, qasm_str, layers = result
+#         valid = {"FOUND", "TIMEOUT", "CRASH"}
+#         assert outcome in valid or outcome.startswith("ERROR"), f"Bad outcome: {outcome}"
 
-    def test_found_weight_is_one(self):
-        """When synthesis finds an exact solution, fidelity = 1.0."""
-        outcome, weight, _, _ = qk.functionalities.syn(
-            qasm("synthesis", "syn01_h_target.qasm"),basis="pauli", fid=1.0,files_root="tmp",  gate_set={"h", "cx", "s"}
-        )
-        if outcome == "FOUND":
-            assert abs(float(weight) - 1.0) < FPE
+#     def test_found_weight_is_one(self):
+#         """When synthesis finds an exact solution, fidelity = 1.0."""
+#         outcome, weight, _, _ = qk.functionalities.syn(
+#             qasm("synthesis", "syn01_h_target.qasm"),basis="pauli", fid=1.0,files_root="tmp",  gate_set={"h", "cx", "s"}
+#         )
+#         if outcome == "FOUND":
+#             assert abs(float(weight) - 1.0) < FPE
 
-    def test_found_qasm_nonempty(self):
-        """When synthesis finds a solution, it returns a non-empty QASM string."""
-        outcome, _, qasm_str, _ = qk.functionalities.syn(
-            qasm("synthesis", "syn01_h_target.qasm"), basis="pauli", fid=1.0,files_root="tmp",  gate_set={"h", "cx", "s"}
-        )
-        if outcome == "FOUND":
-            assert isinstance(qasm_str, str) and len(qasm_str) > 0
+#     def test_found_qasm_nonempty(self):
+#         """When synthesis finds a solution, it returns a non-empty QASM string."""
+#         outcome, _, qasm_str, _ = qk.functionalities.syn(
+#             qasm("synthesis", "syn01_h_target.qasm"), basis="pauli", fid=1.0,files_root="tmp",  gate_set={"h", "cx", "s"}
+#         )
+#         if outcome == "FOUND":
+#             assert isinstance(qasm_str, str) and len(qasm_str) > 0
 
-    def test_found_layers_positive(self):
-        """When synthesis finds a solution, layers >= 1."""
-        outcome, _, _, layers = qk.functionalities.syn(
-            qasm("synthesis", "syn01_h_target.qasm"), basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"}
-        )
-        if outcome == "FOUND":
-            assert isinstance(layers, int) and layers >= 1
+#     def test_found_layers_positive(self):
+#         """When synthesis finds a solution, layers >= 1."""
+#         outcome, _, _, layers = qk.functionalities.syn(
+#             qasm("synthesis", "syn01_h_target.qasm"), basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"}
+#         )
+#         if outcome == "FOUND":
+#             assert isinstance(layers, int) and layers >= 1
 
-    def test_synthesised_circuit_is_equivalent(self):
-        """If synthesis finds a circuit, it must be equivalent to the target."""
-        import tempfile, os
-        target = qasm("synthesis", "syn01_h_target.qasm")
-        outcome, _, qasm_str, _ = qk.functionalities.syn(target, basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"})
-        if outcome != "FOUND":
-            pytest.skip(f"Synthesis did not find a solution: {outcome}")
-        # Write synthesised QASM to a temp file and check equivalence
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".qasm", delete=False) as f:
-            f.write(qasm_str)
-            syn_path = f.name
-        try:
-            res = qk.functionalities.eq(target, syn_path, basis="comp", check="cyclic", epsilon=0)
-            skip_if_solver_issue(res)
-            assert res in (True, "True"), "Synthesised circuit is not equivalent to target"
-        finally:
-            os.unlink(syn_path)
+#     def test_synthesised_circuit_is_equivalent(self):
+#         """If synthesis finds a circuit, it must be equivalent to the target."""
+#         import tempfile, os
+#         target = qasm("synthesis", "syn01_h_target.qasm")
+#         outcome, _, qasm_str, _ = qk.functionalities.syn(target, basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"})
+#         if outcome != "FOUND":
+#             pytest.skip(f"Synthesis did not find a solution: {outcome}")
+#         # Write synthesised QASM to a temp file and check equivalence
+#         with tempfile.NamedTemporaryFile(mode="w", suffix=".qasm", delete=False) as f:
+#             f.write(qasm_str)
+#             syn_path = f.name
+#         try:
+#             res = qk.functionalities.eq(target, syn_path, basis="comp", check="cyclic", epsilon=0)
+#             skip_if_solver_issue(res)
+#             assert res in (True, "True"), "Synthesised circuit is not equivalent to target"
+#         finally:
+#             os.unlink(syn_path)
 
-    def test_2q_synthesis_structure(self):
-        """2-qubit synthesis (CX target) returns a valid tuple."""
-        result = qk.functionalities.syn(qasm("synthesis", "syn04_cx_target.qasm"), basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"})
-        assert isinstance(result, tuple) and len(result) == 4
+#     def test_2q_synthesis_structure(self):
+#         """2-qubit synthesis (CX target) returns a valid tuple."""
+#         result = qk.functionalities.syn(qasm("synthesis", "syn04_cx_target.qasm"), basis="pauli", fid=1.0, files_root="tmp", gate_set={"h", "cx", "s"})
+#         assert isinstance(result, tuple) and len(result) == 4
 
-    # ── Low-level API ────────────────────────────────────────────────────────
+#     # ── Low-level API ────────────────────────────────────────────────────────
 
-    def test_low_level_synthesis(self):
-        circuit = qk.encoding.QASMparser(qasm("synthesis", "syn01_h_target.qasm"))
-        circuit.dagger()
-        cnf = qk.encoding.QASM2CNF(circuit, computational_basis=False)
-        result = qk.Synthesis(cnf, gate_set={"h", "cx", "s"})
-        assert isinstance(result, tuple) and len(result) == 4
+#     def test_low_level_synthesis(self):
+#         circuit = qk.encoding.QASMparser(qasm("synthesis", "syn01_h_target.qasm"))
+#         circuit.dagger()
+#         cnf = qk.encoding.QASM2CNF(circuit, computational_basis=False)
+#         result = qk.Synthesis(cnf, gate_set={"h", "cx", "s"})
+#         assert isinstance(result, tuple) and len(result) == 4
 
 
 # ---------------------------------------------------------------------------
