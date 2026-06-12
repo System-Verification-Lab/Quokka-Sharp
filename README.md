@@ -496,3 +496,4 @@ year="2024"
 If you have any questions, suggestions, or encounter issues while using the materials in this repository, feel free to:
 
 - [Create an issue](https://github.com/System-Verification-Lab/Quokka-Sharp/issues)
+- Or email me at: **j.mei@liacs.leidenuniv.nl**

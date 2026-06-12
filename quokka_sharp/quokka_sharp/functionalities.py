@@ -37,7 +37,7 @@ class functionalities:
 		circuit1 = qk.encoding.QASMparser(qasmfile)
 		basis = validate_basis(basis)
  		# Encode the circuit
-		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"))
+		cnf = qk.encoding.QASM2CNF(circuit1, computational_basis = (basis == "comp"), weighted=True)
 		cnf.leftProjectAllZero()
 		cnf.add_measurement(measurement)
 		return qk.Simulate(cnf)
