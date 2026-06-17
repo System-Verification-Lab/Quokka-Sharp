@@ -651,7 +651,7 @@ class CNF:
 
     def encode_weight(self, var, weight):
         is_complex = isinstance(weight, complex)
-        weight_kind = "complex" if is_complex and not self.ganak else "weight"
+        weight_kind = "weight" 
             # if not syntesis_fomat:
             #     weight_kind = "weight"
         real_part = weight.real if isinstance(weight, complex) else weight
