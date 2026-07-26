@@ -5,6 +5,9 @@ from decimal import Decimal
 
 from .qasm_parser import Circuit
 from .utils import rlist
+from .. import config as qc
+
+DEBUG           = qc.CONFIG["DEBUG"]
 
 class Variables:
     """
@@ -623,11 +626,13 @@ class CNF:
         if var < len(self.weights) and self.weights[var] is not None:
             # Multiply existing (weight, neg_weight) tuple by new values
             old_w, old_nw = self.weights[var]
-            print(f"MULT ({var}):", old_nw * neg_weight, " ", old_w * weight)
+            if DEBUG:
+                print(f"MULT ({var}):", old_nw * neg_weight, " ", old_w * weight)
             self.weights[var] = (old_w * weight, old_nw * neg_weight)
         else:
             # Store new (weight, neg_weight) tuple
-            print(f"ADD ({var}):", neg_weight, " ",  weight)
+            if DEBUG:
+                print(f"ADD ({var}):", neg_weight, " ",  weight)
             self.weights[var] = (weight, neg_weight)
 
     def _weights_to_string(self, syntesis_fomat=False):
