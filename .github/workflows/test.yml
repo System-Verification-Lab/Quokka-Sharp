@@ -24,12 +24,28 @@ jobs:
       - name: Install Python and dependencies
         run: |
           uv python install
-          uv sync --locked
+          uv sync --locked --extra synthesis
+
+      - name: Install synthesis build dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ make gfortran libblas-dev liblapack-dev
+
+      - name: Install synthesis build dependencies (macOS ARM)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc openblas
+
+      - uses: dtolnay/rust-toolchain@stable
 
       - name: Install all solvers
         run: ./scripts/setup-solvers.sh
 
+      - name: Install synthesis engines
+        run: bash scripts/setup-synthesis-engines.sh
+
       - name: Run tests
         run: |
           export PATH="$PWD/.solvers/bin:$PATH"
-          uv run --no-sync pytest tests/
+          uv run --no-sync pytest tests/ benchmarks/synthesis/test_run.py
