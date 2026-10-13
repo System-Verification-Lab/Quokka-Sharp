@@ -778,10 +778,18 @@ class pauli2cnf:
             cxgate = [[0.5 if c != t else None for t in range(n)] for c in range(n)]
 
         if ENABLE_CZ and (not limit_gates or not h_layer):
-            czgate = [[cnf.add_var(syn_gate_pick=True, Name='cz', bits=[c, t]) if c != t else None
-                       for t in range(n)] for c in range(n)]
+            #czgate = [[cnf.add_var(syn_gate_pick=True, Name='cz', bits=[c, t]) if c != t else None
+            #           for t in range(n)] for c in range(n)]
+            # CZ is symmetric: each pair is stored once, with the smaller qubit index first (c < t)
+            czgate = [[cnf.add_var(syn_gate_pick=True, Name='cz', bits=[c, t]) if c < t else None
+                            for t in range(n)]for c in range(n)]
         else:
             czgate = [[0.5 if c != t else None for t in range(n)] for c in range(n)]
+
+        def get_cz(a, b):
+                        if a == b:
+                            return None
+                        return czgate[min(a, b)][max(a, b)]
 
         if ENABLE_CSQRTX and (not limit_gates or not h_layer):
             csqrtxgate   = [[cnf.add_var(syn_gate_pick=True, Name='csqrtx',   bits=[c, t]) if c != t else None
@@ -913,38 +921,38 @@ class pauli2cnf:
                     # Implies(cxgate[c][t], ~U[t])
                     cnf.add_clause([-U[t], -cxgate[c][t]])
 
-                # CZ properties
+                # CZ properties: introduce new function call get_cz(c,t)
                 if ENABLE_CZ and (not limit_gates or not h_layer):
-    
-                    # Implies(czgate[c][t], Equivalent(X[c], x[c]))
-                    cnf.add_clause([ X[c], -czgate[c][t], -x[c]])
-                    cnf.add_clause([-X[c], -czgate[c][t],  x[c]])
-                    # Implies(czgate[c][t], Equivalent(X[t], x[t]))
-                    cnf.add_clause([ X[t], -czgate[c][t], -x[t]])
-                    cnf.add_clause([-X[t], -czgate[c][t],  x[t]])
-                    # Implies(czgate[c][t], Equivalent(Z[c], x[t] ^ z[c]))
-                    cnf.add_clause([ Z[c], -czgate[c][t],  x[t], -z[c]])
-                    cnf.add_clause([ Z[c], -czgate[c][t], -x[t],  z[c]])
-                    cnf.add_clause([-Z[c], -czgate[c][t],  x[t],  z[c]])
-                    cnf.add_clause([-Z[c], -czgate[c][t], -x[t], -z[c]])
-                    # Implies(czgate[c][t], Equivalent(Z[t], x[c] ^ z[t]))
-                    cnf.add_clause([ Z[t], -czgate[c][t],  x[c], -z[t]])
-                    cnf.add_clause([ Z[t], -czgate[c][t], -x[c],  z[t]])
-                    cnf.add_clause([-Z[t], -czgate[c][t],  x[c],  z[t]])
-                    cnf.add_clause([-Z[t], -czgate[c][t], -x[c], -z[t]])
-                    # Implies(czgate[c][t], Equivalent(R[c], x[c] & x[t] & (z[c] ^ z[t])))
-                    cnf.add_clause([-R[c], -czgate[c][t],  x[c]])
-                    cnf.add_clause([-R[c], -czgate[c][t],  x[t]])
-                    cnf.add_clause([-R[c], -czgate[c][t],  z[c],  z[t]])
-                    cnf.add_clause([-R[c], -czgate[c][t], -z[c], -z[t]])
-                    cnf.add_clause([ R[c], -czgate[c][t], -x[c], -x[t],  z[c], -z[t]])
-                    cnf.add_clause([ R[c], -czgate[c][t], -x[c], -x[t], -z[c],  z[t]])
-                    # Implies(czgate[c][t], ~R[t])
-                    cnf.add_clause([-R[t], -czgate[c][t]])
-                    # Implies(czgate[c][t], ~U[c])
-                    cnf.add_clause([-U[c], -czgate[c][t]])
-                    # Implies(czgate[c][t], ~U[t])
-                    cnf.add_clause([-U[t], -czgate[c][t]])
+
+                    # Implies(get_cz(c, t), Equivalent(X[c], x[c]))
+                    cnf.add_clause([ X[c], -get_cz(c, t), -x[c]])
+                    cnf.add_clause([-X[c], -get_cz(c, t),  x[c]])
+                    # Implies(get_cz(c, t), Equivalent(X[t], x[t]))
+                    cnf.add_clause([ X[t], -get_cz(c, t), -x[t]])
+                    cnf.add_clause([-X[t], -get_cz(c, t),  x[t]])
+                    # Implies(get_cz(c, t), Equivalent(Z[c], x[t] ^ z[c]))
+                    cnf.add_clause([ Z[c], -get_cz(c, t),  x[t], -z[c]])
+                    cnf.add_clause([ Z[c], -get_cz(c, t), -x[t],  z[c]])
+                    cnf.add_clause([-Z[c], -get_cz(c, t),  x[t],  z[c]])
+                    cnf.add_clause([-Z[c], -get_cz(c, t), -x[t], -z[c]])
+                    # Implies(get_cz(c, t), Equivalent(Z[t], x[c] ^ z[t]))
+                    cnf.add_clause([ Z[t], -get_cz(c, t),  x[c], -z[t]])
+                    cnf.add_clause([ Z[t], -get_cz(c, t), -x[c],  z[t]])
+                    cnf.add_clause([-Z[t], -get_cz(c, t),  x[c],  z[t]])
+                    cnf.add_clause([-Z[t], -get_cz(c, t), -x[c], -z[t]])
+                    # Implies(get_cz(c, t), Equivalent(R[c], x[c] & x[t] & (z[c] ^ z[t])))
+                    cnf.add_clause([-R[c], -get_cz(c, t),  x[c]])
+                    cnf.add_clause([-R[c], -get_cz(c, t),  x[t]])
+                    cnf.add_clause([-R[c], -get_cz(c, t),  z[c],  z[t]])
+                    cnf.add_clause([-R[c], -get_cz(c, t), -z[c], -z[t]])
+                    cnf.add_clause([ R[c], -get_cz(c, t), -x[c], -x[t],  z[c], -z[t]])
+                    cnf.add_clause([ R[c], -get_cz(c, t), -x[c], -x[t], -z[c],  z[t]])
+                    # Implies(get_cz(c, t), ~R[t])
+                    cnf.add_clause([-R[t], -get_cz(c, t)])
+                    # Implies(get_cz(c, t), ~U[c])
+                    cnf.add_clause([-U[c], -get_cz(c, t)])
+                    # Implies(get_cz(c, t), ~U[t])
+                    cnf.add_clause([-U[t], -get_cz(c, t)])
 
                 # CSqrtX / CSqrtXdg properties
                 if ENABLE_CSQRTX and (not limit_gates or not h_layer):
@@ -1062,6 +1070,20 @@ class pauli2cnf:
                 if ENABLE_T:
                     cnf.add_clause([-tg[k],  -cnf.get_syn_var_past_layer(Name='tdg', bit=k)])
                     cnf.add_clause([-tdg[k], -cnf.get_syn_var_past_layer(Name='t',   bit=k)])
+                
+                if ENABLE_T and ENABLE_S:
+                    # T*T = S
+                    cnf.add_clause([
+                        -tg[k],
+                        -cnf.get_syn_var_past_layer(Name='t', bit=k)
+                    ])
+
+                    # Tdg*Tdg = Sdg
+                    cnf.add_clause([
+                        -tdg[k],
+                        -cnf.get_syn_var_past_layer(Name='tdg', bit=k)
+                    ])
+                
                 long_or = []
                 if ENABLE_CX:     long_or += cx_k
                 if ENABLE_CZ:     long_or += cz_k
@@ -1083,6 +1105,25 @@ class pauli2cnf:
                             cnf.add_clause([-cxgate[c][t],
                                             -cnf.get_syn_var_past_layer(Name='id', bit=c),
                                             -cnf.get_syn_var_past_layer(Name='id', bit=t)])
+
+                        if ENABLE_CZ:
+                            # Disallow consecutive identical CZ gates: CZ^2 = I
+                            cnf.add_clause([
+                                -get_cz(c, t),
+                                -cnf.get_syn_var_past_layer(Name='cz', bit=[min(c, t), max(c, t)])
+                            ])
+
+                            # Promotes placing CZ gate so that it does not follow 2 idle opearations
+                            cnf.add_clause([
+                                -get_cz(c, t),
+                                -cnf.get_syn_var_past_layer(
+                                    Name='id', bit=c
+                                ),
+                                -cnf.get_syn_var_past_layer(
+                                    Name='id', bit=t
+                                )
+                            ])
+
                         if ENABLE_CSQRTX:
                             cnf.add_clause([-csqrtxgate[c][t],
                                             -cnf.get_syn_var_past_layer(Name='id', bit=c),
@@ -1093,6 +1134,26 @@ class pauli2cnf:
                             cnf.add_clause([-csqrtxgate[c][t],   -cnf.get_syn_var_past_layer(Name='csqrtxdg', bit=[c, t])])
                             cnf.add_clause([-csqrtxdggate[c][t], -cnf.get_syn_var_past_layer(Name='csqrtx',   bit=[c, t])])
 
+                            if ENABLE_CX:
+                                # CSqrtX * CSqrtX = CX, thus disallow 2 consecutive CSqrtX
+                                cnf.add_clause([
+                                    -csqrtxgate[c][t],
+                                    -cnf.get_syn_var_past_layer(
+                                        Name='csqrtx',
+                                        bit=[c, t]
+                                    )
+                                ])
+
+                                # CSqrtXdg * CSqrtXdg = CX, thus disallow 2 consecutive CSqrtXdg
+                                cnf.add_clause([
+                                    -csqrtxdggate[c][t],
+                                    -cnf.get_syn_var_past_layer(
+                                        Name='csqrtxdg',
+                                        bit=[c, t]
+                                    )
+                                ])
+
+                    # Existing 3-layer T/CX, T/CZ, S/CX, S/CZ pruning
                     if ENABLE_T and ENABLE_CX and cnf.syn_gate_layer >= 3:
                         cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cx', bit=[c, t]),
                                         -cnf.get_syn_var_past_layer(Name='tdg', bit=c, past=2),
@@ -1100,6 +1161,60 @@ class pauli2cnf:
                         cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cx', bit=[c, t]),
                                         -cnf.get_syn_var_past_layer(Name='t', bit=c, past=2),
                                         -tdg[c]])
+                    if ENABLE_T and ENABLE_CZ and cnf.syn_gate_layer >= 3:
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cz', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='tdg', bit=c, past=2),
+                                        -tg[c]])
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cz', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='t', bit=c, past=2),
+                                        -tdg[c]])
+                    if ENABLE_S and ENABLE_CX and cnf.syn_gate_layer>=3:
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='sdg', bit=c, past=2),
+                                        -sg[c]])
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cx', bit=[c, t]),
+                                                                -cnf.get_syn_var_past_layer(Name='s', bit=c, past=2),
+                                                                -sdg[c]])
+                    if ENABLE_S and ENABLE_CZ and cnf.syn_gate_layer>=3:
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cz', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='sdg', bit=c, past=2),
+                                        -sg[c]])
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='cz', bit=[c, t]),
+                                                                -cnf.get_syn_var_past_layer(Name='s', bit=c, past=2),
+                                                                -sdg[c]])
+                    if ENABLE_T and ENABLE_CSQRTX and cnf.syn_gate_layer >= 3:
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='csqrtx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='tdg', bit=c, past=2),
+                                        -tg[c]])
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='csqrtx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='t', bit=c, past=2),
+                                        -tdg[c]])
+                    if ENABLE_S and ENABLE_CSQRTX and cnf.syn_gate_layer >= 3:
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='csqrtx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='sdg', bit=c, past=2),
+                                        -sg[c]])
+                        cnf.add_clause([-cnf.get_syn_var_past_layer(Name='csqrtx', bit=[c, t]),
+                                        -cnf.get_syn_var_past_layer(Name='s', bit=c, past=2),
+                                        -sdg[c]])
+                    #H CZ  H =CX & HCXH=CZ, so HCZh, HCXH is not allowed in 3 layers
+                    if ENABLE_H and ENABLE_CZ and ENABLE_CX and cnf.syn_gate_layer >= 3:        
+                        cnf.add_clause([
+                            -cnf.get_syn_var_past_layer(
+                            Name='cz', bit=[min(c, t), max(c, t)]
+                                                            ),
+                                -cnf.get_syn_var_past_layer(
+                                    Name='h', bit=t, past=2
+                                    ),
+                                -hg[t]])
+                        cnf.add_clause([
+                            -cnf.get_syn_var_past_layer(
+                            Name='cx', bit=[c, t]
+                                                            ),
+                                -cnf.get_syn_var_past_layer(
+                                    Name='h', bit=t, past=2
+                                    ),
+                                -hg[t]])
+
 
         cnf.vars.x[:n] = X
         cnf.vars.z[:n] = Z
