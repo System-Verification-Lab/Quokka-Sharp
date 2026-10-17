@@ -14,7 +14,9 @@ class QiskitEngine(Engine):
     optimization_level: int = 3
 
     def run(self, target: Path) -> str:
-        source = qasm2.load(target)
+        source = qasm2.load(
+            target, custom_instructions=qasm2.LEGACY_CUSTOM_INSTRUCTIONS
+        )
         unitary = Operator(source)
         circuit = QuantumCircuit(source.num_qubits)
         circuit.unitary(unitary, circuit.qubits)

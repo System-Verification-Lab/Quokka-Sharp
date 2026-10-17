@@ -3,6 +3,9 @@ import sys
 from batch import run_batch
 
 INPUTS = ["ct_cy"]
+# Example: {"num_qubits": 2, "depth": 1, "num_circuits": 10, "seed": 1}
+RANDOM_CIRCUIT: dict[str, int] | None = None
+RUNS_PER_CIRCUIT = 10
 RUNS = [
     (
         "quokka-approximate",
@@ -10,12 +13,12 @@ RUNS = [
         ".qasm",
         ["--fidelity", "0.89", "--timeout", "180"],
     ),
-    # (
-    #     "quokka-upstream-approximate",
-    #     "quokka-upstream",
-    #     ".qasm",
-    #     ["--fidelity", "0.89"],
-    # ),
+    (
+        "quokka-upstream-approximate",
+        "quokka-upstream",
+        ".qasm",
+        ["--fidelity", "0.89", "--timeout", "180"],
+    ),
     ("qiskit", "qiskit", ".qasm", ["--approximation-degree", "0.9"]),
     (
         "synthetiq",
@@ -33,4 +36,12 @@ RUNS = [
 
 
 if __name__ == "__main__":
-    sys.exit(run_batch(INPUTS, RUNS))
+    sys.exit(
+        run_batch(
+            INPUTS,
+            RUNS,
+            RANDOM_CIRCUIT,
+            runs_per_circuit=RUNS_PER_CIRCUIT,
+            measure_fidelity=True,
+        )
+    )

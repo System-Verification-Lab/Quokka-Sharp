@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from circuits import from_engine_output
 
 HERE = Path(__file__).resolve().parent
 
@@ -39,3 +40,6 @@ def test_engine(engine, input_file, options, expected):
     )
     assert process.returncode == 0, process.stdout + process.stderr
     assert expected in process.stdout, process.stdout
+    circuits = from_engine_output(process.stdout, engine)
+    assert circuits
+    assert all(circuit.num_qubits == 2 and circuit.depth() > 0 for circuit in circuits)
