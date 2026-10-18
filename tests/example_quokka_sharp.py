@@ -21,7 +21,7 @@ You can also point any variable at your own .qasm file.
 import os
 import decimal
 import quokka_sharp as qk
-
+import time
 # ── helpers ───────────────────────────────────────────────────────────────────
 
 
@@ -285,14 +285,14 @@ section("4 · SYNTHESIS")
 #   qasm_str: synthesised circuit as a QASM string
 #   layers  : circuit depth of the solution
 
-SYN_FILE = fixture("synthesis", "syn01_h_target.qasm")  # ← change me
-SYN_GATE_SET = {"h", "cx", "s"}  # ← change me
+SYN_FILE = fixture("synthesis", "syn09_tt_target.qasm")  # ← change me
+SYN_GATE_SET = {"h", "cx", "s", "cz", "t"}  # ← change me
 SYN_FID = 1.0  # ← 1.0 for exact
 SYN_FILES_ROOT = "tmp"  # ← writable dir
 SYN_CYC_LIN_ENC = True  # ← recommended
 
 os.makedirs(SYN_FILES_ROOT, exist_ok=True)
-
+start_time = time.time()
 outcome, weight, qasm_str, layers = qk.functionalities.syn(
     SYN_FILE,
     basis="pauli",
@@ -316,7 +316,7 @@ if outcome == "FOUND" and qasm_str:
     for line in qasm_str.strip().splitlines():
         print(f"    {line}")
     print("  " + "-" * 50)
-
+print("--- %s seconds ---" % (time.time() - start_time))
 # ── More examples to try (uncomment one at a time) ────────────────────────────
 #
 # Synthesise X using {h, cx, s}
