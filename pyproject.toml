@@ -2,7 +2,12 @@
 name = "quokka-sharp-root"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = ["quokka-sharp"]
+dependencies = [
+    "jinja2>=3.1.6",
+    "matplotlib>=3.11.2",
+    "pandas>=3.0.6",
+    "quokka-sharp",
+]
 
 [project.optional-dependencies]
 synthesis = [
