@@ -16,3 +16,4 @@ tmp/*
 !tmp/.gitkeep
 quokka_sharp/debug.py
 .solvers/
+benchmarks/synthesis/results/
