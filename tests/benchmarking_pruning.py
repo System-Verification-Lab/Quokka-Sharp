@@ -23,8 +23,6 @@ FIDELITY = 1.0
 BASIS = "pauli"
 CYC_LIN_ENCODING = True
 
-# Explicit gate sets for your known circuits.
-# Extend this dictionary when adding new benchmarks.
 
 GATE_SETS = {
     1:  {"h", "cx", "s"},
