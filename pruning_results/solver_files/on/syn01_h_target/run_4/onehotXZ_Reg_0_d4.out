@@ -1,0 +1,89 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 3
+c [INITIAL INPUT] Number of clauses: 9
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 8
+c [INITIAL INPUT] Number of ternary clauses: 1
+c [INITIAL INPUT] Number of clauses larger than 3: 0
+c [INITIAL INPUT] Number of literals: 19
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BiPe] The formula is unsatisfiable.
+c [PROBLEM] create an UNSAT problem.
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 3
+c [PREPROCESSED INPUT] Number of clauses: 2
+c [PREPROCESSED INPUT] Number of unit clauses: 2
+c [PREPROCESSED INPUT] Number of binary clauses: 0
+c [PREPROCESSED INPUT] Number of ternary clauses: 0
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 0
+c [PREPROCESSED INPUT] Number of literals: 2
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(#equiv) input type(cnf) onlyGate(0) ordered(0) strong-elim(0) #iteration(10) timeout(0)
+c [PREPROC #EQUIV] Start
+c [PREPROC #EQUIV] Bipartition is running ...
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c [BiPe] The formula is unsatisfiable.
+c [PROBLEM] create an UNSAT problem.
+c [PREPROC #EQUIV] Terminated with status: 0
+c [PREPROC] Number of output detected: 0
+c [PREPROC] 
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 3
+c [PREPROCESSED INPUT] Number of clauses: 2
+c [PREPROCESSED INPUT] Number of unit clauses: 2
+c [PREPROCESSED INPUT] Number of binary clauses: 0
+c [PREPROCESSED INPUT] Number of ternary clauses: 0
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 0
+c [PREPROCESSED INPUT] Number of literals: 2
+c
+c
+c [IND VARIABLES] list: 1 2 3 
+c
+c Run with the classic mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) need-not-satisfied(0) 
+c [MODE] classic
+c [BRANCHING HEURISTIC] Option Branching Heuristic: scoring method(vsads) phase heuristic(polarity) reverse phase (0) freq-decay (8192) branching heuristic (classic)
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 1
+c [MAXT] Set the threshold limit: 2
+c ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 0
+c Number of split formula (max): 0
+c Number of split formula (ind): 0
+c Number of decision: 0
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 0
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 0
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 2.5e-05
+c Final time Ind: 0
+c
+s UNSAT

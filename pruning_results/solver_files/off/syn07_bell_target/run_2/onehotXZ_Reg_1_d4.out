@@ -1,0 +1,145 @@
+c [INITIAL INPUT] [4m[32mStatistics about the input formula[0m
+c [INITIAL INPUT] Number of variables: 24
+c [INITIAL INPUT] Number of clauses: 162
+c [INITIAL INPUT] Number of unit clauses: 0
+c [INITIAL INPUT] Number of binary clauses: 52
+c [INITIAL INPUT] Number of ternary clauses: 59
+c [INITIAL INPUT] Number of clauses larger than 3: 51
+c [INITIAL INPUT] Number of literals: 499
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(equiv) input type(cnf)) #iteration(10) timeout(0)
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c First call done
+c [BACKBONE] Time to compute the backbone: 6.1e-05
+c [BACKBONE] Number of SAT calls: 10
+c [BACKBONE] Backbone size: 7
+c [BACKBONE] Number of units detected by calling the solver: 3
+c [REDUCER MAKE METHOD] Method: combinaison
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 24
+c [PREPROCESSED INPUT] Number of clauses: 69
+c [PREPROCESSED INPUT] Number of unit clauses: 9
+c [PREPROCESSED INPUT] Number of binary clauses: 58
+c [PREPROCESSED INPUT] Number of ternary clauses: 0
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 2
+c [PREPROCESSED INPUT] Number of literals: 135
+c
+c [PREPROC MANAGER] Option PreprocManager: preproc(#equiv) input type(cnf) onlyGate(0) ordered(0) strong-elim(0) #iteration(10) timeout(0)
+c [PREPROC #EQUIV] Start
+c [PREPROC #EQUIV] Bipartition is running ...
+c [BiPe] [OPTION] Backbone Options: verbosity(0) sat-solver(glucose,∞,1)
+c [CONSTRUCTOR] Solver: glucose
+c [BIPE BACKBONE] Start.
+c First call done
+c [BACKBONE] Time to compute the backbone: 5.1e-05
+c [BACKBONE] Number of SAT calls: 6
+c [BACKBONE] Backbone size: 8
+c [BACKBONE] Number of units detected by calling the solver: 4
+c [BiPe] [OPTION] DAC options: verbosity(0) sat-solver(glucose)
+c [CONSTRUCTOR] Solver: glucose
+c [DAC] #Equivalence classes: 1
+c [DAC] #Equivalences: 5
+c [DAC] #And gates: 0
+c [DAC] #XOR gates: 0
+c [BIPARTITION] #Projected: 14
+c [BIPARTITION] #Protected: 10
+c [BIPARTITION] #Gates: 13
+c [BiPe] [OPTION] Bipartition Options: use-model(1) use-core(1) sorting-heuristic(OCC_ASC) sat-solver(glucose,200)
+c [BIPARTITION] #Model considered for preproc with models: 1
+c [BIPARTITION] #Input variables from models as preproc: 0
+c [BIPARTITION] Initial input set: 1
+c [CONSTRUCTOR] Solver: glucose
+c [HEURISTIC-BIPARTITION] Constructor
+c [HEURISTIC-BIPARTITION] Method run: OCC_ASC
+c 1/5 Run for 200 conflicts
+c [1m[31mBipartition in progress[0m
+c [BIPARTITION] [1m[31mStatistics [0m
+c [BIPARTITION] #Input variables get from complete model: 0
+c [BIPARTITION] #Input variables get from Padoa model: 0
+c [BIPARTITION] #Input variables get from model: 0
+c [BIPARTITION] #Output variables get from symmetries: 0
+c [BIPARTITION] #Input variables computed: 11
+c [BIPARTITION] #Input variables that are undertermined: 0
+c [BIPARTITION] Time needed to compute the partition: 4.4e-05
+c [PREPROC #EQUIV] Terminated with status: 1
+c [PREPROC] Number of output detected: 13
+c [PREPROC] 1 2 3 4 5 7 8 9 10 11 12 13 14 
+c [ELIMINATOR GATES] Constructor
+c [ELIMINATOR] Constructor
+c [REDUCER MAKE METHOD] Method: combinaison
+c [PREPROC #EQUIV] Run number: 1
+c [BiPe] limitNbClauses(162)
+c [ELIMINATOR] Iteration(1) Resolved(0) inProcess(0)
+c [ELIMINATOR] #elim-gate = 13	#elim-resolution = 0
+c [PREPROC #EQUIV] Run number: 2
+c [BiPe] limitNbClauses(162)
+c [ELIMINATOR] Iteration(1) Resolved(0) inProcess(0)
+c [ELIMINATOR] #elim-gate = 0	#elim-resolution = 0
+c Removed variables: 3 2 11 5 10 0
+c Number of defined variables removed (not unit): 5
+c [MAIN PREPROCESSED INPUT] [4m[32mStatistics about the preprocessed formula[0m
+c [PREPROCESSED INPUT] Number of variables: 24
+c [PREPROCESSED INPUT] Number of clauses: 54
+c [PREPROCESSED INPUT] Number of unit clauses: 14
+c [PREPROCESSED INPUT] Number of binary clauses: 38
+c [PREPROCESSED INPUT] Number of ternary clauses: 0
+c [PREPROCESSED INPUT] Number of clauses larger than 3: 2
+c [PREPROCESSED INPUT] Number of literals: 100
+c
+c
+c [MAX VARIABLES] list: 15 16 17 18 19 20 21 22 23 24 
+c
+c
+c [IND VARIABLES] list: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 
+c
+c Run with the classic mode
+c  Option MaxSharpSAT Method: greedyInitActivated(0) threshold(1)
+c [WRAPPER SOLVER] Option Solver: solver name(minisat cnf)
+c [SPEC MANAGER] Option Formula Manager: update mode(dynamic) rm-gates(0) need-not-satisfied(0) 
+c [MODE] classic
+c [BRANCHING HEURISTIC] Option Branching Heuristic: scoring method(vsads) phase heuristic(polarity) reverse phase (0) freq-decay (8192) branching heuristic (classic)
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c [CACHE CLEANING MANAGER]  Option CacheCleaningManager: cleaning strategy(expectation) 
+c [BUCKET MANAGER]  Option BucketManager: storage(not-touched)  representation(clause)  size_first_page(1073741824) size_additional_page(536870912)
+c [CACHE LIST CONSTRUCTOR]
+c
+c [MAXT] The size of the valuation array is: 2
+c [MAXT] Set the threshold limit: 4
+c Warm start process (11): 2/29
+c ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c |    #call(m)|    #call(i)|        time|     timeInd|  #posHit(m)|  #negHit(m)|  #posHit(i)|  #negHit(i)|   #split(m)|   #split(i)|      memory|     mem(MB)|  #dec. Node|               max#count|
+c ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+i 1 0.00 1.00000000000000000000000000000000000000000000000000
+i 2 0.00 2.00000000000000000000000000000000000000000000000000
+c ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+c
+c [1m[31mStatistics [0m
+c [33mCompilation Information[0m
+c Number of recursive call: 15
+c Number of split formula (max): 0
+c Number of split formula (ind): 0
+c Number of decision: 8
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 1
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c
+c [1m[34mCache Information[0m
+c Number of positive hit: 0
+c Number of negative hit: 8
+c Number of reduce calls: 0
+c Number of entry removedreduce: 0
+c
+c Final time: 0.00015000000712461769580841064453125000000000000000
+c Final time Ind: 0.00001099999644793570041656494140625000000000000000
+c
+v -15 16 17 -18 -19 -20 -21 -22 -23 -24 0
+o 2.00000000000000000000000000000000000000000000000000
+c [MAX-T] Elapsed time: 0.01135099999999999997868371792719699442386627197266 seconds
